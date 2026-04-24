@@ -1,0 +1,87 @@
+---
+import Search from './Search.astro'
+import ThemeToggle from './ThemeToggle.astro'
+import { buildNavigationModel, type NavItem } from '@docsmint/config'
+
+export interface Props {
+  site: { name: string; nav?: NavItem[] }
+}
+const { site } = Astro.props
+const nav = site.nav || []
+const navModel = buildNavigationModel(site)
+---
+<header class="max-w-3xl mx-auto px-8 py-5">
+  <!-- Top row: logo + controls always visible -->
+  <div class="flex items-center justify-between gap-4">
+    <a href="/"
+       data-no-hover
+       class="text-sm font-bold"
+       style="text-decoration:none">
+      {site.name}
+    </a>
+    <div class="flex items-center gap-5">
+      {navModel.desktop.visible.map(({ label, href, target, rel }) => (
+        <a href={href} target={target} rel={rel} class="text-sm text-zinc-500 hidden sm:inline">{label}</a>
+      ))}
+      {navModel.desktop.overflow.length > 0 && (
+        <details class="hidden sm:inline-block relative nav-more">
+          <summary class="text-sm text-zinc-500 cursor-pointer list-none">more</summary>
+          <div class="absolute right-0 mt-2 min-w-[12rem] rounded border border-zinc-200 bg-[var(--bg)] p-2 shadow-sm z-20">
+            {navModel.desktop.overflow.map(({ label, href, target, rel }) => (
+              <a
+                href={href}
+                target={target}
+                rel={rel}
+                class="block text-sm text-zinc-500 px-2 py-1.5 rounded"
+              >
+                {label}
+              </a>
+            ))}
+          </div>
+        </details>
+      )}
+      <Search />
+      <ThemeToggle />
+    </div>
+  </div>
+
+  <!-- Mobile: keep compact inline nav + popover, never drawer -->
+  {nav.length > 0 && (
+    <nav class="flex items-center gap-4 mt-2 sm:hidden overflow-x-auto whitespace-nowrap no-scrollbar">
+      {navModel.mobile.visible.map(({ label, href, target, rel }) => (
+        <a href={href} target={target} rel={rel} class="text-sm text-zinc-500 shrink-0">{label}</a>
+      ))}
+      {navModel.mobile.overflow.length > 0 && (
+        <details class="relative nav-more shrink-0">
+          <summary class="text-sm text-zinc-500 cursor-pointer list-none">more</summary>
+          <div class="absolute left-0 mt-2 min-w-[11rem] rounded border border-zinc-200 bg-[var(--bg)] p-2 shadow-sm z-20">
+            {navModel.mobile.overflow.map(({ label, href, target, rel }) => (
+              <a
+                href={href}
+                target={target}
+                rel={rel}
+                class="block text-sm text-zinc-500 px-2 py-1.5 rounded"
+              >
+                {label}
+              </a>
+            ))}
+          </div>
+        </details>
+      )}
+    </nav>
+  )}
+</header>
+
+<style>
+.nav-more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>

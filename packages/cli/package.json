@@ -1,0 +1,31 @@
+{
+  "name": "docsmint",
+  "version": "0.1.0",
+  "type": "module",
+  "author": "Raphael Avocegamou",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Raphjacksun7/docsmint.git"
+  },
+  "homepage": "https://github.com/Raphjacksun7/docsmint",
+  "bugs": {
+    "url": "https://github.com/Raphjacksun7/docsmint/issues"
+  },
+  "bin": {
+    "docsmint": "./bin/docsmint.js"
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./config": "./src/config.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "dev": "node ./bin/docsmint.js dev",
+    "build": "node -e \"console.log('docsmint CLI package does not require a compile step')\""
+  },
+  "dependencies": {
+    "@docsmint/config": "workspace:*",
+    "@docsmint/engine": "workspace:*",
+    "jiti": "^2.6.1"
+  }
+}

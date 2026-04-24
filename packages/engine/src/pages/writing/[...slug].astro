@@ -1,0 +1,41 @@
+---
+import { getCollection, render } from 'astro:content'
+import Base from '../../layouts/Base.astro'
+import { getConfig } from '../../config/getConfig'
+
+export async function getStaticPaths() {
+  const posts = await getCollection('writing')
+  return posts.map(entry => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }))
+}
+
+const { entry } = Astro.props
+const { Content } = await render(entry)
+const rawSite = (await import('../../../docsmint.config.ts')).default
+const site = getConfig(rawSite)
+
+const fmt = new Intl.DateTimeFormat(
+  site.dateLocale ?? 'en-US',
+  { ...(site.dateFormat ?? { year: 'numeric', month: 'short', day: 'numeric' }), timeZone: 'UTC' }
+)
+const dateStr = fmt.format(entry.data.date)
+---
+<Base title={entry.data.title}>
+  <div class="max-w-3xl mx-auto px-8 py-16">
+    <div class="mb-10">
+      <div class="flex items-baseline gap-4 text-xs text-zinc-400 mb-3">
+        <span>{dateStr}</span>
+        {entry.data.author && <span>— {entry.data.author}</span>}
+      </div>
+      <h1 class="text-2xl font-bold tracking-tight">{entry.data.title}</h1>
+      {entry.data.description && (
+        <p class="text-sm text-zinc-500 mt-2">{entry.data.description}</p>
+      )}
+    </div>
+    <article class="prose">
+      <Content />
+    </article>
+  </div>
+</Base>

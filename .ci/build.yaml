@@ -1,4 +1,4 @@
-# ── mkdocx CI ──────────────────────────────────────────────────────────────────
+# ── docsmint CI ──────────────────────────────────────────────────────────────────
 #
 # Push / PR to main:  lint
 # Tag push:           lint → build → publish to Internal_Python (Azure Artifacts)

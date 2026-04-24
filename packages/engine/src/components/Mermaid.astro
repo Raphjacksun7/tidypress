@@ -1,0 +1,113 @@
+---
+const { code } = Astro.props
+---
+<div class="mermaid-wrapper" data-mermaid={code}>
+  <p class="mermaid-source m-0 text-xs text-zinc-400" aria-hidden="true">Loading diagram…</p>
+</div>
+
+<script lang="ts">
+import mermaid from 'mermaid'
+
+type MermaidConfig = NonNullable<Parameters<typeof mermaid.initialize>[0]>
+
+/**
+ * Must match `Base.astro` / `ThemeToggle.astro`: explicit `data-theme` or system preference.
+ */
+function isPageDark() {
+  const t = document.documentElement.getAttribute('data-theme')
+  if (t === 'dark') return true
+  if (t === 'light') return false
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+}
+
+/**
+ * Mermaid 11: theme + themeVariables so edges, arrowheads, and text track DocsMint
+ * light/dark (near-black / near-white) instead of a mismatched “neutral” palette.
+ */
+function buildMermaidConfig(): MermaidConfig {
+  const dark = isPageDark()
+  if (dark) {
+    return {
+      startOnLoad: false,
+      theme: 'dark',
+      themeVariables: {
+        background: 'transparent',
+        // Edges, arrow strokes, and default diagram lines
+        lineColor: '#e4e4e7',
+        textColor: '#e4e4e7',
+        primaryTextColor: '#e4e4e7',
+        secondaryTextColor: '#d4d4d8',
+        tertiaryTextColor: '#a1a1aa',
+        primaryColor: '#3f3f46',
+        primaryBorderColor: '#a1a1aa',
+        secondaryColor: '#52525b',
+        mainBkg: '#3f3f46',
+        secondBkg: '#3f3f46',
+        tertiaryColor: '#52525b',
+        nodeBorder: '#a1a1aa',
+        clusterBkg: 'rgba(24, 24, 27, 0.55)',
+        titleColor: '#fafafa',
+        edgeLabelBackground: 'rgba(9, 9, 10, 0.92)',
+      },
+      fontFamily: 'var(--font-mono, ui-monospace, monospace)',
+    }
+  }
+  return {
+    startOnLoad: false,
+    theme: 'default',
+    themeVariables: {
+      background: 'transparent',
+      lineColor: '#3f3f46',
+      textColor: '#18181b',
+      primaryTextColor: '#18181b',
+      secondaryTextColor: '#27272a',
+      tertiaryTextColor: '#3f3f46',
+      primaryColor: '#fafafa',
+      primaryBorderColor: '#3f3f46',
+      secondaryColor: '#e4e4e7',
+      mainBkg: '#fafafa',
+      secondBkg: '#f4f4f5',
+      nodeBorder: '#3f3f46',
+      clusterBkg: '#f4f4f5',
+      titleColor: '#0a0a0a',
+      edgeLabelBackground: 'rgba(255, 255, 255, 0.9)',
+    },
+    fontFamily: 'var(--font-mono, ui-monospace, monospace)',
+  }
+}
+
+async function renderAll() {
+  mermaid.initialize(buildMermaidConfig())
+  const wrappers = document.querySelectorAll<HTMLElement>('[data-mermaid]')
+  for (const el of wrappers) {
+    const code = el.getAttribute('data-mermaid') ?? ''
+    if (!code.trim()) {
+      el.replaceChildren()
+      continue
+    }
+    const id = 'dm-mermaid-' + String(Math.random()).replace(/^0\./, '')
+    try {
+      const { svg, bindFunctions } = await mermaid.render(id, code)
+      el.innerHTML = svg
+      bindFunctions?.(el)
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e)
+      const p = document.createElement('p')
+      p.className = 'm-0 text-xs'
+      p.style.color = 'var(--muted)'
+      p.textContent = msg
+      el.replaceChildren(p)
+    }
+  }
+}
+
+void renderAll()
+
+const obs = new MutationObserver(() => {
+  void renderAll()
+})
+obs.observe(document.documentElement, {
+  attributes: true,
+  attributeFilter: ['data-theme'],
+})
+</script>

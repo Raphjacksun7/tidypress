@@ -1,48 +1,16 @@
 {
-  "name": "mkdocx",
+  "name": "docsmint-workspace",
+  "private": true,
   "type": "module",
   "version": "0.1.0",
-  "description": "Minimal markdown documentation builder with a transfa-inspired aesthetic.",
-  "keywords": [
-    "docs",
-    "documentation",
-    "markdown",
-    "astro",
-    "static-site"
-  ],
-  "license": "MIT",
+  "description": "DocsMint workspace root.",
   "engines": {
     "node": ">=22.12.0"
   },
-  "bin": {
-    "mkdocx": "./bin/mkdocx.js"
-  },
-  "files": [
-    "src",
-    "bin",
-    "public",
-    "astro.config.mjs",
-    "mkdocx.config.js",
-    "tailwind.config.mjs",
-    "tsconfig.json"
-  ],
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build && pagefind --site dist",
-    "preview": "astro preview",
-    "astro": "astro"
+    "build": "pnpm -r build",
+    "dev": "pnpm --filter @docsmint/engine dev",
+    "test": "pnpm -r test"
   },
-  "dependencies": {
-    "@astrojs/mdx": "^5.0.3",
-    "@astrojs/sitemap": "^3.7.2",
-    "@tailwindcss/vite": "^4.2.2",
-    "astro": "^6.1.5",
-    "mermaid": "^11.14.0",
-    "pagefind": "^1.5.0",
-    "rehype-external-links": "^3.0.0",
-    "rehype-pretty-code": "^0.14.3",
-    "shiki": "^4.0.2",
-    "tailwindcss": "^4.2.2",
-    "unist-util-visit": "^5.1.0"
-  }
+  "packageManager": "pnpm@10.4.1+sha512.c753b6c3ad7afa13af388fa6d808035a008e30ea9993f58c6663e2bc5ff21679aa834db094987129aa4d488b86df57f7b634981b2f827cdcacc698cc0cfb88af"
 }

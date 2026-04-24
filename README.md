@@ -1,12 +1,13 @@
-# mkdocx
+# DocsMint
 
 Minimal markdown documentation builder. Write docs in markdown, get a fast static site — no Astro knowledge required.
 
 ## Install
 
 ```sh
-pip install artifacts-keyring
-pip install mkdocx --index-url https://centiro.pkgs.visualstudio.com/_packaging/Internal_Python/pypi/simple/ --extra-index-url https://pypi.org/simple/
+npm install -g docsmint
+# or
+npx docsmint@latest
 ```
 
 ## Usage
@@ -14,44 +15,87 @@ pip install mkdocx --index-url https://centiro.pkgs.visualstudio.com/_packaging/
 From your project root:
 
 ```sh
-mkdocx init       # scaffold docs/ in the current project
-mkdocx dev        # start local dev server (localhost:4321)
-mkdocx build      # build for production
-mkdocx preview    # preview the production build
-mkdocx deploy gs://my-bucket  # build and deploy to GCS
-mkdocx clean      # remove the working directory
+docsmint init       # scaffold docs/ in the current project
+docsmint dev        # start local dev server (localhost:4321)
+docsmint build      # build for production
+docsmint preview    # preview the production build
+docsmint deploy gs://my-bucket  # build and deploy to GCS
+docsmint clean      # remove the working directory
 ```
 
-On first run, mkdocx will offer to scaffold a `docs/` directory if none exists.
+On first run, docsmint will offer to scaffold a `docs/` directory if none exists.
 
 ## Docs structure
 
-Only two things belong in your repo:
+Your docs source stays minimal:
 
 ```
 docs/
-├── mkdocx.config.js        # site name, nav, footer
+├── docsmint.config.ts      # site name, nav, footer
 └── src/
     └── content/
-        └── docs/
-            └── *.md        # your markdown pages
+        ├── docs/
+        │   └── *.md        # documentation pages
+        └── writing/
+            └── *.md        # articles and release notes
 ```
 
 The rendering engine (Astro, components, styles) is bundled inside the package and managed automatically.
 
 ## Config
 
-```js
-// docs/mkdocx.config.js
+```ts
+// docs/docsmint.config.ts
 export default {
   name: 'my-project',
   description: '',
   nav: [
-    { label: 'docs', href: '/docs/getting-started' },
+    { label: 'docs', href: '/docs/getting-started', priority: 'core' },
+    { label: 'writing', href: '/writing', priority: 'core' },
+    { label: 'github', href: 'https://github.com/you/repo', target: '_blank' },
   ],
   footer: [],
+  extensions: {
+    customPages: [
+      { slug: 'about', title: 'About', navLabel: 'about' },
+    ],
+  },
+  navPolicy: {
+    mode: 'strict',
+    maxVisibleDesktop: 3,
+    maxVisibleMobile: 2,
+  },
 }
 ```
+
+## Extensions
+
+Extensions are bounded customizations that keep DocsMint's core visual system intact.
+
+- `customPages` creates top-level pages such as `/about`
+- `navLabel` adds that page to the navbar
+- Page content lives in `docs/src/content/extensions/<slug>.md`
+
+## Navigation policy
+
+DocsMint keeps navigation constrained for layout quality:
+
+- `navPolicy.mode: "strict"` enforces route and nav-budget rules
+- `maxVisibleDesktop` and `maxVisibleMobile` control visible header links
+- overflow links automatically render in a `more` popover (no drawer)
+- internal links must resolve to known routes in strict mode
+- external links can use `target: "_blank"` and get safe `rel` values
+
+Use the context snapshot command to export markdown summaries for LLM workflows:
+
+```sh
+docsmint context
+```
+
+## Author
+
+Raphael Avocegamou  
+GitHub: [github.com/Raphjacksun7](https://github.com/Raphjacksun7)
 
 ## Page frontmatter
 

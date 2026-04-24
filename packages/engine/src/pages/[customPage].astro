@@ -1,0 +1,36 @@
+---
+import { getCollection, render } from 'astro:content'
+import Base from '../layouts/Base.astro'
+import { getConfig } from '../config/getConfig'
+
+export async function getStaticPaths() {
+  const rawSite = (await import('../../docsmint.config.ts')).default
+  const site = getConfig(rawSite)
+  const customPages = site.extensions?.customPages ?? []
+
+  return customPages.map(page => ({
+    params: { customPage: page.slug },
+    props: { page },
+  }))
+}
+
+const { page } = Astro.props
+const extensions = await getCollection('extensions')
+const entry = extensions.find(candidate => candidate.id === page.slug)
+
+if (!entry) {
+  throw new Error(
+    `Missing extension page content for slug "${page.slug}". Add src/content/extensions/${page.slug}.md`,
+  )
+}
+
+const { Content } = await render(entry)
+---
+<Base title={page.title} description={page.description}>
+  <div class="max-w-3xl mx-auto px-8 py-16">
+    <article class="prose">
+      <h1>{page.title}</h1>
+      <Content />
+    </article>
+  </div>
+</Base>

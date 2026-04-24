@@ -1,0 +1,13 @@
+{
+  "name": "@docsmint/site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "docsmint dev",
+    "build": "docsmint build",
+    "preview": "docsmint preview"
+  },
+  "dependencies": {
+    "docsmint": "workspace:*"
+  }
+}

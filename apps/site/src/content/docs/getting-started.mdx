@@ -1,0 +1,81 @@
+---
+title: Getting started
+description: Install docsmint and run your first docs site in minutes.
+order: 1
+---
+
+import Callout from '../../components/Callout.astro'
+import Tabs from '../../components/Tabs.astro'
+import Tab from '../../components/Tab.astro'
+
+## Install
+
+```bash
+pip install artifacts-keyring
+pip install docsmint \
+  --index-url https://centiro.pkgs.visualstudio.com/_packaging/Internal_Python/pypi/simple/ \
+  --extra-index-url https://pypi.org/simple/
+```
+
+<Callout type="note">
+`artifacts-keyring` handles authentication with the internal Azure Artifacts feed automatically.
+</Callout>
+
+## Prerequisites
+
+- Python 3.11+
+- Node.js 18+ and pnpm (or npm) — used internally by docsmint to run Astro
+
+## Initialize a project
+
+From your project root:
+
+```bash
+docsmint init
+```
+
+This creates:
+
+```
+docs/
+├── docsmint.config.ts
+└── src/
+    └── content/
+        └── docs/
+            └── getting-started.md
+```
+
+## Start the dev server
+
+```bash
+docsmint dev
+```
+
+On first run, docsmint installs Node.js dependencies automatically. The dev server starts at `http://localhost:4321`.
+
+## How it works
+
+docsmint is a "fat CLI" — the Astro rendering engine is bundled inside the pip package. Your repo only contains content and config. The CLI:
+
+1. Copies the bundled template to `docs/.docsmint/`
+2. Symlinks your `docsmint.config.ts` and `src/content/` into it
+3. Runs Astro from `docs/.docsmint/`
+
+You never touch the rendering system. Updates arrive via `pip install --upgrade docsmint`.
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `docsmint init` | Scaffold `docs/` in the current project |
+| `docsmint dev` | Start dev server at `localhost:4321` |
+| `docsmint build` | Production build → `docs/.docsmint/dist/` |
+| `docsmint preview` | Preview the production build locally |
+| `docsmint clean` | Remove `docs/.docsmint/` to force a fresh reinstall |
+
+## Next steps
+
+- [Configuration](./configuration) — site name, nav, footer, dates
+- [Writing content](./writing-content) — markdown, frontmatter, components
+- [Components](./components) — Callout, Tabs, FileTree, Mermaid, and more
+- [Deploying](./deploying) — Docker, nginx, Azure Static Web Apps

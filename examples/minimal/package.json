@@ -1,0 +1,8 @@
+{
+  "name": "@docsmint/example-minimal",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "docsmint": "workspace:*"
+  }
+}

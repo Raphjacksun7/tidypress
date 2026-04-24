@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "docsmint"
+version = "0.1.0"
+description = "Thin Python wrapper for the DocsMint Node CLI."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+    { name = "Raphael Avocegamou" }
+]
+
+[project.urls]
+Homepage = "https://github.com/Raphjacksun7/docsmint"
+Repository = "https://github.com/Raphjacksun7/docsmint"
+Issues = "https://github.com/Raphjacksun7/docsmint/issues"
+
+[project.scripts]
+docsmint = "docsmint.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["docsmint*"]
