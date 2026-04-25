@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "docsmint"
-version = "0.1.9"
+version = "0.1.10"
 description = "Thin Python wrapper for the DocsMint Node CLI."
 readme = "README.md"
 requires-python = ">=3.11"

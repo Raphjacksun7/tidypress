@@ -58,7 +58,7 @@ Inline `code` renders without highlighting — styled as monospace by the theme.
 
 ## Diagrams
 
-Use the `<Mermaid>` component in `.mdx` files for flow charts, sequence diagrams, and more. All built-in components are pre-wired — no import needed:
+Use the `<Mermaid>` component in `.mdx` files for flow charts, sequence diagrams, and more:
 
 ```mdx
 <Mermaid code={`
@@ -73,7 +73,7 @@ Diagrams re-render automatically when the theme changes (light ↔ dark).
 
 ## Collapsible sections
 
-Native HTML — no import needed in any `.md` or `.mdx` file:
+Native HTML works in any `.md` or `.mdx` file:
 
 ```html
 <details>

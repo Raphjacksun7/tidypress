@@ -11,7 +11,7 @@ import Tabs from '../../components/Tabs.astro'
 import Tab from '../../components/Tab.astro'
 import Mermaid from '../../components/Mermaid.astro'
 
-All components work in `.mdx` files. They are pre-wired by the engine — no import statement needed in your content files. Collapsible sections use native HTML and also require no import.
+All components work in `.mdx` files. Import them at the top of the file. Collapsible sections use native HTML.
 
 ## Callout
 
@@ -174,7 +174,7 @@ Local images from `src/assets/` are resized and converted to modern formats at b
 
 ## Collapsible sections
 
-Native HTML — no import needed:
+Native HTML:
 
 ````html
 <details>
