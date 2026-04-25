@@ -52,6 +52,7 @@ jobs:
     needs: validate-release
     permissions:
       contents: read
+      id-token: write
 
     steps:
       - name: Checkout
@@ -63,7 +64,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           registry-url: "https://registry.npmjs.org"
           cache: pnpm
 
@@ -73,16 +74,9 @@ jobs:
       - name: Run tests
         run: pnpm -r test
 
-      - name: Configure npm auth
-        run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
       - name: Publish docsmint to npm
         working-directory: packages/cli
-        run: npm publish --access public
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public --provenance
 
   # ── PyPI ────────────────────────────────────────────────────────────────────
   publish-pypi:
