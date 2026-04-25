@@ -1,6 +1,6 @@
 {
   "name": "docsmint",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Minimal markdown documentation builder. Write docs in markdown, get a fast static site.",
   "license": "MIT",
   "type": "module",

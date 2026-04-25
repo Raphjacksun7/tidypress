@@ -67,6 +67,39 @@ This section tracks engineering work that affects release sequencing and risk.
 - Autosidebar hardening (reduce manual ordering dependency).
 - Route/basePath support expansion beyond current defaults.
 - Docs/reference sync pass for all new config fields.
+- CLI TypeScript migration track (incremental, test-guarded).
+- Architecture policy codification for long-term engine/runtime boundaries.
+
+### Architecture decisions (release policy)
+
+- Keep Astro as the engine build core (`docsmint build` -> Astro build).
+- Keep package boundaries strict:
+  - `packages/cli`: orchestration, command parsing, DI.
+  - `packages/engine`: rendering/build runtime (Astro).
+  - `packages/config`: schema/defaults/normalization.
+- Treat this split as the baseline architecture unless measurable pain justifies change.
+
+### CLI TypeScript migration strategy (incremental)
+
+- Do not rewrite CLI in one pass.
+- Phase 1: enable strict `// @ts-check` + JSDoc in current JS.
+- Phase 2: migrate by layer in this order:
+  1. `utils`
+  2. `services`
+  3. `commands`
+  4. `Application` and bootstrap wiring
+- Keep `bin/docsmint.js` as a thin launcher.
+- Require tests to pass at each phase before moving forward.
+- Prioritize product features and reliability over migration churn when JS remains stable.
+
+### Astro long-term dependency posture
+
+- Astro is currently a deliberate core dependency, not an accidental one.
+- This dependency is acceptable while it continues to deliver:
+  - predictable static output quality
+  - stable content pipeline behavior
+  - low operational overhead for users
+- Re-evaluate only if there is measurable engineering pain (performance, extensibility, maintenance, or compatibility cost), and only with a scoped RFC plus migration plan.
 
 ### Gated release items
 
