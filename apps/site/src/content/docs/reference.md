@@ -12,6 +12,8 @@ docsmint dev [--port <n>]   # dev server at localhost:4321
 docsmint build              # production build → docs/.docsmint/dist/
 docsmint preview            # preview the production build locally
 docsmint clean              # remove docs/.docsmint/ to force reinstall
+docsmint deploy [target]    # build and dispatch deployment flow
+docsmint context [output]   # write LLM-friendly content snapshot
 ```
 
 The CLI walks up from the current directory to find `docs/docsmint.config.ts`.
@@ -19,22 +21,42 @@ The CLI walks up from the current directory to find `docs/docsmint.config.ts`.
 ## Config schema
 
 ```typescript
-interface MkdocxConfig {
+interface DocsMintConfig {
   name: string
-  description: string
-  nav?: { label: string; href: string }[]
+  description?: string
+  nav?: {
+    label: string
+    href: string
+    external?: boolean
+    target?: '_self' | '_blank'
+    rel?: string
+    priority?: 'core' | 'secondary'
+  }[]
   footer?: { label: string; href: string }[]
   siteUrl?: string
   dateFormat?: Intl.DateTimeFormatOptions
   dateLocale?: string
+  extensions?: {
+    customPages?: {
+      slug: string
+      title: string
+      description?: string
+      navLabel?: string
+    }[]
+  }
+  navPolicy?: {
+    mode?: 'strict' | 'relaxed'
+    maxVisibleDesktop?: number
+    maxVisibleMobile?: number
+  }
 }
 ```
 
-All fields except `name` and `description` are optional.
+Only `name` is required.
 
 ## Frontmatter
 
-**Docs pages** (`src/content/docs/*.md`):
+**Docs pages** (`docs/src/content/docs/*.md`):
 
 | Field | Type | Required | Notes |
 |-------|------|----------|-------|
@@ -42,7 +64,7 @@ All fields except `name` and `description` are optional.
 | `description` | string | no | Meta description |
 | `order` | number | no | Sidebar sort position. Default: 99 |
 
-**Writing posts** (`src/content/writing/*.md`):
+**Writing posts** (`docs/src/content/writing/*.md`):
 
 | Field | Type | Required | Notes |
 |-------|------|----------|-------|
@@ -123,12 +145,11 @@ Search is **not available in dev mode** — run `docsmint build` then `docsmint 
 
 Press `/` anywhere on the site to open the search dialog.
 
-## Upgrading
+## Deploy targets
 
 ```bash
-pip install --upgrade docsmint \
-  --index-url https://centiro.pkgs.visualstudio.com/_packaging/Internal_Python/pypi/simple/ \
-  --extra-index-url https://pypi.org/simple/
-
-docsmint clean   # remove cached template, force reinstall on next run
+docsmint deploy                   # artifact-only
+docsmint deploy ./out/docs        # local copy
+docsmint deploy file:///tmp/site  # local copy via file URI
+docsmint deploy gs://bucket/docs  # external target instruction mode
 ```

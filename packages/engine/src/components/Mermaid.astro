@@ -5,10 +5,8 @@ const { code } = Astro.props
   <p class="mermaid-source m-0 text-xs text-zinc-400" aria-hidden="true">Loading diagram…</p>
 </div>
 
-<script lang="ts">
+<script>
 import mermaid from 'mermaid'
-
-type MermaidConfig = NonNullable<Parameters<typeof mermaid.initialize>[0]>
 
 /**
  * Must match `Base.astro` / `ThemeToggle.astro`: explicit `data-theme` or system preference.
@@ -23,11 +21,12 @@ function isPageDark() {
 /**
  * Mermaid 11: theme + themeVariables so edges, arrowheads, and text track DocsMint
  * light/dark (near-black / near-white) instead of a mismatched “neutral” palette.
+ * @returns {import('mermaid').MermaidConfig}
  */
-function buildMermaidConfig(): MermaidConfig {
+function buildMermaidConfig() {
   const dark = isPageDark()
   if (dark) {
-    return {
+    return /** @type {import('mermaid').MermaidConfig} */ ({
       startOnLoad: false,
       theme: 'dark',
       themeVariables: {
@@ -50,9 +49,9 @@ function buildMermaidConfig(): MermaidConfig {
         edgeLabelBackground: 'rgba(9, 9, 10, 0.92)',
       },
       fontFamily: 'var(--font-mono, ui-monospace, monospace)',
-    }
+    })
   }
-  return {
+  return /** @type {import('mermaid').MermaidConfig} */ ({
     startOnLoad: false,
     theme: 'default',
     themeVariables: {
@@ -73,12 +72,12 @@ function buildMermaidConfig(): MermaidConfig {
       edgeLabelBackground: 'rgba(255, 255, 255, 0.9)',
     },
     fontFamily: 'var(--font-mono, ui-monospace, monospace)',
-  }
+  })
 }
 
 async function renderAll() {
-  mermaid.initialize(buildMermaidConfig())
-  const wrappers = document.querySelectorAll<HTMLElement>('[data-mermaid]')
+  mermaid.initialize(/** @type {import('mermaid').MermaidConfig} */ (buildMermaidConfig()))
+  const wrappers = document.querySelectorAll('[data-mermaid]')
   for (const el of wrappers) {
     const code = el.getAttribute('data-mermaid') ?? ''
     if (!code.trim()) {

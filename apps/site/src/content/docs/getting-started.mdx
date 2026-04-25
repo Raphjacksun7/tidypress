@@ -1,6 +1,6 @@
 ---
 title: Getting started
-description: Install docsmint and run your first docs site in minutes.
+description: Install DocsMint and run your first docs site in minutes.
 order: 1
 ---
 
@@ -10,21 +10,38 @@ import Tab from '../../components/Tab.astro'
 
 ## Install
 
+<Tabs labels={["npm", "pnpm", "python wrapper (optional)"]}>
+<Tab>
+
 ```bash
-pip install artifacts-keyring
-pip install docsmint \
-  --index-url https://centiro.pkgs.visualstudio.com/_packaging/Internal_Python/pypi/simple/ \
-  --extra-index-url https://pypi.org/simple/
+npm install -g docsmint
 ```
 
-<Callout type="note">
-`artifacts-keyring` handles authentication with the internal Azure Artifacts feed automatically.
+</Tab>
+<Tab>
+
+```bash
+pnpm add -g docsmint
+```
+
+</Tab>
+<Tab>
+
+```bash
+pip install docsmint
+```
+
+</Tab>
+</Tabs>
+
+<Callout>
+Node.js is required in all cases. The Python package is a thin wrapper that delegates to the Node.js CLI.
 </Callout>
 
 ## Prerequisites
 
-- Python 3.11+
-- Node.js 18+ and pnpm (or npm) — used internally by docsmint to run Astro
+- Node.js 22+
+- pnpm or npm
 
 ## Initialize a project
 
@@ -41,8 +58,11 @@ docs/
 ├── docsmint.config.ts
 └── src/
     └── content/
-        └── docs/
-            └── getting-started.md
+        ├── docs/
+        │   └── getting-started.md
+        ├── writing/
+        │   └── hello.md
+        └── extensions/
 ```
 
 ## Start the dev server
@@ -51,31 +71,32 @@ docs/
 docsmint dev
 ```
 
-On first run, docsmint installs Node.js dependencies automatically. The dev server starts at `http://localhost:4321`.
+Default URL: `http://localhost:4321`.
 
-## How it works
+## How the architecture works
 
-docsmint is a "fat CLI" — the Astro rendering engine is bundled inside the pip package. Your repo only contains content and config. The CLI:
+DocsMint keeps your project content-only while engine internals stay hidden:
 
-1. Copies the bundled template to `docs/.docsmint/`
-2. Symlinks your `docsmint.config.ts` and `src/content/` into it
-3. Runs Astro from `docs/.docsmint/`
+1. The CLI prepares `docs/.docsmint/` as an internal workdir.
+2. The bundled engine from `@docsmint/engine` is installed there.
+3. Your `docs/src/content/` and `docs/docsmint.config.ts` are linked into that runtime.
+4. Astro runs inside the workdir, not in your app root.
 
-You never touch the rendering system. Updates arrive via `pip install --upgrade docsmint`.
+You own content and config. DocsMint owns rendering internals.
 
 ## Commands
 
-| Command | Description |
-|---------|-------------|
-| `docsmint init` | Scaffold `docs/` in the current project |
-| `docsmint dev` | Start dev server at `localhost:4321` |
-| `docsmint build` | Production build → `docs/.docsmint/dist/` |
-| `docsmint preview` | Preview the production build locally |
-| `docsmint clean` | Remove `docs/.docsmint/` to force a fresh reinstall |
+- `docsmint init` scaffold `docs/`
+- `docsmint dev` run local server
+- `docsmint build` build static output to `docs/.docsmint/dist/`
+- `docsmint preview` preview the production build
+- `docsmint clean` remove `docs/.docsmint/`
+- `docsmint deploy [target]` build and prepare deployment artifact
+- `docsmint context [output]` generate an LLM-friendly content snapshot
 
 ## Next steps
 
-- [Configuration](./configuration) — site name, nav, footer, dates
-- [Writing content](./writing-content) — markdown, frontmatter, components
+- [Configuration](./configuration) — typed config and navigation policy
+- [Writing content](./writing-content) — markdown, frontmatter, MDX components
 - [Components](./components) — Callout, Tabs, FileTree, Mermaid, and more
-- [Deploying](./deploying) — Docker, nginx, Azure Static Web Apps
+- [Deploying](./deploying) — host-agnostic deployment workflow

@@ -19,8 +19,9 @@ docsmint init       # scaffold docs/ in the current project
 docsmint dev        # start local dev server (localhost:4321)
 docsmint build      # build for production
 docsmint preview    # preview the production build
-docsmint deploy gs://my-bucket  # build and deploy to GCS
+docsmint deploy [target]  # host-agnostic deploy flow
 docsmint clean      # remove the working directory
+docsmint context    # emit an LLM-friendly content snapshot
 ```
 
 On first run, docsmint will offer to scaffold a `docs/` directory if none exists.
@@ -48,23 +49,13 @@ The rendering engine (Astro, components, styles) is bundled inside the package a
 // docs/docsmint.config.ts
 export default {
   name: 'my-project',
-  description: '',
+  description: 'Minimal markdown docs and writing.',
   nav: [
-    { label: 'docs', href: '/docs/getting-started', priority: 'core' },
-    { label: 'writing', href: '/writing', priority: 'core' },
-    { label: 'github', href: 'https://github.com/you/repo', target: '_blank' },
+    { label: 'docs', href: '/docs' },
+    { label: 'writing', href: '/writing' },
   ],
   footer: [],
-  extensions: {
-    customPages: [
-      { slug: 'about', title: 'About', navLabel: 'about' },
-    ],
-  },
-  navPolicy: {
-    mode: 'strict',
-    maxVisibleDesktop: 3,
-    maxVisibleMobile: 2,
-  },
+  siteUrl: 'https://example.com',
 }
 ```
 

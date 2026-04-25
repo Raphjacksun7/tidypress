@@ -14,12 +14,17 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build && pagefind --site dist",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.5",
+    "typescript": "^5.8.0"
   },
   "dependencies": {
-    "@docsmint/config": "workspace:*",
     "@astrojs/mdx": "^5.0.3",
     "@astrojs/sitemap": "^3.7.2",
+    "@docsmint/config": "workspace:*",
     "@tailwindcss/vite": "^4.2.2",
     "astro": "^6.1.5",
     "mermaid": "^11.14.0",

@@ -1,18 +1,21 @@
 {
   "name": "docsmint",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "author": "Raphael Avocegamou",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Raphjacksun7/docsmint.git"
+    "url": "git+https://github.com/Raphjacksun7/docsmint.git"
   },
   "homepage": "https://github.com/Raphjacksun7/docsmint",
   "bugs": {
     "url": "https://github.com/Raphjacksun7/docsmint/issues"
   },
   "bin": {
-    "docsmint": "./bin/docsmint.js"
+    "docsmint": "bin/docsmint.js"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "exports": {
     ".": "./src/index.js",

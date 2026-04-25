@@ -118,7 +118,7 @@ input.addEventListener('input', async () => {
   debounce = setTimeout(async () => {
     const pf = await loadPagefind()
     if (!pf) {
-      empty.textContent = 'Search unavailable in dev mode — run pnpm build first.'
+      empty.textContent = 'Search unavailable in dev mode — run docsmint build, then docsmint preview.'
       results.innerHTML = ''
       results.appendChild(empty)
       return

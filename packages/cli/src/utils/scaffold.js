@@ -1,9 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-const defaultConfigTemplate = projectName => `import { defineConfig } from 'docsmint/config'
-
-export default defineConfig({
+const defaultConfigTemplate = projectName => `export default {
   name: '${projectName}',
   description: 'Minimal markdown docs and writing.',
   nav: [
@@ -11,10 +9,8 @@ export default defineConfig({
     { label: 'writing', href: '/writing' },
   ],
   footer: [],
-  extensions: {
-    customPages: [],
-  },
-})
+  siteUrl: 'https://example.com',
+}
 `
 
 const defaultDocsPage = `---

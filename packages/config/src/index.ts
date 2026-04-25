@@ -182,6 +182,10 @@ export function withDefaults(config: DocsMintConfig): DocsMintConfig {
   return {
     ...defaultConfig,
     ...config,
+    writing: {
+      ...defaultConfig.writing,
+      ...config.writing,
+    },
     nav,
     footer: config.footer ?? defaultConfig.footer,
     navPolicy,

@@ -2,6 +2,9 @@ import type { DocsMintConfig } from './schema.js'
 
 export const defaultConfig: Partial<DocsMintConfig> = {
   description: '',
+  writing: {
+    description: 'Engineering notes, architectural decisions, and observations.',
+  },
   nav: [
     { label: 'docs', href: '/docs' },
     { label: 'writing', href: '/writing' },

@@ -17,10 +17,10 @@ const prettyCodeOptions = {
   // explicit language (```js, ```bash etc.) get syntax highlighting.
 }
 
-const rehypePlugins = [
+const rehypePlugins = /** @type {any} */ ([
   [rehypePrettyCode, prettyCodeOptions],
   [rehypeExternalLinks, { target: '_blank', rel: ['noopener', 'noreferrer'] }],
-]
+])
 
 export default defineConfig({
   site: 'https://docs.example.com',

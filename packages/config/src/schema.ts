@@ -23,9 +23,14 @@ export interface DocsMintExtensions {
   customPages?: CustomPageExtension[]
 }
 
+export interface DocsMintWriting {
+  description?: string
+}
+
 export interface DocsMintConfig {
   name: string
   description?: string
+  writing?: DocsMintWriting
   nav?: NavItem[]
   footer?: FooterItem[]
   siteUrl?: string
