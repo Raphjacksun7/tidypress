@@ -12,5 +12,5 @@ export default defineConfig({
   ],
   footer: [],
   pages: [],
-  siteUrl: 'https://docsmint.dev',
+  siteUrl: 'https://usedocsmint.pages.dev',
 })
