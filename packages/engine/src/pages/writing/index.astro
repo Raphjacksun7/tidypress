@@ -8,6 +8,10 @@ const writing = (await getCollection('writing'))
 
 const rawSite = (await import('../../../docsmint.config.ts')).default
 const site = getConfig(rawSite)
+if (!site.sections?.writing?.enabled) {
+  return Astro.redirect('/404', 302)
+}
+const writingBasePath = site.sections?.writing?.basePath ?? '/writing'
 
 const fmt = new Intl.DateTimeFormat(
   site.dateLocale ?? 'en-US',
@@ -25,7 +29,7 @@ const fmt = new Intl.DateTimeFormat(
     <ul class="space-y-2">
       {writing.map(post => (
         <li>
-          <a href={`/writing/${post.id}`}
+          <a href={`${writingBasePath}/${post.id}`}
              data-no-hover
              class="group flex items-center justify-between gap-4"
              style="text-decoration:none">

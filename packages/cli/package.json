@@ -1,6 +1,8 @@
 {
   "name": "docsmint",
   "version": "0.1.9",
+  "description": "Minimal markdown documentation builder. Write docs in markdown, get a fast static site.",
+  "license": "MIT",
   "type": "module",
   "author": "Raphael Avocegamou",
   "repository": {
@@ -17,6 +19,13 @@
   "publishConfig": {
     "access": "public"
   },
+  "keywords": [
+    "documentation",
+    "markdown",
+    "static-site",
+    "docs",
+    "writing"
+  ],
   "exports": {
     ".": "./src/index.js",
     "./config": "./src/config.js"

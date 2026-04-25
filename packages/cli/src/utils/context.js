@@ -46,14 +46,14 @@ async function walkMarkdownFiles(rootDir) {
 export async function createContentSnapshot(docsDir) {
   const docsRoot = path.resolve(docsDir, 'src/content/docs')
   const writingRoot = path.resolve(docsDir, 'src/content/writing')
-  const extensionsRoot = path.resolve(docsDir, 'src/content/extensions')
+  const pagesRoot = path.resolve(docsDir, 'src/content/pages')
 
-  /** @type {{section: 'docs' | 'writing' | 'extensions', filePath: string, title: string, description: string, excerpt: string}[]} */
+  /** @type {{section: 'docs' | 'writing' | 'pages', filePath: string, title: string, description: string, excerpt: string}[]} */
   const items = []
   for (const [section, root] of /** @type {const} */ ([
     ['docs', docsRoot],
     ['writing', writingRoot],
-    ['extensions', extensionsRoot],
+    ['pages', pagesRoot],
   ])) {
     const files = await walkMarkdownFiles(root)
     for (const filePath of files) {

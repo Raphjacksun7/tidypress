@@ -1,11 +1,18 @@
 ---
 import { getCollection } from 'astro:content'
+import { sortDocs } from '../../utils/sortDocs'
+import { getConfig } from '../../config/getConfig'
 
-const docs = (await getCollection('docs'))
-  .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99))
+const rawSite = (await import('../../../docsmint.config.ts')).default
+const site = getConfig(rawSite)
+if (!site.sections?.docs?.enabled) {
+  return Astro.redirect('/404', 302)
+}
 
+const docsBasePath = site.sections?.docs?.basePath ?? '/docs'
+const docs = sortDocs(await getCollection('docs'))
 const first = docs[0]
 if (first) {
-  return Astro.redirect(`/docs/${first.id}`, 301)
+  return Astro.redirect(`${docsBasePath}/${first.id}`, 301)
 }
 ---

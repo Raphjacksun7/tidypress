@@ -26,8 +26,10 @@ export default defineConfig({
     },
   ],
   footer: [{ label: 'GitHub', href: 'https://github.com/your/repo' }],
-  extensions: {
-    customPages: [{ slug: 'about', title: 'About', navLabel: 'about' }],
+  pages: ['about', { slug: 'work', navLabel: 'my work' }],
+  sections: {
+    docs: { enabled: true, basePath: '/docs' },
+    writing: { enabled: true, basePath: '/writing' },
   },
   navPolicy: {
     mode: 'strict',
@@ -106,6 +108,35 @@ This value is not rendered as visible page text by default.
 siteUrl: 'https://docs.example.com'
 ```
 
+### `repository`
+
+Repository metadata used for "Edit this page" links in docs pages.
+
+```ts
+repository: {
+  url: 'https://github.com/your/repo',
+  branch: 'main',
+  editPath: 'docs/src/content',
+}
+```
+
+If `url` and `editPath` are both provided, docs pages render an edit link in the right rail.
+
+### `search.exclude`
+
+Optional list of path patterns to exclude from search indexing.
+
+```ts
+search: {
+  exclude: [
+    'docs/internal/*',
+    'writing/drafts/*',
+  ],
+}
+```
+
+You can also exclude individual pages in frontmatter with `search: false`.
+
 ### `dateFormat`
 
 Controls how dates appear on writing posts and the writing index. Accepts `Intl.DateTimeFormat` options.
@@ -132,19 +163,29 @@ dateLocale: 'ja-JP'   // "2026年4月11日"
 
 Default: `'en-US'`.
 
-### `extensions`
+### `pages`
 
-Bounded customizations that keep the core DocsMint design system intact.
+Bounded custom pages that keep the core DocsMint design system intact.
 
 ```ts
-extensions: {
-  customPages: [
-    { slug: 'about', title: 'About', navLabel: 'about' }
-  ]
-}
+pages: [
+  'about',
+  { slug: 'work', navLabel: 'My Work' },
+]
 ```
 
-Each custom page renders from `docs/src/content/extensions/<slug>.md`.
+Each custom page renders from `docs/src/content/pages/<slug>.md`.
+
+### `sections`
+
+Enable or disable first-party sections. Base paths are currently fixed to `/docs` and `/writing`.
+
+```ts
+sections: {
+  docs: { enabled: true, basePath: '/docs' },
+  writing: { enabled: true, basePath: '/writing' },
+}
+```
 
 ### `navPolicy`
 
@@ -175,8 +216,10 @@ export default defineConfig({
     { label: 'GitHub', href: 'https://github.com/your/repo', target: '_blank' },
   ],
   footer: [{ label: 'GitHub', href: 'https://github.com/your/repo' }],
-  extensions: {
-    customPages: [{ slug: 'about', title: 'About', navLabel: 'about' }],
+  pages: ['about', { slug: 'work', navLabel: 'My Work' }],
+  sections: {
+    docs: { enabled: true, basePath: '/docs' },
+    writing: { enabled: true, basePath: '/writing' },
   },
   navPolicy: { mode: 'strict', maxVisibleDesktop: 3, maxVisibleMobile: 2 },
   dateLocale: 'en-US',

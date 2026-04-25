@@ -8,6 +8,10 @@ const defaultConfigTemplate = projectName => `export default {
     { label: 'docs', href: '/docs' },
     { label: 'writing', href: '/writing' },
   ],
+  // Text shown on the /writing index page (optional).
+  writing: {
+    description: 'Engineering notes, architectural decisions, and observations.',
+  },
   footer: [],
   siteUrl: 'https://example.com',
 }
@@ -37,18 +41,18 @@ This is your first writing post.
 export async function scaffoldDocs({ docsDir, projectName }) {
   await fs.mkdir(path.resolve(docsDir, 'src/content/docs'), { recursive: true })
   await fs.mkdir(path.resolve(docsDir, 'src/content/writing'), { recursive: true })
-  await fs.mkdir(path.resolve(docsDir, 'src/content/extensions'), { recursive: true })
+  await fs.mkdir(path.resolve(docsDir, 'src/content/pages'), { recursive: true })
 
   const configPath = path.resolve(docsDir, 'docsmint.config.ts')
   const docsPath = path.resolve(docsDir, 'src/content/docs/getting-started.md')
   const writingPath = path.resolve(docsDir, 'src/content/writing/hello.md')
-  const extensionsGitkeepPath = path.resolve(docsDir, 'src/content/extensions/.gitkeep')
+  const pagesGitkeepPath = path.resolve(docsDir, 'src/content/pages/.gitkeep')
   const gitignorePath = path.resolve(docsDir, '.gitignore')
 
   await fs.writeFile(configPath, defaultConfigTemplate(projectName), { flag: 'wx' }).catch(() => {})
   await fs.writeFile(docsPath, defaultDocsPage, { flag: 'wx' }).catch(() => {})
   await fs.writeFile(writingPath, defaultWritingPage, { flag: 'wx' }).catch(() => {})
-  await fs.writeFile(extensionsGitkeepPath, '', { flag: 'wx' }).catch(() => {})
+  await fs.writeFile(pagesGitkeepPath, '', { flag: 'wx' }).catch(() => {})
 
   let gitignoreContent = ''
   try {

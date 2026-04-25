@@ -1,9 +1,22 @@
 ---
 import { getCollection, render } from 'astro:content'
 import Base from '../../layouts/Base.astro'
+import Tooltip from '../../components/Tooltip.astro'
+import FileTree from '../../components/FileTree.astro'
+import Callout from '../../components/Callout.astro'
+import Image from '../../components/Image.astro'
+import Tabs from '../../components/Tabs.astro'
+import Tab from '../../components/Tab.astro'
+import Mermaid from '../../components/Mermaid.astro'
 import { getConfig } from '../../config/getConfig'
+import { isSearchExcluded } from '../../utils/searchExclusion'
 
 export async function getStaticPaths() {
+  const rawSite = (await import('../../../docsmint.config.ts')).default
+  const site = getConfig(rawSite)
+  if (!site.sections?.writing?.enabled) {
+    return []
+  }
   const posts = await getCollection('writing')
   return posts.map(entry => ({
     params: { slug: entry.id },
@@ -15,12 +28,18 @@ const { entry } = Astro.props
 const { Content } = await render(entry)
 const rawSite = (await import('../../../docsmint.config.ts')).default
 const site = getConfig(rawSite)
+if (!site.sections?.writing?.enabled) {
+  return Astro.redirect('/404', 302)
+}
 
 const fmt = new Intl.DateTimeFormat(
   site.dateLocale ?? 'en-US',
   { ...(site.dateFormat ?? { year: 'numeric', month: 'short', day: 'numeric' }), timeZone: 'UTC' }
 )
 const dateStr = fmt.format(entry.data.date)
+const writingBasePath = site.sections?.writing?.basePath ?? '/writing'
+const pagePath = `${writingBasePath}/${entry.id}`
+const pagefindIgnore = entry.data.search === false || isSearchExcluded(site, pagePath)
 ---
 <Base title={entry.data.title}>
   <div class="max-w-3xl mx-auto px-8 py-16">
@@ -34,8 +53,18 @@ const dateStr = fmt.format(entry.data.date)
         <p class="text-sm text-zinc-500 mt-2">{entry.data.description}</p>
       )}
     </div>
-    <article class="prose">
-      <Content />
+    <article class="prose" data-pagefind-ignore={pagefindIgnore ? true : undefined}>
+      <Content
+        components={{
+          Tooltip,
+          FileTree,
+          Callout,
+          img: Image,
+          Tabs,
+          Tab,
+          Mermaid,
+        }}
+      />
     </article>
   </div>
 </Base>

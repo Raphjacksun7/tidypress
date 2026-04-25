@@ -8,9 +8,7 @@ const config: DocsMintConfig = {
     { label: 'writing', href: '/writing' },
   ],
   footer: [],
-  extensions: {
-    customPages: [],
-  },
+  pages: [],
   dateFormat: { year: 'numeric', month: 'short', day: 'numeric' },
   dateLocale: 'en-US',
 }

@@ -1,8 +1,15 @@
 # DocsMint
 
-Minimal markdown documentation builder. Write docs in markdown, get a fast static site — no Astro knowledge required.
+Minimal markdown documentation builder. Write docs in markdown, get a fast static site.
+
+DocsMint is an opinionated markdown publishing system for documentation and writing.
+DocsMint is created to eliminate time from content to production, with no friction.
+
+You write markdown. DocsMint handles the engine, theme, layout, search, and build pipeline.
 
 ## Install
+
+### Node.js (primary)
 
 ```sh
 npm install -g docsmint
@@ -10,40 +17,54 @@ npm install -g docsmint
 npx docsmint@latest
 ```
 
-## Usage
-
-From your project root:
+### Python wrapper (optional)
 
 ```sh
-docsmint init       # scaffold docs/ in the current project
-docsmint dev        # start local dev server (localhost:4321)
-docsmint build      # build for production
-docsmint preview    # preview the production build
-docsmint deploy [target]  # host-agnostic deploy flow
-docsmint clean      # remove the working directory
-docsmint context    # emit an LLM-friendly content snapshot
+pip install docsmint
 ```
 
-On first run, docsmint will offer to scaffold a `docs/` directory if none exists.
+The Python package is a wrapper around the Node.js CLI and requires Node.js on the machine.
 
-## Docs structure
+## Quick start
 
-Your docs source stays minimal:
-
+```sh
+# from your project root
+docsmint init
+docsmint dev
 ```
+
+Then open `http://localhost:4321`.
+
+## CLI commands
+
+```sh
+docsmint init                 # scaffold docs/ structure
+docsmint dev                  # run local dev server
+docsmint build                # build static output
+docsmint preview              # preview production build
+docsmint deploy [target]      # host-agnostic deploy flow
+docsmint clean                # remove docs/.docsmint workdir
+docsmint context              # export LLM-friendly content snapshot
+```
+
+## Project structure
+
+```txt
 docs/
-├── docsmint.config.ts      # site name, nav, footer
+├── docsmint.config.ts
 └── src/
     └── content/
         ├── docs/
-        │   └── *.md        # documentation pages
-        └── writing/
-            └── *.md        # articles and release notes
+        │   └── getting-started.md
+        ├── writing/
+        │   └── hello.md
+        └── pages/
+            └── about.md
 ```
 
-The rendering engine (Astro, components, styles) is bundled inside the package and managed automatically.
+Users only maintain docs content and config. The rendering engine remains internal.
 
-## Config
+## Configuration
 
 ```ts
 // docs/docsmint.config.ts
@@ -54,42 +75,44 @@ export default {
     { label: 'docs', href: '/docs' },
     { label: 'writing', href: '/writing' },
   ],
+  writing: {
+    description: 'Engineering notes, architectural decisions, and observations.',
+  },
   footer: [],
   siteUrl: 'https://example.com',
 }
 ```
 
-## Extensions
+## Pages (bounded customization)
 
-Extensions are bounded customizations that keep DocsMint's core visual system intact.
+DocsMint supports controlled custom pages without turning into a plugin framework.
 
-- `customPages` creates top-level pages such as `/about`
-- `navLabel` adds that page to the navbar
-- Page content lives in `docs/src/content/extensions/<slug>.md`
+- Custom top-level pages via `pages`
+- Optional navbar entry via `navLabel`
+- Markdown source in `docs/src/content/pages/`
+- Shared DocsMint UI and layout rules remain enforced
 
-## Navigation policy
+## Navigation model
 
-DocsMint keeps navigation constrained for layout quality:
+DocsMint keeps top navigation constrained for visual quality.
 
-- `navPolicy.mode: "strict"` enforces route and nav-budget rules
-- `maxVisibleDesktop` and `maxVisibleMobile` control visible header links
-- overflow links automatically render in a `more` popover (no drawer)
-- internal links must resolve to known routes in strict mode
-- external links can use `target: "_blank"` and get safe `rel` values
+- Desktop visible links are budgeted
+- Mobile visible links are budgeted
+- Overflow items are moved into an inline `more` popover
+- External links support `target` / `rel` safely
+- Strict mode validates internal routes
 
-Use the context snapshot command to export markdown summaries for LLM workflows:
-
-```sh
-docsmint context
-```
-
-
-## Page frontmatter
+## Frontmatter example
 
 ```md
 ---
 title: Getting started
-description: Welcome to the docs.
+description: Welcome to DocsMint.
 order: 1
 ---
 ```
+
+## Author
+
+Raphael Avocegamou  
+GitHub: [Raphjacksun7](https://github.com/Raphjacksun7)

@@ -1,38 +1,47 @@
 ---
-title: Why we built docsmint
+title: Why we built DocsMint
 date: "2026-04-10"
 author: Raphael Avocegamou
-description: We needed documentation worth reading. So we built it.
+description: We wanted documentation that reads as clearly as the software it describes.
 ---
 
-We had documentation. It worked.
+Most documentation systems can generate HTML. That is not the hard part.
 
-The build ran. The pages rendered. The content was there.
+The hard part is shipping docs that are clear, consistent, and fast to maintain without
+turning every project into theme work.
 
-But reading it felt like work. Not because the content was bad — because the experience was indifferent. Generic theme. Distracting chrome. A layout that could have been anyone's.
-
-We wanted documentation that felt like it belonged to the project.
-
-Not a template. Not a theme. A system you don't notice because it stays out of the way.
+DocsMint exists to solve that gap.
 
 ---
 
-Minimal by default. Monospace throughout. No sidebar clutter, no floating widgets, no "was this page helpful?" banners.
+It is intentionally opinionated:
 
-The reading experience is the feature.
+- markdown-first
+- constrained UI system
+- predictable navigation
+- built-in search and dark mode
+
+The goal is simple: write content, publish quickly, keep quality high.
 
 ---
 
-docsmint is what we use now. It takes markdown and returns a fast, clean, searchable static site. The rendering engine is bundled in the pip package. You don't configure Astro. You don't touch the theme. You write.
+DocsMint is not a generic theme builder and not a CMS. It is a focused publishing system
+for documentation and writing.
+
+You own content and config. DocsMint owns the engine internals.
 
 ```bash
-pip install docsmint
-docsmint init
+npx docsmint@latest init
 docsmint dev
 ```
 
-That's the whole setup.
+The Python package also works as a client wrapper:
+
+```bash
+pip install docsmint
+docsmint dev
+```
 
 ---
 
-We're publishing it internally. If you're building something at Centiro and need documentation, this is the tool.
+Minimal markdown documentation builder. Write docs in markdown, get a fast static site.

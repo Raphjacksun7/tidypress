@@ -7,6 +7,7 @@ const docs = defineCollection({
     title: z.string(),
     description: z.string().optional(),
     order: z.number().optional(),
+    search: z.boolean().optional(),
   }),
 });
 
@@ -17,15 +18,17 @@ const writing = defineCollection({
     date: z.coerce.date(),
     description: z.string().optional(),
     author: z.string().optional(),
+    search: z.boolean().optional(),
   }),
 });
 
-const extensions = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/extensions" }),
+const pages = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/pages" }),
   schema: z.object({
     title: z.string().optional(),
     description: z.string().optional(),
+    search: z.boolean().optional(),
   }),
 });
 
-export const collections = { docs, writing, extensions };
+export const collections = { docs, writing, pages };

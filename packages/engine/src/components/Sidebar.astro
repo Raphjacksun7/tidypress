@@ -1,9 +1,14 @@
 ---
 import { getCollection } from 'astro:content'
+import { getConfig } from '../config/getConfig'
+import { sortDocs } from '../utils/sortDocs'
 
-const docs = await getCollection('docs')
+const rawSite = (await import('../../docsmint.config.ts')).default
+const site = getConfig(rawSite)
+const docsBasePath = site.sections?.docs?.basePath ?? '/docs'
+const docs = sortDocs(await getCollection('docs'))
 
-const tree: Record<string, { title: string; href: string; order: number }[]> = {}
+const tree: Record<string, { title: string; href: string }[]> = {}
 
 for (const entry of docs) {
   const parts = entry.id.replace(/\.mdx?$/, '').split('/')
@@ -11,13 +16,11 @@ for (const entry of docs) {
   tree[section] = tree[section] || []
   tree[section].push({
     title: entry.data.title,
-    href: `/docs/${entry.id.replace(/\.mdx?$/, '')}`,
-    order: entry.data.order ?? 99,
+    href: `${docsBasePath}/${entry.id.replace(/\.mdx?$/, '')}`,
   })
 }
 
 const sections = Object.entries(tree).sort(([a], [b]) => a.localeCompare(b))
-for (const [, pages] of sections) pages.sort((a, b) => a.order - b.order)
 const currentPath = Astro.url.pathname
 ---
 <nav class="text-sm space-y-6">

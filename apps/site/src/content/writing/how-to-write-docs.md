@@ -85,9 +85,10 @@ Pages in `docs/` subdirectories appear under section headers. Use this to group 
 
 Run `docsmint context` from your project root.
 
-It generates `docsmint-context.md` — the full framework reference plus your project's structure in one file. Paste it into any LLM to generate a complete documentation site.
+It generates `docsmint-context.md` — a snapshot of your docs, writing, and custom pages with
+title, path, and excerpt metadata.
 
-The LLM knows the components, the frontmatter schema, the writing style. You get back ready-to-deploy markdown.
+Use it as source context when asking an LLM to draft or refactor documentation.
 
 ---
 

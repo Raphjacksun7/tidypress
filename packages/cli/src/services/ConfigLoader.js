@@ -1,7 +1,7 @@
 import { findConfigFile, loadUserConfig, resolveDocsDir } from '../utils/config.js'
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { withDefaults } from '@docsmint/config'
+import { normalizePages, withDefaults } from '@docsmint/config'
 
 /**
  * Loads DocsMint project configuration and docs-directory context.
@@ -43,7 +43,7 @@ export class ConfigLoader {
       return
     }
 
-    const knownRoutes = await this.#collectKnownRoutes(docsDir, config.extensions?.customPages ?? [])
+    const knownRoutes = await this.#collectKnownRoutes(docsDir, config)
     const unknownInternal = nav
       .filter(item => !item.external && item.href.startsWith('/'))
       .map(item => item.href)
@@ -61,27 +61,45 @@ export class ConfigLoader {
     io.info(`[docsmint] ${message}`)
   }
 
-  async #collectKnownRoutes(docsDir, customPages) {
-    const routes = new Set(['/', '/docs', '/writing'])
+  async #collectKnownRoutes(docsDir, config) {
+    const routes = new Set(['/'])
+    const docsBasePath = config.sections?.docs?.basePath ?? '/docs'
+    const writingBasePath = config.sections?.writing?.basePath ?? '/writing'
+    const docsEnabled = config.sections?.docs?.enabled ?? true
+    const writingEnabled = config.sections?.writing?.enabled ?? true
 
+    if (docsEnabled) {
+      routes.add(docsBasePath)
+    }
+    if (writingEnabled) {
+      routes.add(writingBasePath)
+    }
+
+    const customPages = normalizePages(config.pages ?? [])
     for (const page of customPages) {
       routes.add(`/${page.slug}`)
     }
 
-    const docsFiles = await this.#walkMarkdown(path.resolve(docsDir, 'src/content/docs'))
-    for (const filePath of docsFiles) {
-      const id = path.relative(path.resolve(docsDir, 'src/content/docs'), filePath).replace(/\.(md|mdx)$/i, '')
-      if (!id) continue
-      routes.add(`/docs/${id.replaceAll(path.sep, '/')}`)
+    if (docsEnabled) {
+      const docsFiles = await this.#walkMarkdown(path.resolve(docsDir, 'src/content/docs'))
+      for (const filePath of docsFiles) {
+        const id = path
+          .relative(path.resolve(docsDir, 'src/content/docs'), filePath)
+          .replace(/\.(md|mdx)$/i, '')
+        if (!id) continue
+        routes.add(`${docsBasePath}/${id.replaceAll(path.sep, '/')}`)
+      }
     }
 
-    const writingFiles = await this.#walkMarkdown(path.resolve(docsDir, 'src/content/writing'))
-    for (const filePath of writingFiles) {
-      const id = path
-        .relative(path.resolve(docsDir, 'src/content/writing'), filePath)
-        .replace(/\.(md|mdx)$/i, '')
-      if (!id) continue
-      routes.add(`/writing/${id.replaceAll(path.sep, '/')}`)
+    if (writingEnabled) {
+      const writingFiles = await this.#walkMarkdown(path.resolve(docsDir, 'src/content/writing'))
+      for (const filePath of writingFiles) {
+        const id = path
+          .relative(path.resolve(docsDir, 'src/content/writing'), filePath)
+          .replace(/\.(md|mdx)$/i, '')
+        if (!id) continue
+        routes.add(`${writingBasePath}/${id.replaceAll(path.sep, '/')}`)
+      }
     }
 
     return routes

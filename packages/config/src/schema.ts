@@ -12,15 +12,31 @@ export interface FooterItem {
   href: string
 }
 
-export interface CustomPageExtension {
+export interface PageEntryObject {
   slug: string
-  title: string
-  description?: string
   navLabel?: string
 }
 
-export interface DocsMintExtensions {
-  customPages?: CustomPageExtension[]
+export type PageEntry = string | PageEntryObject
+
+export interface DocsMintRepository {
+  url?: string
+  editPath?: string
+  branch?: string
+}
+
+export interface DocsMintSearch {
+  exclude?: string[]
+}
+
+export interface DocsMintSection {
+  enabled?: boolean
+  basePath?: string
+}
+
+export interface DocsMintSections {
+  docs?: DocsMintSection
+  writing?: DocsMintSection
 }
 
 export interface DocsMintWriting {
@@ -31,12 +47,15 @@ export interface DocsMintConfig {
   name: string
   description?: string
   writing?: DocsMintWriting
+  pages?: PageEntry[]
   nav?: NavItem[]
   footer?: FooterItem[]
   siteUrl?: string
+  repository?: DocsMintRepository
+  search?: DocsMintSearch
+  sections?: DocsMintSections
   dateFormat?: Intl.DateTimeFormatOptions
   dateLocale?: string
-  extensions?: DocsMintExtensions
   navPolicy?: {
     mode?: 'strict' | 'relaxed'
     maxVisibleDesktop?: number

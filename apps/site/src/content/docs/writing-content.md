@@ -35,7 +35,7 @@ author: Raph
 |-------|-------------|---------|
 | `title` | docs, writing | Page heading and browser title |
 | `description` | docs, writing | Meta description |
-| `order` | docs | Sidebar sort position. Lower = first. Default: 99 |
+| `order` | docs | Sidebar sort position. Lower = first. Falls back to alphabetical |
 | `date` | writing | Publication date. ISO 8601 (`YYYY-MM-DD`). Determines sort order |
 | `author` | writing | Optional. Displayed below the date |
 
@@ -58,11 +58,9 @@ Inline `code` renders without highlighting — styled as monospace by the theme.
 
 ## Diagrams
 
-Use the `<Mermaid>` component in `.mdx` files for flow charts, sequence diagrams, and more:
+Use the `<Mermaid>` component in `.mdx` files for flow charts, sequence diagrams, and more. All built-in components are pre-wired — no import needed:
 
 ```mdx
-import Mermaid from '../../components/Mermaid.astro'
-
 <Mermaid code={`
 flowchart LR
   A[Write markdown] --> B[docsmint build]

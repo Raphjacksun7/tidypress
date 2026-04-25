@@ -34,15 +34,29 @@ interface DocsMintConfig {
   }[]
   footer?: { label: string; href: string }[]
   siteUrl?: string
+  repository?: {
+    url?: string
+    branch?: string
+    editPath?: string
+  }
+  search?: {
+    exclude?: string[]
+  }
   dateFormat?: Intl.DateTimeFormatOptions
   dateLocale?: string
-  extensions?: {
-    customPages?: {
-      slug: string
-      title: string
-      description?: string
-      navLabel?: string
-    }[]
+  pages?: (string | {
+    slug: string
+    navLabel?: string
+  })[]
+  sections?: {
+    docs?: {
+      enabled?: boolean
+      basePath?: '/docs'
+    }
+    writing?: {
+      enabled?: boolean
+      basePath?: '/writing'
+    }
   }
   navPolicy?: {
     mode?: 'strict' | 'relaxed'
@@ -62,7 +76,8 @@ Only `name` is required.
 |-------|------|----------|-------|
 | `title` | string | yes | Page heading and `<title>` |
 | `description` | string | no | Meta description |
-| `order` | number | no | Sidebar sort position. Default: 99 |
+| `order` | number | no | Sidebar sort position. Pages without `order` fall back to alphabetical |
+| `search` | boolean | no | Set `false` to exclude this page from search |
 
 **Writing posts** (`docs/src/content/writing/*.md`):
 
@@ -72,6 +87,7 @@ Only `name` is required.
 | `date` | string | yes | ISO 8601 (`YYYY-MM-DD`). Determines sort order |
 | `description` | string | no | Meta description |
 | `author` | string | no | Displayed below the date |
+| `search` | boolean | no | Set `false` to exclude this page from search |
 
 ## Component API
 

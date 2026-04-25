@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro'
 import { getCollection } from 'astro:content'
 import { getConfig } from '../config/getConfig'
+import { sortDocs } from '../utils/sortDocs'
 
 const LIMIT = 5
 
@@ -10,13 +11,16 @@ const allWriting = (await getCollection('writing'))
 const writing = allWriting.slice(0, LIMIT)
 const moreWriting = allWriting.length > LIMIT
 
-const allDocs = (await getCollection('docs'))
-  .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99))
+const allDocs = sortDocs(await getCollection('docs'))
 const docs = allDocs.slice(0, LIMIT)
 const moreDocs = allDocs.length > LIMIT
 
 const rawSite = (await import('../../docsmint.config.ts')).default
 const site = getConfig(rawSite)
+const docsEnabled = site.sections?.docs?.enabled ?? true
+const writingEnabled = site.sections?.writing?.enabled ?? true
+const docsBasePath = site.sections?.docs?.basePath ?? '/docs'
+const writingBasePath = site.sections?.writing?.basePath ?? '/writing'
 
 const fmt = new Intl.DateTimeFormat(
   site.dateLocale ?? 'en-US',
@@ -33,13 +37,13 @@ const fmt = new Intl.DateTimeFormat(
     </section>
 
     <!-- Writing -->
-    {writing.length > 0 && (
+    {writingEnabled && writing.length > 0 && (
       <section class="space-y-3">
         <p class="text-sm font-bold text-zinc-500">Writing</p>
         <ul class="space-y-2">
           {writing.map(post => (
             <li>
-              <a href={`/writing/${post.id}`}
+              <a href={`${writingBasePath}/${post.id}`}
                  data-no-hover
                  class="group flex items-center justify-between gap-4"
                  style="text-decoration:none">
@@ -57,20 +61,20 @@ const fmt = new Intl.DateTimeFormat(
         </ul>
         {moreWriting && (
           <p class="pt-1">
-            <a href="/writing" class="text-xs text-zinc-400">all writing →</a>
+            <a href={writingBasePath} class="text-xs text-zinc-400">all writing →</a>
           </p>
         )}
       </section>
     )}
 
     <!-- Docs -->
-    {docs.length > 0 && (
+    {docsEnabled && docs.length > 0 && (
       <section class="space-y-3">
         <p class="text-sm font-bold text-zinc-500">Docs</p>
         <ul class="space-y-2">
           {docs.map(doc => (
             <li>
-              <a href={`/docs/${doc.id}`}
+              <a href={`${docsBasePath}/${doc.id}`}
                  data-no-hover
                  class="group flex items-center justify-between gap-4"
                  style="text-decoration:none">
@@ -90,7 +94,7 @@ const fmt = new Intl.DateTimeFormat(
         </ul>
         {moreDocs && (
           <p class="pt-1">
-            <a href={`/docs/${allDocs[0].id}`} class="text-xs text-zinc-400">all docs →</a>
+            <a href={`${docsBasePath}/${allDocs[0].id}`} class="text-xs text-zinc-400">all docs →</a>
           </p>
         )}
       </section>

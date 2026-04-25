@@ -3,14 +3,10 @@ import assert from 'node:assert/strict'
 
 import { withDefaults } from '../dist/index.js'
 
-test('withDefaults injects extension nav entries when navLabel is provided', () => {
+test('withDefaults injects page nav entries when navLabel is provided', () => {
   const config = withDefaults({
     name: 'site',
-    extensions: {
-      customPages: [
-        { slug: 'about', title: 'About', navLabel: 'about' },
-      ],
-    },
+    pages: [{ slug: 'about', navLabel: 'about' }],
   })
 
   assert.deepEqual(
@@ -19,30 +15,23 @@ test('withDefaults injects extension nav entries when navLabel is provided', () 
   )
 })
 
-test('withDefaults rejects reserved extension slugs', () => {
+test('withDefaults rejects reserved page slugs', () => {
   assert.throws(
     () =>
       withDefaults({
         name: 'site',
-        extensions: {
-          customPages: [{ slug: 'docs', title: 'Docs override' }],
-        },
+        pages: [{ slug: 'docs' }],
       }),
     /reserved/i,
   )
 })
 
-test('withDefaults rejects duplicate extension slugs', () => {
+test('withDefaults rejects duplicate page slugs', () => {
   assert.throws(
     () =>
       withDefaults({
         name: 'site',
-        extensions: {
-          customPages: [
-            { slug: 'about', title: 'About 1' },
-            { slug: 'about', title: 'About 2' },
-          ],
-        },
+        pages: [{ slug: 'about' }, { slug: 'about' }],
       }),
     /duplicate/i,
   )

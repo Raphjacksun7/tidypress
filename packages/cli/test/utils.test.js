@@ -36,12 +36,12 @@ test('scaffoldDocs creates docs and writing content structure', async () => {
   assert.match(writingPage, /title: Hello/)
 })
 
-test('createContentSnapshot returns docs, writing, and extension entries', async () => {
+test('createContentSnapshot returns docs, writing, and pages entries', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-context-'))
   const docsDir = path.join(root, 'docs')
   await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
   await fs.mkdir(path.join(docsDir, 'src/content/writing'), { recursive: true })
-  await fs.mkdir(path.join(docsDir, 'src/content/extensions'), { recursive: true })
+  await fs.mkdir(path.join(docsDir, 'src/content/pages'), { recursive: true })
 
   await fs.writeFile(
     path.join(docsDir, 'src/content/docs/getting-started.md'),
@@ -66,13 +66,13 @@ Hello world writing.
     'utf8',
   )
   await fs.writeFile(
-    path.join(docsDir, 'src/content/extensions/about.md'),
+    path.join(docsDir, 'src/content/pages/about.md'),
     `---
 title: About
 description: About page
 ---
 
-About extension page content.
+About custom page content.
 `,
     'utf8',
   )
@@ -81,7 +81,7 @@ About extension page content.
   assert.equal(snapshot.length, 3)
   assert.deepEqual(
     snapshot.map(item => item.section).sort(),
-    ['docs', 'extensions', 'writing'],
+    ['docs', 'pages', 'writing'],
   )
 })
 

@@ -2,14 +2,27 @@
 import Base from './Base.astro'
 import Sidebar from '../components/Sidebar.astro'
 import Toc from '../components/Toc.astro'
+import { getConfig } from '../config/getConfig'
 
 export interface Props {
   title: string
   description?: string
   headings?: { depth: number; slug: string; text: string }[]
+  editPath?: string
 }
 
-const { title, description, headings = [] } = Astro.props
+const { title, description, headings = [], editPath } = Astro.props
+const rawSite = (await import('../../docsmint.config.ts')).default
+const site = getConfig(rawSite)
+
+const editBaseUrl = site.repository?.url
+const editBranch = site.repository?.branch ?? 'main'
+const editContentPath = site.repository?.editPath
+const normalizedEditPath = editPath?.replace(/^\//, '')
+const resolvedEditUrl =
+  editBaseUrl && editContentPath && normalizedEditPath
+    ? `${editBaseUrl.replace(/\/$/, '')}/edit/${editBranch}/${editContentPath.replace(/^\//, '').replace(/\/$/, '')}/${normalizedEditPath}.md`
+    : undefined
 ---
 <Base title={title} description={description}>
 
@@ -44,6 +57,13 @@ const { title, description, headings = [] } = Astro.props
     {headings.length > 0 && (
       <aside class="w-44 shrink-0 hidden lg:block">
         <Toc headings={headings} />
+        {resolvedEditUrl && (
+          <p class="mt-4 text-xs">
+            <a href={resolvedEditUrl} target="_blank" rel="noopener noreferrer" class="text-zinc-500">
+              Edit this page →
+            </a>
+          </p>
+        )}
       </aside>
     )}
 

@@ -1,43 +1,63 @@
 import { defaultConfig } from './defaults.js'
 import type {
-  CustomPageExtension,
   DocsMintConfig,
-  DocsMintExtensions,
+  DocsMintSearch,
+  DocsMintSections,
   FooterItem,
   NavItem,
+  PageEntry,
+  PageEntryObject,
 } from './schema.js'
 
-export type { CustomPageExtension, DocsMintConfig, DocsMintExtensions, FooterItem, NavItem }
+export type { DocsMintConfig, DocsMintSearch, DocsMintSections, FooterItem, NavItem, PageEntry }
 
 export function defineConfig(config: DocsMintConfig): DocsMintConfig {
   return config
 }
 
-const customPageSlugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
-const reservedCustomPageSlugs = new Set(['docs', 'writing', 'pagefind', '_astro', '404', 'index'])
+const pageSlugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+const reservedPageSlugs = new Set(['docs', 'writing', 'pagefind', '_astro', '404', 'index'])
 
-function validateCustomPages(customPages: CustomPageExtension[]): CustomPageExtension[] {
+export interface NormalizedPageEntry {
+  slug: string
+  navLabel?: string
+}
+
+function legacyCustomPages(config: DocsMintConfig): PageEntry[] {
+  const legacy = (config as DocsMintConfig & { extensions?: { customPages?: PageEntryObject[] } }).extensions
+    ?.customPages
+  return legacy ?? []
+}
+
+export function normalizePages(pageEntries: PageEntry[]): NormalizedPageEntry[] {
   const seen = new Set()
-  for (const page of customPages) {
-    if (!customPageSlugPattern.test(page.slug)) {
+  const normalized = pageEntries.map(entry => {
+    if (typeof entry === 'string') {
+      return { slug: entry }
+    }
+    return entry
+  })
+
+  for (const page of normalized) {
+    if (!pageSlugPattern.test(page.slug)) {
       throw new Error(
-        `Invalid extension custom page slug "${page.slug}". Use kebab-case (e.g. "about").`,
+        `Invalid custom page slug "${page.slug}". Use kebab-case (e.g. "about").`,
       )
     }
-    if (reservedCustomPageSlugs.has(page.slug)) {
-      throw new Error(`Extension custom page slug "${page.slug}" is reserved.`)
+    if (reservedPageSlugs.has(page.slug)) {
+      throw new Error(`Custom page slug "${page.slug}" is reserved.`)
     }
     if (seen.has(page.slug)) {
-      throw new Error(`Duplicate extension custom page slug "${page.slug}".`)
+      throw new Error(`Duplicate custom page slug "${page.slug}".`)
     }
     seen.add(page.slug)
   }
-  return customPages
+  return normalized
 }
 
-function applyExtensionNav(
+function applyPagesNav(
   nav: NavItem[] | undefined,
-  customPages: CustomPageExtension[],
+  pages: NormalizedPageEntry[],
 ): NavItem[] | undefined {
   if (!nav) {
     return nav
@@ -45,7 +65,7 @@ function applyExtensionNav(
 
   const entries = [...nav]
   const existingHrefs = new Set(entries.map(item => item.href))
-  for (const page of customPages) {
+  for (const page of pages) {
     if (!page.navLabel) {
       continue
     }
@@ -119,6 +139,66 @@ function validateNavPolicy(config: DocsMintConfig): DocsMintConfig['navPolicy'] 
   return policy
 }
 
+function normalizeSections(config: DocsMintConfig): DocsMintSections {
+  const defaults = defaultConfig.sections ?? {}
+  const sections = config.sections ?? {}
+  const normalized = {
+    docs: {
+      ...defaults.docs,
+      ...(sections.docs ?? {}),
+    },
+    writing: {
+      ...defaults.writing,
+      ...(sections.writing ?? {}),
+    },
+  }
+
+  if (normalized.docs?.basePath && normalized.docs.basePath !== '/docs') {
+    throw new Error('sections.docs.basePath currently supports only "/docs".')
+  }
+  if (normalized.writing?.basePath && normalized.writing.basePath !== '/writing') {
+    throw new Error('sections.writing.basePath currently supports only "/writing".')
+  }
+
+  return normalized
+}
+
+function buildSectionDefaultNav(sections: DocsMintSections): NavItem[] {
+  const nav: NavItem[] = []
+  if (sections.docs?.enabled) {
+    nav.push({ label: 'docs', href: sections.docs.basePath ?? '/docs' })
+  }
+  if (sections.writing?.enabled) {
+    nav.push({ label: 'writing', href: sections.writing.basePath ?? '/writing' })
+  }
+  return nav
+}
+
+function filterDisabledSectionNav(nav: NavItem[] | undefined, sections: DocsMintSections): NavItem[] | undefined {
+  if (!nav) {
+    return nav
+  }
+  const docsBasePath = sections.docs?.basePath ?? '/docs'
+  const writingBasePath = sections.writing?.basePath ?? '/writing'
+  return nav.filter(item => {
+    if (item.href === docsBasePath && !sections.docs?.enabled) {
+      return false
+    }
+    if (item.href === writingBasePath && !sections.writing?.enabled) {
+      return false
+    }
+    return true
+  })
+}
+
+function normalizeSearch(config: DocsMintConfig): DocsMintSearch {
+  return {
+    ...defaultConfig.search,
+    ...(config.search ?? {}),
+    exclude: config.search?.exclude ?? defaultConfig.search?.exclude ?? [],
+  }
+}
+
 function validateCoreItemBudget(
   nav: NavItem[] | undefined,
   navPolicy: DocsMintConfig['navPolicy'],
@@ -173,10 +253,14 @@ export function buildNavigationModel(config: DocsMintConfig): {
 }
 
 export function withDefaults(config: DocsMintConfig): DocsMintConfig {
-  const customPages = validateCustomPages(config.extensions?.customPages ?? [])
+  const pages = normalizePages([...(config.pages ?? []), ...legacyCustomPages(config)])
+  const sections = normalizeSections(config)
   const navPolicy = validateNavPolicy(config)
-  const navWithExtensions = applyExtensionNav(config.nav ?? defaultConfig.nav, customPages)
-  const nav = normalizeNavItems(navWithExtensions)
+  const sourceNav = config.nav ?? buildSectionDefaultNav(sections)
+  const navWithExtensions = applyPagesNav(sourceNav, pages)
+  const filteredNav = filterDisabledSectionNav(navWithExtensions, sections)
+  const nav = normalizeNavItems(filteredNav)
+  const search = normalizeSearch(config)
   validateCoreItemBudget(nav, navPolicy)
 
   return {
@@ -188,9 +272,13 @@ export function withDefaults(config: DocsMintConfig): DocsMintConfig {
     },
     nav,
     footer: config.footer ?? defaultConfig.footer,
-    navPolicy,
-    extensions: {
-      customPages,
+    repository: {
+      ...defaultConfig.repository,
+      ...config.repository,
     },
+    search,
+    sections,
+    navPolicy,
+    pages,
   }
 }

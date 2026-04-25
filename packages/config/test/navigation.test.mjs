@@ -80,3 +80,40 @@ test('withDefaults keeps _self external links without forcing noopener', () => {
   assert.equal(config.nav?.[0].target, '_self')
   assert.equal(config.nav?.[0].rel, undefined)
 })
+
+test('withDefaults supports string shorthand pages entries', () => {
+  const config = withDefaults({
+    name: 'site',
+    pages: ['about'],
+  })
+
+  assert.equal(config.pages?.[0]?.slug, 'about')
+})
+
+test('withDefaults merges default section settings', () => {
+  const config = withDefaults({
+    name: 'site',
+    sections: {
+      writing: {
+        enabled: false,
+      },
+    },
+  })
+
+  assert.equal(config.sections?.docs?.enabled, true)
+  assert.equal(config.sections?.writing?.enabled, false)
+  assert.equal(config.sections?.docs?.basePath, '/docs')
+})
+
+test('withDefaults rejects unsupported section base paths', () => {
+  assert.throws(
+    () =>
+      withDefaults({
+        name: 'site',
+        sections: {
+          docs: { basePath: '/reference' },
+        },
+      }),
+    /supports only "\/docs"/i,
+  )
+})

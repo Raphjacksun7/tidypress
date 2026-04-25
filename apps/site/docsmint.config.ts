@@ -8,8 +8,6 @@ export default defineConfig({
     { label: 'writing', href: '/writing' },
   ],
   footer: [],
-  extensions: {
-    customPages: [],
-  },
+  pages: [],
   siteUrl: 'https://docsmint.dev',
 })

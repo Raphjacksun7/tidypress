@@ -5,16 +5,30 @@ export const defaultConfig: Partial<DocsMintConfig> = {
   writing: {
     description: 'Engineering notes, architectural decisions, and observations.',
   },
+  pages: [],
   nav: [
     { label: 'docs', href: '/docs' },
     { label: 'writing', href: '/writing' },
   ],
   footer: [],
+  repository: {
+    branch: 'main',
+  },
+  search: {
+    exclude: [],
+  },
+  sections: {
+    docs: {
+      enabled: true,
+      basePath: '/docs',
+    },
+    writing: {
+      enabled: true,
+      basePath: '/writing',
+    },
+  },
   dateLocale: 'en-US',
   dateFormat: { year: 'numeric', month: 'short', day: 'numeric' },
-  extensions: {
-    customPages: [],
-  },
   navPolicy: {
     mode: 'strict',
     maxVisibleDesktop: 3,
