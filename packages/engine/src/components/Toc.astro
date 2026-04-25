@@ -6,8 +6,8 @@ const { headings } = Astro.props
 const filtered = headings.filter(h => h.depth === 2 || h.depth === 3)
 ---
 {filtered.length > 0 && (
-  <nav class="sticky top-12 text-sm space-y-1">
-    <p class="font-bold text-xs uppercase tracking-wide mb-2">On this page</p>
+  <nav class="sticky top-12 space-y-1" data-toc>
+    <p class="font-bold uppercase tracking-wide mb-2" data-toc-title>On this page</p>
     {filtered.map(({ depth, slug, text }) => (
       <a
         href={`#${slug}`}
@@ -15,6 +15,7 @@ const filtered = headings.filter(h => h.depth === 2 || h.depth === 3)
           'block py-0.5',
           depth === 3 ? 'pl-3 text-zinc-400' : 'text-zinc-500'
         ]}
+        data-toc-link
       >
         {text}
       </a>

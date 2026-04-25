@@ -39,11 +39,20 @@
   }
 
   html {
+    font-size: 100%;
     font-family: var(--font-mono);
     background: var(--bg);
     color: var(--fg);
     -webkit-font-smoothing: antialiased;
     transition: background 0.15s, color 0.15s;
+  }
+
+  html[data-text-scale="medium"] {
+    font-size: 110%;
+  }
+
+  html[data-text-scale="large"] {
+    font-size: 120%;
   }
 
   a {
@@ -279,6 +288,15 @@ a:hover {
   text-decoration: underline;
 }
 
+/* Search result links — subtle surface highlight, no full inversion */
+#search-results a:hover {
+  background-color: var(--surface);
+  color: var(--fg);
+  text-decoration: none;
+  padding-inline: 0;
+  margin-inline: 0;
+}
+
 /* List-row links — opt out of inversion, only child span inverts via group-hover */
 a[data-no-hover]:hover {
   background-color: transparent;
@@ -286,6 +304,52 @@ a[data-no-hover]:hover {
   text-decoration: none;
   padding-inline: 0;
   margin-inline: 0;
+}
+
+/* Sidebar links: dedicated sizing + hover behavior */
+a[data-sidebar-link] {
+  font-size: 14px;
+}
+
+html[data-text-scale="medium"] a[data-sidebar-link] {
+  font-size: 15px;
+}
+
+html[data-text-scale="large"] a[data-sidebar-link] {
+  font-size: 16px;
+}
+
+a[data-sidebar-link]:hover {
+  background-color: var(--fg);
+  color: var(--bg);
+  text-decoration: none;
+  padding-inline: 2px;
+  margin-inline: -4px;
+}
+
+/* TOC (right sidebar) sizing */
+[data-toc-title] {
+  font-size: 12px;
+}
+
+[data-toc-link] {
+  font-size: 13px;
+}
+
+html[data-text-scale="medium"] [data-toc-title] {
+  font-size: 12px;
+}
+
+html[data-text-scale="medium"] [data-toc-link] {
+  font-size: 14px;
+}
+
+html[data-text-scale="large"] [data-toc-title] {
+  font-size: 13px;
+}
+
+html[data-text-scale="large"] [data-toc-link] {
+  font-size: 16px;
 }
 
 /* ── Copy button ─────────────────────────────────────────────────────────── */

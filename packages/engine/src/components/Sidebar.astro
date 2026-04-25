@@ -7,6 +7,9 @@ const rawSite = (await import('../../docsmint.config.ts')).default
 const site = getConfig(rawSite)
 const docsBasePath = site.sections?.docs?.basePath ?? '/docs'
 const docs = sortDocs(await getCollection('docs'))
+const firstDocHref = docs[0]
+  ? `${docsBasePath}/${docs[0].id.replace(/\.mdx?$/, '')}`
+  : undefined
 
 const tree: Record<string, { title: string; href: string }[]> = {}
 
@@ -23,22 +26,33 @@ for (const entry of docs) {
 const sections = Object.entries(tree).sort(([a], [b]) => a.localeCompare(b))
 const currentPath = Astro.url.pathname
 ---
-<nav class="text-sm space-y-6">
+<nav class="space-y-6">
   {sections.map(([section, pages]) => (
     <div>
       {section && (
         <p class="font-bold text-xs uppercase tracking-wide mb-2">{section}</p>
       )}
       <ul class="space-y-1">
-        {pages.map(({ title, href }) => (
-          <li>
-            <a
-              href={href}
-              class:list={['block py-0.5', currentPath === href ? 'font-bold' : 'text-zinc-500']}
-              style={currentPath === href ? 'text-decoration:none' : ''}
-            >{title}</a>
-          </li>
-        ))}
+        {pages.map(({ title, href }) => {
+          const active =
+            currentPath === href ||
+            ((currentPath === docsBasePath || currentPath === `${docsBasePath}/`) &&
+              href === firstDocHref)
+          return (
+            <li>
+              <a
+                href={href}
+                class:list={[
+                  'block py-0.5',
+                  active ? 'font-bold' : 'text-zinc-500',
+                ]}
+                style={active ? 'text-decoration:none' : ''}
+                data-sidebar-active={active ? '' : undefined}
+                data-sidebar-link=""
+              >{title}</a>
+            </li>
+          )
+        })}
       </ul>
     </div>
   ))}

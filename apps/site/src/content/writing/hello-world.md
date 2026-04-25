@@ -35,7 +35,7 @@ npx docsmint@latest init
 docsmint dev
 ```
 
-The Python package also works as a client wrapper:
+Python is also supported:
 
 ```bash
 pip install docsmint

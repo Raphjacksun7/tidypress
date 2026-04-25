@@ -43,10 +43,17 @@ export interface DocsMintWriting {
   description?: string
 }
 
+export type DocsMintTypographyScale = 'default' | 'medium' | 'large' | 'extra'
+
+export interface DocsMintTypography {
+  scale?: DocsMintTypographyScale
+}
+
 export interface DocsMintConfig {
   name: string
   description?: string
   writing?: DocsMintWriting
+  typography?: DocsMintTypography
   pages?: PageEntry[]
   nav?: NavItem[]
   footer?: FooterItem[]

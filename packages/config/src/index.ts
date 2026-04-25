@@ -3,6 +3,7 @@ import type {
   DocsMintConfig,
   DocsMintSearch,
   DocsMintSections,
+  DocsMintTypography,
   FooterItem,
   NavItem,
   PageEntry,
@@ -199,6 +200,25 @@ function normalizeSearch(config: DocsMintConfig): DocsMintSearch {
   }
 }
 
+function normalizeTypography(config: DocsMintConfig): DocsMintTypography {
+  const defaults = defaultConfig.typography ?? { scale: 'default' }
+  const typography = {
+    ...defaults,
+    ...(config.typography ?? {}),
+  }
+
+  if (typography.scale === 'extra') {
+    typography.scale = 'large'
+  }
+
+  const allowed = new Set(['default', 'medium', 'large'])
+  if (!allowed.has(typography.scale ?? 'default')) {
+    throw new Error('typography.scale must be one of: "default", "medium", "large".')
+  }
+
+  return typography
+}
+
 function validateCoreItemBudget(
   nav: NavItem[] | undefined,
   navPolicy: DocsMintConfig['navPolicy'],
@@ -261,6 +281,7 @@ export function withDefaults(config: DocsMintConfig): DocsMintConfig {
   const filteredNav = filterDisabledSectionNav(navWithExtensions, sections)
   const nav = normalizeNavItems(filteredNav)
   const search = normalizeSearch(config)
+  const typography = normalizeTypography(config)
   validateCoreItemBudget(nav, navPolicy)
 
   return {
@@ -277,6 +298,7 @@ export function withDefaults(config: DocsMintConfig): DocsMintConfig {
       ...config.repository,
     },
     search,
+    typography,
     sections,
     navPolicy,
     pages,

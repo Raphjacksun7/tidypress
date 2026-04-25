@@ -37,8 +37,49 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Build Python wrapper
+      - name: Build Python package
         working-directory: wrappers/python
         run: |
           python -m pip install --upgrade build
           python -m build
+
+  deploy-site:
+    name: Deploy docs site to Cloudflare Pages
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: validate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build config package
+        run: pnpm --filter @docsmint/config build
+
+      - name: Build site
+        run: pnpm --filter @docsmint/site build
+
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: usedocsmint
+          directory: apps/site/.docsmint/dist
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          branch: main

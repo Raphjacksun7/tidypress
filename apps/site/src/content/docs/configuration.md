@@ -14,6 +14,7 @@ import { defineConfig } from 'docsmint/config'
 export default defineConfig({
   name: 'Your Project',
   description: 'Short description for metadata.',
+  typography: { scale: 'medium' },
   siteUrl: 'https://docs.example.com',
   nav: [
     { label: 'docs', href: '/docs/getting-started', priority: 'core' },
@@ -66,6 +67,21 @@ writing: {
   description: 'Engineering notes, architectural decisions, and observations.'
 }
 ```
+
+### `typography.scale`
+
+Global text scale for the whole UI and content.
+
+```ts
+typography: { scale: 'default' } // 100%
+typography: { scale: 'medium' }  // 110%
+typography: { scale: 'large' }   // 120%
+```
+
+Recommended naming:
+- `default`: standard reading size
+- `medium`: slightly larger for comfort
+- `large`: high-comfort / accessibility-focused size
 
 ### `nav`
 

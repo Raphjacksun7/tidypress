@@ -1,10 +1,20 @@
 ---
-import { getCollection } from 'astro:content'
+import { getCollection, render } from 'astro:content'
 import { sortDocs } from '../../utils/sortDocs'
 import { getConfig } from '../../config/getConfig'
+import Doc from '../../layouts/Doc.astro'
+import Tooltip from '../../components/Tooltip.astro'
+import FileTree from '../../components/FileTree.astro'
+import Callout from '../../components/Callout.astro'
+import Image from '../../components/Image.astro'
+import Tabs from '../../components/Tabs.astro'
+import Tab from '../../components/Tab.astro'
+import Mermaid from '../../components/Mermaid.astro'
+import { isSearchExcluded } from '../../utils/searchExclusion'
 
 const rawSite = (await import('../../../docsmint.config.ts')).default
 const site = getConfig(rawSite)
+
 if (!site.sections?.docs?.enabled) {
   return Astro.redirect('/404', 302)
 }
@@ -12,7 +22,38 @@ if (!site.sections?.docs?.enabled) {
 const docsBasePath = site.sections?.docs?.basePath ?? '/docs'
 const docs = sortDocs(await getCollection('docs'))
 const first = docs[0]
-if (first) {
-  return Astro.redirect(`${docsBasePath}/${first.id}`, 301)
+
+if (!first) {
+  return Astro.redirect('/404', 302)
 }
+
+const { Content, headings } = await render(first)
+const firstDocHref = `${docsBasePath}/${first.id.replace(/\.mdx?$/, '')}`
+const pagePath = `${docsBasePath}/${first.id}`
+const pagefindIgnore = first.data.search === false || isSearchExcluded(site, pagePath)
 ---
+<Doc
+  title={first.data.title}
+  description={first.data.description}
+  headings={headings}
+  editPath={pagePath}
+>
+  <div data-pagefind-ignore={pagefindIgnore ? true : undefined}>
+    <script is:inline define:vars={{ docsBasePath, firstDocHref }}>
+      if (location.pathname === docsBasePath || location.pathname === `${docsBasePath}/`) {
+        history.replaceState(null, '', firstDocHref)
+      }
+    </script>
+    <Content
+      components={{
+        Tooltip,
+        FileTree,
+        Callout,
+        img: Image,
+        Tabs,
+        Tab,
+        Mermaid,
+      }}
+    />
+  </div>
+</Doc>

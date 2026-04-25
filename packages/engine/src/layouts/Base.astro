@@ -13,7 +13,7 @@ const rawSite = (await import('../../docsmint.config.ts')).default
 const site = getConfig(rawSite)
 ---
 <!doctype html>
-<html lang="en">
+<html lang="en" data-text-scale={site.typography?.scale ?? 'default'}>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />

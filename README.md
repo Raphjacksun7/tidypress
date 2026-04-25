@@ -22,13 +22,13 @@ npm install -g docsmint
 npx docsmint@latest
 ```
 
-### Python package (optional wrapper)
+### Python
 
 ```sh
 pip install docsmint
 ```
 
-The Python package delegates to the Node.js CLI and still requires Node.js.
+The Python package invokes the Node.js CLI and still requires Node.js.
 
 ## Quick start
 

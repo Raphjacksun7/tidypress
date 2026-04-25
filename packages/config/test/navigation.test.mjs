@@ -105,6 +105,31 @@ test('withDefaults merges default section settings', () => {
   assert.equal(config.sections?.docs?.basePath, '/docs')
 })
 
+test('withDefaults normalizes typography scale and supports "extra" alias', () => {
+  const medium = withDefaults({
+    name: 'site',
+    typography: { scale: 'medium' },
+  })
+  assert.equal(medium.typography?.scale, 'medium')
+
+  const extraAlias = withDefaults({
+    name: 'site',
+    typography: { scale: 'extra' },
+  })
+  assert.equal(extraAlias.typography?.scale, 'large')
+})
+
+test('withDefaults rejects unsupported typography scales', () => {
+  assert.throws(
+    () =>
+      withDefaults({
+        name: 'site',
+        typography: { scale: 'huge' },
+      }),
+    /typography\.scale/i,
+  )
+})
+
 test('withDefaults rejects unsupported section base paths', () => {
   assert.throws(
     () =>

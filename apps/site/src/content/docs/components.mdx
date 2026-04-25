@@ -4,14 +4,7 @@ description: Built-in MDX components — Callout, Tooltip, FileTree, Tabs, Image
 order: 4
 ---
 
-import Callout from '../../components/Callout.astro'
-import Tooltip from '../../components/Tooltip.astro'
-import FileTree from '../../components/FileTree.astro'
-import Tabs from '../../components/Tabs.astro'
-import Tab from '../../components/Tab.astro'
-import Mermaid from '../../components/Mermaid.astro'
-
-All components work in `.mdx` files. Import them at the top of the file. Collapsible sections use native HTML.
+All components work in `.mdx` files without extra imports. Collapsible sections use native HTML.
 
 ## Callout
 
@@ -157,8 +150,6 @@ flowchart LR
 Optimized images with optional captions.
 
 ```mdx
-import Image from '../../components/Image.astro'
-
 <Image src={import('./arch.png')} alt="Architecture diagram" caption="System overview" />
 ```
 

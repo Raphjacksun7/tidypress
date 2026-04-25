@@ -24,6 +24,9 @@ The CLI walks up from the current directory to find `docs/docsmint.config.ts`.
 interface DocsMintConfig {
   name: string
   description?: string
+  typography?: {
+    scale?: 'default' | 'medium' | 'large'
+  }
   nav?: {
     label: string
     href: string
@@ -67,6 +70,8 @@ interface DocsMintConfig {
 ```
 
 Only `name` is required.
+
+Typography scale defaults to `'default'` (100%). Use `'medium'` (110%) or `'large'` (120%) to increase UI text size globally.
 
 ## Frontmatter
 

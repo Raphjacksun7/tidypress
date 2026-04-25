@@ -1,4 +1,4 @@
-"""Thin wrapper around the DocsMint Node CLI."""
+"""Python interface for the DocsMint Node.js CLI."""
 
 from __future__ import annotations
 

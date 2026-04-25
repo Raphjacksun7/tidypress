@@ -5,6 +5,9 @@ export const defaultConfig: Partial<DocsMintConfig> = {
   writing: {
     description: 'Engineering notes, architectural decisions, and observations.',
   },
+  typography: {
+    scale: 'default',
+  },
   pages: [],
   nav: [
     { label: 'docs', href: '/docs' },

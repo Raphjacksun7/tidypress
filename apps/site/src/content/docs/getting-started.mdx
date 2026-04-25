@@ -4,13 +4,9 @@ description: Install DocsMint and run your first docs site in minutes.
 order: 1
 ---
 
-import Callout from '../../components/Callout.astro'
-import Tabs from '../../components/Tabs.astro'
-import Tab from '../../components/Tab.astro'
-
 ## Install
 
-<Tabs labels={["npm", "pnpm", "python wrapper (optional)"]}>
+<Tabs labels={["npm", "pnpm", "python"]}>
 <Tab>
 
 ```bash
@@ -35,7 +31,7 @@ pip install docsmint
 </Tabs>
 
 <Callout>
-Node.js is required in all cases. The Python package is a thin wrapper that delegates to the Node.js CLI.
+Node.js is required in all cases. The Python package invokes the Node.js CLI.
 </Callout>
 
 ## Prerequisites

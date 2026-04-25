@@ -8,28 +8,6 @@ Release publishing is handled by GitHub Actions with Trusted Publishing for npm 
 - Publish access is controlled in GitHub, npm, and PyPI settings.
 - Use Trusted Publishing (OIDC) instead of long-lived registry tokens.
 
-## One-time setup
-
-### npm
-
-1. Open [npm package trusted publishers](https://www.npmjs.com/package/docsmint/access).
-2. Add a trusted publisher:
-   - Provider: GitHub Actions
-   - Repository: this project repository
-   - Workflow file: `.github/workflows/publish.yml`
-   - Environment: empty (unless explicitly used)
-3. Confirm no `NPM_TOKEN` secret is required.
-
-### PyPI
-
-1. Open [PyPI publishing settings](https://pypi.org/manage/project/docsmint/settings/publishing/).
-2. Add a trusted publisher:
-   - Owner: this repository owner (user or organization)
-   - Repository: this project repository
-   - Workflow name: `Publish`
-   - Environment name: empty (unless explicitly used)
-3. Confirm no `PYPI_API_TOKEN` secret is required.
-
 ## Release
 
 1. Bump versions:

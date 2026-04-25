@@ -121,8 +121,6 @@ Place images in `public/` and reference them with absolute paths:
 Or use the `<Image>` component for local optimized images:
 
 ```mdx
-import Image from '../../components/Image.astro'
-
 <Image src={import('./arch.png')} alt="Architecture diagram" caption="System overview" />
 ```
 

@@ -1,1 +1,1 @@
-"""DocsMint Python wrapper package."""
+"""DocsMint Python package."""
