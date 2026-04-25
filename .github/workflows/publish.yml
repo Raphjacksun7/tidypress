@@ -52,7 +52,6 @@ jobs:
     needs: validate-release
     permissions:
       contents: read
-      id-token: write  
 
     steps:
       - name: Checkout
@@ -74,9 +73,16 @@ jobs:
       - name: Run tests
         run: pnpm -r test
 
+      - name: Configure npm auth
+        run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Publish docsmint to npm
         working-directory: packages/cli
-        run: npm publish --access public --provenance
+        run: npm publish --access public
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   # ── PyPI ────────────────────────────────────────────────────────────────────
   publish-pypi:
