@@ -83,10 +83,6 @@ Use the context snapshot command to export markdown summaries for LLM workflows:
 docsmint context
 ```
 
-## Author
-
-Raphael Avocegamou  
-GitHub: [github.com/Raphjacksun7](https://github.com/Raphjacksun7)
 
 ## Page frontmatter
 
