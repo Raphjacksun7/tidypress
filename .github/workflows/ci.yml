@@ -69,6 +69,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Clean previous build artifacts
+        run: |
+          rm -rf apps/site/.docsmint
+          rm -rf packages/engine/dist
+
       - name: Build config package
         run: pnpm --filter @docsmint/config build
 

@@ -2,9 +2,10 @@
 import Search from './Search.astro'
 import ThemeToggle from './ThemeToggle.astro'
 import { buildNavigationModel, type NavItem } from '@docsmint/config'
+import BrandIcon from './BrandIcon.astro'
 
 export interface Props {
-  site: { name: string; nav?: NavItem[] }
+  site: { name: string; nav?: NavItem[]; branding?: { icon?: string; favicon?: string } }
 }
 const { site } = Astro.props
 const nav = site.nav || []
@@ -15,8 +16,9 @@ const navModel = buildNavigationModel(site)
   <div class="flex items-center justify-between gap-4">
     <a href="/"
        data-no-hover
-       class="text-sm font-bold"
+       class="text-sm font-bold inline-flex items-center gap-2"
        style="text-decoration:none">
+      {site.branding?.icon && <BrandIcon src={site.branding.icon} sizeClass="size-[1.08em]" />}
       {site.name}
     </a>
     <div class="flex items-center gap-5">

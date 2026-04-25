@@ -288,13 +288,15 @@ a:hover {
   text-decoration: underline;
 }
 
-/* Search result links — subtle surface highlight, no full inversion */
+/* Search result links — subtle surface highlight, no full inversion.
+   !important on layout properties only — needed because the global unlayered a:hover
+   and Tailwind's px-4 (also unlayered in some build modes) can race in cascade order. */
 #search-results a:hover {
   background-color: var(--surface);
   color: var(--fg);
   text-decoration: none;
-  padding-inline: 0;
-  margin-inline: 0;
+  padding-inline: 0 !important;
+  margin-inline: 0 !important;
 }
 
 /* List-row links — opt out of inversion, only child span inverts via group-hover */

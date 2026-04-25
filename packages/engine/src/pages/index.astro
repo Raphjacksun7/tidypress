@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro'
 import { getCollection } from 'astro:content'
 import { getConfig } from '../config/getConfig'
 import { sortDocs } from '../utils/sortDocs'
+import BrandIcon from '../components/BrandIcon.astro'
 
 const LIMIT = 5
 
@@ -27,12 +28,15 @@ const fmt = new Intl.DateTimeFormat(
   { ...(site.dateFormat ?? { year: 'numeric', month: 'short', day: 'numeric' }), timeZone: 'UTC' }
 )
 ---
-<Base title="home">
+<Base title={site.name} description={site.description}>
   <div class="max-w-3xl mx-auto px-8 py-16 space-y-16">
 
     <!-- Identity -->
     <section>
-      <h1 class="text-2xl font-bold tracking-tight mb-3">{site.name}</h1>
+      <h1 class="text-2xl font-bold tracking-tight mb-3 inline-flex items-center gap-2">
+        {site.branding?.icon && <BrandIcon src={site.branding.icon} sizeClass="size-[1.08em]" />}
+        {site.name}
+      </h1>
       <p class="text-sm text-zinc-500 leading-relaxed">{site.description}</p>
     </section>
 

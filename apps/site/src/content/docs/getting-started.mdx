@@ -80,6 +80,32 @@ DocsMint keeps your project content-only while engine internals stay hidden:
 
 You own content and config. DocsMint owns rendering internals.
 
+```
+docs/
+├── docsmint.config.ts          ← your config (name, nav, branding, …)
+└── src/
+    └── content/
+        ├── docs/               ← docs pages (.md / .mdx)
+        ├── writing/            ← writing posts (.md)
+        ├── pages/              ← custom pages (.md)
+        └── public/             ← static assets served at site root
+            ├── favicon.svg
+            └── favicon-white.svg
+```
+
+### Branding
+
+The `branding` config key is fully opt-in. When set, DocsMint renders a monochrome icon beside the site name in both the homepage heading and the nav, and injects your favicon into every page `<head>`.
+
+```ts
+branding: {
+  icon: '/favicon.svg',       // adaptive icon in UI (light/dark)
+  favicon: '/favicon-white.svg', // browser-tab favicon
+}
+```
+
+SVG icons are inlined for perfect `currentColor` theme adaptation. Raster icons use CSS filters. Raster favicons are converted to monochrome via a canvas script that updates live on theme change.
+
 ## Commands
 
 - `docsmint init` scaffold `docs/`

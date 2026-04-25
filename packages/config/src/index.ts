@@ -1,5 +1,6 @@
 import { defaultConfig } from './defaults.js'
 import type {
+  DocsMintBranding,
   DocsMintConfig,
   DocsMintSearch,
   DocsMintSections,
@@ -10,7 +11,7 @@ import type {
   PageEntryObject,
 } from './schema.js'
 
-export type { DocsMintConfig, DocsMintSearch, DocsMintSections, FooterItem, NavItem, PageEntry }
+export type { DocsMintBranding, DocsMintConfig, DocsMintSearch, DocsMintSections, FooterItem, NavItem, PageEntry }
 
 export function defineConfig(config: DocsMintConfig): DocsMintConfig {
   return config
@@ -299,6 +300,7 @@ export function withDefaults(config: DocsMintConfig): DocsMintConfig {
     },
     search,
     typography,
+    branding: config.branding ? { ...config.branding } : undefined,
     sections,
     navPolicy,
     pages,

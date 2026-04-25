@@ -41,7 +41,7 @@ const writingBasePath = site.sections?.writing?.basePath ?? '/writing'
 const pagePath = `${writingBasePath}/${entry.id}`
 const pagefindIgnore = entry.data.search === false || isSearchExcluded(site, pagePath)
 ---
-<Base title={entry.data.title}>
+<Base title={entry.data.title} description={entry.data.description}>
   <div class="max-w-3xl mx-auto px-8 py-16">
     <div class="mb-10">
       <div class="flex items-baseline gap-4 text-xs text-zinc-400 mb-3">

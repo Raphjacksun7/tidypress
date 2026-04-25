@@ -6,20 +6,98 @@ import { getConfig } from '../config/getConfig'
 export interface Props {
   title: string
   description?: string
+  noindex?: boolean
 }
 
-const { title, description = '' } = Astro.props
+const { title, description, noindex = false } = Astro.props
 const rawSite = (await import('../../docsmint.config.ts')).default
 const site = getConfig(rawSite)
+const faviconHref = site.branding?.favicon ?? site.branding?.icon
+const faviconIsSvg = Boolean(faviconHref && /\.svg(?:$|[?#])/i.test(faviconHref))
+
+// Homepage passes title === site.name → render just site.name, not "site.name — site.name"
+const pageTitle = title === site.name ? site.name : `${title} — ${site.name}`
+const metaDescription = description || site.description || ''
+
+// Canonical URL — only when siteUrl is configured
+const canonicalHref = site.siteUrl
+  ? `${site.siteUrl.replace(/\/$/, '')}${Astro.url.pathname}`
+  : undefined
 ---
 <!doctype html>
 <html lang="en" data-text-scale={site.typography?.scale ?? 'default'}>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content={description || site.description} />
-  <title>{title} — {site.name}</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  {noindex
+    ? <meta name="robots" content="noindex, nofollow" />
+    : <meta name="robots" content="index, follow" />
+  }
+  <title>{pageTitle}</title>
+  <meta name="description" content={metaDescription} />
+  {canonicalHref && <link rel="canonical" href={canonicalHref} />}
+
+  <!-- Open Graph -->
+  <meta property="og:site_name" content={site.name} />
+  <meta property="og:title" content={pageTitle} />
+  <meta property="og:description" content={metaDescription} />
+  {canonicalHref && <meta property="og:url" content={canonicalHref} />}
+
+  <!-- Twitter / X card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content={pageTitle} />
+  <meta name="twitter:description" content={metaDescription} />
+  {faviconHref && (
+    <link id="docsmint-favicon" rel="icon" type={faviconIsSvg ? 'image/svg+xml' : undefined} href={faviconHref} />
+  )}
+  {faviconHref && !faviconIsSvg && (
+    <script is:inline define:vars={{ faviconHref }}>
+      (function () {
+        var src = faviconHref
+        var link = document.getElementById('docsmint-favicon')
+        if (!link) return
+
+        function isDark() {
+          var t = document.documentElement.getAttribute('data-theme')
+          return t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        }
+
+        function applyFavicon(dark) {
+          var img = new Image()
+          img.crossOrigin = 'anonymous'
+          img.onload = function () {
+            var canvas = document.createElement('canvas')
+            canvas.width = img.naturalWidth
+            canvas.height = img.naturalHeight
+            var ctx = canvas.getContext('2d')
+            ctx.drawImage(img, 0, 0)
+            var d = ctx.getImageData(0, 0, canvas.width, canvas.height)
+            for (var i = 0; i < d.data.length; i += 4) {
+              var gray = Math.round(d.data[i] * 0.299 + d.data[i+1] * 0.587 + d.data[i+2] * 0.114)
+              var val = dark ? 255 - gray : gray
+              // clamp to near-black (light) or near-white (dark) to stay monochrome
+              val = dark ? Math.min(255, val + 80) : Math.max(0, val - 60)
+              d.data[i] = val
+              d.data[i+1] = val
+              d.data[i+2] = val
+            }
+            ctx.putImageData(d, 0, 0)
+            link.href = canvas.toDataURL('image/png')
+          }
+          img.onerror = function () { link.href = src }
+          img.src = src
+        }
+
+        applyFavicon(isDark())
+
+        var observer = new MutationObserver(function () { applyFavicon(isDark()) })
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
+          if (!document.documentElement.hasAttribute('data-theme')) applyFavicon(isDark())
+        })
+      })()
+    </script>
+  )}
   <!-- No-flash theme: runs synchronously before render -->
   <script is:inline>
     (function() {

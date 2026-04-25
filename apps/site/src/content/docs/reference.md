@@ -24,8 +24,17 @@ The CLI walks up from the current directory to find `docs/docsmint.config.ts`.
 interface DocsMintConfig {
   name: string
   description?: string
+  branding?: {
+    /** Icon shown beside site name in homepage h1 and nav. SVG or raster. */
+    icon?: string
+    /** Browser-tab favicon. Falls back to branding.icon when omitted. */
+    favicon?: string
+  }
   typography?: {
     scale?: 'default' | 'medium' | 'large'
+  }
+  writing?: {
+    description?: string
   }
   nav?: {
     label: string
@@ -72,6 +81,48 @@ interface DocsMintConfig {
 Only `name` is required.
 
 Typography scale defaults to `'default'` (100%). Use `'medium'` (110%) or `'large'` (120%) to increase UI text size globally.
+
+## Branding system
+
+DocsMint includes an opt-in branding system for icons and favicons. It is inactive by default — nothing renders unless `branding` is set in your config.
+
+### Icon rendering
+
+The `branding.icon` path is rendered beside `site.name` in two places: the homepage `<h1>` and the nav header link.
+
+| File type | Rendering method | Theme adaptation |
+|-----------|-----------------|-----------------|
+| SVG (≤ 12 KB) | Inlined `<svg>` in HTML | `currentColor` — inherits text color automatically |
+| SVG (> 12 KB) | CSS `mask-image` + `background-color: currentColor` | `currentColor` — same result, external URL |
+| Raster (PNG, etc.) | `<img>` with CSS filters | `grayscale + brightness(0)` in light, `+ invert(1)` in dark |
+
+### Favicon rendering
+
+The `branding.favicon` path (or `branding.icon` as fallback) is injected as `<link rel="icon">` in the `<head>`.
+
+| File type | Behaviour |
+|-----------|-----------|
+| SVG | Served directly with `type="image/svg+xml"`. Color is whatever is baked into the SVG. Use a white variant for a white tab icon. |
+| Raster (PNG, etc.) | A canvas script converts the image to monochrome on load, producing a data URL. Updates live on theme change — no reload required. |
+
+### Public asset placement
+
+Place favicon and icon files inside `docs/src/content/public/` so they are copied to the root of the built site:
+
+```
+docs/src/content/public/
+├── favicon.svg          ← default gray (#52525b), theme-adaptive icon
+└── favicon-white.svg    ← white variant for browser tab
+```
+
+Reference them in config with a leading slash:
+
+```ts
+branding: {
+  icon: '/favicon.svg',
+  favicon: '/favicon-white.svg',
+}
+```
 
 ## Frontmatter
 

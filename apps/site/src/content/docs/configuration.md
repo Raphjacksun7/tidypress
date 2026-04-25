@@ -14,6 +14,10 @@ import { defineConfig } from 'docsmint/config'
 export default defineConfig({
   name: 'Your Project',
   description: 'Short description for metadata.',
+  branding: {
+    icon: '/favicon.svg',
+    favicon: '/favicon-white.svg',
+  },
   typography: { scale: 'medium' },
   siteUrl: 'https://docs.example.com',
   nav: [
@@ -57,6 +61,49 @@ Short description. Used for metadata and homepage copy.
 ```ts
 description: 'Minimal markdown documentation builder.'
 ```
+
+### `branding`
+
+Optional. Controls the icon shown beside the site name and the browser-tab favicon. Nothing is applied if `branding` is omitted — it is fully opt-in.
+
+```ts
+branding: {
+  icon: '/favicon.svg',
+  favicon: '/favicon-white.svg',
+}
+```
+
+#### `branding.icon`
+
+Path to the image shown beside `site.name` in the homepage `<h1>` and the nav header link. The icon is sized to match the surrounding text (`1.08em`) and does not affect line height.
+
+**SVG files** are inlined directly into the HTML so they inherit `currentColor` — they appear dark on light backgrounds and light on dark backgrounds automatically, with no extra configuration.
+
+**Raster files** (PNG, JPEG, WebP, etc.) are rendered as `<img>` elements and automatically converted to monochrome via CSS filters. They invert correctly when the theme switches between light and dark.
+
+```ts
+branding: { icon: '/logo.svg' }   // SVG: inlined, theme-aware via currentColor
+branding: { icon: '/logo.png' }   // Raster: monochrome filter, theme-aware via CSS invert
+```
+
+#### `branding.favicon`
+
+Path to the browser-tab favicon. Falls back to `branding.icon` if omitted.
+
+**SVG favicons** are referenced directly with `type="image/svg+xml"`. Place the file in `docs/src/content/public/` so it is served at the root.
+
+**Raster favicons** are dynamically converted to a monochrome data URL via an inline canvas script. The script watches for theme changes (`data-theme` attribute and `prefers-color-scheme`) and updates the favicon live — no page reload needed.
+
+```ts
+branding: {
+  icon: '/favicon.svg',       // theme-adaptive icon in UI
+  favicon: '/favicon-white.svg', // separate white variant for the browser tab
+}
+```
+
+<Callout type="tip">
+For the browser tab favicon, use a white SVG variant (e.g. `favicon-white.svg`) when you want it to always appear white regardless of the OS theme. Use the same path for both `icon` and `favicon` when a single adaptive file is enough.
+</Callout>
 
 ### `writing.description`
 
@@ -225,7 +272,17 @@ import { defineConfig } from 'docsmint/config'
 export default defineConfig({
   name: 'DocsMint',
   description: 'Minimal markdown docs and writing.',
+  branding: {
+    icon: '/favicon.svg',
+    favicon: '/favicon-white.svg',
+  },
+  typography: { scale: 'medium' },
   siteUrl: 'https://docs.example.com',
+  repository: {
+    url: 'https://github.com/your/repo',
+    branch: 'main',
+    editPath: 'docs/src/content',
+  },
   nav: [
     { label: 'docs', href: '/docs/getting-started', priority: 'core' },
     { label: 'writing', href: '/writing', priority: 'core' },
@@ -238,6 +295,7 @@ export default defineConfig({
     writing: { enabled: true, basePath: '/writing' },
   },
   navPolicy: { mode: 'strict', maxVisibleDesktop: 3, maxVisibleMobile: 2 },
+  search: { exclude: ['docs/internal/*'] },
   dateLocale: 'en-US',
   dateFormat: { year: 'numeric', month: 'short', day: 'numeric' },
 })

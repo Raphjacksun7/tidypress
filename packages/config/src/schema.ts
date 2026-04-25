@@ -49,11 +49,24 @@ export interface DocsMintTypography {
   scale?: DocsMintTypographyScale
 }
 
+export interface DocsMintBranding {
+  /**
+   * Monochrome SVG path used beside site name in UI (home title and nav brand).
+   * Example: '/favicon.svg'
+   */
+  icon?: string
+  /**
+   * Favicon path. When omitted, the runtime falls back to `branding.icon`.
+   */
+  favicon?: string
+}
+
 export interface DocsMintConfig {
   name: string
   description?: string
   writing?: DocsMintWriting
   typography?: DocsMintTypography
+  branding?: DocsMintBranding
   pages?: PageEntry[]
   nav?: NavItem[]
   footer?: FooterItem[]

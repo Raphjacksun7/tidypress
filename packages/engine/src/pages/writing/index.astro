@@ -18,7 +18,7 @@ const fmt = new Intl.DateTimeFormat(
   { ...(site.dateFormat ?? { year: 'numeric', month: 'short', day: 'numeric' }), timeZone: 'UTC' }
 )
 ---
-<Base title="Writing">
+<Base title="Writing" description={site.writing?.description || site.description}>
   <div class="max-w-3xl mx-auto px-8 py-16 space-y-12">
 
     <section>
