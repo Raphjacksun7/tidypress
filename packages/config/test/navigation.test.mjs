@@ -130,15 +130,29 @@ test('withDefaults rejects unsupported typography scales', () => {
   )
 })
 
-test('withDefaults rejects unsupported section base paths', () => {
-  assert.throws(
-    () =>
-      withDefaults({
-        name: 'site',
-        sections: {
-          docs: { basePath: '/reference' },
-        },
-      }),
-    /supports only "\/docs"/i,
-  )
+test('withDefaults allows custom section base paths', () => {
+  const config = withDefaults({
+    name: 'site',
+    sections: {
+      docs: { basePath: '/reference' },
+      writing: { basePath: '/notes' },
+    },
+  })
+  assert.equal(config.sections?.docs?.basePath, '/reference')
+  assert.equal(config.sections?.writing?.basePath, '/notes')
+})
+
+test('withDefaults uses section base paths for default nav links', () => {
+  const config = withDefaults({
+    name: 'site',
+    sections: {
+      docs: { basePath: '/reference' },
+      writing: { basePath: '/notes' },
+    },
+  })
+
+  assert.deepEqual(config.nav, [
+    { label: 'docs', href: '/reference', external: false, target: undefined, rel: undefined, priority: 'secondary' },
+    { label: 'writing', href: '/notes', external: false, target: undefined, rel: undefined, priority: 'secondary' },
+  ])
 })

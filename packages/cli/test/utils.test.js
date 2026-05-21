@@ -85,6 +85,36 @@ About custom page content.
   )
 })
 
+test('createContentSnapshot excludes draft entries (published: false)', async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-context-drafts-'))
+  const docsDir = path.join(root, 'docs')
+  await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
+
+  await fs.writeFile(
+    path.join(docsDir, 'src/content/docs/public.md'),
+    `---
+title: Public doc
+---
+Visible content.
+`,
+    'utf8',
+  )
+  await fs.writeFile(
+    path.join(docsDir, 'src/content/docs/draft.md'),
+    `---
+title: Draft doc
+published: false
+---
+Hidden content.
+`,
+    'utf8',
+  )
+
+  const snapshot = await createContentSnapshot(docsDir)
+  assert.equal(snapshot.length, 1)
+  assert.equal(snapshot[0].title, 'Public doc')
+})
+
 test('resolveDeployTarget supports artifact-only mode', () => {
   const plan = resolveDeployTarget({ projectRoot: '/tmp/project', target: undefined })
   assert.equal(plan.kind, 'artifact-only')
@@ -98,14 +128,26 @@ test('resolveDeployTarget resolves local path targets', () => {
   }
 })
 
-test('resolveDeployTarget keeps external URI targets generic', () => {
+test('resolveDeployTarget maps s3 URIs to s3 provider', () => {
   const plan = resolveDeployTarget({
     projectRoot: '/tmp/project',
     target: 's3://my-bucket/docs',
   })
+  assert.equal(plan.kind, 'provider')
+  if (plan.kind === 'provider') {
+    assert.equal(plan.provider, 's3')
+    assert.equal(plan.extra, 's3://my-bucket/docs')
+  }
+})
+
+test('resolveDeployTarget keeps generic external URI targets', () => {
+  const plan = resolveDeployTarget({
+    projectRoot: '/tmp/project',
+    target: 'https://cdn.example.com/docs',
+  })
   assert.equal(plan.kind, 'external-target')
   if (plan.kind === 'external-target') {
-    assert.equal(plan.target, 's3://my-bucket/docs')
+    assert.equal(plan.target, 'https://cdn.example.com/docs')
   }
 })
 
