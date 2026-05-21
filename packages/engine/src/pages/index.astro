@@ -4,15 +4,16 @@ import { getCollection } from 'astro:content'
 import { getConfig } from '../config/getConfig'
 import { sortDocs } from '../utils/sortDocs'
 import BrandIcon from '../components/BrandIcon.astro'
+import { onlyPublished } from '../utils/published'
 
 const LIMIT = 5
 
-const allWriting = (await getCollection('writing'))
+const allWriting = onlyPublished(await getCollection('writing'))
   .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
 const writing = allWriting.slice(0, LIMIT)
 const moreWriting = allWriting.length > LIMIT
 
-const allDocs = sortDocs(await getCollection('docs'))
+const allDocs = sortDocs(onlyPublished(await getCollection('docs')))
 const docs = allDocs.slice(0, LIMIT)
 const moreDocs = allDocs.length > LIMIT
 
