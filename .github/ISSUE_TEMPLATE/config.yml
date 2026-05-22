@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Product strategy
+    url: https://github.com/Raphjacksun7/docsmint/blob/main/agent-os/STRATEGY-SOURCE.md
+    about: Canonical scope and roadmap

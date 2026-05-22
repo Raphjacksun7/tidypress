@@ -37,6 +37,14 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Test Python package
+        run: |
+          python -m pip install -e "./wrappers/python[dev]"
+          pytest wrappers/python/tests -q
+
+      - name: Enforce minimum test count
+        run: node ./agent-os/scripts/assert-test-count.mjs
+
       - name: Build Python package
         working-directory: wrappers/python
         run: |

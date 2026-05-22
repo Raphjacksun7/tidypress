@@ -1,0 +1,83 @@
+---
+import { getCollection, render } from 'astro:content'
+import Base from '../../../layouts/Base.astro'
+import Tooltip from '../../../components/Tooltip.astro'
+import FileTree from '../../../components/FileTree.astro'
+import Callout from '../../../components/Callout.astro'
+import Image from '../../../components/Image.astro'
+import Tabs from '../../../components/Tabs.astro'
+import Tab from '../../../components/Tab.astro'
+import Mermaid from '../../../components/Mermaid.astro'
+import { getConfig } from '../../../config/getConfig'
+import { isSearchExcluded } from '../../../search/exclusion'
+import { onlyPublished } from '../../../domain/content/published'
+import { localizeEntries, resolveLocale, withLocalePrefix } from '../../../i18n/locale'
+import {
+  getCollectionEntryPath,
+  getCollectionEntrySlug,
+  isCollectionEnabled,
+} from '../../../domain/content/collections'
+
+export async function getStaticPaths() {
+  const rawSite = (await import('../../../../docsmint.config.ts')).default
+  const site = getConfig(rawSite)
+  if (!isCollectionEnabled(site, 'writing')) {
+    return []
+  }
+  const locales = site.i18n?.locales ?? []
+  if (locales.length === 0) {
+    return []
+  }
+  const posts = onlyPublished(await getCollection('writing'))
+  const localeState = resolveLocale('/', site.i18n)
+  return locales.flatMap(locale =>
+    localizeEntries(posts, localeState, locale).map(({ entry, slug }) => ({
+      params: { locale, slug: getCollectionEntrySlug(slug) },
+      props: { entry, locale, slug: getCollectionEntrySlug(slug) },
+    })),
+  )
+}
+
+const { entry, locale, slug } = Astro.props
+const { Content } = await render(entry)
+const rawSite = (await import('../../../../docsmint.config.ts')).default
+const site = getConfig(rawSite)
+if (!isCollectionEnabled(site, 'writing')) {
+  return Astro.redirect('/404', 302)
+}
+
+const fmt = new Intl.DateTimeFormat(
+  site.dateLocale ?? 'en-US',
+  { ...(site.dateFormat ?? { year: 'numeric', month: 'short', day: 'numeric' }), timeZone: 'UTC' }
+)
+const dateStr = fmt.format(entry.data.date)
+const pagePath = withLocalePrefix(getCollectionEntryPath(site, 'writing', slug), locale)
+const pagefindIgnore = entry.data.search === false || isSearchExcluded(site, pagePath)
+---
+<Base title={entry.data.title} description={entry.data.description}>
+  <div class="max-w-3xl mx-auto px-8 py-16">
+    <div class="mb-10">
+      <div class="flex items-baseline gap-4 text-xs text-zinc-400 mb-3">
+        <span>{dateStr}</span>
+        {entry.data.author && <span>— {entry.data.author}</span>}
+      </div>
+      <h1 class="text-2xl font-bold tracking-tight">{entry.data.title}</h1>
+      {entry.data.description && (
+        <p class="text-sm text-zinc-500 mt-2">{entry.data.description}</p>
+      )}
+    </div>
+    <article class="prose" data-pagefind-ignore={pagefindIgnore ? true : undefined}>
+      <Content
+        components={{
+          Tooltip,
+          FileTree,
+          Callout,
+          img: Image,
+          Tabs,
+          Tab,
+          Mermaid,
+        }}
+      />
+    </article>
+  </div>
+</Base>

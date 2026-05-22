@@ -1,7 +1,8 @@
-import { findConfigFile, loadUserConfig, resolveDocsDir } from '../utils/config.js'
+import { DocsMintError } from '../errors/DocsMintError.js'
+import { findConfigFile, loadUserConfig, resolveDocsDir } from '../infrastructure/project/config.js'
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { normalizePages, withDefaults } from '@docsmint/config'
+import { isStarterCollectionKey, normalizePages, resolveCapabilityFlags, withDefaults } from '@docsmint/config'
 
 /**
  * Loads DocsMint project configuration and docs-directory context.
@@ -56,23 +57,32 @@ export class ConfigLoader {
     const mode = config.navPolicy?.mode ?? 'strict'
     const message = `Unknown internal nav routes: ${unknownInternal.join(', ')}`
     if (mode === 'strict') {
-      throw new Error(message)
+      throw new DocsMintError(message, 'CONFIG_NAV_UNKNOWN', 'Fix nav hrefs or set navPolicy.mode to "relaxed"')
     }
     io.info(`[docsmint] ${message}`)
   }
 
   async #collectKnownRoutes(docsDir, config) {
     const routes = new Set(['/'])
-    const docsBasePath = config.sections?.docs?.basePath ?? '/docs'
-    const writingBasePath = config.sections?.writing?.basePath ?? '/writing'
-    const docsEnabled = config.sections?.docs?.enabled ?? true
-    const writingEnabled = config.sections?.writing?.enabled ?? true
+    const capabilityFlags = resolveCapabilityFlags(config)
+    const enabledCollections = Object.entries(config.collections ?? {})
+      .filter(([key, collection]) => {
+        if (isStarterCollectionKey(key)) {
+          return capabilityFlags[key] === true
+        }
+        return collection?.enabled
+      })
+      .map(([key, collection]) => ({
+        key,
+        kind: collection.kind ?? 'docs',
+        basePath: collection.basePath ?? `/${key}`,
+      }))
 
-    if (docsEnabled) {
-      routes.add(docsBasePath)
-    }
-    if (writingEnabled) {
-      routes.add(writingBasePath)
+    for (const collection of enabledCollections) {
+      if (collection.kind === 'page' && /^pages$/.test(collection.key)) {
+        continue
+      }
+      routes.add(collection.basePath)
     }
 
     const customPages = normalizePages(config.pages ?? [])
@@ -80,25 +90,17 @@ export class ConfigLoader {
       routes.add(`/${page.slug}`)
     }
 
-    if (docsEnabled) {
-      const docsFiles = await this.#walkMarkdown(path.resolve(docsDir, 'src/content/docs'))
-      for (const filePath of docsFiles) {
-        const id = path
-          .relative(path.resolve(docsDir, 'src/content/docs'), filePath)
-          .replace(/\.(md|mdx)$/i, '')
-        if (!id) continue
-        routes.add(`${docsBasePath}/${id.replaceAll(path.sep, '/')}`)
+    for (const collection of enabledCollections) {
+      if (collection.kind === 'page' && /^pages$/.test(collection.key)) {
+        continue
       }
-    }
-
-    if (writingEnabled) {
-      const writingFiles = await this.#walkMarkdown(path.resolve(docsDir, 'src/content/writing'))
-      for (const filePath of writingFiles) {
+      const contentFiles = await this.#walkMarkdown(path.resolve(docsDir, `src/content/${collection.key}`))
+      for (const filePath of contentFiles) {
         const id = path
-          .relative(path.resolve(docsDir, 'src/content/writing'), filePath)
+          .relative(path.resolve(docsDir, `src/content/${collection.key}`), filePath)
           .replace(/\.(md|mdx)$/i, '')
         if (!id) continue
-        routes.add(`${writingBasePath}/${id.replaceAll(path.sep, '/')}`)
+        routes.add(`${collection.basePath}/${id.replaceAll(path.sep, '/')}`)
       }
     }
 

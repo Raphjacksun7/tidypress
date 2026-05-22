@@ -1,25 +1,80 @@
 ---
 import { getCollection } from 'astro:content'
 import { getConfig } from '../config/getConfig'
-import { sortDocs } from '../utils/sortDocs'
+import { sortDocs } from '../domain/content/sortDocs'
+import { onlyPublished } from '../domain/content/published'
+import { localizeEntries, resolveLocale, withLocalePrefix } from '../i18n/locale'
+import {
+  getEnabledContentCollections,
+  getLocalizedCollectionBasePath,
+  isLegacyStarterCollectionKey,
+} from '../domain/content/collections'
+import {
+  resolveActiveVersionPath,
+  stripDocExtension,
+  versionContentPrefix,
+} from '../routing/versioning'
 
 const rawSite = (await import('../../docsmint.config.ts')).default
 const site = getConfig(rawSite)
-const docsBasePath = site.sections?.docs?.basePath ?? '/docs'
-const docs = sortDocs(await getCollection('docs'))
-const firstDocHref = docs[0]
-  ? `${docsBasePath}/${docs[0].id.replace(/\.mdx?$/, '')}`
+const localeState = resolveLocale(Astro.url.pathname, site.i18n)
+const activeLocale = localeState.activeLocale
+const docsCollections = getEnabledContentCollections(site)
+  .filter(collection => collection.kind === 'docs')
+  .map(collection => ({
+    id: collection.key,
+    basePath: getLocalizedCollectionBasePath(site, collection.key, activeLocale),
+    isLegacy: isLegacyStarterCollectionKey(site, collection.key),
+  }))
+const fallbackCollection = docsCollections.find(collection => collection.id === 'docs') ?? docsCollections[0]
+const activeDocsCollection = docsCollections.find(({ basePath }) =>
+  Astro.url.pathname === basePath || Astro.url.pathname.startsWith(`${basePath}/`),
+) ?? fallbackCollection
+if (!activeDocsCollection) {
+  throw new Error('No enabled docs-like collections available for Sidebar.')
+}
+const docsBasePath = activeDocsCollection.basePath
+const targetLocale = localeState.activeLocale ?? localeState.defaultLocale
+const docs = sortDocs(localizeEntries(
+  onlyPublished(await getCollection(activeDocsCollection.id as any)),
+  localeState,
+  targetLocale,
+).map(item => ({
+  ...item.entry,
+  id: item.slug,
+})))
+const localizedVersions = (site.versions ?? []).map(version => ({
+  ...version,
+  path: withLocalePrefix(version.path, localeState.activeLocale),
+}))
+const activeVersionPath = activeDocsCollection.isLegacy
+  ? resolveActiveVersionPath(localizedVersions, Astro.url.pathname)
+  : undefined
+const activeContentPrefix = activeVersionPath ? versionContentPrefix(activeVersionPath, docsBasePath) : undefined
+const visibleDocs = activeContentPrefix
+  ? docs.filter(entry => {
+      const id = stripDocExtension(entry.id)
+      return id === activeContentPrefix || id.startsWith(`${activeContentPrefix}/`)
+    })
+  : docs
+const firstDocHref = visibleDocs[0]
+  ? `${docsBasePath}/${stripDocExtension(visibleDocs[0].id)}`
   : undefined
 
 const tree: Record<string, { title: string; href: string }[]> = {}
 
-for (const entry of docs) {
-  const parts = entry.id.replace(/\.mdx?$/, '').split('/')
+for (const entry of visibleDocs) {
+  const entryId = stripDocExtension(entry.id)
+  const displayId =
+    activeContentPrefix && entryId.startsWith(`${activeContentPrefix}/`)
+      ? entryId.slice(activeContentPrefix.length + 1)
+      : entryId
+  const parts = displayId.split('/')
   const section = parts.length > 1 ? parts[0] : ''
   tree[section] = tree[section] || []
   tree[section].push({
     title: entry.data.title,
-    href: `${docsBasePath}/${entry.id.replace(/\.mdx?$/, '')}`,
+    href: `${docsBasePath}/${entryId}`,
   })
 }
 

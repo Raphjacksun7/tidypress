@@ -1,11 +1,8 @@
-import { copyDistToDestination, resolveDeployTarget } from '../utils/deploy.js'
+import { DocsMintError } from '../errors/DocsMintError.js'
+import { copyDistToDestination, resolveDeployTarget } from '../application/deployment/deploy-target.js'
 
 /**
  * @typedef {{ projectRoot: string, distDir: string, target?: string }} DeployRequest
- */
-
-/**
- * @typedef {{ supports: (request: DeployRequest) => boolean, execute: (request: DeployRequest) => Promise<void> }} DeployStrategy
  */
 
 /**
@@ -16,6 +13,7 @@ export class ArtifactOnlyDeployStrategy {
    * @param {{ io?: { info: (message: string) => void } }} [dependencies]
    */
   constructor({ io = console } = {}) {
+    this.id = 'artifact-only'
     this.io = io
   }
 
@@ -41,6 +39,10 @@ export class ArtifactOnlyDeployStrategy {
  * Copies the build artifact into a local destination path.
  */
 export class LocalCopyDeployStrategy {
+  constructor() {
+    this.id = 'local-copy'
+  }
+
   /**
    * @param {DeployRequest} request
    * @returns {boolean}
@@ -56,7 +58,7 @@ export class LocalCopyDeployStrategy {
   async execute(request) {
     const plan = resolveDeployTarget(request)
     if (plan.kind !== 'local-copy') {
-      throw new Error('LocalCopyDeployStrategy received unsupported target.')
+      throw new DocsMintError('Local copy deploy received unsupported target.', 'DEPLOY_INTERNAL')
     }
     await copyDistToDestination({
       distDir: request.distDir,
@@ -66,13 +68,14 @@ export class LocalCopyDeployStrategy {
 }
 
 /**
- * Emits host-agnostic instructions for external targets (e.g. bucket URIs).
+ * Emits host-agnostic instructions for external targets.
  */
 export class ExternalTargetDeployStrategy {
   /**
    * @param {{ io?: { info: (message: string) => void } }} [dependencies]
    */
   constructor({ io = console } = {}) {
+    this.id = 'external-target'
     this.io = io
   }
 
@@ -91,7 +94,7 @@ export class ExternalTargetDeployStrategy {
   async execute(request) {
     const plan = resolveDeployTarget(request)
     if (plan.kind !== 'external-target') {
-      throw new Error('ExternalTargetDeployStrategy received unsupported target.')
+      throw new DocsMintError('External deploy received unsupported target.', 'DEPLOY_INTERNAL')
     }
     this.io.info(`Build artifact ready: ${request.distDir}`)
     this.io.info(`Target specified: ${plan.target}`)

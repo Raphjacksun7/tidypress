@@ -1,0 +1,38 @@
+---
+import type { DocsMintVersion } from '@docsmint/config'
+import { relativeDocsPath, resolveActiveVersionPath, versionTargetPath } from '../routing/versioning'
+
+export interface Props {
+  versions: DocsMintVersion[]
+  docsBasePath?: string
+}
+
+const { versions = [], docsBasePath = '/docs' } = Astro.props
+const normalizedVersions = versions.filter(
+  (version) => Boolean(version?.label) && Boolean(version?.path),
+)
+const pathname = Astro.url.pathname
+const selectedPath = resolveActiveVersionPath(normalizedVersions, pathname) ?? normalizedVersions[0]?.path
+const currentRelativePath = relativeDocsPath(pathname, docsBasePath, selectedPath)
+---
+{
+  normalizedVersions.length > 0 && (
+    <label class="hidden sm:inline-flex items-center">
+      <span class="sr-only">Select version</span>
+      <select
+        aria-label="Select version"
+        class="text-sm text-zinc-500 bg-transparent border border-zinc-200 rounded px-2 py-1"
+        onchange="if (this.value) window.location.assign(this.value)"
+      >
+        {normalizedVersions.map((version) => (
+          <option
+            value={versionTargetPath(version.path, currentRelativePath)}
+            selected={version.path === selectedPath}
+          >
+            {version.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  )
+}

@@ -19,8 +19,10 @@ Output: `docs/.docsmint/dist/` (HTML, `_astro` assets, and `pagefind` index).
 `docsmint deploy` always runs a build first, then selects one strategy:
 
 - no target: report artifact path only
-- local path target (`./public-docs`): copy `dist` there
-- URI target (`gs://bucket`, `s3://bucket`, etc.): print host-agnostic upload instructions
+- local path target (`./public-docs`, `file:///tmp/site`): copy `dist` there
+- provider target (`vercel`, `netlify`, `surge`, `github-pages`, `cloudflare`): run provider CLI
+- DIY target (`docker`, `static`, `s3`, `ssh`): run local deploy-diy workflow
+- other URI target (`gs://bucket`, etc.): print host-agnostic upload instructions
 
 Examples:
 
@@ -28,6 +30,10 @@ Examples:
 docsmint deploy
 docsmint deploy ./release/docs
 docsmint deploy file:///tmp/docsmint-site
+docsmint deploy docker
+docsmint deploy static
+docsmint deploy s3://my-bucket/docs
+docsmint deploy ssh://deploy@example.com/var/www/site
 docsmint deploy gs://my-bucket/docs
 ```
 
@@ -50,35 +56,88 @@ server {
 
 ## Docker
 
-Two-stage image: build static output, then serve with nginx.
+Generate deployment files directly in `docs/.docsmint/dist/`:
+
+```bash
+docsmint deploy docker
+```
+
+This writes:
+
+- `Dockerfile`
+- `docker-compose.yml`
+
+Then build and run from the dist directory:
 
 ```dockerfile
-FROM node:22-alpine AS builder
-WORKDIR /app
-COPY . .
-RUN npm i -g docsmint
-RUN docsmint build
-
 FROM nginx:alpine
-COPY --from=builder /app/docs/.docsmint/dist /usr/share/nginx/html
+COPY . /usr/share/nginx/html
 EXPOSE 80
 ```
 
 ```bash
-docker build -t my-docs .
-docker run -p 8080:80 my-docs
+cd docs/.docsmint/dist
+docker compose up -d --build
 ```
 
 ## Static hosts
 
-Upload `docs/.docsmint/dist/` to any static file host:
+Confirm static artifact output without running a provider command:
+
+```bash
+docsmint deploy static
+```
+
+Then upload `docs/.docsmint/dist/` to any static file host:
 
 - **GitHub Pages** — push `dist/` to the `gh-pages` branch
 - **Azure Static Web Apps** — output dir `docs/.docsmint/dist`
 - **Netlify / Vercel** — build command `docsmint build`, publish dir `docs/.docsmint/dist`
 - **S3 / GCS / Azure Blob** — sync static files from `docs/.docsmint/dist`
 
+### S3 sync
+
+Use either an explicit URI target or `DOCSMINT_S3_TARGET`:
+
+```bash
+docsmint deploy s3://my-bucket/docs
+# or
+DOCSMINT_S3_TARGET=s3://my-bucket/docs docsmint deploy s3
+```
+
+Under the hood this runs:
+
+```bash
+aws s3 sync docs/.docsmint/dist/ s3://my-bucket/docs --delete
+```
+
+### SSH sync
+
+Use either a URI/SCP target or `DOCSMINT_SSH_TARGET`:
+
+```bash
+docsmint deploy deploy@example.com:/var/www/docs
+# or
+DOCSMINT_SSH_TARGET=deploy@example.com:/var/www/docs docsmint deploy ssh
+```
+
+Under the hood this runs:
+
+```bash
+rsync -az --delete docs/.docsmint/dist/ deploy@example.com:/var/www/docs
+```
+
 ## CI example
+
+Generate a starter workflow from the CLI:
+
+```bash
+docsmint deploy vercel --with-ci
+```
+
+This writes `.github/workflows/deploy.yml` with required secret placeholders for the selected provider.
+
+Custom CI flow:
 
 ```yaml
 steps:

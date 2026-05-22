@@ -1,0 +1,39 @@
+import { DocsMintError } from '../errors/DocsMintError.js'
+
+/**
+ * Handles `docsmint export` (stretch scaffold).
+ */
+export class ExportCommand {
+  /**
+   * @param {{ experimentalFeatureService: import('../services/ExperimentalFeatureService.js').ExperimentalFeatureService }} dependencies
+   */
+  constructor({ experimentalFeatureService }) {
+    this.experimentalFeatureService = experimentalFeatureService
+  }
+
+  /**
+   * @param {{
+   *   projectRoot: string
+   *   enableExperimentalExport: boolean
+   *   format: 'pdf' | 'epub' | 'archive'
+   *   source?: string
+   * }} request
+   * @returns {Promise<void>}
+   */
+  async execute({ projectRoot, enableExperimentalExport, format }) {
+    await this.experimentalFeatureService.assertEnabled({
+      projectRoot,
+      feature: 'export',
+      cliEnabled: enableExperimentalExport,
+      cliHint: 'Use docsmint export <pdf|epub|archive> [source] --enable-experimental-export',
+      configHint: 'Set experimental.export = true in docs/docsmint.config.ts',
+    })
+
+    throw new DocsMintError(
+      `Experimental export (${format}) scaffold is ready, but implementation is not available yet.`,
+      'EXPERIMENTAL_NOT_IMPLEMENTED',
+      'Task 19 keeps stretch work guarded until prerequisites are production-ready.',
+      { exitCode: 2 },
+    )
+  }
+}

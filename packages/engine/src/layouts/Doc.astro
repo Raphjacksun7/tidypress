@@ -3,6 +3,7 @@ import Base from './Base.astro'
 import Sidebar from '../components/Sidebar.astro'
 import Toc from '../components/Toc.astro'
 import { getConfig } from '../config/getConfig'
+import { getUiStrings, resolveLocale } from '../i18n/locale'
 
 export interface Props {
   title: string
@@ -14,6 +15,7 @@ export interface Props {
 const { title, description, headings = [], editPath } = Astro.props
 const rawSite = (await import('../../docsmint.config.ts')).default
 const site = getConfig(rawSite)
+const strings = getUiStrings(site, resolveLocale(Astro.url.pathname, site.i18n))
 
 const editBaseUrl = site.repository?.url
 const editBranch = site.repository?.branch ?? 'main'
@@ -31,7 +33,7 @@ const resolvedEditUrl =
     <details>
       <summary class="text-xs font-bold uppercase tracking-wide cursor-pointer"
                style="list-style:none; color:var(--muted)">
-        On this page
+        {strings.onThisPageLabel}
       </summary>
       <div class="pt-3 pb-1">
         <Sidebar />
@@ -60,7 +62,7 @@ const resolvedEditUrl =
         {resolvedEditUrl && (
           <p class="mt-4 text-xs">
             <a href={resolvedEditUrl} target="_blank" rel="noopener noreferrer" class="text-zinc-500">
-              Edit this page →
+              {strings.editThisPageLabel} ->
             </a>
           </p>
         )}

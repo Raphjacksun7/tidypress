@@ -25,6 +25,8 @@ git push origin v0.1.1
 ## What happens after tagging
 
 The `Publish` workflow:
+- verifies the release tag version matches npm and PyPI package versions
+- runs workspace tests and builds (including `examples/minimal` smoke build)
 - publishes `packages/cli` to npm
 - builds and publishes `wrappers/python` to PyPI
 
@@ -36,9 +38,19 @@ This section tracks engineering work that affects release sequencing and risk.
 
 - `pages` custom routes (`docs/src/content/pages/`) replaced legacy extension page routing.
 - `sections.docs.enabled` and `sections.writing.enabled` added for section-level control.
+- `collections` is the canonical routing surface; `sections` remains compatibility-only.
+- `docsmint migrate-sections` generates deterministic migration output at
+  `docs/.docsmint/migrations/sections-to-collections.json`.
 - Shared docs sorting added to keep redirect/sidebar ordering consistent.
 - Edit-link support added via repository metadata.
 - Search exclusion controls added (`search: false` + config excludes).
+
+### Compatibility lifecycle (sections -> collections)
+
+- `sections` remains accepted for backward compatibility in 0.1.x.
+- `collections` always takes precedence when both `sections` and `collections` define docs/writing.
+- Migration guidance must remain in `README.md` and site docs until a formal deprecation release is announced.
+- Any future removal requires a major-version announcement and explicit migration notes.
 
 ### Next release targets
 

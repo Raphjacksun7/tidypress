@@ -11,11 +11,11 @@ export class InitCommand {
   }
 
   /**
-   * @param {{ projectRoot: string }} request
+   * @param {{ projectRoot: string, starterPreset?: string }} request
    * @returns {Promise<void>}
    */
   async execute(request) {
-    const { docsDir } = await this.scaffoldService.scaffold(request)
-    this.io.info(`Initialized DocsMint in ${docsDir}`)
+    const { docsDir, starterPreset } = await this.scaffoldService.scaffold(request)
+    this.io.info(`Initialized DocsMint in ${docsDir} (starter: ${starterPreset})`)
   }
 }

@@ -6,77 +6,81 @@ const { code } = Astro.props
 </div>
 
 <script>
+// @ts-nocheck
 import mermaid from 'mermaid'
 
 /**
- * Must match `Base.astro` / `ThemeToggle.astro`: explicit `data-theme` or system preference.
+ * Mirrors Base/ThemeToggle theme precedence: explicit data-theme, then system.
  */
 function isPageDark() {
-  const t = document.documentElement.getAttribute('data-theme')
-  if (t === 'dark') return true
-  if (t === 'light') return false
+  const themeOverride = document.documentElement.getAttribute('data-theme')
+  if (themeOverride === 'dark') return true
+  if (themeOverride === 'light') return false
   return window.matchMedia('(prefers-color-scheme: dark)').matches
 }
 
-/**
- * Mermaid 11: theme + themeVariables so edges, arrowheads, and text track DocsMint
- * light/dark (near-black / near-white) instead of a mismatched “neutral” palette.
- * @returns {import('mermaid').MermaidConfig}
- */
+function cssToken(name, fallback) {
+  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+  return value || fallback
+}
+
 function buildMermaidConfig() {
   const dark = isPageDark()
+  const fg = cssToken('--fg', dark ? '#fafafa' : '#0a0a0a')
+  const muted = cssToken('--muted', dark ? '#a1a1aa' : '#3f3f46')
+  const border = cssToken('--border', dark ? '#27272a' : '#e5e5e5')
+  const surface = cssToken('--surface', dark ? '#18181b' : '#f4f4f4')
   if (dark) {
-    return /** @type {import('mermaid').MermaidConfig} */ ({
+    return {
       startOnLoad: false,
       theme: 'dark',
       themeVariables: {
         background: 'transparent',
-        // Edges, arrow strokes, and default diagram lines
-        lineColor: '#e4e4e7',
-        textColor: '#e4e4e7',
-        primaryTextColor: '#e4e4e7',
-        secondaryTextColor: '#d4d4d8',
-        tertiaryTextColor: '#a1a1aa',
-        primaryColor: '#3f3f46',
-        primaryBorderColor: '#a1a1aa',
-        secondaryColor: '#52525b',
-        mainBkg: '#3f3f46',
-        secondBkg: '#3f3f46',
-        tertiaryColor: '#52525b',
-        nodeBorder: '#a1a1aa',
-        clusterBkg: 'rgba(24, 24, 27, 0.55)',
-        titleColor: '#fafafa',
+        lineColor: fg,
+        textColor: fg,
+        primaryTextColor: fg,
+        secondaryTextColor: muted,
+        tertiaryTextColor: muted,
+        primaryColor: surface,
+        primaryBorderColor: muted,
+        secondaryColor: border,
+        mainBkg: surface,
+        secondBkg: surface,
+        tertiaryColor: border,
+        nodeBorder: muted,
+        clusterBkg: surface,
+        titleColor: fg,
         edgeLabelBackground: 'rgba(9, 9, 10, 0.92)',
       },
       fontFamily: 'var(--font-mono, ui-monospace, monospace)',
-    })
+    }
   }
-  return /** @type {import('mermaid').MermaidConfig} */ ({
+  return {
     startOnLoad: false,
     theme: 'default',
     themeVariables: {
       background: 'transparent',
-      lineColor: '#3f3f46',
-      textColor: '#18181b',
-      primaryTextColor: '#18181b',
-      secondaryTextColor: '#27272a',
-      tertiaryTextColor: '#3f3f46',
-      primaryColor: '#fafafa',
-      primaryBorderColor: '#3f3f46',
-      secondaryColor: '#e4e4e7',
-      mainBkg: '#fafafa',
-      secondBkg: '#f4f4f5',
-      nodeBorder: '#3f3f46',
-      clusterBkg: '#f4f4f5',
-      titleColor: '#0a0a0a',
+      lineColor: muted,
+      textColor: fg,
+      primaryTextColor: fg,
+      secondaryTextColor: muted,
+      tertiaryTextColor: muted,
+      primaryColor: surface,
+      primaryBorderColor: muted,
+      secondaryColor: border,
+      mainBkg: surface,
+      secondBkg: surface,
+      nodeBorder: muted,
+      clusterBkg: surface,
+      titleColor: fg,
       edgeLabelBackground: 'rgba(255, 255, 255, 0.9)',
     },
     fontFamily: 'var(--font-mono, ui-monospace, monospace)',
-  })
+  }
 }
 
 async function renderAll() {
-  mermaid.initialize(/** @type {import('mermaid').MermaidConfig} */ (buildMermaidConfig()))
+  mermaid.initialize(buildMermaidConfig())
   const wrappers = document.querySelectorAll('[data-mermaid]')
   for (const el of wrappers) {
     const code = el.getAttribute('data-mermaid') ?? ''

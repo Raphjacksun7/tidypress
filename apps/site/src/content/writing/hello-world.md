@@ -2,13 +2,13 @@
 title: Why we built DocsMint
 date: "2026-04-10"
 author: Raphael Avocegamou
-description: We wanted documentation that reads as clearly as the software it describes.
+description: We wanted an engineer publishing workflow with ownership and clean defaults.
 ---
 
-Most documentation systems can generate HTML. That is not the hard part.
+Most publishing tools can render markdown. That is not the hard part.
 
-The hard part is shipping docs that are clear, consistent, and fast to maintain without
-turning every project into theme work.
+The hard part is shipping writing that is clear, consistent, and fast to maintain without
+turning every project into theme work or platform setup.
 
 DocsMint exists to solve that gap.
 
@@ -26,7 +26,7 @@ The goal is simple: write content, publish quickly, keep quality high.
 ---
 
 DocsMint is not a generic theme builder and not a CMS. It is a focused publishing system
-for documentation and writing.
+for engineer docs, blogs, and technical writing.
 
 You own content and config. DocsMint owns the engine internals.
 
@@ -44,4 +44,4 @@ docsmint dev
 
 ---
 
-Minimal markdown documentation builder. Write docs in markdown, get a fast static site.
+Hugo-speed output with Ghost-style defaults, without giving up content ownership.

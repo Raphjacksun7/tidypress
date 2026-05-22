@@ -19,6 +19,16 @@ export default defineConfig({
     favicon: '/favicon-white.svg',
   },
   typography: { scale: 'medium' },
+  capabilities: {
+    enable: ['themingCustom'],
+  },
+  theme: {
+    mode: 'custom',
+    tokens: {
+      light: { bg: '#ffffff', fg: '#111111' },
+      dark: { bg: '#0b0b0b', fg: '#f5f5f5' },
+    },
+  },
   siteUrl: 'https://docs.example.com',
   nav: [
     { label: 'docs', href: '/docs/getting-started', priority: 'core' },
@@ -32,9 +42,11 @@ export default defineConfig({
   ],
   footer: [{ label: 'GitHub', href: 'https://github.com/your/repo' }],
   pages: ['about', { slug: 'work', navLabel: 'my work' }],
-  sections: {
-    docs: { enabled: true, basePath: '/docs' },
-    writing: { enabled: true, basePath: '/writing' },
+  collections: {
+    docs: { enabled: true, basePath: '/docs', kind: 'docs', label: 'docs' },
+    writing: { enabled: true, basePath: '/writing', kind: 'writing', label: 'writing' },
+    playbooks: { enabled: true, basePath: '/playbooks', kind: 'docs', label: 'playbooks' },
+    guides: { enabled: true, basePath: '/guides', kind: 'docs', label: 'guides' },
   },
   navPolicy: {
     mode: 'strict',
@@ -59,7 +71,7 @@ name: 'my-project'
 Short description. Used for metadata and homepage copy.
 
 ```ts
-description: 'Minimal markdown documentation builder.'
+description: 'Static publishing for engineers who want docs and writing they own.'
 ```
 
 ### `branding`
@@ -92,7 +104,7 @@ Path to the browser-tab favicon. Falls back to `branding.icon` if omitted.
 
 **SVG favicons** are referenced directly with `type="image/svg+xml"`. Place the file in `docs/src/content/public/` so it is served at the root.
 
-**Raster favicons** are dynamically converted to a monochrome data URL via an inline canvas script. The script watches for theme changes (`data-theme` attribute and `prefers-color-scheme`) and updates the favicon live — no page reload needed.
+**Raster favicons** are linked directly as regular image assets. They do not receive runtime monochrome conversion, so use a pre-styled raster favicon when you need a specific tab appearance.
 
 ```ts
 branding: {
@@ -129,6 +141,51 @@ Recommended naming:
 - `default`: standard reading size
 - `medium`: slightly larger for comfort
 - `large`: high-comfort / accessibility-focused size
+
+### `theme` (V1 contract)
+
+Theme configuration is normalized through a typed contract:
+
+- `mode: 'guardrailed' | 'custom'`
+- `preset: 'baseline'` (current V1 preset)
+- `tokens` (custom mode only): `light` + `dark` token maps using this guarded surface:
+  - `bg`, `fg`, `muted`, `border`, `surface`, `codeBg`, `codeFg`
+
+```ts
+theme: {
+  mode: 'guardrailed',
+  preset: 'baseline',
+}
+```
+
+```ts
+capabilities: { enable: ['themingCustom'] },
+theme: {
+  mode: 'custom',
+  tokens: {
+    light: { bg: '#ffffff', fg: '#111111' },
+    dark: { bg: '#0b0b0b', fg: '#f5f5f5' },
+  },
+}
+```
+
+Custom mode requires the `themingCustom` capability (via `capabilities.enable`). When `theming` is disabled, DocsMint falls back to the guardrailed baseline theme.
+
+### `capabilities`
+
+Capability toggles are resolved deterministically through the central registry.
+
+```ts
+capabilities: {
+  enable: ['themingCustom', 'ai'],
+  disable: ['writing'],
+}
+```
+
+V1 theming capability keys:
+
+- `theming` (stable, enabled by default)
+- `themingCustom` (stable, disabled by default)
 
 ### `nav`
 
@@ -239,16 +296,46 @@ pages: [
 
 Each custom page renders from `docs/src/content/pages/<slug>.md`.
 
-### `sections`
+### `collections`
 
-Enable or disable first-party sections. Base paths are currently fixed to `/docs` and `/writing`.
+Collections are the source of truth for content routing. The default starter preset includes `docs`, `writing`, and `pages`, but those are not hardcoded limits.
 
 ```ts
+collections: {
+  docs: { enabled: true, basePath: '/docs', kind: 'docs', label: 'docs' },
+  writing: { enabled: true, basePath: '/writing', kind: 'writing', label: 'writing' },
+  playbooks: { enabled: true, basePath: '/playbooks', kind: 'docs', label: 'playbooks' },
+  journal: { enabled: true, basePath: '/journal', kind: 'writing', label: 'journal' },
+  company: { enabled: true, basePath: '/company', kind: 'page', label: 'company' },
+}
+```
+
+Supported fields per collection:
+
+- `enabled?: boolean` - enables route generation for the collection
+- `basePath?: string` - absolute path segment (for example `/playbooks`)
+- `kind?: 'docs' | 'writing' | 'page'` - rendering behavior
+- `label?: string` - nav label fallback
+
+### `sections` (legacy shim)
+
+`sections` is kept for backward compatibility and maps to `collections.docs` + `collections.writing`. Prefer `collections` for all new configuration.
+
+```ts
+// Legacy input still accepted:
 sections: {
   docs: { enabled: true, basePath: '/docs' },
   writing: { enabled: true, basePath: '/writing' },
 }
 ```
+
+Migration lifecycle:
+
+- Current: accepted as compatibility input.
+- Recommended now: move to `collections`.
+- Practical path: run `docsmint migrate-sections` and copy generated entries from
+  `docs/.docsmint/migrations/sections-to-collections.json`.
+- Precedence: when both are present, `collections` wins and `sections` is ignored for that key.
 
 ### `navPolicy`
 
@@ -271,7 +358,7 @@ import { defineConfig } from 'docsmint/config'
 
 export default defineConfig({
   name: 'DocsMint',
-  description: 'Minimal markdown docs and writing.',
+  description: 'Engineering notes, docs, and long-form writing.',
   branding: {
     icon: '/favicon.svg',
     favicon: '/favicon-white.svg',
@@ -290,9 +377,10 @@ export default defineConfig({
   ],
   footer: [{ label: 'GitHub', href: 'https://github.com/your/repo' }],
   pages: ['about', { slug: 'work', navLabel: 'My Work' }],
-  sections: {
-    docs: { enabled: true, basePath: '/docs' },
-    writing: { enabled: true, basePath: '/writing' },
+  collections: {
+    docs: { enabled: true, basePath: '/docs', kind: 'docs', label: 'docs' },
+    writing: { enabled: true, basePath: '/writing', kind: 'writing', label: 'writing' },
+    playbooks: { enabled: true, basePath: '/playbooks', kind: 'docs', label: 'playbooks' },
   },
   navPolicy: { mode: 'strict', maxVisibleDesktop: 3, maxVisibleMobile: 2 },
   search: { exclude: ['docs/internal/*'] },

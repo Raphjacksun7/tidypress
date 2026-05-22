@@ -103,6 +103,53 @@ test('withDefaults merges default section settings', () => {
   assert.equal(config.sections?.docs?.enabled, true)
   assert.equal(config.sections?.writing?.enabled, false)
   assert.equal(config.sections?.docs?.basePath, '/docs')
+  assert.equal(config.collections?.docs?.enabled, true)
+  assert.equal(config.collections?.writing?.enabled, false)
+})
+
+test('withDefaults supports collections registry and derives sections shim', () => {
+  const config = withDefaults({
+    name: 'site',
+    collections: {
+      docs: { basePath: '/reference' },
+      writing: { enabled: false },
+    },
+  })
+
+  assert.equal(config.collections?.docs?.basePath, '/reference')
+  assert.equal(config.collections?.writing?.enabled, false)
+  assert.equal(config.sections?.docs?.basePath, '/reference')
+  assert.equal(config.sections?.writing?.enabled, false)
+})
+
+test('withDefaults enables arbitrary collection nav when configured', () => {
+  const config = withDefaults({
+    name: 'site',
+    collections: {
+      playbooks: { enabled: true, basePath: '/playbooks', label: 'playbooks', kind: 'docs' },
+    },
+  })
+
+  assert.deepEqual(config.nav, [
+    { label: 'docs', href: '/docs', external: false, target: undefined, rel: undefined, priority: 'secondary' },
+    { label: 'writing', href: '/writing', external: false, target: undefined, rel: undefined, priority: 'secondary' },
+    { label: 'playbooks', href: '/playbooks', external: false, target: undefined, rel: undefined, priority: 'secondary' },
+  ])
+})
+
+test('withDefaults keeps explicit collections when sections are also provided', () => {
+  const config = withDefaults({
+    name: 'site',
+    sections: {
+      docs: { basePath: '/legacy-docs' },
+    },
+    collections: {
+      docs: { basePath: '/reference' },
+    },
+  })
+
+  assert.equal(config.collections?.docs?.basePath, '/reference')
+  assert.equal(config.sections?.docs?.basePath, '/reference')
 })
 
 test('withDefaults normalizes typography scale and supports "extra" alias', () => {
@@ -145,7 +192,7 @@ test('withDefaults allows custom section base paths', () => {
 test('withDefaults uses section base paths for default nav links', () => {
   const config = withDefaults({
     name: 'site',
-    sections: {
+    collections: {
       docs: { basePath: '/reference' },
       writing: { basePath: '/notes' },
     },
@@ -155,4 +202,30 @@ test('withDefaults uses section base paths for default nav links', () => {
     { label: 'docs', href: '/reference', external: false, target: undefined, rel: undefined, priority: 'secondary' },
     { label: 'writing', href: '/notes', external: false, target: undefined, rel: undefined, priority: 'secondary' },
   ])
+})
+
+test('withDefaults normalizes i18n locales and default locale', () => {
+  const config = withDefaults({
+    name: 'site',
+    i18n: {
+      locales: ['en', 'fr', 'fr'],
+    },
+  })
+
+  assert.equal(config.i18n?.defaultLocale, 'en')
+  assert.deepEqual(config.i18n?.locales, ['en', 'fr'])
+})
+
+test('withDefaults rejects default locale outside locales list', () => {
+  assert.throws(
+    () =>
+      withDefaults({
+        name: 'site',
+        i18n: {
+          defaultLocale: 'es',
+          locales: ['en', 'fr'],
+        },
+      }),
+    /defaultLocale/i,
+  )
 })

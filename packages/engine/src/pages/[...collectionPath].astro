@@ -1,0 +1,272 @@
+---
+import { getCollection, render } from 'astro:content'
+import Base from '../layouts/Base.astro'
+import Doc from '../layouts/Doc.astro'
+import Tooltip from '../components/Tooltip.astro'
+import FileTree from '../components/FileTree.astro'
+import Callout from '../components/Callout.astro'
+import Image from '../components/Image.astro'
+import Tabs from '../components/Tabs.astro'
+import Tab from '../components/Tab.astro'
+import Mermaid from '../components/Mermaid.astro'
+import { getConfig } from '../config/getConfig'
+import { onlyPublished } from '../domain/content/published'
+import { isSearchExcluded } from '../search/exclusion'
+import { localizeEntries, resolveLocale, withLocalePrefix } from '../i18n/locale'
+import {
+  getCollectionEntrySlug,
+  getEnabledCollections,
+  isLegacyStarterCollectionKey,
+  type CollectionDefinition,
+} from '../domain/content/collections'
+
+type CollectionEntryRef = {
+  entry: Awaited<ReturnType<typeof getCollection>>[number]
+  slug: string
+}
+
+function collectionBasePath(collection: CollectionDefinition): string {
+  return collection.basePath ?? `/${collection.key}`
+}
+
+function entryPath(collection: CollectionDefinition, slug: string, locale?: string): string {
+  return withLocalePrefix(`${collectionBasePath(collection)}/${slug}`, locale)
+}
+
+function sortWritingEntries(entries: CollectionEntryRef[]): CollectionEntryRef[] {
+  return [...entries].sort(
+    (a, b) =>
+      new Date((b.entry.data as { date?: string | Date }).date ?? 0).getTime() -
+      new Date((a.entry.data as { date?: string | Date }).date ?? 0).getTime(),
+  )
+}
+
+export async function getStaticPaths() {
+  const rawSite = (await import('../../docsmint.config.ts')).default
+  const site = getConfig(rawSite)
+  const localeState = resolveLocale('/', site.i18n)
+  const locales = site.i18n?.locales ?? []
+  const collectionDefs = getEnabledCollections(site).filter(collection => {
+    if (isLegacyStarterCollectionKey(site, collection.key)) {
+      return false
+    }
+    if (collection.kind === 'page' && /^pages$/.test(collection.key)) {
+      return false
+    }
+    return true
+  })
+
+  const allPaths = []
+  for (const collection of collectionDefs) {
+    const rawEntries = onlyPublished(await getCollection(collection.key as any))
+    const buildLocalizedEntries = (locale?: string): CollectionEntryRef[] => {
+      const targetLocale = locale ?? localeState.defaultLocale
+      return localizeEntries(rawEntries, localeState, targetLocale).map(({ entry, slug }) => ({
+        entry,
+        slug: getCollectionEntrySlug(slug),
+      }))
+    }
+    const buildCollectionPaths = (locale?: string) => {
+      const normalizedBasePath = withLocalePrefix(collection.basePath ?? `/${collection.key}`, locale).replace(/^\/+/, '')
+      const localizedEntries = buildLocalizedEntries(locale)
+      if (localizedEntries.length === 0) {
+        return []
+      }
+      return [
+        {
+          params: { collectionPath: normalizedBasePath },
+          props: { mode: 'index', locale, collection, entries: localizedEntries },
+        },
+        ...localizedEntries.map(({ entry, slug }) => ({
+          params: { collectionPath: `${normalizedBasePath}/${slug}` },
+          props: { mode: 'entry', locale, collection, entry, slug, entries: localizedEntries },
+        })),
+      ]
+    }
+    allPaths.push(...buildCollectionPaths())
+    for (const locale of locales) {
+      allPaths.push(...buildCollectionPaths(locale))
+    }
+  }
+
+  return allPaths
+}
+
+const rawSite = (await import('../../docsmint.config.ts')).default
+const site = getConfig(rawSite)
+const {
+  mode,
+  locale,
+  collection,
+  entry,
+  slug,
+  entries = [],
+} = Astro.props as {
+  mode: 'index' | 'entry'
+  locale?: string
+  collection: CollectionDefinition
+  entry?: Awaited<ReturnType<typeof getCollection>>[number]
+  slug?: string
+  entries?: CollectionEntryRef[]
+}
+
+const activeEntry = mode === 'entry'
+  ? (entry ? { entry, slug: slug ?? entry.id } : undefined)
+  : entries[0]
+const listEntries = collection.kind === 'writing' ? sortWritingEntries(entries) : entries
+const fmt = new Intl.DateTimeFormat(
+  site.dateLocale ?? 'en-US',
+  { ...(site.dateFormat ?? { year: 'numeric', month: 'short', day: 'numeric' }), timeZone: 'UTC' },
+)
+const rendered = activeEntry ? await render(activeEntry.entry) : undefined
+const Content = rendered?.Content
+const headings = rendered?.headings ?? []
+const activePath = activeEntry ? entryPath(collection, activeEntry.slug, locale) : undefined
+const pagefindIgnore = activeEntry
+  ? (activeEntry.entry.data as { search?: boolean }).search === false || isSearchExcluded(site, activePath ?? '')
+  : false
+const collectionRootPath = withLocalePrefix(collectionBasePath(collection), locale)
+const isWritingIndex = collection.kind === 'writing' && mode === 'index'
+const isPageIndex = collection.kind === 'page' && mode === 'index'
+if (!isWritingIndex && !isPageIndex && (!activeEntry || !Content)) {
+  return Astro.redirect('/404', 302)
+}
+const RenderedContent = Content as any
+---
+{collection.kind === 'writing' ? (
+  mode === 'index' ? (
+    <Base title={collection.label} description={collection.label}>
+      <div class="max-w-3xl mx-auto px-8 py-16 space-y-12">
+        <section>
+          <h1 class="text-2xl font-bold tracking-tight mb-2">{collection.label}</h1>
+        </section>
+        <ul class="space-y-2">
+          {listEntries.map(post => (
+            <li>
+              <a
+                href={entryPath(collection, post.slug, locale)}
+                data-no-hover
+                class="group flex items-center justify-between gap-4"
+                style="text-decoration:none"
+              >
+                <span class="text-sm underline underline-offset-4 transition-all group-hover:no-underline group-hover:px-1">
+                  {(post.entry.data as { title?: string }).title ?? post.slug}
+                </span>
+                <span class="text-xs text-zinc-400 shrink-0">
+                  {(post.entry.data as { date?: string | Date }).date
+                    ? fmt.format(new Date((post.entry.data as { date?: string | Date }).date as string | Date))
+                    : ''}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Base>
+  ) : (
+    <Base
+      title={(activeEntry!.entry.data as { title?: string }).title ?? activeEntry!.slug}
+      description={(activeEntry!.entry.data as { description?: string }).description}
+    >
+      <div class="max-w-3xl mx-auto px-8 py-16">
+        <div class="mb-10">
+          <div class="flex items-baseline gap-4 text-xs text-zinc-400 mb-3">
+            {(activeEntry!.entry.data as { date?: string | Date }).date && (
+              <span>{fmt.format(new Date((activeEntry!.entry.data as { date?: string | Date }).date as string | Date))}</span>
+            )}
+            {(activeEntry!.entry.data as { author?: string }).author && <span>- {(activeEntry!.entry.data as { author?: string }).author}</span>}
+          </div>
+          <h1 class="text-2xl font-bold tracking-tight">{(activeEntry!.entry.data as { title?: string }).title ?? activeEntry!.slug}</h1>
+        </div>
+        <article class="prose" data-pagefind-ignore={pagefindIgnore ? true : undefined}>
+          <RenderedContent
+            components={{
+              Tooltip,
+              FileTree,
+              Callout,
+              img: Image,
+              Tabs,
+              Tab,
+              Mermaid,
+            }}
+          />
+        </article>
+      </div>
+    </Base>
+  )
+) : collection.kind === 'page' ? (
+  mode === 'index' ? (
+    <Base title={collection.label} description={collection.label}>
+      <div class="max-w-3xl mx-auto px-8 py-16 space-y-12">
+        <section>
+          <h1 class="text-2xl font-bold tracking-tight mb-2">{collection.label}</h1>
+        </section>
+        <ul class="space-y-2">
+          {listEntries.map(page => (
+            <li>
+              <a
+                href={entryPath(collection, page.slug, locale)}
+                data-no-hover
+                class="group flex items-center justify-between gap-4"
+                style="text-decoration:none"
+              >
+                <span class="text-sm underline underline-offset-4 transition-all group-hover:no-underline group-hover:px-1">
+                  {(page.entry.data as { title?: string }).title ?? page.slug}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Base>
+  ) : (
+    <Base
+      title={(activeEntry!.entry.data as { title?: string }).title ?? activeEntry!.slug}
+      description={(activeEntry!.entry.data as { description?: string }).description}
+    >
+      <div class="max-w-3xl mx-auto px-8 py-16">
+        <article class="prose" data-pagefind-ignore={pagefindIgnore ? true : undefined}>
+          <RenderedContent
+            components={{
+              Tooltip,
+              FileTree,
+              Callout,
+              img: Image,
+              Tabs,
+              Tab,
+              Mermaid,
+            }}
+          />
+        </article>
+      </div>
+    </Base>
+  )
+) : (
+  <Doc
+    title={(activeEntry!.entry.data as { title?: string }).title ?? activeEntry!.slug}
+    description={(activeEntry!.entry.data as { description?: string }).description}
+    headings={headings}
+    editPath={entryPath(collection, activeEntry!.slug)}
+  >
+    <div data-pagefind-ignore={pagefindIgnore ? true : undefined}>
+      {mode === 'index' && activePath && (
+        <script is:inline define:vars={{ collectionRootPath, activePath }}>
+          if (location.pathname === collectionRootPath || location.pathname === `${collectionRootPath}/`) {
+            history.replaceState(null, '', activePath)
+          }
+        </script>
+      )}
+      <RenderedContent
+        components={{
+          Tooltip,
+          FileTree,
+          Callout,
+          img: Image,
+          Tabs,
+          Tab,
+          Mermaid,
+        }}
+      />
+    </div>
+  </Doc>
+)}

@@ -9,30 +9,60 @@ import Tabs from '../../components/Tabs.astro'
 import Tab from '../../components/Tab.astro'
 import Mermaid from '../../components/Mermaid.astro'
 import { getConfig } from '../../config/getConfig'
-import { isSearchExcluded } from '../../utils/searchExclusion'
+import { isSearchExcluded } from '../../search/exclusion'
+import { onlyPublished } from '../../domain/content/published'
+import {
+  getCollectionBasePath,
+  getCollectionEntryPath,
+  isCollectionEnabled,
+} from '../../domain/content/collections'
+import { stripDocExtension, versionContentPrefix } from '../../routing/versioning'
 
 export async function getStaticPaths() {
   const rawSite = (await import('../../../docsmint.config.ts')).default
   const site = getConfig(rawSite)
-  if (!site.sections?.docs?.enabled) {
+  if (!isCollectionEnabled(site, 'docs')) {
     return []
   }
-  const docs = await getCollection('docs')
-  return docs.map(entry => ({
-    params: { slug: entry.id },
-    props: { entry },
+  const docs = onlyPublished(await getCollection('docs'))
+  const docsBasePath = getCollectionBasePath(site, 'docs')
+  const basePaths = docs.map(entry => ({
+    params: { slug: stripDocExtension(entry.id) },
+    props: { entry, isVersionRoot: false },
   }))
+  const existingSlugs = new Set(basePaths.map(pathEntry => pathEntry.params.slug))
+
+  const versionRootPaths = (site.versions ?? [])
+    .map(version => {
+      const prefix = versionContentPrefix(version.path, docsBasePath)
+      if (!prefix || existingSlugs.has(prefix)) {
+        return undefined
+      }
+      const firstEntry = docs.find(entry => {
+        const docId = stripDocExtension(entry.id)
+        return docId === prefix || docId.startsWith(`${prefix}/`)
+      })
+      if (!firstEntry) {
+        return undefined
+      }
+      return {
+        params: { slug: prefix },
+        props: { entry: firstEntry, isVersionRoot: true },
+      }
+    })
+    .filter(Boolean)
+
+  return [...basePaths, ...versionRootPaths]
 }
 
 const { entry } = Astro.props
 const rawSite = (await import('../../../docsmint.config.ts')).default
 const site = getConfig(rawSite)
-if (!site.sections?.docs?.enabled) {
+if (!isCollectionEnabled(site, 'docs')) {
   return Astro.redirect('/404', 302)
 }
 const { Content, headings } = await render(entry)
-const docsBasePath = site.sections?.docs?.basePath ?? '/docs'
-const pagePath = `${docsBasePath}/${entry.id}`
+const pagePath = getCollectionEntryPath(site, 'docs', entry.id)
 const pagefindIgnore = entry.data.search === false || isSearchExcluded(site, pagePath)
 ---
 <Doc

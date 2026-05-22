@@ -1,6 +1,7 @@
 {
   "name": "@docsmint/engine",
   "version": "0.1.0",
+  "packageManager": "pnpm@10.4.1",
   "type": "module",
   "private": true,
   "files": [

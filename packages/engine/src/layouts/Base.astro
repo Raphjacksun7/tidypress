@@ -2,6 +2,8 @@
 import '../styles/global.css'
 import Nav from '../components/Nav.astro'
 import { getConfig } from '../config/getConfig'
+import { getUiStrings, resolveLocale } from '../i18n/locale'
+import { resolveCapabilityFlags } from '@docsmint/config'
 
 export interface Props {
   title: string
@@ -12,20 +14,53 @@ export interface Props {
 const { title, description, noindex = false } = Astro.props
 const rawSite = (await import('../../docsmint.config.ts')).default
 const site = getConfig(rawSite)
+const capabilityFlags = resolveCapabilityFlags(site)
+const localeState = resolveLocale(Astro.url.pathname, site.i18n)
+const strings = getUiStrings(site, localeState)
+const htmlLang = localeState.activeLocale ?? site.i18n?.defaultLocale ?? 'en'
 const faviconHref = site.branding?.favicon ?? site.branding?.icon
 const faviconIsSvg = Boolean(faviconHref && /\.svg(?:$|[?#])/i.test(faviconHref))
+const themingEnabled = capabilityFlags.theming === true
+const themeMode = themingEnabled ? (site.theme?.mode ?? 'guardrailed') : 'guardrailed'
+const themePreset = site.theme?.preset ?? 'baseline'
+const themeTokens = site.theme?.tokens ?? { light: {}, dark: {} }
+const lightTheme = themeTokens.light ?? {}
+const darkTheme = themeTokens.dark ?? {}
+const themeCssVariables = `
+:root {
+  --bg: ${lightTheme.bg};
+  --fg: ${lightTheme.fg};
+  --muted: ${lightTheme.muted};
+  --border: ${lightTheme.border};
+  --surface: ${lightTheme.surface};
+  --code-bg: ${lightTheme.codeBg};
+  --code-fg: ${lightTheme.codeFg};
+}
+[data-theme="dark"] {
+  --bg: ${darkTheme.bg};
+  --fg: ${darkTheme.fg};
+  --muted: ${darkTheme.muted};
+  --border: ${darkTheme.border};
+  --surface: ${darkTheme.surface};
+  --code-bg: ${darkTheme.codeBg};
+  --code-fg: ${darkTheme.codeFg};
+}
+`
 
-// Homepage passes title === site.name → render just site.name, not "site.name — site.name"
 const pageTitle = title === site.name ? site.name : `${title} — ${site.name}`
 const metaDescription = description || site.description || ''
 
-// Canonical URL — only when siteUrl is configured
-const canonicalHref = site.siteUrl
-  ? `${site.siteUrl.replace(/\/$/, '')}${Astro.url.pathname}`
-  : undefined
+const siteBaseUrl = site.siteUrl ? site.siteUrl.replace(/\/$/, '') : undefined
+const canonicalHref = siteBaseUrl ? `${siteBaseUrl}${Astro.url.pathname}` : undefined
+const ogImageHref = siteBaseUrl ? `${siteBaseUrl}/og.svg` : undefined
 ---
 <!doctype html>
-<html lang="en" data-text-scale={site.typography?.scale ?? 'default'}>
+<html
+  lang={htmlLang}
+  data-text-scale={site.typography?.scale ?? 'default'}
+  data-theme-mode={themeMode}
+  data-theme-preset={themePreset}
+>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -37,70 +72,36 @@ const canonicalHref = site.siteUrl
   <meta name="description" content={metaDescription} />
   {canonicalHref && <link rel="canonical" href={canonicalHref} />}
 
-  <!-- Open Graph -->
   <meta property="og:site_name" content={site.name} />
   <meta property="og:title" content={pageTitle} />
   <meta property="og:description" content={metaDescription} />
   {canonicalHref && <meta property="og:url" content={canonicalHref} />}
+  {ogImageHref && <meta property="og:image" content={ogImageHref} />}
 
-  <!-- Twitter / X card -->
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content={pageTitle} />
   <meta name="twitter:description" content={metaDescription} />
+  {ogImageHref && <meta name="twitter:image" content={ogImageHref} />}
   {faviconHref && (
     <link id="docsmint-favicon" rel="icon" type={faviconIsSvg ? 'image/svg+xml' : undefined} href={faviconHref} />
   )}
-  {faviconHref && !faviconIsSvg && (
-    <script is:inline define:vars={{ faviconHref }}>
-      (function () {
-        var src = faviconHref
-        var link = document.getElementById('docsmint-favicon')
-        if (!link) return
-
-        function isDark() {
-          var t = document.documentElement.getAttribute('data-theme')
-          return t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)
-        }
-
-        function applyFavicon(dark) {
-          var img = new Image()
-          img.crossOrigin = 'anonymous'
-          img.onload = function () {
-            var canvas = document.createElement('canvas')
-            canvas.width = img.naturalWidth
-            canvas.height = img.naturalHeight
-            var ctx = canvas.getContext('2d')
-            ctx.drawImage(img, 0, 0)
-            var d = ctx.getImageData(0, 0, canvas.width, canvas.height)
-            for (var i = 0; i < d.data.length; i += 4) {
-              var gray = Math.round(d.data[i] * 0.299 + d.data[i+1] * 0.587 + d.data[i+2] * 0.114)
-              var val = dark ? 255 - gray : gray
-              // clamp to near-black (light) or near-white (dark) to stay monochrome
-              val = dark ? Math.min(255, val + 80) : Math.max(0, val - 60)
-              d.data[i] = val
-              d.data[i+1] = val
-              d.data[i+2] = val
-            }
-            ctx.putImageData(d, 0, 0)
-            link.href = canvas.toDataURL('image/png')
-          }
-          img.onerror = function () { link.href = src }
-          img.src = src
-        }
-
-        applyFavicon(isDark())
-
-        var observer = new MutationObserver(function () { applyFavicon(isDark()) })
-        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
-          if (!document.documentElement.hasAttribute('data-theme')) applyFavicon(isDark())
-        })
-      })()
-    </script>
+  <style is:inline>{themeCssVariables}</style>
+  {site.analytics?.type === 'plausible' && site.analytics.endpoint && site.analytics.siteId && (
+    <script defer data-domain={site.analytics.siteId} src={site.analytics.endpoint}></script>
   )}
-  <!-- No-flash theme: runs synchronously before render -->
-  <script is:inline>
+  {site.analytics?.type === 'umami' && site.analytics.endpoint && site.analytics.siteId && (
+    <script defer src={site.analytics.endpoint} data-website-id={site.analytics.siteId}></script>
+  )}
+  {site.analytics?.type === 'fathom' && site.analytics.endpoint && site.analytics.siteId && (
+    <script defer src={site.analytics.endpoint} data-site={site.analytics.siteId}></script>
+  )}
+  <!-- Runs before first paint to keep theme and UI aligned. -->
+  <script is:inline define:vars={{ themingEnabled }}>
     (function() {
+      if (!themingEnabled) {
+        document.documentElement.setAttribute('data-theme', 'light')
+        return
+      }
       var t = localStorage.getItem('theme')
       var dark = t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)
       document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
@@ -111,8 +112,7 @@ const canonicalHref = site.siteUrl
   <Nav site={site} />
   <slot />
 
-  <!-- Copy button for code blocks -->
-  <script>
+  <script is:inline define:vars={{ strings }}>
     document.querySelectorAll('pre').forEach(pre => {
       const wrapper = document.createElement('div')
       wrapper.style.cssText = 'position:relative'
@@ -120,8 +120,8 @@ const canonicalHref = site.siteUrl
       wrapper.appendChild(pre)
 
       const btn = document.createElement('button')
-      btn.textContent = 'copy'
-      btn.setAttribute('aria-label', 'Copy code')
+      btn.textContent = strings.copyLabel
+      btn.setAttribute('aria-label', strings.copyLabel)
       btn.className = 'copy-btn'
       wrapper.appendChild(btn)
 
@@ -132,8 +132,8 @@ const canonicalHref = site.siteUrl
         const code = pre.querySelector('code')
         const text = code?.innerText ?? ''
         await navigator.clipboard.writeText(text)
-        btn.textContent = 'copied'
-        setTimeout(() => { btn.textContent = 'copy' }, 2000)
+        btn.textContent = strings.copiedLabel
+        setTimeout(() => { btn.textContent = strings.copyLabel }, 2000)
       })
     })
   </script>

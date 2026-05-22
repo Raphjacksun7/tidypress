@@ -1,7 +1,7 @@
 {
   "name": "docsmint",
-  "version": "0.1.14",
-  "description": "Minimal markdown documentation builder. Write docs in markdown, get a fast static site.",
+  "version": "1.0.1",
+  "description": "Static publishing CLI for engineer blogs and docs. Markdown in git, build once, deploy anywhere.",
   "license": "MIT",
   "type": "module",
   "author": "Raphael Avocegamou",
@@ -20,18 +20,20 @@
     "access": "public"
   },
   "keywords": [
-    "documentation",
+    "blog",
+    "engineering-blog",
     "markdown",
     "static-site",
     "docs",
-    "writing"
+    "writing",
+    "deploy"
   ],
   "exports": {
     ".": "./src/index.js",
     "./config": "./src/config.js"
   },
   "scripts": {
-    "test": "node --test",
+    "test": "node --test --test-timeout=420000",
     "dev": "node ./bin/docsmint.js dev",
     "build": "node -e \"console.log('docsmint CLI package does not require a compile step')\""
   },

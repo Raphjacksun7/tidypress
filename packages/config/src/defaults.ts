@@ -2,11 +2,42 @@ import type { DocsMintConfig } from './schema.js'
 
 export const defaultConfig: Partial<DocsMintConfig> = {
   description: '',
+  analytics: { type: 'none' },
+  experimental: {
+    editor: false,
+    export: false,
+    ai: false,
+  },
+  capabilities: {},
   writing: {
     description: 'Engineering notes, architectural decisions, and observations.',
   },
   typography: {
     scale: 'default',
+  },
+  theme: {
+    mode: 'guardrailed',
+    preset: 'baseline',
+    tokens: {
+      light: {
+        bg: '#fbfbfb',
+        fg: '#000000',
+        muted: '#71717a',
+        border: '#e5e5e5',
+        surface: '#f4f4f4',
+        codeBg: '#f4f4f4',
+        codeFg: '#000000',
+      },
+      dark: {
+        bg: '#0a0a0a',
+        fg: '#fafafa',
+        muted: '#a1a1aa',
+        border: '#27272a',
+        surface: '#18181b',
+        codeBg: '#18181b',
+        codeFg: '#e4e4e7',
+      },
+    },
   },
   pages: [],
   nav: [
@@ -19,6 +50,22 @@ export const defaultConfig: Partial<DocsMintConfig> = {
   },
   search: {
     exclude: [],
+  },
+  collections: {
+    docs: {
+      kind: 'docs',
+      enabled: true,
+      basePath: '/docs',
+    },
+    writing: {
+      kind: 'writing',
+      enabled: true,
+      basePath: '/writing',
+    },
+    pages: {
+      kind: 'page',
+      enabled: true,
+    },
   },
   sections: {
     docs: {

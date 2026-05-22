@@ -1,7 +1,7 @@
 import path from 'node:path'
 
-import { getWorkdir, prepareWorkdir } from '../utils/engine.js'
-import { runCommand } from '../utils/process.js'
+import { getWorkdir, prepareWorkdir } from '../infrastructure/engine/workdir.js'
+import { runCommand } from '../infrastructure/process/run-command.js'
 
 /**
  * Coordinates engine workspace preparation and Astro command execution.

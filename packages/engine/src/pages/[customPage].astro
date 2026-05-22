@@ -2,7 +2,7 @@
 import { getCollection, render } from 'astro:content'
 import Base from '../layouts/Base.astro'
 import { getConfig } from '../config/getConfig'
-import { isSearchExcluded } from '../utils/searchExclusion'
+import { isSearchExcluded } from '../search/exclusion'
 
 export async function getStaticPaths() {
   const rawSite = (await import('../../docsmint.config.ts')).default

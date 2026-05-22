@@ -4,7 +4,7 @@ description: Markdown, frontmatter fields, MDX components, and file organization
 order: 3
 ---
 
-DocsMint uses standard markdown with MDX extensions. In a user project, docs live in `docs/src/content/docs/`. Writing (blog posts, engineering notes) lives in `docs/src/content/writing/`.
+DocsMint uses standard markdown with MDX extensions. Starter projects include `docs/src/content/docs/` and `docs/src/content/writing/`, and you can add more collections (for example `playbooks/` or `guides/`) through `collections` config.
 
 ## Frontmatter
 
@@ -126,7 +126,7 @@ Or use the `<Image>` component for local optimized images:
 
 ## File organization
 
-Files in `docs/src/content/docs/` map directly to URLs:
+Files in docs-like collections (for example `docs/src/content/docs/` or `docs/src/content/playbooks/`) map directly to URLs:
 
 ```
 docs/src/content/docs/
@@ -139,4 +139,4 @@ docs/src/content/docs/
 
 Files in subdirectories appear under a labeled section header in the sidebar. Sort order within each section is controlled by the `order` frontmatter field.
 
-Files in `docs/src/content/writing/` map to `/writing/<slug>` and appear on the writing index sorted by date descending.
+Files in writing-like collections map to `/<basePath>/<slug>` and appear on collection index pages sorted by date descending.

@@ -2,7 +2,7 @@ import { defineConfig } from 'docsmint/config'
 
 export default defineConfig({
   name: 'docsmint',
-  description: 'Minimal markdown publishing system for docs and writing.',
+  description: 'Static publishing for engineers who want docs and writing they own.',
   branding: {
     icon: '/favicon.svg',
     favicon: '/favicon-white.svg',

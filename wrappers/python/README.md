@@ -1,56 +1,56 @@
-# docsmint (Python client)
+# docsmint (Python)
 
-`docsmint` on PyPI is the official Python client for DocsMint.
+Python interface for the DocsMint Node.js CLI.
 
-It provides the same `docsmint` command by delegating to the Node.js CLI, so teams in
-Python projects can install DocsMint with `pip` while keeping one canonical engine.
-
-DocsMint is an opinionated markdown publishing system for documentation and writing.
-DocsMint is created to eliminate time from content to production, with no friction.
-
-Minimal markdown documentation builder. Write docs in markdown, get a fast static site.
+Static publishing for engineers who want docs and writing they own. Rendering uses Astro (Node ≥22.12); this package runs that CLI reliably.
 
 ## Install
 
 ```sh
 pip install docsmint
+npm install -g docsmint   # or use from a repo with node_modules
 ```
-
-## Requirements
-
-- Python `>=3.11`
-- Node.js installed and available on `PATH`
-
-If Node.js is missing, the command prints an actionable install message.
 
 ## Usage
 
-The Python client exposes the same commands as the Node.js package:
+Same commands as the Node CLI:
 
 ```sh
 docsmint init
 docsmint dev
 docsmint build
-docsmint preview
-docsmint deploy [target]
-docsmint clean
-docsmint context
 ```
 
-## How it works
+## How it finds the CLI
 
-- If the repo contains a local Node CLI, it executes it directly
-- Otherwise it falls back to `npx docsmint`
-- No rendering engine logic is duplicated in Python
+1. `DOCSMINT_CLI_JS` — path to `docsmint.js`
+2. Monorepo / project `node_modules/docsmint` or `packages/cli/bin/docsmint.js`
+3. `docsmint` on your `PATH` (from `npm install -g`)
+4. Clear error with install hints (does **not** use `npx` by default)
 
-## Why this package exists
+Optional escape hatch: `DOCSMINT_USE_NPX=1` (not recommended).
 
-- Python-first teams can adopt DocsMint with `pip`
-- CLI behavior stays aligned with npm package releases
-- One product, one command surface, one canonical engine
+## Python command routing and YAML bridge
 
-## Project links
+`convert` and `extract-docs` are routed to Python-native implementations.
 
-- npm package: <https://www.npmjs.com/package/docsmint>
-- Repository: <https://github.com/Raphjacksun7/docsmint>
-- Issues: <https://github.com/Raphjacksun7/docsmint/issues>
+- `convert` performs a minimal `.ipynb` -> `.mdx` flow (frontmatter, markdown/code cells, text output, PNG image outputs).
+- `extract-docs` extracts basic API docs from Python/TypeScript/Go source comments.
+
+The wrapper supports reading `docsmint.yaml` / `docsmint.yml` and bridging command-scoped args from:
+
+```yaml
+python:
+  convert:
+    input_path: analysis.ipynb
+    watch: true
+```
+
+You can also pass `--config /path/to/docsmint.yaml` for explicit config selection.
+
+## Dev
+
+```sh
+pip install -e "./wrappers/python[dev]"
+pytest wrappers/python/tests
+```

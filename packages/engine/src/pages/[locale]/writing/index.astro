@@ -1,0 +1,73 @@
+---
+import Base from '../../../layouts/Base.astro'
+import { getCollection } from 'astro:content'
+import { getConfig } from '../../../config/getConfig'
+import { onlyPublished } from '../../../domain/content/published'
+import { getUiStrings, localizeEntries, resolveLocale, withLocalePrefix } from '../../../i18n/locale'
+import {
+  getCollectionEntryPath,
+  isCollectionEnabled,
+} from '../../../domain/content/collections'
+
+export async function getStaticPaths() {
+  const rawSite = (await import('../../../../docsmint.config.ts')).default
+  const site = getConfig(rawSite)
+  if (!isCollectionEnabled(site, 'writing')) {
+    return []
+  }
+  const locales = site.i18n?.locales ?? []
+  return locales.map((locale) => ({ params: { locale }, props: { locale } }))
+}
+
+const { locale } = Astro.props
+const rawWriting = onlyPublished(await getCollection('writing'))
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+
+const rawSite = (await import('../../../../docsmint.config.ts')).default
+const site = getConfig(rawSite)
+if (!isCollectionEnabled(site, 'writing')) {
+  return Astro.redirect('/404', 302)
+}
+const localeState = resolveLocale('/', site.i18n)
+const strings = getUiStrings(site, localeState)
+const writing = localizeEntries(rawWriting, localeState, locale).map(item => ({
+  ...item.entry,
+  id: item.slug,
+}))
+
+const fmt = new Intl.DateTimeFormat(
+  site.dateLocale ?? 'en-US',
+  { ...(site.dateFormat ?? { year: 'numeric', month: 'short', day: 'numeric' }), timeZone: 'UTC' }
+)
+---
+<Base title={strings.writingTitle} description={site.writing?.description || site.description}>
+  <div class="max-w-3xl mx-auto px-8 py-16 space-y-12">
+
+    <section>
+      <h1 class="text-2xl font-bold tracking-tight mb-2">{strings.writingTitle}</h1>
+      <p class="text-sm text-zinc-500">{site.writing?.description}</p>
+    </section>
+
+    <ul class="space-y-2">
+      {writing.map(post => (
+        <li>
+          <a href={withLocalePrefix(getCollectionEntryPath(site, 'writing', post.id), locale)}
+             data-no-hover
+             class="group flex items-center justify-between gap-4"
+             style="text-decoration:none">
+            <span class="text-sm underline underline-offset-4 transition-all
+                         group-hover:no-underline group-hover:px-1"
+                  style="transition:background 0.1s,color 0.1s"
+                  data-writing-title>
+              {post.data.title}
+            </span>
+            <span class="text-xs text-zinc-400 shrink-0">
+              {fmt.format(post.data.date)}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+  </div>
+</Base>

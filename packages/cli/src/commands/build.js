@@ -13,7 +13,7 @@ export class BuildCommand {
    * @param {{ projectRoot: string }} request
    * @returns {Promise<void>}
    */
-  async execute({ projectRoot }) {
-    await this.buildService.build({ projectRoot })
+  async execute({ projectRoot, outputPath }) {
+    await this.buildService.build({ projectRoot, outputPath })
   }
 }

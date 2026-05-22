@@ -1,6 +1,20 @@
 ---
 // Pagefind search — custom UI matching the transfa monospace aesthetic.
 // Triggered by pressing / or clicking the search link in the nav.
+import { getConfig } from '../config/getConfig'
+import type { DocsMintI18nStrings } from '@docsmint/config'
+import { resolveLocale, withLocalePrefix } from '../i18n/locale'
+
+export interface Props {
+  strings: Required<DocsMintI18nStrings>
+}
+const { strings: searchStrings } = Astro.props
+const rawSite = (await import('../../docsmint.config.ts')).default
+const site = getConfig(rawSite)
+const localeState = resolveLocale(Astro.url.pathname, site.i18n)
+const localizedVersionPaths = (site.versions ?? []).map(version =>
+  withLocalePrefix(version.path, localeState.activeLocale),
+)
 ---
 
 <!-- Search trigger -->
@@ -8,9 +22,9 @@
   id="search-trigger"
   class="text-sm text-zinc-500 flex items-center gap-1.5 cursor-pointer"
   style="background:none; border:none; font-family:inherit; padding:0"
-  aria-label="Search"
+  aria-label={searchStrings.searchLabel}
 >
-  search
+  {searchStrings.searchLabel}
   <kbd class="text-xs text-zinc-400 border border-zinc-300 px-1 rounded">
     /
   </kbd>
@@ -19,7 +33,7 @@
 <!-- Search modal -->
 <div id="search-modal"
      class="fixed inset-0 z-50 hidden"
-     role="dialog" aria-modal="true" aria-label="Search">
+     role="dialog" aria-modal="true" aria-label={searchStrings.searchLabel}>
 
   <!-- Backdrop -->
   <div id="search-backdrop" class="absolute inset-0 bg-black/20"></div>
@@ -34,10 +48,10 @@
         <input
           id="search-input"
           type="text"
-          placeholder="Search docs..."
+          placeholder={searchStrings.searchPlaceholder}
           autocomplete="off"
           spellcheck="false"
-          style="flex:1; padding:1rem 0; font-size:0.875rem; outline:none; font-family:var(--font-mono); background:transparent; color:var(--fg)" placeholder="Search docs..."
+          style="flex:1; padding:1rem 0; font-size:0.875rem; outline:none; font-family:var(--font-mono); background:transparent; color:var(--fg)"
         />
         <kbd id="search-close-hint"
              class="text-xs text-zinc-400 border border-zinc-200 px-1 rounded cursor-pointer">
@@ -48,7 +62,7 @@
       <!-- Results -->
       <div id="search-results" class="max-h-80 overflow-y-auto">
         <p id="search-empty" class="text-xs text-zinc-400 px-4 py-6">
-          Type to search…
+          {searchStrings.searchEmptyLabel}
         </p>
       </div>
 
@@ -56,8 +70,36 @@
   </div>
 </div>
 
-<script>
-let pagefind: any = null
+<script is:inline define:vars={{ localizedVersionPaths, searchStrings }}>
+let pagefind = null
+const versionPaths = [...localizedVersionPaths]
+
+function normalizePath(value) {
+  if (value.length > 1 && value.endsWith('/')) {
+    return value.slice(0, -1)
+  }
+  return value
+}
+
+function getActiveVersionPath(pathname) {
+  const currentPath = normalizePath(pathname)
+  for (const candidate of versionPaths) {
+    const normalizedCandidate = normalizePath(candidate)
+    if (currentPath === normalizedCandidate || currentPath.startsWith(`${normalizedCandidate}/`)) {
+      return normalizedCandidate
+    }
+  }
+  return undefined
+}
+
+function inActiveVersion(url, activeVersionPath) {
+  try {
+    const pathname = normalizePath(new URL(url, window.location.origin).pathname)
+    return pathname === activeVersionPath || pathname.startsWith(`${activeVersionPath}/`)
+  } catch {
+    return false
+  }
+}
 
 async function loadPagefind() {
   if (pagefind) return pagefind
@@ -75,13 +117,14 @@ async function loadPagefind() {
 
 const modal   = document.getElementById('search-modal')!
 const backdrop = document.getElementById('search-backdrop')!
-const input   = document.getElementById('search-input') as HTMLInputElement
+const input   = document.getElementById('search-input')
 const results = document.getElementById('search-results')!
 const empty   = document.getElementById('search-empty')!
 const trigger = document.getElementById('search-trigger')!
 
 function openSearch() {
   modal.classList.remove('hidden')
+  input.placeholder = searchStrings.searchPlaceholder
   input.focus()
   loadPagefind()
 }
@@ -91,7 +134,7 @@ function closeSearch() {
   input.value = ''
   results.innerHTML = ''
   results.appendChild(empty)
-  empty.textContent = 'Type to search…'
+  empty.textContent = searchStrings.searchEmptyLabel
 }
 
 trigger.addEventListener('click', openSearch)
@@ -105,41 +148,51 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeSearch()
 })
 
-let debounce: ReturnType<typeof setTimeout>
+let debounce
 input.addEventListener('input', async () => {
   clearTimeout(debounce)
   const q = input.value.trim()
   if (!q) {
     results.innerHTML = ''
     results.appendChild(empty)
-    empty.textContent = 'Type to search…'
+    empty.textContent = searchStrings.searchEmptyLabel
     return
   }
   debounce = setTimeout(async () => {
     const pf = await loadPagefind()
+    const activeVersionPath = getActiveVersionPath(window.location.pathname)
     if (!pf) {
-      empty.textContent = 'Search unavailable in dev mode — run docsmint build, then docsmint preview.'
+      empty.textContent = searchStrings.searchUnavailableLabel
       results.innerHTML = ''
       results.appendChild(empty)
       return
     }
     const search = await pf.search(q)
     if (!search.results.length) {
-      empty.textContent = `No results for "${q}"`
+      empty.textContent = searchStrings.searchNoResultsLabel.replace('{query}', q)
       results.innerHTML = ''
       results.appendChild(empty)
       return
     }
-    const items = await Promise.all(search.results.slice(0, 8).map((r: any) => r.data()))
-    results.innerHTML = items.map((item: any) => `
+    const rawItems = await Promise.all(search.results.slice(0, 30).map((r) => r.data()))
+    const items = activeVersionPath
+      ? rawItems.filter((item) => inActiveVersion(item.url, activeVersionPath))
+      : rawItems
+    if (!items.length) {
+      empty.textContent = searchStrings.searchNoResultsLabel.replace('{query}', q)
+      results.innerHTML = ''
+      results.appendChild(empty)
+      return
+    }
+    results.innerHTML = items.map((item) => `
       <a href="${item.url}"
          class="flex flex-col gap-0.5 px-4 py-3 border-b border-zinc-50 last:border-0
                 hover:bg-zinc-50 transition-colors"
          style="text-decoration:none; color:inherit">
-        <span class="text-sm font-bold">${item.meta?.title ?? 'Untitled'}</span>
+        <span class="text-sm font-bold">${item.meta?.title ?? searchStrings.untitledLabel}</span>
         <span class="text-xs text-zinc-400 line-clamp-2">${item.excerpt}</span>
       </a>
-    `).join('')
+    `).slice(0, 8).join('')
   }, 150)
 })
 </script>

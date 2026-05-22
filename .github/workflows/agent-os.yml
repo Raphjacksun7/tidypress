@@ -1,0 +1,55 @@
+name: Agent OS
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Agent OS files present
+        run: |
+          test -f agent-os/CONSTITUTION.md
+          test -f agent-os/STRATEGY-SOURCE.md
+          test -f agent-os/GOVERNANCE.md
+          test -f AGENTS.md
+
+      - name: Commit message format (PRs)
+        if: github.event_name == 'pull_request'
+        run: ./agent-os/scripts/check-commits.sh origin/${{ github.base_ref }}..HEAD
+
+      - name: Verify tests
+        run: ./agent-os/scripts/verify.sh
+
+  pr-title:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require [Task NN] in PR title
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          echo "PR title: $TITLE"
+          if echo "$TITLE" | grep -Eq '^\[Task [0-9]{2}\]'; then
+            echo "OK"
+          else
+            echo "PR title must start with [Task NN] — see agent-os/GOVERNANCE.md"
+            exit 1
+          fi

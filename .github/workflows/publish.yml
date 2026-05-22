@@ -27,6 +27,29 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Verify tag matches npm/PyPI versions
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          TAG_NAME: ${{ github.ref_name }}
+        run: |
+          node --input-type=module <<'EOF'
+          import fs from 'node:fs/promises'
+          import { assertReleaseVersionAlignment, readPythonProjectVersion } from './packages/cli/src/utils/release.js'
+
+          const cliPackageRaw = await fs.readFile('./packages/cli/package.json', 'utf8')
+          const pyprojectRaw = await fs.readFile('./wrappers/python/pyproject.toml', 'utf8')
+          const cliPackage = JSON.parse(cliPackageRaw)
+          const pythonVersion = readPythonProjectVersion(pyprojectRaw)
+
+          const result = assertReleaseVersionAlignment({
+            tagName: process.env.TAG_NAME,
+            cliVersion: cliPackage.version,
+            pythonVersion,
+          })
+
+          console.log(`Release version alignment OK for ${result.releaseVersion}`)
+          EOF
+
       - name: Clean previous build artifacts
         run: |
           rm -rf apps/site/.docsmint

@@ -1,20 +1,71 @@
 ---
 import Search from './Search.astro'
 import ThemeToggle from './ThemeToggle.astro'
-import { buildNavigationModel, type NavItem } from '@docsmint/config'
+import {
+  buildNavigationModel,
+  isCapabilityEnabled,
+  type DocsMintConfig,
+  type NavItem,
+} from '@docsmint/config'
 import BrandIcon from './BrandIcon.astro'
+import VersionSelector from './VersionSelector.astro'
+import LocaleSelector from './LocaleSelector.astro'
+import { getUiStrings, resolveLocale, withLocalePrefix } from '../i18n/locale'
+import {
+  getCollectionBasePath,
+  getEnabledContentCollections,
+  isLegacyStarterCollectionKey,
+} from '../domain/content/collections'
 
 export interface Props {
-  site: { name: string; nav?: NavItem[]; branding?: { icon?: string; favicon?: string } }
+  site: DocsMintConfig & {
+    name: string
+    nav?: NavItem[]
+    branding?: { icon?: string; favicon?: string }
+    versions?: { label: string; path: string }[]
+  }
 }
 const { site } = Astro.props
 const nav = site.nav || []
 const navModel = buildNavigationModel(site)
+const docsBasePath = getCollectionBasePath(site, 'docs')
+const localeState = resolveLocale(Astro.url.pathname, site.i18n)
+const { activeLocale, locales } = localeState
+const strings = getUiStrings(site, localeState)
+const localizedVersions = (site.versions ?? []).map(version => ({
+  ...version,
+  path: withLocalePrefix(version.path, activeLocale),
+}))
+const localizedDocsBasePath = withLocalePrefix(docsBasePath, activeLocale)
+const themingEnabled = isCapabilityEnabled(site, 'theming')
+const localizedStarterBasePaths = new Set(
+  getEnabledContentCollections(site)
+    .filter(collection => isLegacyStarterCollectionKey(site, collection.key))
+    .map(collection => collection.basePath ?? `/${collection.key}`),
+)
+
+function localizeNavItem(item: NavItem): NavItem {
+  if (!activeLocale) {
+    return item
+  }
+  if (item.external || !item.href.startsWith('/')) {
+    return item
+  }
+  // Only legacy starter collection base paths are locale-prefixed implicitly.
+  if (!localizedStarterBasePaths.has(item.href)) {
+    return item
+  }
+  return { ...item, href: withLocalePrefix(item.href, activeLocale) }
+}
+
+const desktopVisible = navModel.desktop.visible.map(localizeNavItem)
+const desktopOverflow = navModel.desktop.overflow.map(localizeNavItem)
+const mobileVisible = navModel.mobile.visible.map(localizeNavItem)
+const mobileOverflow = navModel.mobile.overflow.map(localizeNavItem)
 ---
 <header class="max-w-3xl mx-auto px-8 py-5">
-  <!-- Top row: logo + controls always visible -->
   <div class="flex items-center justify-between gap-4">
-    <a href="/"
+    <a href={withLocalePrefix('/', activeLocale)}
        data-no-hover
        class="text-sm font-bold inline-flex items-center gap-2"
        style="text-decoration:none">
@@ -22,14 +73,14 @@ const navModel = buildNavigationModel(site)
       {site.name}
     </a>
     <div class="flex items-center gap-5">
-      {navModel.desktop.visible.map(({ label, href, target, rel }) => (
+      {desktopVisible.map(({ label, href, target, rel }) => (
         <a href={href} target={target} rel={rel} class="text-sm text-zinc-500 hidden sm:inline">{label}</a>
       ))}
-      {navModel.desktop.overflow.length > 0 && (
+      {desktopOverflow.length > 0 && (
         <details class="hidden sm:inline-block relative nav-more">
-          <summary class="text-sm text-zinc-500 cursor-pointer list-none">more</summary>
+          <summary class="text-sm text-zinc-500 cursor-pointer list-none">{strings.moreLabel}</summary>
           <div class="absolute right-0 mt-2 min-w-[12rem] rounded border border-zinc-200 bg-[var(--bg)] p-2 shadow-sm z-20">
-            {navModel.desktop.overflow.map(({ label, href, target, rel }) => (
+            {desktopOverflow.map(({ label, href, target, rel }) => (
               <a
                 href={href}
                 target={target}
@@ -42,22 +93,30 @@ const navModel = buildNavigationModel(site)
           </div>
         </details>
       )}
-      <Search />
-      <ThemeToggle />
+      {localizedVersions.length > 0 && (
+        <VersionSelector versions={localizedVersions} docsBasePath={localizedDocsBasePath} />
+      )}
+      <LocaleSelector
+        locales={locales}
+        activeLocale={activeLocale}
+        defaultLocale={localeState.defaultLocale}
+        label={strings.languageLabel}
+      />
+      <Search strings={strings} />
+      <ThemeToggle enabled={themingEnabled} />
     </div>
   </div>
 
-  <!-- Mobile: keep compact inline nav + popover, never drawer -->
   {nav.length > 0 && (
     <nav class="flex items-center gap-4 mt-2 sm:hidden overflow-x-auto whitespace-nowrap no-scrollbar">
-      {navModel.mobile.visible.map(({ label, href, target, rel }) => (
+      {mobileVisible.map(({ label, href, target, rel }) => (
         <a href={href} target={target} rel={rel} class="text-sm text-zinc-500 shrink-0">{label}</a>
       ))}
-      {navModel.mobile.overflow.length > 0 && (
+      {mobileOverflow.length > 0 && (
         <details class="relative nav-more shrink-0">
-          <summary class="text-sm text-zinc-500 cursor-pointer list-none">more</summary>
+          <summary class="text-sm text-zinc-500 cursor-pointer list-none">{strings.moreLabel}</summary>
           <div class="absolute left-0 mt-2 min-w-[11rem] rounded border border-zinc-200 bg-[var(--bg)] p-2 shadow-sm z-20">
-            {navModel.mobile.overflow.map(({ label, href, target, rel }) => (
+            {mobileOverflow.map(({ label, href, target, rel }) => (
               <a
                 href={href}
                 target={target}

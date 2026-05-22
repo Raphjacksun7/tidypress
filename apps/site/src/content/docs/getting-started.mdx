@@ -1,6 +1,6 @@
 ---
 title: Getting started
-description: Install DocsMint and run your first docs site in minutes.
+description: Install DocsMint and run your first engineer blog/docs site in minutes.
 order: 1
 ---
 
@@ -38,6 +38,17 @@ Node.js is required in all cases. The Python package invokes the Node.js CLI.
 
 - Node.js 22+
 - pnpm or npm
+
+## 90-second launch path
+
+If you want a known-good release smoke target before authoring your own content:
+
+```bash
+pnpm install
+pnpm --filter @docsmint/example-minimal build
+```
+
+This writes output to `examples/minimal/docs/.docsmint/dist/`.
 
 ## Initialize a project
 
@@ -104,7 +115,7 @@ branding: {
 }
 ```
 
-SVG icons are inlined for perfect `currentColor` theme adaptation. Raster icons use CSS filters. Raster favicons are converted to monochrome via a canvas script that updates live on theme change.
+SVG icons are inlined for perfect `currentColor` theme adaptation. Raster icons use CSS filters. Favicons are linked as provided, so use a dedicated favicon asset when you need a fixed tab color.
 
 ## Commands
 
@@ -119,6 +130,6 @@ SVG icons are inlined for perfect `currentColor` theme adaptation. Raster icons 
 ## Next steps
 
 - [Configuration](./configuration) — typed config and navigation policy
-- [Writing content](./writing-content) — markdown, frontmatter, MDX components
+- [Writing content](./writing-content) — markdown, frontmatter, and authoring workflow
 - [Components](./components) — Callout, Tabs, FileTree, Mermaid, and more
 - [Deploying](./deploying) — host-agnostic deployment workflow

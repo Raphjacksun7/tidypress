@@ -1,0 +1,78 @@
+---
+import { getCollection, render } from 'astro:content'
+import { sortDocs } from '../../../domain/content/sortDocs'
+import { getConfig } from '../../../config/getConfig'
+import Doc from '../../../layouts/Doc.astro'
+import Tooltip from '../../../components/Tooltip.astro'
+import FileTree from '../../../components/FileTree.astro'
+import Callout from '../../../components/Callout.astro'
+import Image from '../../../components/Image.astro'
+import Tabs from '../../../components/Tabs.astro'
+import Tab from '../../../components/Tab.astro'
+import Mermaid from '../../../components/Mermaid.astro'
+import { isSearchExcluded } from '../../../search/exclusion'
+import { onlyPublished } from '../../../domain/content/published'
+import { localizeEntries, resolveLocale, withLocalePrefix } from '../../../i18n/locale'
+import {
+  getCollectionEntryPath,
+  isCollectionEnabled,
+} from '../../../domain/content/collections'
+
+export async function getStaticPaths() {
+  const rawSite = (await import('../../../../docsmint.config.ts')).default
+  const site = getConfig(rawSite)
+  if (!isCollectionEnabled(site, 'docs')) {
+    return []
+  }
+  const locales = site.i18n?.locales ?? []
+  return locales.map((locale) => ({ params: { locale }, props: { locale } }))
+}
+
+const { locale } = Astro.props
+const rawSite = (await import('../../../../docsmint.config.ts')).default
+const site = getConfig(rawSite)
+
+if (!isCollectionEnabled(site, 'docs')) {
+  return Astro.redirect('/404', 302)
+}
+const localeState = resolveLocale('/', site.i18n)
+const docs = sortDocs(localizeEntries(onlyPublished(await getCollection('docs')), localeState, locale).map(item => ({
+  ...item.entry,
+  id: item.slug,
+})))
+const first = docs[0]
+
+if (!first) {
+  return Astro.redirect('/404', 302)
+}
+
+const { Content, headings } = await render(first)
+const firstDocHref = withLocalePrefix(getCollectionEntryPath(site, 'docs', first.id), locale)
+const pagePath = withLocalePrefix(getCollectionEntryPath(site, 'docs', first.id), locale)
+const pagefindIgnore = first.data.search === false || isSearchExcluded(site, pagePath)
+---
+<Doc
+  title={first.data.title}
+  description={first.data.description}
+  headings={headings}
+  editPath={getCollectionEntryPath(site, 'docs', first.id)}
+>
+  <div data-pagefind-ignore={pagefindIgnore ? true : undefined}>
+    <script is:inline define:vars={{ firstDocHref }}>
+      if (location.pathname.endsWith('/docs') || location.pathname.endsWith('/docs/')) {
+        history.replaceState(null, '', firstDocHref)
+      }
+    </script>
+    <Content
+      components={{
+        Tooltip,
+        FileTree,
+        Callout,
+        img: Image,
+        Tabs,
+        Tab,
+        Mermaid,
+      }}
+    />
+  </div>
+</Doc>

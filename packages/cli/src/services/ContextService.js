@@ -1,6 +1,7 @@
 import path from 'node:path'
 
-import { writeContentSnapshot } from '../utils/context.js'
+import { withDefaults } from '@docsmint/config'
+import { writeContentSnapshot } from '../application/content/context-snapshot.js'
 
 /**
  * Generates context snapshots for LLM workflows.
@@ -19,8 +20,18 @@ export class ContextService {
    */
   async generate({ projectRoot, outputPath }) {
     const docsDir = await this.configLoader.resolveDocsDirectory({ projectRoot })
+    const rawConfig = await this.configLoader.loadConfig({ docsDir })
+    const config = withDefaults(rawConfig)
     const resolvedOutput = outputPath ?? path.resolve(projectRoot, 'docsmint-context.md')
-    const count = await writeContentSnapshot({ docsDir, outputPath: resolvedOutput })
+    const count = await writeContentSnapshot({
+      docsDir,
+      outputPath: resolvedOutput,
+      config: {
+        collections: config.collections,
+        capabilities: config.capabilities,
+        experimental: config.experimental,
+      },
+    })
     return { count, outputPath: resolvedOutput }
   }
 }

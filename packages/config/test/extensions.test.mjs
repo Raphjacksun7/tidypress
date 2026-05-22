@@ -36,3 +36,38 @@ test('withDefaults rejects duplicate page slugs', () => {
     /duplicate/i,
   )
 })
+
+test('withDefaults keeps analytics disabled by default', () => {
+  const config = withDefaults({
+    name: 'site',
+  })
+  assert.equal(config.analytics?.type, 'none')
+})
+
+test('withDefaults preserves explicit analytics provider settings', () => {
+  const config = withDefaults({
+    name: 'site',
+    analytics: {
+      type: 'plausible',
+      endpoint: 'https://plausible.example/js/script.js',
+      siteId: 'docs.example.com',
+    },
+  })
+  assert.deepEqual(config.analytics, {
+    type: 'plausible',
+    endpoint: 'https://plausible.example/js/script.js',
+    siteId: 'docs.example.com',
+  })
+})
+
+test('withDefaults keeps experimental features opt-in by default', () => {
+  const config = withDefaults({
+    name: 'site',
+  })
+
+  assert.deepEqual(config.experimental, {
+    editor: false,
+    export: false,
+    ai: false,
+  })
+})

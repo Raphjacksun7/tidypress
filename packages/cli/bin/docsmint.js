@@ -1,7 +1,4 @@
 #!/usr/bin/env node
-import { runCli } from '../src/index.js'
+import { runCliMain } from '../src/index.js'
 
-runCli(process.argv.slice(2)).catch(error => {
-  console.error(error instanceof Error ? error.message : String(error))
-  process.exit(1)
-})
+await runCliMain(process.argv.slice(2))

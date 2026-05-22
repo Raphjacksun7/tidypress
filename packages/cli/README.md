@@ -2,8 +2,8 @@
 
 `docsmint` is the official Node.js CLI for DocsMint.
 
-DocsMint is an opinionated markdown publishing system for documentation and writing.
-DocsMint is created to eliminate time from content to production, with no friction.
+DocsMint is an opinionated markdown publishing system for engineer blogs, docs, and technical writing.
+It keeps setup simple: write in markdown, build static output, publish to the host you choose.
 
 ## Install
 
@@ -16,11 +16,12 @@ npx docsmint@latest
 ## Commands
 
 ```sh
-docsmint init
+docsmint init [--preset <name>]
 docsmint dev
 docsmint build
 docsmint preview
 docsmint deploy [target]
+docsmint deploy [target] --with-ci
 docsmint clean
 docsmint context
 ```
@@ -28,9 +29,11 @@ docsmint context
 ## Quick start
 
 ```sh
-docsmint init
+docsmint init --preset default
 docsmint dev
 ```
+
+`--starter <name>` is accepted as an alias for `--preset <name>`.
 
 ## Minimal config
 
@@ -38,7 +41,7 @@ docsmint dev
 // docs/docsmint.config.ts
 export default {
   name: 'my-project',
-  description: 'Minimal markdown docs and writing.',
+  description: 'Engineering notes, docs, and long-form writing.',
   nav: [
     { label: 'docs', href: '/docs' },
     { label: 'writing', href: '/writing' },

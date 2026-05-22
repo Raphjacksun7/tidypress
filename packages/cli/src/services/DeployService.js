@@ -1,12 +1,18 @@
+import { DocsMintError } from '../errors/DocsMintError.js'
+import { DeploymentStrategyRegistry } from '../deployment/DeploymentStrategyRegistry.js'
+
 /**
  * Executes deployment using composable strategy objects.
  */
 export class DeployService {
   /**
-   * @param {{ strategies: Array<import('../deployment/DeployStrategies.js').DeployStrategy> }} dependencies
+   * @param {{
+   *   strategyRegistry?: DeploymentStrategyRegistry
+   *   strategies?: Array<import('../deployment/DeploymentStrategy.js').DeploymentStrategy>
+   * }} dependencies
    */
-  constructor({ strategies }) {
-    this.strategies = strategies
+  constructor({ strategyRegistry, strategies = [] }) {
+    this.strategyRegistry = strategyRegistry ?? new DeploymentStrategyRegistry({ strategies })
   }
 
   /**
@@ -14,9 +20,14 @@ export class DeployService {
    * @returns {Promise<void>}
    */
   async deploy(request) {
-    const strategy = this.strategies.find(candidate => candidate.supports(request))
+    const strategy = this.strategyRegistry.resolve(request)
     if (!strategy) {
-      throw new Error('No deployment strategy matched the given target.')
+      throw new DocsMintError(
+        'No deployment strategy matched the given target.',
+        'DEPLOY_NO_STRATEGY',
+        'Run docsmint deploy --help or use a known provider target',
+        { exitCode: 2 },
+      )
     }
     await strategy.execute(request)
   }

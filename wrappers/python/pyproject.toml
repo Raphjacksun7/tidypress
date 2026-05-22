@@ -4,14 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "docsmint"
-version = "0.1.14"
+version = "1.0.1"
 description = "Python interface for the DocsMint Node.js CLI."
 readme = "README.md"
 requires-python = ">=3.11"
-license = "MIT"
+license = { text = "MIT" }
 authors = [
     { name = "Raphael Avocegamou" }
 ]
+dependencies = ["PyYAML>=6.0"]
 
 [project.urls]
 Homepage = "https://usedocsmint.pages.dev/"
@@ -21,5 +22,11 @@ Issues = "https://github.com/Raphjacksun7/docsmint/issues"
 [project.scripts]
 docsmint = "docsmint.cli:main"
 
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
 [tool.setuptools.packages.find]
 include = ["docsmint*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

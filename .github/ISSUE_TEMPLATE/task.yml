@@ -1,0 +1,17 @@
+name: Task
+description: Work item from agent-os/TASKS
+title: "[Task NN] "
+labels: []
+body:
+  - type: input
+    id: task_id
+    attributes:
+      label: Task number (01-20)
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance (from agent-os/TASKS)
+    validations:
+      required: true

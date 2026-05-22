@@ -7,16 +7,20 @@ order: 6
 ## CLI commands
 
 ```bash
-docsmint init               # scaffold docs/ in the current project
+docsmint init [--preset <name>] # scaffold docs/ in the current project
 docsmint dev [--port <n>]   # dev server at localhost:4321
 docsmint build              # production build → docs/.docsmint/dist/
 docsmint preview            # preview the production build locally
 docsmint clean              # remove docs/.docsmint/ to force reinstall
 docsmint deploy [target]    # build and dispatch deployment flow
 docsmint context [output]   # write LLM-friendly content snapshot
+docsmint migrate-sections   # generate sections->collections migration output
 ```
 
 The CLI walks up from the current directory to find `docs/docsmint.config.ts`.
+`--starter <name>` is supported as an alias for `--preset <name>`.
+`migrate-sections` writes a deterministic artifact to
+`docs/.docsmint/migrations/sections-to-collections.json`.
 
 ## Config schema
 
@@ -60,16 +64,22 @@ interface DocsMintConfig {
     slug: string
     navLabel?: string
   })[]
+  collections?: Record<string, {
+    enabled?: boolean
+    basePath?: string
+    kind?: 'docs' | 'writing' | 'page'
+    label?: string
+  }>
   sections?: {
     docs?: {
       enabled?: boolean
-      basePath?: '/docs'
+      basePath?: string
     }
     writing?: {
       enabled?: boolean
-      basePath?: '/writing'
+      basePath?: string
     }
-  }
+  } // legacy shim (prefer collections, migrate with `docsmint migrate-sections`)
   navPolicy?: {
     mode?: 'strict' | 'relaxed'
     maxVisibleDesktop?: number
@@ -78,7 +88,7 @@ interface DocsMintConfig {
 }
 ```
 
-Only `name` is required.
+Only `name` is required. `docs`, `writing`, and `pages` are starter collections; add keys like `playbooks` or `guides` through `collections` without engine changes.
 
 Typography scale defaults to `'default'` (100%). Use `'medium'` (110%) or `'large'` (120%) to increase UI text size globally.
 
@@ -103,7 +113,7 @@ The `branding.favicon` path (or `branding.icon` as fallback) is injected as `<li
 | File type | Behaviour |
 |-----------|-----------|
 | SVG | Served directly with `type="image/svg+xml"`. Color is whatever is baked into the SVG. Use a white variant for a white tab icon. |
-| Raster (PNG, etc.) | A canvas script converts the image to monochrome on load, producing a data URL. Updates live on theme change — no reload required. |
+| Raster (PNG, etc.) | Served directly from the configured path. Provide a pre-styled raster asset when you need a fixed tab appearance. |
 
 ### Public asset placement
 
@@ -126,7 +136,7 @@ branding: {
 
 ## Frontmatter
 
-**Docs pages** (`docs/src/content/docs/*.md`):
+**Docs-like pages** (`docs/src/content/<collection-key>/*.md` where `kind: 'docs'`):
 
 | Field | Type | Required | Notes |
 |-------|------|----------|-------|
@@ -135,7 +145,7 @@ branding: {
 | `order` | number | no | Sidebar sort position. Pages without `order` fall back to alphabetical |
 | `search` | boolean | no | Set `false` to exclude this page from search |
 
-**Writing posts** (`docs/src/content/writing/*.md`):
+**Writing-like posts** (`docs/src/content/<collection-key>/*.md` where `kind: 'writing'`):
 
 | Field | Type | Required | Notes |
 |-------|------|----------|-------|

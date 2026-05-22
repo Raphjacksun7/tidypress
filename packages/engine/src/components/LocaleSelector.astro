@@ -1,0 +1,30 @@
+---
+import { switchLocalePath } from '../i18n/locale'
+
+const { activeLocale, defaultLocale, label } = Astro.props
+/** @type {string[]} */
+const locales = Array.isArray(Astro.props.locales) ? Astro.props.locales : []
+const pathname = Astro.url.pathname
+const localeConfig = { locales, defaultLocale }
+---
+{
+  locales.length > 1 && (
+    <label class="hidden sm:inline-flex items-center">
+      <span class="sr-only">{label}</span>
+      <select
+        aria-label={label}
+        class="text-sm text-zinc-500 bg-transparent border border-zinc-200 rounded px-2 py-1"
+        onchange="if (this.value) window.location.assign(this.value)"
+      >
+        {locales.map((locale) => (
+          <option
+            value={switchLocalePath(pathname, locale, localeConfig)}
+            selected={(activeLocale ?? defaultLocale) === locale}
+          >
+            {locale}
+          </option>
+        ))}
+      </select>
+    </label>
+  )
+}

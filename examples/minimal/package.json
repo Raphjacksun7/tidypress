@@ -2,6 +2,12 @@
   "name": "@docsmint/example-minimal",
   "private": true,
   "type": "module",
+  "scripts": {
+    "dev": "docsmint dev",
+    "build": "docsmint build",
+    "preview": "docsmint preview",
+    "clean": "docsmint clean"
+  },
   "dependencies": {
     "docsmint": "workspace:*"
   }

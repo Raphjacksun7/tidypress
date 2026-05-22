@@ -2,9 +2,11 @@
 import Base from '../layouts/Base.astro'
 import { getCollection } from 'astro:content'
 import { getConfig } from '../config/getConfig'
-import { sortDocs } from '../utils/sortDocs'
+import { sortDocs } from '../domain/content/sortDocs'
 import BrandIcon from '../components/BrandIcon.astro'
-import { onlyPublished } from '../utils/published'
+import { onlyPublished } from '../domain/content/published'
+import { getUiStrings, resolveLocale } from '../i18n/locale'
+import { getCollectionBasePath, getCollectionEntryPath, isCollectionEnabled } from '../domain/content/collections'
 
 const LIMIT = 5
 
@@ -19,10 +21,10 @@ const moreDocs = allDocs.length > LIMIT
 
 const rawSite = (await import('../../docsmint.config.ts')).default
 const site = getConfig(rawSite)
-const docsEnabled = site.sections?.docs?.enabled ?? true
-const writingEnabled = site.sections?.writing?.enabled ?? true
-const docsBasePath = site.sections?.docs?.basePath ?? '/docs'
-const writingBasePath = site.sections?.writing?.basePath ?? '/writing'
+const strings = getUiStrings(site, resolveLocale(Astro.url.pathname, site.i18n))
+const docsEnabled = isCollectionEnabled(site, 'docs')
+const writingEnabled = isCollectionEnabled(site, 'writing')
+const writingBasePath = getCollectionBasePath(site, 'writing')
 
 const fmt = new Intl.DateTimeFormat(
   site.dateLocale ?? 'en-US',
@@ -44,11 +46,11 @@ const fmt = new Intl.DateTimeFormat(
     <!-- Writing -->
     {writingEnabled && writing.length > 0 && (
       <section class="space-y-3">
-        <p class="text-sm font-bold text-zinc-500">Writing</p>
+        <p class="text-sm font-bold text-zinc-500">{strings.writingTitle}</p>
         <ul class="space-y-2">
           {writing.map(post => (
             <li>
-              <a href={`${writingBasePath}/${post.id}`}
+              <a href={getCollectionEntryPath(site, 'writing', post.id)}
                  data-no-hover
                  class="group flex items-center justify-between gap-4"
                  style="text-decoration:none">
@@ -66,7 +68,7 @@ const fmt = new Intl.DateTimeFormat(
         </ul>
         {moreWriting && (
           <p class="pt-1">
-            <a href={writingBasePath} class="text-xs text-zinc-400">all writing →</a>
+            <a href={writingBasePath} class="text-xs text-zinc-400">{strings.allWritingLabel}</a>
           </p>
         )}
       </section>
@@ -75,11 +77,11 @@ const fmt = new Intl.DateTimeFormat(
     <!-- Docs -->
     {docsEnabled && docs.length > 0 && (
       <section class="space-y-3">
-        <p class="text-sm font-bold text-zinc-500">Docs</p>
+        <p class="text-sm font-bold text-zinc-500">{strings.docsTitle}</p>
         <ul class="space-y-2">
           {docs.map(doc => (
             <li>
-              <a href={`${docsBasePath}/${doc.id}`}
+              <a href={getCollectionEntryPath(site, 'docs', doc.id)}
                  data-no-hover
                  class="group flex items-center justify-between gap-4"
                  style="text-decoration:none">
@@ -99,7 +101,7 @@ const fmt = new Intl.DateTimeFormat(
         </ul>
         {moreDocs && (
           <p class="pt-1">
-            <a href={`${docsBasePath}/${allDocs[0].id}`} class="text-xs text-zinc-400">all docs →</a>
+            <a href={getCollectionEntryPath(site, 'docs', allDocs[0].id)} class="text-xs text-zinc-400">{strings.allDocsLabel}</a>
           </p>
         )}
       </section>
