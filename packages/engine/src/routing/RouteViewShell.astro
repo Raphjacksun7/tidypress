@@ -1,0 +1,114 @@
+---
+import LocaleHomeView from '@/views/LocaleHomeView.astro'
+import CollectionIndexView from '@/views/CollectionIndexView.astro'
+import WritingEntryView from '@/views/WritingEntryView.astro'
+import PageEntryView from '@/views/PageEntryView.astro'
+import RootPageView from '@/views/RootPageView.astro'
+import DocsIndexView from '@/views/DocsIndexView.astro'
+import DocsEntryView from '@/views/DocsEntryView.astro'
+import ManualEntryView from '@/views/ManualEntryView.astro'
+import DocEntryView from '@/views/DocEntryView.astro'
+import { docFormEntryViewRegistry } from '@/routing/view-registry'
+import {
+  assertRegisteredViewKey,
+  collectionPresentationViewRegistry,
+  ensurePluginRouteViewRegistry,
+  listShellViewKeys,
+  PAGE_ROOT_VIEW,
+  resolveShellLayoutForViewKey,
+  SITE_LOCALE_HOME_VIEW,
+} from '@/routing/view-registry'
+import type { CollectionRouteViewMode, CollectionShellLayout } from '@/routing/view-registry'
+import type { RouteViewBundle } from '@/collections/bundle'
+import {
+  getPluginAstroViewImports,
+  getPluginShellLayoutByPrefix,
+} from '@/plugins/manifest'
+
+interface Props {
+  bundle: RouteViewBundle
+  pathname: string
+  Content?: any
+  mdxComponents: Record<string, any>
+  headings: { depth: number; slug: string; text: string }[]
+}
+
+const { bundle, pathname, Content, mdxComponents, headings } = Astro.props
+
+await ensurePluginRouteViewRegistry()
+const pluginShellLayouts = await getPluginShellLayoutByPrefix()
+const pluginAstroImports = await getPluginAstroViewImports()
+
+const shellLayoutComponents: Record<CollectionShellLayout, Partial<Record<CollectionRouteViewMode, any>>> = {
+  docs: {
+    'collection-index': DocsIndexView,
+    'collection-entry': DocsEntryView,
+    'version-root': DocsEntryView,
+  },
+  writing: {
+    'collection-index': CollectionIndexView,
+    'collection-entry': WritingEntryView,
+  },
+  page: {
+    'collection-index': CollectionIndexView,
+    'collection-entry': PageEntryView,
+  },
+}
+
+const routeViewComponents: Record<string, any> = {
+  [SITE_LOCALE_HOME_VIEW]: LocaleHomeView,
+  [PAGE_ROOT_VIEW]: RootPageView,
+}
+
+const docFormViews = {
+  doc: DocEntryView,
+  manual: ManualEntryView,
+} as const
+
+for (const config of Object.values(docFormEntryViewRegistry)) {
+  const EntryView = docFormViews[config.prefix as keyof typeof docFormViews]
+  for (const mode of Object.keys(config.modes) as CollectionRouteViewMode[]) {
+    routeViewComponents[`${config.prefix}:${mode}`] = EntryView
+  }
+}
+
+for (const config of Object.values(collectionPresentationViewRegistry)) {
+  for (const mode of Object.keys(config.modes) as CollectionRouteViewMode[]) {
+    const ViewComponent = shellLayoutComponents[config.shellLayout][mode]
+    if (!ViewComponent) {
+      throw new Error(`Shell layout "${config.shellLayout}" has no component for mode "${mode}".`)
+    }
+    routeViewComponents[`${config.prefix}:${mode}`] = ViewComponent
+  }
+}
+
+for (const [viewKey, relativeAstroPath] of Object.entries(pluginAstroImports)) {
+  try {
+    const importPath = `@project/${relativeAstroPath.replace(/^\.\//, '')}`
+    const module = await import(importPath)
+    if (module.default) {
+      routeViewComponents[viewKey] = module.default
+    }
+  } catch {
+    // Optional view file missing at build time — use built-in shell fallback below.
+  }
+}
+
+for (const viewKey of listShellViewKeys()) {
+  if (routeViewComponents[viewKey]) {
+    continue
+  }
+  const layout = resolveShellLayoutForViewKey(viewKey, pluginShellLayouts)
+  const mode = viewKey.split(':')[1] as CollectionRouteViewMode
+  const fallback = layout ? shellLayoutComponents[layout]?.[mode] : undefined
+  if (!fallback) {
+    throw new Error(`Route view component missing for "${viewKey}".`)
+  }
+  routeViewComponents[viewKey] = fallback
+}
+
+assertRegisteredViewKey(bundle.viewKey)
+
+const View = routeViewComponents[bundle.viewKey]
+---
+<View bundle={bundle} pathname={pathname} Content={Content} mdxComponents={mdxComponents} headings={headings} />

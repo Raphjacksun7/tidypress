@@ -6,6 +6,7 @@ const { enabled = true } = Astro.props
 ---
 {enabled && (
 <button
+  type="button"
   id="theme-toggle"
   aria-label="Toggle light/dark mode"
   class="text-sm text-zinc-500 cursor-pointer"
@@ -15,31 +16,39 @@ const { enabled = true } = Astro.props
 </button>
 )}
 
-<script>
-  const root = document.documentElement
-  const toggleButton = document.getElementById('theme-toggle')!
-  const themeLabel = document.getElementById('theme-label')!
-  if (toggleButton && themeLabel) {
-    function readTheme(): 'light' | 'dark' {
-      return root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
+<script is:inline>
+  (function () {
+    var root = document.documentElement
+    var toggleButton = document.getElementById('theme-toggle')
+    var themeLabel = document.getElementById('theme-label')
+    if (!toggleButton || !themeLabel) {
+      return
     }
 
-    function setTheme(theme: 'light' | 'dark') {
+    function readTheme() {
+      var stored = root.getAttribute('data-theme')
+      if (stored === 'dark' || stored === 'light') {
+        return stored
+      }
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    }
+
+    function applyTheme(theme) {
       root.setAttribute('data-theme', theme)
       themeLabel.textContent = theme
       localStorage.setItem('theme', theme)
     }
 
-    themeLabel.textContent = readTheme()
+    applyTheme(readTheme())
 
-    toggleButton.addEventListener('click', () => {
-      setTheme(readTheme() === 'dark' ? 'light' : 'dark')
+    toggleButton.addEventListener('click', function () {
+      applyTheme(readTheme() === 'dark' ? 'light' : 'dark')
     })
 
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
       if (!localStorage.getItem('theme')) {
-        setTheme(e.matches ? 'dark' : 'light')
+        applyTheme(e.matches ? 'dark' : 'light')
       }
     })
-  }
+  })()
 </script>

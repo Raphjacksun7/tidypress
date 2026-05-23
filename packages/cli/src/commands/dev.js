@@ -19,6 +19,6 @@ export class DevCommand {
     await this.configLoader.ensureConfigFile({ docsDir })
     await this.configLoader.validateNavigation({ docsDir })
     const workdir = await this.engineManager.prepare({ docsDir, mode: 'dev' })
-    await this.engineManager.runDev({ workdir, port })
+    await this.engineManager.runDev({ workdir, port, docsDir })
   }
 }

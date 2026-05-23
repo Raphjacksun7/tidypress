@@ -17,7 +17,9 @@ function buildConfigTemplate(projectName, preset) {
     if (collection.basePath) {
       parts.push(`basePath: ${toQuotedValue(collection.basePath)}`)
     }
-    parts.push(`kind: ${toQuotedValue(collection.kind)}`)
+    if (collection.kind) {
+      parts.push(`kind: ${toQuotedValue(collection.kind)}`)
+    }
     if (collection.label) {
       parts.push(`label: ${toQuotedValue(collection.label)}`)
     }
@@ -55,6 +57,10 @@ export async function scaffoldDocs({ docsDir, projectName, starterPreset }) {
   for (const directory of collectionDirectories) {
     await fs.mkdir(directory, { recursive: true })
   }
+  await fs.mkdir(path.resolve(docsDir, 'public/images'), { recursive: true })
+  await fs
+    .writeFile(path.resolve(docsDir, 'public/images/.gitkeep'), '', { flag: 'wx' })
+    .catch(() => {})
 
   const configPath = path.resolve(docsDir, 'docsmint.config.ts')
   const gitignorePath = path.resolve(docsDir, '.gitignore')

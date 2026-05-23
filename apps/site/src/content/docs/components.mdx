@@ -1,114 +1,61 @@
 ---
 title: Components
-description: Built-in MDX components — Callout, Tooltip, FileTree, Tabs, Image, Mermaid.
-order: 4
+description: Built-in MDX components for notes, tabs, file trees, diagrams, images, tooltips, and steps.
+order: 12
 ---
 
-All components work in `.mdx` files without extra imports. Collapsible sections use native HTML.
+Components are available in `.mdx` files without imports.
 
 ## Callout
 
-Inline notices for notes, warnings, and tips.
+Notes, warnings, and tips.
 
 ```mdx
-<Callout>Default note.</Callout>
+<Callout>The config file lives at `docs/docsmint.config.ts`.</Callout>
 
-<Callout type="warning">This action cannot be undone.</Callout>
+<Callout type="warning">Do not edit `docs/.docsmint/` by hand.</Callout>
 
-<Callout type="tip">Run docsmint clean to force a fresh reinstall.</Callout>
+<Callout type="tip">Run `docsmint clean` if a generated workdir looks stale.</Callout>
 ```
 
-<Callout>This is a note. Use it for important context that doesn't fit inline.</Callout>
+<Callout>The config file lives at `docs/docsmint.config.ts`.</Callout>
 
-<Callout type="warning">This action cannot be undone. Back up first.</Callout>
+<Callout type="warning">Do not edit `docs/.docsmint/` by hand.</Callout>
 
-<Callout type="tip">Run `docsmint clean` if the dev server behaves unexpectedly after an upgrade.</Callout>
+<Callout type="tip">Run `docsmint clean` if a generated workdir looks stale.</Callout>
 
 | Prop | Type | Default |
 |------|------|---------|
 | `type` | `"note" \| "warning" \| "tip"` | `"note"` |
 
-## Tooltip
-
-Inline hover definitions. Renders a dotted underline — hover to reveal.
-
-```mdx
-The <Tooltip tip="Batches user operations off-chain before submitting to the EntryPoint">bundler</Tooltip> collects transactions.
-```
-
-The <Tooltip tip="Batches user operations off-chain before submitting to the EntryPoint">bundler</Tooltip> collects transactions.
-
-| Prop | Type | Required |
-|------|------|----------|
-| `tip` | string | yes |
-
-## FileTree
-
-A collapsible file and directory tree. Folders collapse on click. Wrap filenames in `**` to highlight them.
-
-```mdx
-<FileTree>
-- docs/
-  - **docsmint.config.ts**
-  - src/
-    - content/
-      - docs/
-        - getting-started.md
-</FileTree>
-```
-
-<FileTree>
-- docs/
-  - **docsmint.config.ts**
-  - src/
-    - content/
-      - docs/
-        - getting-started.md
-        - configuration.md
-      - writing/
-        - hello-world.md
-</FileTree>
-
-Two spaces per indent level. No props — content is the slot.
-
 ## Tabs
 
-Tabbed panels for showing alternatives side by side. `labels` must match the number of `<Tab>` children.
+Alternate commands or examples.
 
 ````mdx
-<Tabs labels={["pnpm", "npm", "pip"]}>
+<Tabs labels={["npm", "pnpm"]}>
 <Tab>
 ```bash
-pnpm add package
+npm install -g docsmint
 ```
 </Tab>
 <Tab>
 ```bash
-npm install package
-```
-</Tab>
-<Tab>
-```bash
-pip install package
+pnpm add -g docsmint
 ```
 </Tab>
 </Tabs>
 ````
 
-<Tabs labels={["pnpm", "npm", "pip"]}>
+<Tabs labels={["npm", "pnpm"]}>
 <Tab>
 ```bash
-pnpm add docsmint
+npm install -g docsmint
 ```
 </Tab>
 <Tab>
 ```bash
-npm install docsmint
-```
-</Tab>
-<Tab>
-```bash
-pip install docsmint
+pnpm add -g docsmint
 ```
 </Tab>
 </Tabs>
@@ -117,43 +64,77 @@ pip install docsmint
 |------|------|----------|
 | `labels` | `string[]` | yes |
 
+`labels` must match the number of direct `<Tab>` children.
+
+## FileTree
+
+Project structure. Folders collapse on click. Wrap important files in `**` to highlight them.
+
+```mdx
+<FileTree>
+- docs/
+  - **docsmint.config.ts**
+  - public/
+    - images/
+  - src/
+    - content/
+      - docs/
+        - getting-started.md
+      - writing/
+        - hello.md
+</FileTree>
+```
+
+<FileTree>
+- docs/
+  - **docsmint.config.ts**
+  - public/
+    - images/
+  - src/
+    - content/
+      - docs/
+        - getting-started.md
+      - writing/
+        - hello.md
+</FileTree>
+
+Two spaces per indent level. No props.
+
 ## Mermaid
 
-Render diagrams from Mermaid syntax. Supports flowcharts, sequence diagrams, entity-relationship diagrams, and more. Automatically adapts to the current theme.
+Mermaid diagrams.
 
 ```mdx
 <Mermaid code={`
 flowchart LR
-  A[Install docsmint] --> B[docsmint init]
-  B --> C[Write markdown]
-  C --> D[docsmint dev]
-  D --> E[docsmint build]
-  E --> F[Deploy]
+  Markdown[Markdown files] --> Build[docsmint build]
+  Build --> Static[Static site]
+  Static --> Host[Static host]
 `} />
 ```
 
 <Mermaid code={`
 flowchart LR
-  A[Install docsmint] --> B[docsmint init]
-  B --> C[Write markdown]
-  C --> D[docsmint dev]
-  D --> E[docsmint build]
-  E --> F[Deploy]
+  Markdown[Markdown files] --> Build[docsmint build]
+  Build --> Static[Static site]
+  Static --> Host[Static host]
 `} />
 
 | Prop | Type | Required |
 |------|------|----------|
 | `code` | string | yes |
 
+Diagrams adapt when the theme changes.
+
 ## Image
 
-Optimized images with optional captions.
+Put images in `docs/public/` (for example `docs/public/images/flower.jpg`). Use the component for captions; use markdown for simple embeds.
 
 ```mdx
-<Image src={import('./arch.png')} alt="Architecture diagram" caption="System overview" />
+<Image src="/images/flower.jpg" alt="Colorful tulips in bloom" caption="Vivid spring flowers" />
 ```
 
-Local images from `src/assets/` are resized and converted to modern formats at build time. Images from `public/` are served as-is with lazy loading.
+<Image src="/images/flower.jpg" alt="Colorful tulips in bloom" caption="Vivid spring flowers" />
 
 | Prop | Type | Required |
 |------|------|----------|
@@ -163,30 +144,76 @@ Local images from `src/assets/` are resized and converted to modern formats at b
 | `width` | number | no |
 | `height` | number | no |
 
-## Collapsible sections
+Same file with markdown:
 
-Native HTML:
+```md
+![Colorful flowers](/images/flower.jpg)
+```
+
+## Tooltip
+
+Short inline definitions.
+
+```mdx
+The <Tooltip tip="The generated Astro project inside docs/.docsmint/">workdir</Tooltip> is rebuilt by the CLI.
+```
+
+The <Tooltip tip="The generated Astro project inside docs/.docsmint/">workdir</Tooltip> is rebuilt by the CLI.
+
+| Prop | Type | Required |
+|------|------|----------|
+| `tip` | string | yes |
+
+## Steps
+
+Numbered procedural blocks in MDX. Manual pages use the same components with manual page chrome.
+
+```mdx
+<Steps>
+  <Step title="Create content">
+    Add markdown under `docs/src/content/docs/`.
+  </Step>
+  <Step title="Preview locally">
+    Run `docsmint dev`.
+  </Step>
+</Steps>
+```
+
+<Steps>
+  <Step title="Create content">
+    Add markdown under `docs/src/content/docs/`.
+  </Step>
+  <Step title="Preview locally">
+    Run `docsmint dev`.
+  </Step>
+</Steps>
+
+| Component | Prop | Type | Required |
+|-----------|------|------|----------|
+| `Step` | `title` | string | no |
+
+Wrap one or more `<Step>` elements inside `<Steps>`.
+
+## Native details
+
+Native HTML also works:
 
 ````html
 <details>
-<summary>Full benchmark output</summary>
+<summary>Generated files</summary>
 
-```bash
-read: IOPS=749k, BW=2925MiB/s
-clat (usec): min=35, max=8371, avg=337.51
+```txt
+docs/.docsmint/dist/
 ```
 
 </details>
 ````
 
 <details>
-<summary>Full benchmark output</summary>
+<summary>Generated files</summary>
 
-```bash
-read: IOPS=749k, BW=2925MiB/s (3067MB/s)
-clat (usec): min=35, max=8371, avg=337.51, stdev=27.76
+```txt
+docs/.docsmint/dist/
 ```
 
 </details>
-
-Add `open` to start expanded.

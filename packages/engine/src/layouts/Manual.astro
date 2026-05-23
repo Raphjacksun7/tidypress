@@ -1,0 +1,94 @@
+---
+import Base from '@/layouts/Base.astro'
+import Toc from '@/components/Toc.astro'
+import VersionSelector from '@/components/VersionSelector.astro'
+import ManualChrome from '@/components/ManualChrome.astro'
+import ChapterNav from '@/components/ChapterNav.astro'
+import { getCollection } from 'astro:content'
+import type { DocChapterNav } from '@/routing/chapter-nav'
+import { getConfig } from '@/config/getConfig'
+import { getUiStrings, resolveLocale } from '@/i18n/locale'
+import { versionSelectorState } from '@/routing/route-equivalents'
+import { resolveEditUrl } from '@/utils/edit-url'
+
+export interface Props {
+  title: string
+  description?: string
+  headings?: { depth: number; slug: string; text: string }[]
+  editPath?: string
+  formLabel?: string
+  chapterNav?: DocChapterNav
+  showChapterNavTop?: boolean
+  showChapterNavBottom?: boolean
+}
+
+const {
+  title,
+  description,
+  headings = [],
+  editPath,
+  formLabel,
+  chapterNav,
+  showChapterNavTop = false,
+  showChapterNavBottom = false,
+} = Astro.props
+const rawSite = (await import('@site-config')).default
+const site = getConfig(rawSite)
+const strings = getUiStrings(site, resolveLocale(Astro.url.pathname, site.i18n))
+const badgeLabel = formLabel ?? strings.manualFormBadgeLabel
+const resolvedEditUrl = resolveEditUrl(site.repository, editPath)
+const docsEntries = (site.versions?.length ?? 0) > 0
+  ? (await getCollection('docs')).filter(entry => {
+      const data = entry.data as { published?: boolean; scheduled?: Date }
+      if (data.published === false) return false
+      if (data.scheduled && data.scheduled > new Date()) return false
+      return true
+    })
+  : []
+const versionSelector = versionSelectorState(site, Astro.url.pathname, docsEntries)
+---
+<Base title={title} description={description}>
+  <div class="max-w-screen-lg mx-auto px-8 py-12 flex gap-12">
+    <main class="min-w-0 flex-1 max-w-2xl">
+      <ManualChrome label={badgeLabel} title={title} description={description} />
+      {showChapterNavTop && (
+        <ChapterNav
+          nav={chapterNav}
+          previousLabel={strings.chapterPreviousLabel}
+          nextLabel={strings.chapterNextLabel}
+        />
+      )}
+      <article class="prose" data-doc-form="manual">
+        <slot />
+      </article>
+      {showChapterNavBottom && (
+        <ChapterNav
+          nav={chapterNav}
+          previousLabel={strings.chapterPreviousLabel}
+          nextLabel={strings.chapterNextLabel}
+        />
+      )}
+      {resolvedEditUrl && (
+        <p class="mt-8 text-xs">
+          <a href={resolvedEditUrl} target="_blank" rel="noopener noreferrer" class="text-zinc-500">
+            {strings.editThisPageLabel} ->
+          </a>
+        </p>
+      )}
+    </main>
+    {(versionSelector.versions.length > 0 || headings.length > 0) && (
+      <aside class="w-44 shrink-0 hidden lg:block">
+        {versionSelector.versions.length > 0 && (
+          <div class="mb-4">
+            <VersionSelector
+              versions={versionSelector.versions}
+              selectedPath={versionSelector.selectedPath}
+              targets={versionSelector.targets}
+            />
+          </div>
+        )}
+        <Toc headings={headings} />
+      </aside>
+    )}
+  </div>
+</Base>

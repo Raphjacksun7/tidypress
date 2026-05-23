@@ -2,7 +2,7 @@
 
 Python interface for the DocsMint Node.js CLI.
 
-Static publishing for engineers who want docs and writing they own. Rendering uses Astro (Node ≥22.12); this package runs that CLI reliably.
+Minimal markdown docs and writing. Rendering uses Astro (Node ≥22.12); this package runs that CLI reliably.
 
 ## Install
 

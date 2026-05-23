@@ -27,11 +27,12 @@ export class EngineManager {
    * @param {{ workdir: string, port: number }} options
    * @returns {Promise<void>}
    */
-  async runDev({ workdir, port }) {
+  async runDev({ workdir, port, docsDir }) {
     await runCommand({
       command: 'pnpm',
       args: ['astro', 'dev', '--port', String(port)],
       cwd: workdir,
+      env: { DOCSMINT_PROJECT_ROOT: docsDir },
     })
   }
 
@@ -39,11 +40,12 @@ export class EngineManager {
    * @param {{ workdir: string }} options
    * @returns {Promise<void>}
    */
-  async runBuild({ workdir }) {
+  async runBuild({ workdir, docsDir }) {
     await runCommand({
       command: 'pnpm',
       args: ['astro', 'build'],
       cwd: workdir,
+      env: { DOCSMINT_PROJECT_ROOT: docsDir },
     })
     await runCommand({
       command: 'pnpm',
@@ -56,11 +58,12 @@ export class EngineManager {
    * @param {{ workdir: string, port: number }} options
    * @returns {Promise<void>}
    */
-  async runPreview({ workdir, port }) {
+  async runPreview({ workdir, port, docsDir }) {
     await runCommand({
       command: 'pnpm',
       args: ['astro', 'preview', '--port', String(port)],
       cwd: workdir,
+      env: { DOCSMINT_PROJECT_ROOT: docsDir },
     })
   }
 

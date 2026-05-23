@@ -19,6 +19,6 @@ export class PreviewCommand {
     await this.configLoader.ensureConfigFile({ docsDir })
     await this.configLoader.validateNavigation({ docsDir })
     const workdir = await this.engineManager.prepare({ docsDir, mode: 'preview' })
-    await this.engineManager.runPreview({ workdir, port })
+    await this.engineManager.runPreview({ workdir, port, docsDir })
   }
 }

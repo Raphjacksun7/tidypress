@@ -1,14 +1,13 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import createJiti from 'jiti'
+import { loadEngineModule } from '../test-support/engine-jiti.js'
 
-const jiti = createJiti(import.meta.url)
 const {
   localizeEntries,
   resolveLocale,
   switchLocalePath,
   withLocalePrefix,
-} = jiti('../../engine/src/i18n/locale.ts')
+} = loadEngineModule(import.meta.url, 'i18n/locale.ts')
 
 test('resolveLocale identifies locale-prefixed routes', () => {
   const localeState = resolveLocale('/fr/docs/getting-started', {

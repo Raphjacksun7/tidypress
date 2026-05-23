@@ -2,7 +2,7 @@ import { defineConfig } from 'docsmint/config'
 
 export default defineConfig({
   name: 'docsmint',
-  description: 'Static publishing for engineers who want docs and writing they own.',
+  description: 'Minimal markdown docs and writing.',
   branding: {
     icon: '/favicon.svg',
     favicon: '/favicon-white.svg',
@@ -14,7 +14,39 @@ export default defineConfig({
     { label: 'docs', href: '/docs' },
     { label: 'writing', href: '/writing' },
   ],
-  footer: [],
+  footer: [
+    { label: 'GitHub', href: 'https://github.com/Raphjacksun7/docsmint', icon: 'github' },
+  ],
   pages: [],
-  siteUrl: 'https://usedocsmint.pages.dev',
+
+  // Docs sidebar: explicit section groups
+  docs: {
+    sidebar: [
+      {
+        label: 'Getting started',
+        items: ['why-docsmint', 'getting-started', 'examples', 'architecture'],
+      },
+      {
+        label: 'Authoring',
+        items: ['writing-content', 'components', 'reference'],
+      },
+      {
+        label: 'Configuration',
+        items: ['configuration', 'sidebar-navigation', 'display-options', 'theme-typography', 'i18n', 'versions', 'capabilities', 'analytics'],
+      },
+      {
+        label: 'Tooling',
+        items: ['context-export', 'python', 'extensibility'],
+      },
+      {
+        label: 'Deployment',
+        items: ['deploying'],
+      },
+      {
+        label: 'Manual demo',
+        items: ['manual/intro', 'manual/install', 'manual/configure', 'manual/build'],
+      },
+    ],
+  },
+
 })

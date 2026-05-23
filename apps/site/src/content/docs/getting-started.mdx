@@ -1,8 +1,12 @@
 ---
 title: Getting started
-description: Install DocsMint and run your first engineer blog/docs site in minutes.
-order: 1
+description: Create a DocsMint project, run it locally, and build static output.
+order: 2
 ---
+
+DocsMint turns a `docs/` folder into a small static site for documentation and writing.
+
+You write markdown. DocsMint prepares an internal Astro workdir, renders the site, runs Pagefind during production builds, and leaves you with static files.
 
 ## Install
 
@@ -31,38 +35,27 @@ pip install docsmint
 </Tabs>
 
 <Callout>
-Node.js is required in all cases. The Python package invokes the Node.js CLI.
+Node.js 22.12 or newer is required for rendering. The Python package can run Python-native helpers, but site builds still use the Node.js CLI and Astro engine.
 </Callout>
 
-## Prerequisites
+## Start a project
 
-- Node.js 22+
-- pnpm or npm
-
-## 90-second launch path
-
-If you want a known-good release smoke target before authoring your own content:
-
-```bash
-pnpm install
-pnpm --filter @docsmint/example-minimal build
-```
-
-This writes output to `examples/minimal/docs/.docsmint/dist/`.
-
-## Initialize a project
-
-From your project root:
+From the root of your project:
 
 ```bash
 docsmint init
+docsmint dev
 ```
 
-This creates:
+Open `http://localhost:4321`.
 
-```
+`docsmint init` creates a `docs/` folder:
+
+```txt
 docs/
 ├── docsmint.config.ts
+├── public/
+│   └── images/
 └── src/
     └── content/
         ├── docs/
@@ -72,64 +65,102 @@ docs/
         └── pages/
 ```
 
-## Start the dev server
+The default starter seeds one docs page and one writing post so you can see the file shape before replacing them.
+
+Use the custom starter when you also want an example custom collection:
 
 ```bash
-docsmint dev
+docsmint init --preset custom
 ```
 
-Default URL: `http://localhost:4321`.
+## Write content
 
-## How the architecture works
+Put documentation pages in `docs/src/content/docs/`:
 
-DocsMint keeps your project content-only while engine internals stay hidden:
+```md
+---
+title: Install
+description: Install and configure the project.
+order: 1
+---
 
-1. The CLI prepares `docs/.docsmint/` as an internal workdir.
-2. The bundled engine from `@docsmint/engine` is installed there.
-3. Your `docs/src/content/` and `docs/docsmint.config.ts` are linked into that runtime.
-4. Astro runs inside the workdir, not in your app root.
+## Requirements
 
-You own content and config. DocsMint owns rendering internals.
-
-```
-docs/
-├── docsmint.config.ts          ← your config (name, nav, branding, …)
-└── src/
-    └── content/
-        ├── docs/               ← docs pages (.md / .mdx)
-        ├── writing/            ← writing posts (.md)
-        ├── pages/              ← custom pages (.md)
-        └── public/             ← static assets served at site root
-            ├── favicon.svg
-            └── favicon-white.svg
+Write the page in markdown.
 ```
 
-### Branding
+Put dated posts in `docs/src/content/writing/`:
 
-The `branding` config key is fully opt-in. When set, DocsMint renders a monochrome icon beside the site name in both the homepage heading and the nav, and injects your favicon into every page `<head>`.
+```md
+---
+title: Release notes
+date: "2026-05-22"
+description: Notes from the latest release.
+---
 
-```ts
-branding: {
-  icon: '/favicon.svg',       // adaptive icon in UI (light/dark)
-  favicon: '/favicon-white.svg', // browser-tab favicon
-}
+What changed and why.
 ```
 
-SVG icons are inlined for perfect `currentColor` theme adaptation. Raster icons use CSS filters. Favicons are linked as provided, so use a dedicated favicon asset when you need a fixed tab color.
+## Build and preview
 
-## Commands
+```bash
+docsmint build
+docsmint preview
+```
 
-- `docsmint init` scaffold `docs/`
-- `docsmint dev` run local server
-- `docsmint build` build static output to `docs/.docsmint/dist/`
-- `docsmint preview` preview the production build
-- `docsmint clean` remove `docs/.docsmint/`
-- `docsmint deploy [target]` build and prepare deployment artifact
-- `docsmint context [output]` generate an LLM-friendly content snapshot
+Build output is written to:
+
+```txt
+docs/.docsmint/dist/
+```
+
+Search is generated during `docsmint build`, so the search modal is available in `preview`, not in the dev server.
+
+## What `.docsmint/` is
+
+`.docsmint/` is generated. Do not edit it by hand.
+
+During dev, DocsMint links your content and config into the workdir so Astro can reload changes. During build, DocsMint copies the content into the workdir and writes static output.
+
+```txt
+your project
+└── docs/
+    ├── docsmint.config.ts      # your config
+    ├── src/content/            # your markdown
+    └── .docsmint/              # generated workdir and dist output
+```
+
+If a local build behaves strangely after an engine update, run:
+
+```bash
+docsmint clean
+docsmint build
+```
+
+## Static assets
+
+Put files that should be served as-is in `docs/public/`:
+
+```txt
+docs/public/
+├── images/diagram.png          # /images/diagram.png
+├── downloads/spec.pdf          # /downloads/spec.pdf
+├── robots.txt                  # /robots.txt
+└── favicon.svg                 # /favicon.svg
+```
+
+Use absolute paths in markdown:
+
+```md
+![Architecture diagram](/images/diagram.png)
+[Download the spec](/downloads/spec.pdf)
+```
+
+`downloads/` is only an example folder. Any file under `public/` is served from the site root.
 
 ## Next steps
 
-- [Configuration](./configuration) — typed config and navigation policy
-- [Writing content](./writing-content) — markdown, frontmatter, and authoring workflow
-- [Components](./components) — Callout, Tabs, FileTree, Mermaid, and more
-- [Deploying](./deploying) — host-agnostic deployment workflow
+- [Why DocsMint](./why-docsmint) explains the product shape.
+- [Writing content](./writing-content) covers markdown, frontmatter, links, and images.
+- [Configuration](./configuration) covers `docsmint.config.ts`.
+- [Deploying](./deploying) explains how build output is published.

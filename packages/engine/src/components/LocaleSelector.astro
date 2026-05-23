@@ -1,30 +1,35 @@
 ---
-import { switchLocalePath } from '../i18n/locale'
+import type { DocsMintConfig } from '@docsmint/config'
+import { switchLocaleTarget } from '@/routing/route-equivalents'
 
-const { activeLocale, defaultLocale, label } = Astro.props
-/** @type {string[]} */
-const locales = Array.isArray(Astro.props.locales) ? Astro.props.locales : []
+const { activeLocale, defaultLocale, label, site } = Astro.props as {
+  activeLocale?: string
+  defaultLocale: string
+  label: string
+  site: DocsMintConfig
+}
+const locales: string[] = Array.isArray(Astro.props.locales) ? Astro.props.locales : []
 const pathname = Astro.url.pathname
-const localeConfig = { locales, defaultLocale }
 ---
 {
   locales.length > 1 && (
-    <label class="hidden sm:inline-flex items-center">
+    <label class="hidden sm:inline-flex items-center relative">
       <span class="sr-only">{label}</span>
       <select
         aria-label={label}
-        class="text-sm text-zinc-500 bg-transparent border border-zinc-200 rounded px-2 py-1"
+        class="dm-nav-select"
         onchange="if (this.value) window.location.assign(this.value)"
       >
         {locales.map((locale) => (
           <option
-            value={switchLocalePath(pathname, locale, localeConfig)}
+            value={switchLocaleTarget(pathname, locale, site)}
             selected={(activeLocale ?? defaultLocale) === locale}
           >
             {locale}
           </option>
         ))}
       </select>
+      <span class="dm-nav-select__chevron" aria-hidden="true">▾</span>
     </label>
   )
 }

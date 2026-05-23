@@ -37,6 +37,20 @@ test('scaffoldDocs creates docs and writing content structure', async () => {
   assert.match(writingPage, /title: Hello/)
 })
 
+test('scaffoldDocs custom preset creates a custom content collection example', async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-scaffold-custom-'))
+  const docsDir = path.join(root, 'docs')
+
+  await scaffoldDocs({ docsDir, projectName: 'example-project', starterPreset: 'custom' })
+
+  const config = await fs.readFile(path.join(docsDir, 'docsmint.config.ts'), 'utf8')
+  const playbook = await fs.readFile(path.join(docsDir, 'src/content/playbooks/on-call.md'), 'utf8')
+
+  assert.match(config, /playbooks/)
+  assert.match(config, /kind: 'content'/)
+  assert.match(playbook, /title: On-call playbook/)
+})
+
 test('scaffoldDocs rejects unknown starter presets', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-scaffold-preset-'))
   const docsDir = path.join(root, 'docs')
@@ -172,9 +186,9 @@ Guide content.
 
   const snapshot = await createContentSnapshot(docsDir, {
     collections: {
-      docs: { enabled: false, kind: 'docs' },
+      docs: { enabled: false },
       writing: { enabled: false, kind: 'writing' },
-      playbooks: { enabled: true, kind: 'docs' },
+      playbooks: { enabled: true, kind: 'content' },
     },
   })
 
@@ -209,7 +223,7 @@ writing content
 
   const snapshot = await createContentSnapshot(docsDir, {
     collections: {
-      docs: { enabled: true, kind: 'docs' },
+      docs: { enabled: true },
       writing: { enabled: true, kind: 'writing' },
     },
     capabilities: {

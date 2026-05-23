@@ -1,15 +1,15 @@
 ---
 // Pagefind search — custom UI matching the transfa monospace aesthetic.
 // Triggered by pressing / or clicking the search link in the nav.
-import { getConfig } from '../config/getConfig'
+import { getConfig } from '@/config/getConfig'
 import type { DocsMintI18nStrings } from '@docsmint/config'
-import { resolveLocale, withLocalePrefix } from '../i18n/locale'
+import { resolveLocale, withLocalePrefix } from '@/i18n/locale'
 
 export interface Props {
   strings: Required<DocsMintI18nStrings>
 }
 const { strings: searchStrings } = Astro.props
-const rawSite = (await import('../../docsmint.config.ts')).default
+const rawSite = (await import('@site-config')).default
 const site = getConfig(rawSite)
 const localeState = resolveLocale(Astro.url.pathname, site.i18n)
 const localizedVersionPaths = (site.versions ?? []).map(version =>
@@ -19,53 +19,45 @@ const localizedVersionPaths = (site.versions ?? []).map(version =>
 
 <!-- Search trigger -->
 <button
+  type="button"
   id="search-trigger"
-  class="text-sm text-zinc-500 flex items-center gap-1.5 cursor-pointer"
-  style="background:none; border:none; font-family:inherit; padding:0"
+  class="search-trigger"
   aria-label={searchStrings.searchLabel}
 >
   {searchStrings.searchLabel}
-  <kbd class="text-xs text-zinc-400 border border-zinc-300 px-1 rounded">
-    /
-  </kbd>
+  <kbd class="search-kbd">/</kbd>
 </button>
 
 <!-- Search modal -->
-<div id="search-modal"
-     class="fixed inset-0 z-50 hidden"
-     role="dialog" aria-modal="true" aria-label={searchStrings.searchLabel}>
+<div
+  id="search-modal"
+  class="search-modal hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-label={searchStrings.searchLabel}
+>
+  <div id="search-backdrop" class="search-backdrop"></div>
 
-  <!-- Backdrop -->
-  <div id="search-backdrop" class="absolute inset-0 bg-black/20"></div>
-
-  <!-- Dialog -->
-  <div class="absolute top-24 left-1/2 -translate-x-1/2 w-full max-w-xl px-4">
-    <div style="background:var(--bg); border:1px solid var(--border); border-radius:4px; box-shadow:0 4px 24px rgba(0,0,0,0.12)">
-
-      <!-- Input -->
-      <div style="display:flex; align-items:center; border-bottom:1px solid var(--border); padding:0 1rem">
-        <span style="color:var(--muted); font-size:0.875rem; margin-right:0.75rem">→</span>
+  <div class="search-dialog">
+    <div class="search-panel">
+      <div class="search-input-row">
+        <span class="search-input-prefix" aria-hidden="true">→</span>
         <input
           id="search-input"
           type="text"
           placeholder={searchStrings.searchPlaceholder}
           autocomplete="off"
           spellcheck="false"
-          style="flex:1; padding:1rem 0; font-size:0.875rem; outline:none; font-family:var(--font-mono); background:transparent; color:var(--fg)"
+          class="search-input"
         />
-        <kbd id="search-close-hint"
-             class="text-xs text-zinc-400 border border-zinc-200 px-1 rounded cursor-pointer">
-          esc
-        </kbd>
+        <kbd id="search-close-hint" class="search-kbd">esc</kbd>
       </div>
 
-      <!-- Results -->
-      <div id="search-results" class="max-h-80 overflow-y-auto">
-        <p id="search-empty" class="text-xs text-zinc-400 px-4 py-6">
+      <div id="search-results" class="search-results">
+        <p id="search-empty" class="search-empty">
           {searchStrings.searchEmptyLabel}
         </p>
       </div>
-
     </div>
   </div>
 </div>
@@ -101,98 +93,115 @@ function inActiveVersion(url, activeVersionPath) {
   }
 }
 
+function isExcludedSearchResult(item) {
+  const pathname = normalizePath(new URL(item.url, window.location.origin).pathname)
+  return pathname === '/404' || pathname.endsWith('/404')
+}
+
 async function loadPagefind() {
   if (pagefind) return pagefind
   try {
-    // @ts-ignore — pagefind is generated at build time
     const path = ['', 'pagefind', 'pagefind.js'].join('/')
     pagefind = await import(/* @vite-ignore */ path)
     await pagefind.init()
   } catch {
-    // dev mode: pagefind not yet built
     pagefind = null
   }
   return pagefind
 }
 
-const modal   = document.getElementById('search-modal')!
-const backdrop = document.getElementById('search-backdrop')!
-const input   = document.getElementById('search-input')
-const results = document.getElementById('search-results')!
-const empty   = document.getElementById('search-empty')!
-const trigger = document.getElementById('search-trigger')!
+const modal = document.getElementById('search-modal')
+const backdrop = document.getElementById('search-backdrop')
+const input = document.getElementById('search-input')
+const results = document.getElementById('search-results')
+const empty = document.getElementById('search-empty')
+const trigger = document.getElementById('search-trigger')
 
-function openSearch() {
-  modal.classList.remove('hidden')
-  input.placeholder = searchStrings.searchPlaceholder
-  input.focus()
-  loadPagefind()
-}
-
-function closeSearch() {
-  modal.classList.add('hidden')
-  input.value = ''
-  results.innerHTML = ''
-  results.appendChild(empty)
-  empty.textContent = searchStrings.searchEmptyLabel
-}
-
-trigger.addEventListener('click', openSearch)
-backdrop.addEventListener('click', closeSearch)
-
-document.addEventListener('keydown', e => {
-  if (e.key === '/' && document.activeElement?.tagName !== 'INPUT') {
-    e.preventDefault()
-    openSearch()
+if (!modal || !backdrop || !input || !results || !empty || !trigger) {
+  // Search UI not mounted (e.g. partial render)
+} else {
+  function openSearch() {
+    modal.classList.remove('hidden')
+    input.placeholder = searchStrings.searchPlaceholder
+    input.focus()
+    loadPagefind()
   }
-  if (e.key === 'Escape') closeSearch()
-})
 
-let debounce
-input.addEventListener('input', async () => {
-  clearTimeout(debounce)
-  const q = input.value.trim()
-  if (!q) {
+  function closeSearch() {
+    modal.classList.add('hidden')
+    input.value = ''
     results.innerHTML = ''
     results.appendChild(empty)
     empty.textContent = searchStrings.searchEmptyLabel
-    return
   }
-  debounce = setTimeout(async () => {
-    const pf = await loadPagefind()
-    const activeVersionPath = getActiveVersionPath(window.location.pathname)
-    if (!pf) {
-      empty.textContent = searchStrings.searchUnavailableLabel
+
+  trigger.addEventListener('click', openSearch)
+  backdrop.addEventListener('click', closeSearch)
+
+  document.addEventListener('keydown', e => {
+    if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
+      e.preventDefault()
+      openSearch()
+    }
+    if (e.key === 'Escape') closeSearch()
+  })
+
+  let debounce
+  input.addEventListener('input', async () => {
+    clearTimeout(debounce)
+    const q = input.value.trim()
+    if (!q) {
       results.innerHTML = ''
       results.appendChild(empty)
+      empty.textContent = searchStrings.searchEmptyLabel
       return
     }
-    const search = await pf.search(q)
-    if (!search.results.length) {
-      empty.textContent = searchStrings.searchNoResultsLabel.replace('{query}', q)
-      results.innerHTML = ''
-      results.appendChild(empty)
-      return
-    }
-    const rawItems = await Promise.all(search.results.slice(0, 30).map((r) => r.data()))
-    const items = activeVersionPath
-      ? rawItems.filter((item) => inActiveVersion(item.url, activeVersionPath))
-      : rawItems
-    if (!items.length) {
-      empty.textContent = searchStrings.searchNoResultsLabel.replace('{query}', q)
-      results.innerHTML = ''
-      results.appendChild(empty)
-      return
-    }
-    results.innerHTML = items.map((item) => `
-      <a href="${item.url}"
-         class="flex flex-col gap-0.5 px-4 py-3 border-b border-zinc-50 last:border-0
-                hover:bg-zinc-50 transition-colors"
-         style="text-decoration:none; color:inherit">
-        <span class="text-sm font-bold">${item.meta?.title ?? searchStrings.untitledLabel}</span>
-        <span class="text-xs text-zinc-400 line-clamp-2">${item.excerpt}</span>
-      </a>
-    `).slice(0, 8).join('')
-  }, 150)
-})
+    debounce = setTimeout(async () => {
+      const pf = await loadPagefind()
+      const activeVersionPath = getActiveVersionPath(window.location.pathname)
+      if (!pf) {
+        empty.textContent = searchStrings.searchUnavailableLabel
+        results.innerHTML = ''
+        results.appendChild(empty)
+        return
+      }
+      const search = await pf.search(q)
+      if (!search.results.length) {
+        empty.textContent = searchStrings.searchNoResultsLabel.replace('{query}', q)
+        results.innerHTML = ''
+        results.appendChild(empty)
+        return
+      }
+      const rawItems = await Promise.all(search.results.slice(0, 30).map(r => r.data()))
+      const items = rawItems
+        .filter(item => !isExcludedSearchResult(item))
+        .filter(item => (activeVersionPath ? inActiveVersion(item.url, activeVersionPath) : true))
+      if (!items.length) {
+        empty.textContent = searchStrings.searchNoResultsLabel.replace('{query}', q)
+        results.innerHTML = ''
+        results.appendChild(empty)
+        return
+      }
+      results.innerHTML = items
+        .slice(0, 8)
+        .map(item => {
+          const title = item.meta?.title ?? searchStrings.untitledLabel
+          const excerpt = item.excerpt ?? ''
+          return (
+            '<a href="' +
+            item.url +
+            '" class="search-result" data-search-result>' +
+            '<span class="search-result__title">' +
+            title +
+            '</span>' +
+            '<span class="search-result__excerpt">' +
+            excerpt +
+            '</span>' +
+            '</a>'
+          )
+        })
+        .join('')
+    }, 150)
+  })
+}
 </script>

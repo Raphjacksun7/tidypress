@@ -24,7 +24,7 @@ export class BuildService {
     await this.configLoader.ensureConfigFile({ docsDir })
     await this.configLoader.validateNavigation({ docsDir })
     const workdir = await this.engineManager.prepare({ docsDir, mode: 'build' })
-    await this.engineManager.runBuild({ workdir })
+    await this.engineManager.runBuild({ workdir, docsDir })
 
     const distDir = this.engineManager.getDistDirectory({ docsDir })
     await this.#exportConfigSidecar({ docsDir, projectRoot })

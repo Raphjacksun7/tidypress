@@ -1,15 +1,16 @@
 import { spawn } from 'node:child_process'
 
 /**
- * @param {{command: string, args: string[], cwd: string}} options
+ * @param {{command: string, args: string[], cwd: string, env?: Record<string, string>}} options
  * @returns {Promise<void>}
  */
-export async function runCommand({ command, args, cwd }) {
+export async function runCommand({ command, args, cwd, env }) {
   await new Promise((resolve, reject) => {
     const child = spawn(command, args, {
       cwd,
       stdio: 'inherit',
       shell: process.platform === 'win32',
+      env: env ? { ...process.env, ...env } : process.env,
     })
 
     child.on('exit', code => {

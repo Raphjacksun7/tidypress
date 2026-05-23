@@ -1,0 +1,18 @@
+---
+import Base from '@/layouts/Base.astro'
+import ProseContent from '@/components/ProseContent.astro'
+import type { RouteViewBundle } from '@/collections/bundle'
+
+interface Props {
+  bundle: RouteViewBundle
+  Content: any
+  mdxComponents: Record<string, any>
+}
+
+const { bundle, Content, mdxComponents } = Astro.props
+---
+<Base title={bundle.title} description={bundle.description}>
+  <div class="max-w-3xl mx-auto px-8 py-16">
+    <ProseContent Content={Content} components={mdxComponents} pagefindIgnore={bundle.pagefindIgnore} />
+  </div>
+</Base>

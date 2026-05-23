@@ -39,7 +39,7 @@ test('ConfigLoader.validateNavigation recognizes arbitrary configured collection
   const { docsDir } = await createDocsProjectFixture({ configSource: `export default {
   name: 'site',
   collections: {
-    playbooks: { enabled: true, basePath: '/playbooks', kind: 'docs' },
+    playbooks: { enabled: true, basePath: '/playbooks', kind: 'content' },
   },
   nav: [
     { label: 'docs', href: '/docs' },
@@ -73,7 +73,7 @@ test('ConfigLoader.validateNavigation keeps nav parity with custom starter base 
   const { docsDir } = await createDocsProjectFixture({ configSource: `export default {
   name: 'site',
   collections: {
-    docs: { enabled: true, basePath: '/reference', kind: 'docs' },
+    docs: { enabled: true, basePath: '/reference' },
     writing: { enabled: true, basePath: '/notes', kind: 'writing' },
   },
   nav: [

@@ -1,0 +1,46 @@
+---
+import { render } from 'astro:content'
+import { getConfig } from '@/config/getConfig'
+import { EntryResolver } from '@/routing/EntryResolver'
+import { RouteFactory } from '@/routing/RouteFactory'
+import { requiresRenderedEntry } from '@/routing/view-registry'
+import { createMdxComponentMap } from '@/routing/mdxComponents'
+import type { SiteRouteDefinition } from '@/routing/types'
+import RouteViewShell from '@/routing/RouteViewShell.astro'
+
+interface Props {
+  route: SiteRouteDefinition
+}
+
+const { route } = Astro.props
+const rawSite = (await import('@site-config')).default
+const site = getConfig(rawSite)
+const projectRoot = import.meta.env.DOCSMINT_PROJECT_ROOT ?? ''
+const factory = await RouteFactory.create(site, projectRoot)
+const resolver = new EntryResolver()
+const bundle = await factory.create(route)
+const mdxComponents = createMdxComponentMap()
+
+if (bundle.redirectTo) {
+  return Astro.redirect(bundle.redirectTo, 302)
+}
+
+let Content: any
+let headings = bundle.headings
+if (requiresRenderedEntry(bundle.viewKey)) {
+  const entry = await resolver.resolve(route)
+  if (!entry) {
+    return Astro.redirect('/404', 302)
+  }
+  const rendered = await render(entry)
+  Content = rendered.Content
+  headings = rendered.headings ?? headings
+}
+---
+<RouteViewShell
+  bundle={bundle}
+  pathname={Astro.url.pathname}
+  Content={Content}
+  mdxComponents={mdxComponents}
+  headings={headings}
+/>

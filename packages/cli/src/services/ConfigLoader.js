@@ -2,7 +2,14 @@ import { DocsMintError } from '../errors/DocsMintError.js'
 import { findConfigFile, loadUserConfig, resolveDocsDir } from '../infrastructure/project/config.js'
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { isStarterCollectionKey, normalizePages, resolveCapabilityFlags, withDefaults } from '@docsmint/config'
+import {
+  isDocsCollectionKey,
+  isPageCollectionKind,
+  isStarterCollectionKey,
+  normalizePages,
+  resolveCapabilityFlags,
+  withDefaults,
+} from '@docsmint/config'
 
 /**
  * Loads DocsMint project configuration and docs-directory context.
@@ -74,12 +81,12 @@ export class ConfigLoader {
       })
       .map(([key, collection]) => ({
         key,
-        kind: collection.kind ?? 'docs',
+        kind: isDocsCollectionKey(key) ? 'content' : collection.kind,
         basePath: collection.basePath ?? `/${key}`,
       }))
 
     for (const collection of enabledCollections) {
-      if (collection.kind === 'page' && /^pages$/.test(collection.key)) {
+      if (isPageCollectionKind(collection.kind) && /^pages$/.test(collection.key)) {
         continue
       }
       routes.add(collection.basePath)
@@ -91,7 +98,7 @@ export class ConfigLoader {
     }
 
     for (const collection of enabledCollections) {
-      if (collection.kind === 'page' && /^pages$/.test(collection.key)) {
+      if (isPageCollectionKind(collection.kind) && /^pages$/.test(collection.key)) {
         continue
       }
       const contentFiles = await this.#walkMarkdown(path.resolve(docsDir, `src/content/${collection.key}`))

@@ -1,0 +1,38 @@
+---
+import Base from '@/layouts/Base.astro'
+import BrandIcon from '@/components/BrandIcon.astro'
+import HomePreviewSection from '@/components/HomePreviewSection.astro'
+import { getUiStrings, resolveLocale } from '@/i18n/locale'
+import type { RouteViewBundle } from '@/collections/bundle'
+
+interface Props {
+  bundle: RouteViewBundle
+  pathname: string
+}
+
+const { bundle, pathname } = Astro.props
+const strings = getUiStrings(bundle.site, resolveLocale(pathname, bundle.site.i18n))
+const home = bundle.localeHome!
+---
+<Base title={bundle.title} description={bundle.description}>
+  <div class="max-w-3xl mx-auto px-8 py-16 space-y-16">
+    <section>
+      <h1 class="text-2xl font-bold tracking-tight mb-3 inline-flex items-center gap-2">
+        {bundle.site.branding?.icon && <BrandIcon src={bundle.site.branding.icon} sizeClass="size-[1.08em]" />}
+        {bundle.site.name}
+      </h1>
+      <p class="text-sm text-zinc-500 leading-relaxed">{bundle.site.description}</p>
+    </section>
+    {home.sections.map(section => (
+      <HomePreviewSection
+        title={section.title}
+        items={section.items}
+        display={section.display}
+        showDateInList={section.showDateInList}
+        showDescriptionInList={section.showDescriptionInList}
+        moreHref={section.moreHref}
+        moreLabel={section.moreLabel}
+      />
+    ))}
+  </div>
+</Base>

@@ -1,0 +1,85 @@
+---
+import type { DocsMintConfig } from '@docsmint/config'
+import { switchLocaleTarget } from '@/routing/route-equivalents'
+
+const { activeLocale, defaultLocale, label, site } = Astro.props as {
+  activeLocale?: string
+  defaultLocale: string
+  label: string
+  site: DocsMintConfig
+}
+const locales: string[] = Array.isArray(Astro.props.locales) ? Astro.props.locales : []
+const pathname = Astro.url.pathname
+const currentLocale = (activeLocale ?? defaultLocale).toLowerCase()
+---
+{
+  locales.length > 1 && (
+    <details class="dm-lang-select" data-lang-select>
+      <summary class="dm-lang-trigger" aria-label={label}>
+        <span class="dm-lang-trigger__value">{currentLocale.toUpperCase()}</span>
+        <svg class="dm-lang-trigger__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="10" height="10" aria-hidden="true">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </summary>
+      <div class="dm-lang-content" role="listbox" aria-label={label}>
+        {locales.map((locale) => {
+          const normalizedLocale = locale.toLowerCase()
+          const target = switchLocaleTarget(pathname, locale, site)
+          const isActive = currentLocale === normalizedLocale
+          return (
+            <a
+              href={target}
+              class="dm-lang-option"
+              role="option"
+              aria-selected={isActive ? 'true' : 'false'}
+              data-active={isActive ? '' : undefined}
+            >
+              <span class="dm-lang-option__label">{normalizedLocale.toUpperCase()}</span>
+              {isActive && (
+                <svg class="dm-lang-option__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" aria-hidden="true">
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+              )}
+            </a>
+          )
+        })}
+      </div>
+    </details>
+  )
+}
+
+<script>
+  function updateLangDropdownPlacement(details: HTMLElement) {
+    if (!details.hasAttribute('open')) return
+    const trigger = details.querySelector<HTMLElement>('.dm-lang-trigger')
+    const content = details.querySelector<HTMLElement>('.dm-lang-content')
+    if (!trigger || !content) return
+
+    details.removeAttribute('data-drop-up')
+
+    const triggerRect = trigger.getBoundingClientRect()
+    const spaceBelow = window.innerHeight - triggerRect.bottom - 8
+    const spaceAbove = triggerRect.top - 8
+    const required = Math.min(content.scrollHeight, Math.max(120, window.innerHeight * 0.35))
+
+    if (spaceBelow < required && spaceAbove > spaceBelow) {
+      details.setAttribute('data-drop-up', '')
+    }
+  }
+
+  function initLangSelectors() {
+    const selectors = document.querySelectorAll<HTMLElement>('[data-lang-select]')
+    selectors.forEach(details => {
+      if (details.dataset.langInit === '1') return
+      details.dataset.langInit = '1'
+      details.addEventListener('toggle', () => {
+        requestAnimationFrame(() => updateLangDropdownPlacement(details))
+      })
+      window.addEventListener('resize', () => updateLangDropdownPlacement(details))
+      window.addEventListener('scroll', () => updateLangDropdownPlacement(details), true)
+    })
+  }
+
+  document.addEventListener('astro:page-load', initLangSelectors)
+  initLangSelectors()
+</script>

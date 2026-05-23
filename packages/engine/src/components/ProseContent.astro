@@ -1,0 +1,12 @@
+---
+interface Props {
+  Content: any
+  components: Record<string, any>
+  pagefindIgnore?: boolean
+}
+
+const { Content, components, pagefindIgnore } = Astro.props
+---
+<article class="prose" data-pagefind-ignore={pagefindIgnore ? true : undefined}>
+  <Content components={components} />
+</article>

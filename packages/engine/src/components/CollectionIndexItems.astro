@@ -1,0 +1,58 @@
+---
+import {
+  isCardListLayout,
+  listGapStackClass,
+  listLayoutPresentation,
+  type ResolvedListDisplay,
+} from '@docsmint/config'
+import TagList from '@/components/TagList.astro'
+import type { IndexEntryPreview } from '@/collections/bundle'
+
+interface Props {
+  entries: IndexEntryPreview[]
+  display: ResolvedListDisplay
+}
+
+const { entries, display } = Astro.props
+const stackClass = listGapStackClass(display.gap)
+const presentation = listLayoutPresentation(display.layout)
+---
+{isCardListLayout(display.layout) ? (
+  <div class:list={[presentation.containerClass, stackClass]}>
+    {entries.map(entry => (
+      <article class={presentation.articleClass}>
+        <a href={entry.href} class={presentation.linkClass}>
+          {display.showDate && (entry.dateLabel || entry.author) && (
+            <div class={presentation.metaClass}>
+              {entry.dateLabel && (
+                <time datetime={entry.dateIso ?? entry.dateLabel}>{entry.dateLabel}</time>
+              )}
+              {entry.dateLabel && entry.author && <span>·</span>}
+              {entry.author && <span>{entry.author}</span>}
+            </div>
+          )}
+          <h2 class={presentation.titleClass}>{entry.title}</h2>
+          {display.showDescription && entry.description && (
+            <p class={presentation.descriptionClass}>{entry.description}</p>
+          )}
+          {display.showTags && entry.tags && entry.tags.length > 0 && (
+            <TagList tags={entry.tags} />
+          )}
+        </a>
+      </article>
+    ))}
+  </div>
+) : (
+  <ul class:list={[stackClass]}>
+    {entries.map(entry => (
+      <li>
+        <a href={entry.href} data-no-hover class:list={['group', presentation.rowClass]} style="text-decoration:none">
+          <span class={presentation.titleClass} {...{ [presentation.titleDataAttr]: true }}>{entry.title}</span>
+          {display.showDate && entry.dateLabel && (
+                <span class:list={[presentation.metaClass, presentation.metaToneClass]}>{entry.dateLabel}</span>
+              )}
+        </a>
+      </li>
+    ))}
+  </ul>
+)}

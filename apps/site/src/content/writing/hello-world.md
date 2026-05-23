@@ -1,47 +1,16 @@
 ---
-title: Why we built DocsMint
-date: "2026-04-10"
-author: Raphael Avocegamou
-description: We wanted an engineer publishing workflow with ownership and clean defaults.
+title: Hello world
+date: "2026-04-01"
+description: A small example post in the writing collection.
+author: DocsMint
+tags:
+  - docs
+  - writing
+  - example
 ---
 
-Most publishing tools can render markdown. That is not the hard part.
+The writing collection is for dated posts: release notes, project updates, essays, and announcements.
 
-The hard part is shipping writing that is clear, consistent, and fast to maintain without
-turning every project into theme work or platform setup.
+Docs live under `/docs`. Writing lives under `/writing`.
 
-DocsMint exists to solve that gap.
-
----
-
-It is intentionally opinionated:
-
-- markdown-first
-- constrained UI system
-- predictable navigation
-- built-in search and dark mode
-
-The goal is simple: write content, publish quickly, keep quality high.
-
----
-
-DocsMint is not a generic theme builder and not a CMS. It is a focused publishing system
-for engineer docs, blogs, and technical writing.
-
-You own content and config. DocsMint owns the engine internals.
-
-```bash
-npx docsmint@latest init
-docsmint dev
-```
-
-Python is also supported:
-
-```bash
-pip install docsmint
-docsmint dev
-```
-
----
-
-Hugo-speed output with Ghost-style defaults, without giving up content ownership.
+Start with [Getting started](/docs/getting-started), then read [Writing content](/docs/writing-content) when you are ready to replace this example with your own post.

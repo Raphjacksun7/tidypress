@@ -7,7 +7,7 @@ export default {
   ],
   // Text shown on the /writing index page (optional).
   writing: {
-    description: 'Engineering notes, architectural decisions, and observations.',
+    description: 'Notes, updates, and longer writing.',
   },
   footer: [],
   siteUrl: 'https://example.com',

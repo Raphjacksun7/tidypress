@@ -1,0 +1,24 @@
+---
+import Doc from '@/layouts/Doc.astro'
+import type { RouteViewBundle } from '@/collections/bundle'
+
+interface Props {
+  bundle: RouteViewBundle
+  Content: any
+  mdxComponents: Record<string, any>
+  headings: { depth: number; slug: string; text: string }[]
+}
+
+const { bundle, Content, mdxComponents, headings } = Astro.props
+---
+<Doc
+  title={bundle.title}
+  description={bundle.description}
+  headings={headings}
+  editPath={bundle.editPath}
+  docForm={bundle.entryMeta?.docForm}
+>
+  <div data-pagefind-ignore={bundle.pagefindIgnore ? true : undefined}>
+    <Content components={mdxComponents} />
+  </div>
+</Doc>

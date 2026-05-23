@@ -7,6 +7,7 @@ test('withDefaults keeps guardrailed theme baseline by default', () => {
   const config = withDefaults({ name: 'site' })
   assert.equal(config.theme?.mode, 'guardrailed')
   assert.equal(config.theme?.preset, 'baseline')
+  assert.equal(config.theme?.code?.preset, 'claude')
   assert.deepEqual(Object.keys(config.theme?.tokens?.light ?? {}).sort(), [
     'bg',
     'border',
@@ -109,4 +110,19 @@ test('withDefaults forces guardrailed baseline when theming capability is disabl
   assert.equal(config.theme?.preset, 'baseline')
   assert.notEqual(config.theme?.tokens?.light?.bg, '#ffffff')
   assert.notEqual(config.theme?.tokens?.dark?.bg, '#000000')
+})
+
+test('withDefaults validates theme.code.preset values', () => {
+  assert.throws(
+    () =>
+      withDefaults({
+        name: 'site',
+        theme: {
+          code: {
+            preset: /** @type {any} */ ('jetbrainz'),
+          },
+        },
+      }),
+    /theme\.code\.preset/i,
+  )
 })

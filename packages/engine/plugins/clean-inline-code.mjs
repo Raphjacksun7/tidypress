@@ -18,19 +18,40 @@ export function cleanInlineCodeIntegration() {
         let cleaned = 0
         for await (const file of walk(distPath)) {
           const html = await readFile(file, 'utf8')
-          if (!html.includes('background-color:#24292e')) continue
-          const fixed = html.replace(
+          if (!html.includes('data-rehype-pretty-code-figure')) continue
+
+          let fixed = html
+
+          // ── Block code: keep theme backgrounds for syntax-highlighted blocks
+          // (bash, js, md, etc.), but let plain text/tree blocks use DocsMint's
+          // surface styling.
+          fixed = fixed.replace(
+            /<pre\b([^>]*)style="[^"]*"([^>]*)>/g,
+            (match, before, after) => {
+              const attrs = `${before}${after}`
+              const language = attrs.match(/\bdata-language="([^"]*)"/)?.[1]
+              return language === 'txt' || language === 'text' || language === 'plain'
+                ? `<pre${before}${after}>`
+                : match
+            },
+          )
+
+          // ── Inline code: <span data-rehype-pretty-code-figure=""><code style="...">
+          fixed = fixed.replace(
             /<span data-rehype-pretty-code-figure="">\s*<code[^>]*style="[^"]*background-color:#24292e[^"]*"[^>]*>([\s\S]*?)<\/code>\s*<\/span>/g,
             (_match, inner) => {
               const text = inner.replace(/<[^>]+>/g, '')
               return `<code class="inline-code">${text}</code>`
-            }
+            },
           )
-          await writeFile(file, fixed)
-          cleaned++
+
+          if (fixed !== html) {
+            await writeFile(file, fixed)
+            cleaned++
+          }
         }
         console.log(`[clean-inline-code] Fixed ${cleaned} file(s)`)
-      }
-    }
+      },
+    },
   }
 }

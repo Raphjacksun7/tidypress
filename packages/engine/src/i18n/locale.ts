@@ -31,6 +31,9 @@ const defaultUiStrings: Required<DocsMintI18nStrings> = {
   copyLabel: 'copy',
   copiedLabel: 'copied',
   languageLabel: 'language',
+  chapterPreviousLabel: 'Previous',
+  chapterNextLabel: 'Next',
+  manualFormBadgeLabel: 'Manual',
 }
 
 export function resolveLocale(pathname: string, i18n?: I18nConfig): LocaleState {

@@ -1,142 +1,190 @@
 ---
 title: Writing content
-description: Markdown, frontmatter fields, MDX components, and file organization.
-order: 3
+description: Frontmatter, markdown, MDX, assets, links, drafts, and file organization.
+order: 4
 ---
 
-DocsMint uses standard markdown with MDX extensions. Starter projects include `docs/src/content/docs/` and `docs/src/content/writing/`, and you can add more collections (for example `playbooks/` or `guides/`) through `collections` config.
+Content lives under `docs/src/content/`. Markdown is the default. MDX adds components.
 
-## Frontmatter
+## Collections
 
-Every file begins with YAML frontmatter.
+```txt
+docs/src/content/
+├── docs/       # documentation pages
+├── writing/    # dated posts
+└── pages/      # root-level pages
+```
 
-**Docs pages:**
+`docs` uses sidebar order. `writing` uses dates. `pages` maps to root routes.
+
+## Docs frontmatter
 
 ```yaml
 ---
-title: Page title
-description: Short description for metadata.
+title: Install
+description: Install and configure the project.
 order: 1
+form: doc
 ---
 ```
 
-**Writing posts:**
+Fields:
+
+| Field | Purpose |
+|-------|---------|
+| `title` | Page heading and browser title |
+| `description` | Metadata and index summaries |
+| `order` | Sidebar order; lower numbers appear first |
+| `form` | Docs page model: `doc` or `manual` |
+| `part` | Optional chapter group label for doc pages |
+| `paging` | Override previous/next chapter links for this page |
+| `icon` | Optional card icon path |
+| `tags` | Optional SEO tags; render only when `showTags` is enabled |
+| `search` | Set `false` to exclude from search |
+| `published` | Set `false` to hide from routes, search, and context output |
+| `scheduled` | Future ISO datetime; hidden until that time |
+
+`form` defaults to `doc`. Use `manual` for procedural guides that should use manual chrome and step-oriented navigation.
+
+## Writing frontmatter
 
 ```yaml
 ---
-title: Post title
-date: "2026-04-11"
-description: Short description.
-author: Raph
+title: Release notes
+date: "2026-05-22"
+description: Notes from the latest release.
+author: Jane Smith
 ---
 ```
 
-| Field | Required for | Purpose |
-|-------|-------------|---------|
-| `title` | docs, writing | Page heading and browser title |
-| `description` | docs, writing | Meta description |
-| `order` | docs | Sidebar sort position. Lower = first. Falls back to alphabetical |
-| `date` | writing | Publication date. ISO 8601 (`YYYY-MM-DD`). Determines sort order |
-| `author` | writing | Optional. Displayed below the date |
+Fields:
+
+| Field | Purpose |
+|-------|---------|
+| `title` | Post heading and browser title |
+| `date` | Sort order on the writing index |
+| `description` | Metadata and index summaries |
+| `author` | Optional byline |
+| `icon` | Optional card icon path |
+| `tags` | Optional SEO tags; hidden in the UI unless `showTags` is enabled |
+| `search` | Set `false` to exclude from search |
+| `published` | Set `false` to keep as a draft |
+| `scheduled` | Future ISO datetime; hidden until that time |
 
 ## Headings
 
-Use `##` for sections, `###` for subsections. `#` is reserved — docsmint renders `title` from frontmatter as the page heading.
-
-## Code blocks
-
-Fenced blocks with a language tag get syntax highlighting:
-
-```python
-def greet(name: str) -> str:
-    return f"Hello, {name}"
-```
-
-Supported languages include `python`, `typescript`, `javascript`, `bash`, `sql`, `yaml`, `go`, `rust`, `json`, `dockerfile`, and [many more](https://shiki.matsu.io/languages).
-
-Inline `code` renders without highlighting — styled as monospace by the theme.
-
-## Diagrams
-
-Use the `<Mermaid>` component in `.mdx` files for flow charts, sequence diagrams, and more:
-
-```mdx
-<Mermaid code={`
-flowchart LR
-  A[Write markdown] --> B[docsmint build]
-  B --> C[Static HTML]
-  C --> D[Deploy anywhere]
-`} />
-```
-
-Diagrams re-render automatically when the theme changes (light ↔ dark).
-
-## Collapsible sections
-
-Native HTML works in any `.md` or `.mdx` file:
-
-```html
-<details>
-<summary>Full output</summary>
-
-Content here. Supports markdown, code blocks, and tables.
-
-</details>
-```
-
-Add `open` to start expanded:
-
-```html
-<details open>
-<summary>Benchmark results</summary>
-
-| Run | Latency |
-|-----|---------|
-| p50 | 12ms    |
-| p99 | 47ms    |
-
-</details>
-```
+Start sections with `##`. The page title comes from frontmatter.
 
 ## Links
 
-Standard markdown links work as expected:
+Relative links between docs pages are rewritten to site paths at build time:
 
-```markdown
-[Getting started](./getting-started)        <!-- relative doc link -->
-[Writing index](/writing)                   <!-- absolute path -->
-[External](https://example.com)             <!-- opens in new tab automatically -->
+```md
+[Configuration](./configuration)
+[Images](./writing-content#images)
+[Writing index](/writing)
+[External site](https://example.com)
 ```
 
-External links automatically get `target="_blank" rel="noopener noreferrer"`.
+External links open in a new tab with safe `rel` attributes.
 
 ## Images
 
-Place images in `public/` and reference them with absolute paths:
+Public assets:
 
-```markdown
-![Architecture diagram](/arch.png)
+```txt
+docs/public/images/architecture.png
 ```
 
-Or use the `<Image>` component for local optimized images:
+```md
+![Architecture diagram](/images/architecture.png)
+```
+
+Optimized local images:
 
 ```mdx
-<Image src={import('./arch.png')} alt="Architecture diagram" caption="System overview" />
+<Image src={import('./architecture.png')} alt="Architecture diagram" caption="Build flow" />
 ```
 
-## File organization
+## Code blocks
 
-Files in docs-like collections (for example `docs/src/content/docs/` or `docs/src/content/playbooks/`) map directly to URLs:
+Fenced code blocks:
 
-```
-docs/src/content/docs/
-├── getting-started.md     → /docs/getting-started
-├── configuration.md       → /docs/configuration
-└── guides/
-    ├── custom-theme.md    → /docs/guides/custom-theme
-    └── deployment.md      → /docs/guides/deployment
+```ts
+export function hello(name: string) {
+  return `Hello, ${name}`
+}
 ```
 
-Files in subdirectories appear under a labeled section header in the sidebar. Sort order within each section is controlled by the `order` frontmatter field.
+Inline `code` uses the site theme and does not use syntax highlighting.
 
-Files in writing-like collections map to `/<basePath>/<slug>` and appear on collection index pages sorted by date descending.
+Fenced blocks get syntax highlighting from the configured code theme and a copy button on hover. See [Configuration](./configuration#typography-and-theme) for presets.
+
+## MDX components
+
+Built-in components are available in `.mdx` files:
+
+- `<Callout>`
+- `<Tabs>` and `<Tab>`
+- `<FileTree>`
+- `<Mermaid>`
+- `<Image>`
+- `<Tooltip>`
+- `<Steps>` and `<Step>`
+
+See [Components](./components) for examples.
+
+## Drafts and scheduling
+
+Hide a page or post:
+
+```yaml
+---
+published: false
+---
+```
+
+Schedule a page or post:
+
+```yaml
+---
+scheduled: 2026-06-01T09:00:00Z
+---
+```
+
+Unpublished and future-scheduled content is skipped by routes, search, and `docsmint context`.
+
+## Search exclusion
+
+Exclude one page:
+
+```yaml
+---
+search: false
+---
+```
+
+Exclude path patterns in config:
+
+```ts
+search: {
+  exclude: ['docs/internal/*', 'writing/drafts/*'],
+}
+```
+
+## File paths to URLs
+
+Docs pages:
+
+```txt
+docs/src/content/docs/getting-started.md  -> /docs/getting-started
+docs/src/content/docs/setup/install.md    -> /docs/setup/install
+```
+
+Writing posts:
+
+```txt
+docs/src/content/writing/hello.md         -> /writing/hello
+```
+
+Custom collections use the `basePath` configured for that collection.

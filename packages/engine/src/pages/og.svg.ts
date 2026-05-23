@@ -1,7 +1,7 @@
-import { getConfig } from '../config/getConfig'
+import { getConfig } from '@/config/getConfig'
 
 export async function GET() {
-  const rawSite = (await import('../../docsmint.config.ts')).default
+  const rawSite = (await import('@site-config')).default
   const site = getConfig(rawSite)
   const title = site.name
   const subtitle = site.description || 'Docs + writing'

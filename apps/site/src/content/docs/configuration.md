@@ -1,82 +1,138 @@
 ---
 title: Configuration
-description: "docsmint.config.ts and the typed defineConfig() API."
-order: 2
+description: The practical shape of docs/docsmint.config.ts.
+order: 5
 ---
 
-DocsMint reads a single config file: `docs/docsmint.config.ts`.
+DocsMint reads one config file:
 
-## Typed config entrypoint
+```txt
+docs/docsmint.config.ts
+```
+
+Typed config:
 
 ```ts
 import { defineConfig } from 'docsmint/config'
 
 export default defineConfig({
-  name: 'Your Project',
-  description: 'Short description for metadata.',
-  branding: {
-    icon: '/favicon.svg',
-    favicon: '/favicon-white.svg',
-  },
-  typography: { scale: 'medium' },
-  capabilities: {
-    enable: ['themingCustom'],
-  },
-  theme: {
-    mode: 'custom',
-    tokens: {
-      light: { bg: '#ffffff', fg: '#111111' },
-      dark: { bg: '#0b0b0b', fg: '#f5f5f5' },
-    },
-  },
-  siteUrl: 'https://docs.example.com',
+  name: 'my-project',
+  description: 'Minimal markdown docs and writing.',
   nav: [
-    { label: 'docs', href: '/docs/getting-started', priority: 'core' },
-    { label: 'writing', href: '/writing', priority: 'core' },
-    {
-      label: 'GitHub',
-      href: 'https://github.com/your/repo',
-      target: '_blank',
-      priority: 'secondary',
-    },
+    { label: 'docs', href: '/docs' },
+    { label: 'writing', href: '/writing' },
   ],
-  footer: [{ label: 'GitHub', href: 'https://github.com/your/repo' }],
-  pages: ['about', { slug: 'work', navLabel: 'my work' }],
   collections: {
-    docs: { enabled: true, basePath: '/docs', kind: 'docs', label: 'docs' },
+    docs: { enabled: true, basePath: '/docs', label: 'docs' },
     writing: { enabled: true, basePath: '/writing', kind: 'writing', label: 'writing' },
-    playbooks: { enabled: true, basePath: '/playbooks', kind: 'docs', label: 'playbooks' },
-    guides: { enabled: true, basePath: '/guides', kind: 'docs', label: 'guides' },
   },
-  navPolicy: {
-    mode: 'strict',
-    maxVisibleDesktop: 3,
-    maxVisibleMobile: 2,
-  },
+  siteUrl: 'https://example.com',
 })
 ```
 
-## Options
+Only `name` is required. Everything else has defaults.
 
-### `name`
-
-Project name. Used in page titles, the nav header, and metadata.
-
-```javascript
-name: 'my-project'
-```
-
-### `description`
-
-Short description. Used for metadata and homepage copy.
+## Site metadata
 
 ```ts
-description: 'Static publishing for engineers who want docs and writing they own.'
+name: 'my-project',
+description: 'Minimal markdown docs and writing.',
+siteUrl: 'https://example.com',
 ```
 
-### `branding`
+`name` appears in titles and the header. `description` is used for metadata and homepage copy. `siteUrl` is used for canonical URLs, sitemap output, and social metadata.
 
-Optional. Controls the icon shown beside the site name and the browser-tab favicon. Nothing is applied if `branding` is omitted — it is fully opt-in.
+## Navigation
+
+```ts
+nav: [
+  { label: 'docs', href: '/docs', priority: 'core' },
+  { label: 'writing', href: '/writing', priority: 'core' },
+  { label: 'GitHub', href: 'https://github.com/you/project', target: '_blank' },
+],
+footer: [
+  { label: 'GitHub', href: 'https://github.com/you/project' },
+  { label: 'RSS', href: '/rss.xml', icon: 'rss', external: false },
+],
+```
+
+Navigation is strict by default. Internal `href` values are validated against built routes.
+
+Footer links render as text by default. Set `icon` to render an icon link instead:
+
+```ts
+footer: [
+  { label: 'GitHub', href: 'https://github.com/you/project', icon: 'github' },
+  { label: 'X', href: 'https://x.com/you', icon: 'x' },
+  { label: 'Privacy', href: '/privacy', external: false },
+]
+```
+
+Supported footer icons: `github`, `x`, `linkedin`, `discord`, `youtube`, `instagram`, `bluesky`, `facebook`, `reddit`, `twitch`, `mastodon`, `slack`, `telegram`, `tiktok`, `npm`, `rss`, and `email`.
+
+Relaxed mode:
+
+```ts
+navPolicy: {
+  mode: 'relaxed',
+}
+```
+
+## Collections
+
+Collections map content folders to route families.
+
+```ts
+collections: {
+  docs: {
+    enabled: true,
+    basePath: '/docs',
+    label: 'docs',
+  },
+  writing: {
+    enabled: true,
+    basePath: '/writing',
+    kind: 'writing',
+    label: 'writing',
+  },
+  guides: {
+    enabled: true,
+    basePath: '/guides',
+    kind: 'content',
+    label: 'guides',
+  },
+}
+```
+
+Kinds:
+
+| Kind | Use for |
+|------|---------|
+| omitted on `docs` | the main docs collection |
+| `content` | docs-like sections |
+| `writing` | dated posts |
+| `page` | standalone pages |
+
+`sections` is the legacy shim.
+
+## Pages
+
+Root pages:
+
+```ts
+pages: [
+  'about',
+  { slug: 'work', navLabel: 'work' },
+]
+```
+
+The files live in `docs/src/content/pages/`:
+
+```txt
+docs/src/content/pages/about.md -> /about
+```
+
+## Branding
 
 ```ts
 branding: {
@@ -85,306 +141,66 @@ branding: {
 }
 ```
 
-#### `branding.icon`
+Place files in `docs/public/`.
 
-Path to the image shown beside `site.name` in the homepage `<h1>` and the nav header link. The icon is sized to match the surrounding text (`1.08em`) and does not affect line height.
+## Sidebar, Theme, and Display
 
-**SVG files** are inlined directly into the HTML so they inherit `currentColor` — they appear dark on light backgrounds and light on dark backgrounds automatically, with no extra configuration.
+Keep the root config small. These pages cover the optional display and presentation surfaces:
 
-**Raster files** (PNG, JPEG, WebP, etc.) are rendered as `<img>` elements and automatically converted to monochrome via CSS filters. They invert correctly when the theme switches between light and dark.
+- [Sidebar navigation](./sidebar-navigation) for explicit sidebar groups and chapter paging
+- [Display options](./display-options) for homepage and collection index layout
+- [Theme and typography](./theme-typography) for typography scale, color tokens, and code highlighting
 
-```ts
-branding: { icon: '/logo.svg' }   // SVG: inlined, theme-aware via currentColor
-branding: { icon: '/logo.png' }   // Raster: monochrome filter, theme-aware via CSS invert
-```
+## Search
 
-#### `branding.favicon`
-
-Path to the browser-tab favicon. Falls back to `branding.icon` if omitted.
-
-**SVG favicons** are referenced directly with `type="image/svg+xml"`. Place the file in `docs/src/content/public/` so it is served at the root.
-
-**Raster favicons** are linked directly as regular image assets. They do not receive runtime monochrome conversion, so use a pre-styled raster favicon when you need a specific tab appearance.
+Search is powered by [Pagefind](https://pagefind.app/) and generated during `docsmint build`.
 
 ```ts
-branding: {
-  icon: '/favicon.svg',       // theme-adaptive icon in UI
-  favicon: '/favicon-white.svg', // separate white variant for the browser tab
+search: {
+  exclude: ['docs/internal/*', 'writing/drafts/*'],
 }
 ```
 
-<Callout type="tip">
-For the browser tab favicon, use a white SVG variant (e.g. `favicon-white.svg`) when you want it to always appear white regardless of the OS theme. Use the same path for both `icon` and `favicon` when a single adaptive file is enough.
-</Callout>
+Exclude one page with frontmatter:
 
-### `writing.description`
-
-Controls the short intro text shown on `/writing`.
-
-```ts
-writing: {
-  description: 'Engineering notes, architectural decisions, and observations.'
-}
+```yaml
+---
+search: false
+---
 ```
 
-### `typography.scale`
+## Repository links
 
-Global text scale for the whole UI and content.
-
-```ts
-typography: { scale: 'default' } // 100%
-typography: { scale: 'medium' }  // 110%
-typography: { scale: 'large' }   // 120%
-```
-
-Recommended naming:
-- `default`: standard reading size
-- `medium`: slightly larger for comfort
-- `large`: high-comfort / accessibility-focused size
-
-### `theme` (V1 contract)
-
-Theme configuration is normalized through a typed contract:
-
-- `mode: 'guardrailed' | 'custom'`
-- `preset: 'baseline'` (current V1 preset)
-- `tokens` (custom mode only): `light` + `dark` token maps using this guarded surface:
-  - `bg`, `fg`, `muted`, `border`, `surface`, `codeBg`, `codeFg`
-
-```ts
-theme: {
-  mode: 'guardrailed',
-  preset: 'baseline',
-}
-```
-
-```ts
-capabilities: { enable: ['themingCustom'] },
-theme: {
-  mode: 'custom',
-  tokens: {
-    light: { bg: '#ffffff', fg: '#111111' },
-    dark: { bg: '#0b0b0b', fg: '#f5f5f5' },
-  },
-}
-```
-
-Custom mode requires the `themingCustom` capability (via `capabilities.enable`). When `theming` is disabled, DocsMint falls back to the guardrailed baseline theme.
-
-### `capabilities`
-
-Capability toggles are resolved deterministically through the central registry.
-
-```ts
-capabilities: {
-  enable: ['themingCustom', 'ai'],
-  disable: ['writing'],
-}
-```
-
-V1 theming capability keys:
-
-- `theming` (stable, enabled by default)
-- `themingCustom` (stable, disabled by default)
-
-### `nav`
-
-Navigation items with safe defaults and strict-mode validation support.
-
-```ts
-nav: [
-  { label: 'docs', href: '/docs/getting-started', priority: 'core' },
-  { label: 'writing', href: '/writing', priority: 'core' },
-  { label: 'x', href: 'https://x.com/you', target: '_blank', priority: 'secondary' },
-]
-```
-
-Supported item fields:
-
-- `label: string`
-- `href: string`
-- `external?: boolean`
-- `target?: '_self' | '_blank'`
-- `rel?: string`
-- `priority?: 'core' | 'secondary'`
-
-### `footer`
-
-Footer links. Same structure as `nav`.
-
-```ts
-footer: [
-  { label: 'GitHub', href: 'https://github.com/your/repo' },
-  { label: 'License', href: '/license' },
-]
-```
-
-### `siteUrl`
-
-Canonical URL. Used for sitemaps and social metadata.
-This value is not rendered as visible page text by default.
-
-```ts
-siteUrl: 'https://docs.example.com'
-```
-
-### `repository`
-
-Repository metadata used for "Edit this page" links in docs pages.
+Docs pages can show an “Edit this page” link:
 
 ```ts
 repository: {
-  url: 'https://github.com/your/repo',
+  url: 'https://github.com/you/project',
   branch: 'main',
   editPath: 'docs/src/content',
 }
 ```
 
-If `url` and `editPath` are both provided, docs pages render an edit link in the right rail.
+## Focused config pages
 
-### `search.exclude`
+The details are split into smaller pages:
 
-Optional list of path patterns to exclude from search indexing.
+- [i18n](./i18n) for locale routes and UI strings
+- [Versions](./versions) for versioned docs folders
+- [Sidebar navigation](./sidebar-navigation) for explicit sidebar groups and chapter paging
+- [Display options](./display-options) for homepage previews and collection index layout
+- [Theme and typography](./theme-typography) for typography and code highlighting
+- [Capabilities](./capabilities) for feature gates and experimental commands
+- [Analytics](./analytics) for optional analytics scripts
+- [Context export](./context-export) for `docsmint context`
+- [Python wrapper](./python) for Python entrypoint helpers
+- [Extensibility](./extensibility) for custom renderers and doc forms
+- [Reference](./reference) for compact command and schema notes
 
-```ts
-search: {
-  exclude: [
-    'docs/internal/*',
-    'writing/drafts/*',
-  ],
-}
-```
+## Homepage and collection display
 
-You can also exclude individual pages in frontmatter with `search: false`.
+Homepage previews default to writing first, then docs. Writing dates are shown by default; descriptions and tags are hidden unless enabled.
 
-### `dateFormat`
+Collection indexes have their own display settings, separate from homepage previews.
 
-Controls how dates appear on writing posts and the writing index. Accepts `Intl.DateTimeFormat` options.
-
-```ts
-dateFormat: { year: 'numeric', month: 'short', day: 'numeric' }
-// → "Apr 11, 2026"
-
-dateFormat: { year: 'numeric', month: '2-digit', day: '2-digit' }
-// → "04/11/2026"
-```
-
-Default: `{ year: 'numeric', month: 'short', day: 'numeric' }`.
-
-### `dateLocale`
-
-BCP 47 locale string for date formatting.
-
-```ts
-dateLocale: 'en-US'   // "Apr 11, 2026"
-dateLocale: 'fr-FR'   // "11 avr. 2026"
-dateLocale: 'ja-JP'   // "2026年4月11日"
-```
-
-Default: `'en-US'`.
-
-### `pages`
-
-Bounded custom pages that keep the core DocsMint design system intact.
-
-```ts
-pages: [
-  'about',
-  { slug: 'work', navLabel: 'My Work' },
-]
-```
-
-Each custom page renders from `docs/src/content/pages/<slug>.md`.
-
-### `collections`
-
-Collections are the source of truth for content routing. The default starter preset includes `docs`, `writing`, and `pages`, but those are not hardcoded limits.
-
-```ts
-collections: {
-  docs: { enabled: true, basePath: '/docs', kind: 'docs', label: 'docs' },
-  writing: { enabled: true, basePath: '/writing', kind: 'writing', label: 'writing' },
-  playbooks: { enabled: true, basePath: '/playbooks', kind: 'docs', label: 'playbooks' },
-  journal: { enabled: true, basePath: '/journal', kind: 'writing', label: 'journal' },
-  company: { enabled: true, basePath: '/company', kind: 'page', label: 'company' },
-}
-```
-
-Supported fields per collection:
-
-- `enabled?: boolean` - enables route generation for the collection
-- `basePath?: string` - absolute path segment (for example `/playbooks`)
-- `kind?: 'docs' | 'writing' | 'page'` - rendering behavior
-- `label?: string` - nav label fallback
-
-### `sections` (legacy shim)
-
-`sections` is kept for backward compatibility and maps to `collections.docs` + `collections.writing`. Prefer `collections` for all new configuration.
-
-```ts
-// Legacy input still accepted:
-sections: {
-  docs: { enabled: true, basePath: '/docs' },
-  writing: { enabled: true, basePath: '/writing' },
-}
-```
-
-Migration lifecycle:
-
-- Current: accepted as compatibility input.
-- Recommended now: move to `collections`.
-- Practical path: run `docsmint migrate-sections` and copy generated entries from
-  `docs/.docsmint/migrations/sections-to-collections.json`.
-- Precedence: when both are present, `collections` wins and `sections` is ignored for that key.
-
-### `navPolicy`
-
-Controls visible nav budget and strict route validation.
-
-```ts
-navPolicy: {
-  mode: 'strict',
-  maxVisibleDesktop: 3,
-  maxVisibleMobile: 2,
-}
-```
-
-Overflow is rendered in a `more` popover. Search and theme toggle stay separate.
-
-## Full example
-
-```ts
-import { defineConfig } from 'docsmint/config'
-
-export default defineConfig({
-  name: 'DocsMint',
-  description: 'Engineering notes, docs, and long-form writing.',
-  branding: {
-    icon: '/favicon.svg',
-    favicon: '/favicon-white.svg',
-  },
-  typography: { scale: 'medium' },
-  siteUrl: 'https://docs.example.com',
-  repository: {
-    url: 'https://github.com/your/repo',
-    branch: 'main',
-    editPath: 'docs/src/content',
-  },
-  nav: [
-    { label: 'docs', href: '/docs/getting-started', priority: 'core' },
-    { label: 'writing', href: '/writing', priority: 'core' },
-    { label: 'GitHub', href: 'https://github.com/your/repo', target: '_blank' },
-  ],
-  footer: [{ label: 'GitHub', href: 'https://github.com/your/repo' }],
-  pages: ['about', { slug: 'work', navLabel: 'My Work' }],
-  collections: {
-    docs: { enabled: true, basePath: '/docs', kind: 'docs', label: 'docs' },
-    writing: { enabled: true, basePath: '/writing', kind: 'writing', label: 'writing' },
-    playbooks: { enabled: true, basePath: '/playbooks', kind: 'docs', label: 'playbooks' },
-  },
-  navPolicy: { mode: 'strict', maxVisibleDesktop: 3, maxVisibleMobile: 2 },
-  search: { exclude: ['docs/internal/*'] },
-  dateLocale: 'en-US',
-  dateFormat: { year: 'numeric', month: 'short', day: 'numeric' },
-})
-```
+See [Display options](./display-options).

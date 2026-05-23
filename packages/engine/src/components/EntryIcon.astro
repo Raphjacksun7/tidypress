@@ -1,0 +1,12 @@
+---
+import BrandIcon from '@/components/BrandIcon.astro'
+
+interface Props {
+  src: string
+}
+
+const { src } = Astro.props
+---
+<div class="entry-icon-box">
+  <BrandIcon src={src} sizeClass="w-full h-full" />
+</div>

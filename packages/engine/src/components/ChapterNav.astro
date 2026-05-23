@@ -1,0 +1,32 @@
+---
+import type { DocChapterNav } from '@/routing/chapter-nav'
+
+interface Props {
+  nav?: DocChapterNav
+  previousLabel: string
+  nextLabel: string
+}
+
+const { nav, previousLabel, nextLabel } = Astro.props
+if (!nav?.previous && !nav?.next) {
+  return null
+}
+---
+<nav class="doc-chapter-nav" aria-label="Chapter">
+  {nav.previous ? (
+    <a class="doc-chapter-nav__link doc-chapter-nav__link--prev" href={nav.previous.href}>
+      <span class="doc-chapter-nav__eyebrow">{previousLabel}</span>
+      <span class="doc-chapter-nav__title">{nav.previous.title}</span>
+    </a>
+  ) : (
+    <span class="doc-chapter-nav__spacer" />
+  )}
+  {nav.next ? (
+    <a class="doc-chapter-nav__link doc-chapter-nav__link--next" href={nav.next.href}>
+      <span class="doc-chapter-nav__eyebrow">{nextLabel}</span>
+      <span class="doc-chapter-nav__title">{nav.next.title}</span>
+    </a>
+  ) : (
+    <span class="doc-chapter-nav__spacer" />
+  )}
+</nav>

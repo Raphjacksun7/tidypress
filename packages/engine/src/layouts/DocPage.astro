@@ -1,0 +1,116 @@
+---
+import Base from '@/layouts/Base.astro'
+import Sidebar from '@/components/Sidebar.astro'
+import Toc from '@/components/Toc.astro'
+import VersionSelector from '@/components/VersionSelector.astro'
+import ChapterNav from '@/components/ChapterNav.astro'
+import { getCollection } from 'astro:content'
+import type { DocChapterNav } from '@/routing/chapter-nav'
+import { getConfig } from '@/config/getConfig'
+import { getUiStrings, resolveLocale } from '@/i18n/locale'
+import { versionSelectorState } from '@/routing/route-equivalents'
+import { resolveEditUrl } from '@/utils/edit-url'
+
+export interface Props {
+  title: string
+  description?: string
+  headings?: { depth: number; slug: string; text: string }[]
+  editPath?: string
+  part?: string
+  chapterNav?: DocChapterNav
+  docForm?: string
+  showChapterNavTop?: boolean
+  showChapterNavBottom?: boolean
+}
+
+const {
+  title,
+  description,
+  headings = [],
+  editPath,
+  part,
+  chapterNav,
+  docForm = 'doc',
+  showChapterNavTop = false,
+  showChapterNavBottom = false,
+} = Astro.props
+const rawSite = (await import('@site-config')).default
+const site = getConfig(rawSite)
+const strings = getUiStrings(site, resolveLocale(Astro.url.pathname, site.i18n))
+const resolvedEditUrl = resolveEditUrl(site.repository, editPath)
+const docsEntries = (site.versions?.length ?? 0) > 0
+  ? (await getCollection('docs')).filter(entry => {
+      const data = entry.data as { published?: boolean; scheduled?: Date }
+      if (data.published === false) return false
+      if (data.scheduled && data.scheduled > new Date()) return false
+      return true
+    })
+  : []
+const versionSelector = versionSelectorState(site, Astro.url.pathname, docsEntries)
+---
+<Base title={title} description={description}>
+  <div class="md:hidden border-b px-8 py-3" style="border-color:var(--border)">
+    <details>
+      <summary class="text-xs font-bold uppercase tracking-wide cursor-pointer"
+               style="list-style:none; color:var(--muted)">
+        {strings.onThisPageLabel}
+      </summary>
+      <div class="pt-3 pb-1">
+        <Sidebar />
+      </div>
+    </details>
+  </div>
+
+  <div class="max-w-screen-xl mx-auto px-8 py-12 flex gap-16">
+    <aside class="w-52 shrink-0 hidden md:block">
+      <Sidebar />
+    </aside>
+
+    <main class="min-w-0 flex-1 max-w-2xl">
+      <header class="doc-chrome">
+        {part && <p class="doc-chrome__part">{part}</p>}
+        <h1 class="doc-chrome__title">{title}</h1>
+        {description && <p class="doc-chrome__description">{description}</p>}
+      </header>
+      {showChapterNavTop && (
+        <ChapterNav
+          nav={chapterNav}
+          previousLabel={strings.chapterPreviousLabel}
+          nextLabel={strings.chapterNextLabel}
+        />
+      )}
+      <article class="prose" data-doc-form={docForm}>
+        <slot />
+      </article>
+      {showChapterNavBottom && (
+        <ChapterNav
+          nav={chapterNav}
+          previousLabel={strings.chapterPreviousLabel}
+          nextLabel={strings.chapterNextLabel}
+        />
+      )}
+    </main>
+
+    {(versionSelector.versions.length > 0 || headings.length > 0) && (
+      <aside class="w-44 shrink-0 hidden lg:block">
+        {versionSelector.versions.length > 0 && (
+          <div class="mb-4">
+            <VersionSelector
+              versions={versionSelector.versions}
+              selectedPath={versionSelector.selectedPath}
+              targets={versionSelector.targets}
+            />
+          </div>
+        )}
+        <Toc headings={headings} />
+        {resolvedEditUrl && (
+          <p class="mt-4 text-xs">
+            <a href={resolvedEditUrl} target="_blank" rel="noopener noreferrer" class="text-zinc-500">
+              {strings.editThisPageLabel} ->
+            </a>
+          </p>
+        )}
+      </aside>
+    )}
+  </div>
+</Base>

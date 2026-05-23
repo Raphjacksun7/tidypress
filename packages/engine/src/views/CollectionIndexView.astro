@@ -1,0 +1,22 @@
+---
+import Base from '@/layouts/Base.astro'
+import CollectionIndexItems from '@/components/CollectionIndexItems.astro'
+import { mergeListDisplay } from '@docsmint/config'
+import type { RouteViewBundle } from '@/collections/bundle'
+
+interface Props {
+  bundle: RouteViewBundle
+}
+
+const { bundle } = Astro.props
+const display = mergeListDisplay(bundle.collectionDisplay)
+---
+<Base title={bundle.title} description={bundle.description}>
+  <div class="max-w-3xl mx-auto px-8 py-16 space-y-12">
+    <section>
+      <h1 class="text-2xl font-bold tracking-tight mb-2">{bundle.title}</h1>
+      {bundle.description && <p class="text-sm text-zinc-500">{bundle.description}</p>}
+    </section>
+    <CollectionIndexItems entries={bundle.indexEntries ?? []} display={display} />
+  </div>
+</Base>

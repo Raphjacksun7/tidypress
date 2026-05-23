@@ -141,7 +141,6 @@ test('SectionsMigrationService writes deterministic sections migration artifact'
   assert.deepEqual(payload.collections.docs, {
     enabled: true,
     basePath: '/reference',
-    kind: 'docs',
     label: 'docs',
   })
   assert.deepEqual(payload.collections.writing, {

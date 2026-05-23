@@ -1,30 +1,37 @@
 ---
-import Base from './Base.astro'
-import Sidebar from '../components/Sidebar.astro'
-import Toc from '../components/Toc.astro'
-import { getConfig } from '../config/getConfig'
-import { getUiStrings, resolveLocale } from '../i18n/locale'
+import Base from '@/layouts/Base.astro'
+import Sidebar from '@/components/Sidebar.astro'
+import Toc from '@/components/Toc.astro'
+import VersionSelector from '@/components/VersionSelector.astro'
+import { getCollection } from 'astro:content'
+import type { DocsMintDocForm } from '@docsmint/config'
+import { getConfig } from '@/config/getConfig'
+import { getUiStrings, resolveLocale } from '@/i18n/locale'
+import { versionSelectorState } from '@/routing/route-equivalents'
+import { resolveEditUrl } from '@/utils/edit-url'
 
 export interface Props {
   title: string
   description?: string
   headings?: { depth: number; slug: string; text: string }[]
   editPath?: string
+  docForm?: DocsMintDocForm
 }
 
-const { title, description, headings = [], editPath } = Astro.props
-const rawSite = (await import('../../docsmint.config.ts')).default
+const { title, description, headings = [], editPath, docForm } = Astro.props
+const rawSite = (await import('@site-config')).default
 const site = getConfig(rawSite)
 const strings = getUiStrings(site, resolveLocale(Astro.url.pathname, site.i18n))
-
-const editBaseUrl = site.repository?.url
-const editBranch = site.repository?.branch ?? 'main'
-const editContentPath = site.repository?.editPath
-const normalizedEditPath = editPath?.replace(/^\//, '')
-const resolvedEditUrl =
-  editBaseUrl && editContentPath && normalizedEditPath
-    ? `${editBaseUrl.replace(/\/$/, '')}/edit/${editBranch}/${editContentPath.replace(/^\//, '').replace(/\/$/, '')}/${normalizedEditPath}.md`
-    : undefined
+const resolvedEditUrl = resolveEditUrl(site.repository, editPath)
+const docsEntries = (site.versions?.length ?? 0) > 0
+  ? (await getCollection('docs')).filter(entry => {
+      const data = entry.data as { published?: boolean; scheduled?: Date }
+      if (data.published === false) return false
+      if (data.scheduled && data.scheduled > new Date()) return false
+      return true
+    })
+  : []
+const versionSelector = versionSelectorState(site, Astro.url.pathname, docsEntries)
 ---
 <Base title={title} description={description}>
 
@@ -50,14 +57,23 @@ const resolvedEditUrl =
 
     <!-- Main content -->
     <main class="min-w-0 flex-1 max-w-2xl">
-      <article class="prose">
+      <article class="prose" data-doc-form={docForm ?? 'doc'}>
         <slot />
       </article>
     </main>
 
-    <!-- TOC — large screens only -->
-    {headings.length > 0 && (
+    <!-- Right rail — version switch + TOC -->
+    {(versionSelector.versions.length > 0 || headings.length > 0) && (
       <aside class="w-44 shrink-0 hidden lg:block">
+        {versionSelector.versions.length > 0 && (
+          <div class="mb-4">
+            <VersionSelector
+              versions={versionSelector.versions}
+              selectedPath={versionSelector.selectedPath}
+              targets={versionSelector.targets}
+            />
+          </div>
+        )}
         <Toc headings={headings} />
         {resolvedEditUrl && (
           <p class="mt-4 text-xs">

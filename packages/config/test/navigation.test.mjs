@@ -126,7 +126,7 @@ test('withDefaults enables arbitrary collection nav when configured', () => {
   const config = withDefaults({
     name: 'site',
     collections: {
-      playbooks: { enabled: true, basePath: '/playbooks', label: 'playbooks', kind: 'docs' },
+      playbooks: { enabled: true, basePath: '/playbooks', label: 'playbooks', kind: 'content' },
     },
   })
 

@@ -1,30 +1,35 @@
 ---
 import { getCollection } from 'astro:content'
-import { getConfig } from '../config/getConfig'
-import { sortDocs } from '../domain/content/sortDocs'
-import { onlyPublished } from '../domain/content/published'
-import { localizeEntries, resolveLocale, withLocalePrefix } from '../i18n/locale'
+import { getConfig } from '@/config/getConfig'
+import { sortDocs } from '@/utils/sort'
+import { onlyPublished } from '@/utils/published'
+import { localizeEntries, resolveLocale, withLocalePrefix } from '@/i18n/locale'
+import { collectionKindUsesDocsSidebar, isDocsMintCollectionKind, isDocsStarterKey } from '@docsmint/config'
 import {
   getEnabledContentCollections,
   getLocalizedCollectionBasePath,
-  isLegacyStarterCollectionKey,
-} from '../domain/content/collections'
+} from '@/utils/collections'
 import {
+  normalizePathname,
   resolveActiveVersionPath,
   stripDocExtension,
   versionContentPrefix,
-} from '../routing/versioning'
+} from '@/routing/versioning'
 
-const rawSite = (await import('../../docsmint.config.ts')).default
+const rawSite = (await import('@site-config')).default
 const site = getConfig(rawSite)
 const localeState = resolveLocale(Astro.url.pathname, site.i18n)
 const activeLocale = localeState.activeLocale
 const docsCollections = getEnabledContentCollections(site)
-  .filter(collection => collection.kind === 'docs')
+  .filter(
+    collection =>
+      isDocsStarterKey(collection.key) ||
+      (isDocsMintCollectionKind(collection.kind) && collectionKindUsesDocsSidebar(collection.kind)),
+  )
   .map(collection => ({
     id: collection.key,
     basePath: getLocalizedCollectionBasePath(site, collection.key, activeLocale),
-    isLegacy: isLegacyStarterCollectionKey(site, collection.key),
+    versionAware: isDocsStarterKey(collection.key) && (site.versions?.length ?? 0) > 0,
   }))
 const fallbackCollection = docsCollections.find(collection => collection.id === 'docs') ?? docsCollections[0]
 const activeDocsCollection = docsCollections.find(({ basePath }) =>
@@ -47,7 +52,7 @@ const localizedVersions = (site.versions ?? []).map(version => ({
   ...version,
   path: withLocalePrefix(version.path, localeState.activeLocale),
 }))
-const activeVersionPath = activeDocsCollection.isLegacy
+const activeVersionPath = activeDocsCollection.versionAware
   ? resolveActiveVersionPath(localizedVersions, Astro.url.pathname)
   : undefined
 const activeContentPrefix = activeVersionPath ? versionContentPrefix(activeVersionPath, docsBasePath) : undefined
@@ -61,47 +66,70 @@ const firstDocHref = visibleDocs[0]
   ? `${docsBasePath}/${stripDocExtension(visibleDocs[0].id)}`
   : undefined
 
-const tree: Record<string, { title: string; href: string }[]> = {}
+type SidebarPage = { title: string; href: string }
+type SidebarSection = { label?: string; pages: SidebarPage[] }
 
+// Build a slug→entry map for fast lookup (strips version prefix for display)
+const entryByDisplaySlug = new Map<string, { title: string; href: string }>()
 for (const entry of visibleDocs) {
   const entryId = stripDocExtension(entry.id)
   const displayId =
     activeContentPrefix && entryId.startsWith(`${activeContentPrefix}/`)
       ? entryId.slice(activeContentPrefix.length + 1)
       : entryId
-  const parts = displayId.split('/')
-  const section = parts.length > 1 ? parts[0] : ''
-  tree[section] = tree[section] || []
-  tree[section].push({
+  entryByDisplaySlug.set(displayId, {
     title: entry.data.title,
     href: `${docsBasePath}/${entryId}`,
   })
 }
 
-const sections = Object.entries(tree).sort(([a], [b]) => a.localeCompare(b))
-const currentPath = Astro.url.pathname
+let sections: SidebarSection[]
+
+const configuredSidebar = site.docs?.sidebar
+if (configuredSidebar && configuredSidebar.length > 0) {
+  // Explicit section groups from config
+  sections = configuredSidebar.map(group => ({
+    label: group.label,
+    pages: group.items.flatMap(slug => {
+      const page = entryByDisplaySlug.get(slug)
+      return page ? [page] : []
+    }),
+  })).filter(s => s.pages.length > 0)
+} else {
+  // Auto-group by folder path (existing behavior)
+  const tree: Record<string, SidebarPage[]> = {}
+  for (const [displayId, page] of entryByDisplaySlug) {
+    const parts = displayId.split('/')
+    const section = parts.length > 1 ? parts[0] : ''
+    tree[section] = tree[section] || []
+    tree[section].push(page)
+  }
+  sections = Object.entries(tree)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([label, pages]) => ({ label: label || undefined, pages }))
+}
+const currentPath = normalizePathname(Astro.url.pathname)
 ---
 <nav class="space-y-6">
-  {sections.map(([section, pages]) => (
+  {sections.map(({ label, pages }) => (
     <div>
-      {section && (
-        <p class="font-bold text-xs uppercase tracking-wide mb-2">{section}</p>
+      {label && (
+        <p class="font-bold text-xs uppercase tracking-wide mb-2" style="color:var(--muted)">{label}</p>
       )}
       <ul class="space-y-1">
         {pages.map(({ title, href }) => {
+          const normalizedHref = normalizePathname(href)
+          const normalizedBase = normalizePathname(docsBasePath)
           const active =
-            currentPath === href ||
-            ((currentPath === docsBasePath || currentPath === `${docsBasePath}/`) &&
-              href === firstDocHref)
+            currentPath === normalizedHref ||
+            (firstDocHref !== undefined &&
+              currentPath === normalizedBase &&
+              normalizedHref === normalizePathname(firstDocHref))
           return (
             <li>
               <a
                 href={href}
-                class:list={[
-                  'block py-0.5',
-                  active ? 'font-bold' : 'text-zinc-500',
-                ]}
-                style={active ? 'text-decoration:none' : ''}
+                class="block py-0.5"
                 data-sidebar-active={active ? '' : undefined}
                 data-sidebar-link=""
               >{title}</a>

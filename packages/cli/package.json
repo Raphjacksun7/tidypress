@@ -1,7 +1,7 @@
 {
   "name": "docsmint",
-  "version": "1.0.1",
-  "description": "Static publishing CLI for engineer blogs and docs. Markdown in git, build once, deploy anywhere.",
+  "version": "1.0.2",
+  "description": "Minimal markdown docs and writing.",
   "license": "MIT",
   "type": "module",
   "author": "Raphael Avocegamou",

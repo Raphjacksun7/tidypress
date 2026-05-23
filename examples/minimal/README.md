@@ -1,6 +1,6 @@
-# @docsmint/example-minimal
+# Minimal DocsMint Example
 
-Minimal launch-ready DocsMint example for smoke tests and release checks.
+Minimal markdown docs and writing in a small runnable project.
 
 ## 90-second quickstart
 
@@ -9,7 +9,7 @@ pnpm install
 pnpm --filter @docsmint/example-minimal build
 ```
 
-The generated static output is at `examples/minimal/docs/.docsmint/dist/`.
+The static output is written to `examples/minimal/docs/.docsmint/dist/`.
 
 ## Local preview
 

@@ -1,0 +1,20 @@
+---
+import Base from '@/layouts/Base.astro'
+import type { RouteViewBundle } from '@/collections/bundle'
+
+interface Props {
+  bundle: RouteViewBundle
+  Content: any
+  mdxComponents: Record<string, any>
+}
+
+const { bundle, Content, mdxComponents } = Astro.props
+---
+<Base title={bundle.title} description={bundle.description}>
+  <div class="max-w-3xl mx-auto px-8 py-16">
+    <article class="prose" data-pagefind-ignore={bundle.pagefindIgnore ? true : undefined}>
+      {bundle.showPageTitle && <h1>{bundle.title}</h1>}
+      <Content components={mdxComponents} />
+    </article>
+  </div>
+</Base>

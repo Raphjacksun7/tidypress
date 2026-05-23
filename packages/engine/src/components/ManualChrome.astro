@@ -1,0 +1,14 @@
+---
+interface Props {
+  label: string
+  title: string
+  description?: string
+}
+
+const { label, title, description } = Astro.props
+---
+<header class="manual-chrome">
+  <p class="manual-chrome__badge">{label}</p>
+  <h1 class="manual-chrome__title">{title}</h1>
+  {description && <p class="manual-chrome__description">{description}</p>}
+</header>

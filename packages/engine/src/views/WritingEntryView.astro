@@ -1,0 +1,34 @@
+---
+import Base from '@/layouts/Base.astro'
+import ProseContent from '@/components/ProseContent.astro'
+import TagList from '@/components/TagList.astro'
+import type { RouteViewBundle } from '@/collections/bundle'
+
+interface Props {
+  bundle: RouteViewBundle
+  Content: any
+  mdxComponents: Record<string, any>
+}
+
+const { bundle, Content, mdxComponents } = Astro.props
+const showTags = bundle.site.writing?.entry?.showTags === true
+const entryTags = bundle.entryMeta?.tags ?? []
+---
+<Base title={bundle.title} description={bundle.description} tags={entryTags}>
+  <div class="max-w-3xl mx-auto px-8 py-16">
+    <div class="mb-10">
+      <div class="flex items-baseline gap-4 text-xs text-zinc-400 mb-3">
+        {bundle.entryMeta?.dateLabel && <span>{bundle.entryMeta.dateLabel}</span>}
+        {bundle.entryMeta?.author && <span>— {bundle.entryMeta.author}</span>}
+      </div>
+      <h1 class="text-2xl font-bold tracking-tight">{bundle.title}</h1>
+      {bundle.description && <p class="text-sm text-zinc-500 mt-2">{bundle.description}</p>}
+      {showTags && entryTags.length > 0 && (
+        <div class="pt-3">
+          <TagList tags={entryTags} />
+        </div>
+      )}
+    </div>
+    <ProseContent Content={Content} components={mdxComponents} pagefindIgnore={bundle.pagefindIgnore} />
+  </div>
+</Base>

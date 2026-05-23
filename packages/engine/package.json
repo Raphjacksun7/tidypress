@@ -12,11 +12,16 @@
     "tsconfig.json",
     "docsmint.config.ts"
   ],
+  "exports": {
+    "./package.json": "./package.json",
+    "./plugins": "./src/plugins/contracts.ts"
+  },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && pagefind --site dist",
+    "build": "node -e \"const fs=require('node:fs'); fs.rmSync('.astro',{recursive:true,force:true}); fs.rmSync('dist',{recursive:true,force:true}); fs.rmSync('node_modules/.astro',{recursive:true,force:true})\" && astro build && pagefind --site dist",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "test": "node --test test/*.test.mjs"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.5",
@@ -28,6 +33,7 @@
     "@docsmint/config": "workspace:*",
     "@tailwindcss/vite": "^4.2.2",
     "astro": "^6.1.5",
+    "jiti": "^2.6.1",
     "mermaid": "^11.14.0",
     "pagefind": "^1.5.0",
     "rehype-external-links": "^3.0.0",

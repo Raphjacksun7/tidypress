@@ -3,7 +3,7 @@ import path from 'node:path'
 import { isStarterCollectionKey, resolveCapabilityFlags } from '@docsmint/config'
 /**
  * @typedef {{
- *   collections?: Record<string, { enabled?: boolean, kind?: 'docs' | 'writing' | 'page' }>
+ *   collections?: Record<string, { enabled?: boolean, kind?: 'content' | 'writing' | 'page' }>
  *   capabilities?: { enable?: string[], disable?: string[] }
  *   experimental?: { editor?: boolean, export?: boolean, ai?: boolean }
  * }} SnapshotConfig
@@ -71,7 +71,7 @@ export async function createContentSnapshot(docsDir, config) {
     ),
   )
   const configuredCollections = Object.entries(config?.collections ?? {
-    docs: { enabled: true, kind: 'docs' },
+    docs: { enabled: true },
     writing: { enabled: true, kind: 'writing' },
     pages: { enabled: true, kind: 'page' },
   })

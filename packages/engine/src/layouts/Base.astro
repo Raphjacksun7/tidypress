@@ -1,18 +1,20 @@
 ---
 import '../styles/global.css'
-import Nav from '../components/Nav.astro'
-import { getConfig } from '../config/getConfig'
-import { getUiStrings, resolveLocale } from '../i18n/locale'
+import Nav from '@/components/Nav.astro'
+import Footer from '@/components/Footer.astro'
+import { getConfig } from '@/config/getConfig'
+import { getUiStrings, resolveLocale } from '@/i18n/locale'
 import { resolveCapabilityFlags } from '@docsmint/config'
 
 export interface Props {
   title: string
   description?: string
   noindex?: boolean
+  tags?: string[]
 }
 
-const { title, description, noindex = false } = Astro.props
-const rawSite = (await import('../../docsmint.config.ts')).default
+const { title, description, noindex = false, tags = [] } = Astro.props
+const rawSite = (await import('@site-config')).default
 const site = getConfig(rawSite)
 const capabilityFlags = resolveCapabilityFlags(site)
 const localeState = resolveLocale(Astro.url.pathname, site.i18n)
@@ -60,6 +62,7 @@ const ogImageHref = siteBaseUrl ? `${siteBaseUrl}/og.svg` : undefined
   data-text-scale={site.typography?.scale ?? 'default'}
   data-theme-mode={themeMode}
   data-theme-preset={themePreset}
+  data-pagefind-ignore={noindex ? 'all' : undefined}
 >
 <head>
   <meta charset="utf-8" />
@@ -70,6 +73,7 @@ const ogImageHref = siteBaseUrl ? `${siteBaseUrl}/og.svg` : undefined
   }
   <title>{pageTitle}</title>
   <meta name="description" content={metaDescription} />
+  {tags.length > 0 && <meta name="keywords" content={tags.join(', ')} />}
   {canonicalHref && <link rel="canonical" href={canonicalHref} />}
 
   <meta property="og:site_name" content={site.name} />
@@ -111,12 +115,22 @@ const ogImageHref = siteBaseUrl ? `${siteBaseUrl}/og.svg` : undefined
 <body class="min-h-screen">
   <Nav site={site} />
   <slot />
+  <Footer
+    site={site}
+    locales={localeState.locales}
+    activeLocale={localeState.activeLocale}
+    defaultLocale={localeState.defaultLocale}
+    languageLabel={strings.languageLabel}
+  />
 
   <script is:inline define:vars={{ strings }}>
     document.querySelectorAll('pre').forEach(pre => {
+      const parent = pre.parentNode
+      if (!parent) return
+
       const wrapper = document.createElement('div')
       wrapper.style.cssText = 'position:relative'
-      pre.parentNode!.insertBefore(wrapper, pre)
+      parent.insertBefore(wrapper, pre)
       wrapper.appendChild(pre)
 
       const btn = document.createElement('button')
@@ -131,7 +145,11 @@ const ogImageHref = siteBaseUrl ? `${siteBaseUrl}/og.svg` : undefined
       btn.addEventListener('click', async () => {
         const code = pre.querySelector('code')
         const text = code?.innerText ?? ''
-        await navigator.clipboard.writeText(text)
+        try {
+          await navigator.clipboard.writeText(text)
+        } catch {
+          // Ignore clipboard permission failures; keep UI stable.
+        }
         btn.textContent = strings.copiedLabel
         setTimeout(() => { btn.textContent = strings.copyLabel }, 2000)
       })

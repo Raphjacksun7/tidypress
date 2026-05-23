@@ -11,13 +11,13 @@ import { EngineManager } from '../src/services/EngineManager.js'
 async function createEngineFixtureProject() {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-engine-e2e-'))
   const docsDir = path.join(root, 'docs')
-  await fs.mkdir(path.join(docsDir, 'src/content/docs/en'), { recursive: true })
+  await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
   await fs.mkdir(path.join(docsDir, 'src/content/docs/fr'), { recursive: true })
   await fs.mkdir(path.join(docsDir, 'src/content/docs/v1.0'), { recursive: true })
   await fs.mkdir(path.join(docsDir, 'src/content/docs/v2.0'), { recursive: true })
-  await fs.mkdir(path.join(docsDir, 'src/content/writing/en'), { recursive: true })
+  await fs.mkdir(path.join(docsDir, 'src/content/writing'), { recursive: true })
   await fs.mkdir(path.join(docsDir, 'src/content/writing/fr'), { recursive: true })
-  await fs.mkdir(path.join(docsDir, 'src/content/playbooks/en'), { recursive: true })
+  await fs.mkdir(path.join(docsDir, 'src/content/playbooks'), { recursive: true })
   await fs.mkdir(path.join(docsDir, 'src/content/pages'), { recursive: true })
 
   await fs.writeFile(
@@ -34,8 +34,8 @@ async function createEngineFixtureProject() {
   collections: {
     playbooks: {
       enabled: true,
-      kind: 'docs',
       basePath: '/playbooks',
+      kind: 'content',
       label: 'playbooks',
     },
   },
@@ -62,7 +62,7 @@ async function createEngineFixtureProject() {
   )
 
   await fs.writeFile(
-    path.join(docsDir, 'src/content/docs/en/getting-started.mdx'),
+    path.join(docsDir, 'src/content/docs/getting-started.mdx'),
     `---
 title: Getting started
 description: MDX fixture doc
@@ -79,7 +79,7 @@ MDX callout renders in production build.
   )
 
   await fs.writeFile(
-    path.join(docsDir, 'src/content/docs/en/private.md'),
+    path.join(docsDir, 'src/content/docs/private.md'),
     `---
 title: Private page
 description: Search-hidden doc
@@ -137,7 +137,7 @@ Version 2 doc body.
   )
 
   await fs.writeFile(
-    path.join(docsDir, 'src/content/writing/en/hello.md'),
+    path.join(docsDir, 'src/content/writing/hello.md'),
     `---
 title: Hello writing
 description: Writing fixture
@@ -163,7 +163,7 @@ Bonjour ecriture.
   )
 
   await fs.writeFile(
-    path.join(docsDir, 'src/content/playbooks/en/incident-response.mdx'),
+    path.join(docsDir, 'src/content/playbooks/incident-response.mdx'),
     `---
 title: Incident response
 description: Custom docs collection fixture
@@ -228,6 +228,7 @@ test('BuildService renders MDX and emits pagefind artifacts', { timeout: 900_000
   assert.match(docsHtml, /<meta name="twitter:image" content="https:\/\/example\.com\/og\.svg">/)
 
   const privateHtml = await readFirstExisting(distDir, [
+    'docs/private/index.html',
     'fr/docs/private/index.html',
     'en/docs/private/index.html',
     'docs/fr/private/index.html',
@@ -235,12 +236,21 @@ test('BuildService renders MDX and emits pagefind artifacts', { timeout: 900_000
   ])
   assert.match(privateHtml, /data-pagefind-ignore="true"/)
 
-  const enDocsHtml = await fs.readFile(path.join(distDir, 'en/docs/getting-started/index.html'), 'utf8')
+  const enDocsHtml = await fs.readFile(path.join(distDir, 'docs/getting-started/index.html'), 'utf8')
   assert.match(enDocsHtml, /MDX fixture heading/)
   assert.match(enDocsHtml, /MDX callout renders in production build\./)
+  await assert.rejects(
+    () => fs.readFile(path.join(distDir, 'en/docs/getting-started/index.html'), 'utf8'),
+    /ENOENT/,
+  )
 
   const localizedWritingHtml = await fs.readFile(path.join(distDir, 'fr/writing/index.html'), 'utf8')
   assert.match(localizedWritingHtml, /Ecriture/)
+  const rootWritingHtml = await fs.readFile(path.join(distDir, 'writing/index.html'), 'utf8')
+  assert.doesNotMatch(rootWritingHtml, /aria-label="Select version"/)
+
+  const rootHomeHtml = await fs.readFile(path.join(distDir, 'index.html'), 'utf8')
+  assert.doesNotMatch(rootHomeHtml, /aria-label="Select version"/)
 
   const customCollectionHtml = await fs.readFile(path.join(distDir, 'playbooks/incident-response/index.html'), 'utf8')
   assert.match(customCollectionHtml, /Playbook entry/)
@@ -249,7 +259,6 @@ test('BuildService renders MDX and emits pagefind artifacts', { timeout: 900_000
   assert.match(customCollectionHtml, /data-sidebar-link/)
 
   const docsRoot = await fs.readFile(path.join(distDir, 'docs/index.html'), 'utf8')
-  assert.match(docsRoot, /\/docs\/v1\.0\/getting-started/)
   assert.match(docsRoot, /\/docs\/v2\.0\/getting-started/)
 
   const versionRoot = await readFirstExisting(distDir, [
@@ -264,6 +273,10 @@ test('BuildService renders MDX and emits pagefind artifacts', { timeout: 900_000
   ])
   assert.match(versionedDoc, /\/docs\/v1\.0\/getting-started/)
   assert.match(versionedDoc, /\/docs\/v2\.0\/getting-started/)
+
+  const localizedVersionFallback = await fs.readFile(path.join(distDir, 'fr/docs/v2.0/getting-started/index.html'), 'utf8')
+  assert.match(localizedVersionFallback, /Current guide/)
+  assert.match(localizedVersionFallback, /<html lang="fr"/)
 
   await fs.access(path.join(distDir, 'pagefind/pagefind.js'))
   await fs.access(path.join(distDir, 'pagefind/pagefind-entry.json'))

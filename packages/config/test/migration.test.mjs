@@ -17,7 +17,6 @@ test('migrateSectionsToCollections moves legacy sections into collections', () =
   assert.deepEqual(result.config.collections?.docs, {
     enabled: true,
     basePath: '/reference',
-    kind: 'docs',
     label: 'docs',
   })
   assert.deepEqual(result.config.collections?.writing, {
@@ -32,7 +31,7 @@ test('migrateSectionsToCollections preserves explicit collections over legacy se
   const result = migrateSectionsToCollections({
     name: 'site',
     collections: {
-      docs: { enabled: true, basePath: '/docs', kind: 'docs', label: 'docs' },
+      docs: { enabled: true, basePath: '/docs', label: 'docs' },
     },
     sections: {
       docs: { enabled: true, basePath: '/legacy-docs' },

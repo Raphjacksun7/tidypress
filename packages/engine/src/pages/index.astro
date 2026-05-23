@@ -1,40 +1,46 @@
 ---
-import Base from '../layouts/Base.astro'
-import { getCollection } from 'astro:content'
-import { getConfig } from '../config/getConfig'
-import { sortDocs } from '../domain/content/sortDocs'
-import BrandIcon from '../components/BrandIcon.astro'
-import { onlyPublished } from '../domain/content/published'
-import { getUiStrings, resolveLocale } from '../i18n/locale'
-import { getCollectionBasePath, getCollectionEntryPath, isCollectionEnabled } from '../domain/content/collections'
+import Base from '@/layouts/Base.astro'
+import BrandIcon from '@/components/BrandIcon.astro'
+import HomePreviewSection from '@/components/HomePreviewSection.astro'
+import { getConfig } from '@/config/getConfig'
+import { getUiStrings, resolveLocale } from '@/i18n/locale'
+import {
+  buildHomePreviewItems,
+  getHomeSectionKeys,
+  homeSectionMoreLabel,
+  homeSectionTitle,
+  homePreviewListFlags,
+  resolveHomeDisplayForCollection,
+} from '@/utils/home-preview'
 
-const LIMIT = 5
-
-const allWriting = onlyPublished(await getCollection('writing'))
-  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
-const writing = allWriting.slice(0, LIMIT)
-const moreWriting = allWriting.length > LIMIT
-
-const allDocs = sortDocs(onlyPublished(await getCollection('docs')))
-const docs = allDocs.slice(0, LIMIT)
-const moreDocs = allDocs.length > LIMIT
-
-const rawSite = (await import('../../docsmint.config.ts')).default
+const rawSite = (await import('@site-config')).default
 const site = getConfig(rawSite)
 const strings = getUiStrings(site, resolveLocale(Astro.url.pathname, site.i18n))
-const docsEnabled = isCollectionEnabled(site, 'docs')
-const writingEnabled = isCollectionEnabled(site, 'writing')
-const writingBasePath = getCollectionBasePath(site, 'writing')
-
-const fmt = new Intl.DateTimeFormat(
+const dateFormatter = new Intl.DateTimeFormat(
   site.dateLocale ?? 'en-US',
-  { ...(site.dateFormat ?? { year: 'numeric', month: 'short', day: 'numeric' }), timeZone: 'UTC' }
+  { ...(site.dateFormat ?? { year: 'numeric', month: 'short', day: 'numeric' }), timeZone: 'UTC' },
 )
+
+const sections = []
+for (const collectionKey of getHomeSectionKeys(site)) {
+  const { items, moreHref } = await buildHomePreviewItems(site, collectionKey, { dateFormatter })
+  if (items.length === 0) {
+    continue
+  }
+  sections.push({
+    key: collectionKey,
+    title: homeSectionTitle(site, collectionKey, strings),
+    ...homePreviewListFlags(site, collectionKey),
+    items,
+    moreHref,
+    moreLabel: moreHref ? homeSectionMoreLabel(site, collectionKey, strings) : undefined,
+    display: resolveHomeDisplayForCollection(site, collectionKey),
+  })
+}
 ---
 <Base title={site.name} description={site.description}>
   <div class="max-w-3xl mx-auto px-8 py-16 space-y-16">
 
-    <!-- Identity -->
     <section>
       <h1 class="text-2xl font-bold tracking-tight mb-3 inline-flex items-center gap-2">
         {site.branding?.icon && <BrandIcon src={site.branding.icon} sizeClass="size-[1.08em]" />}
@@ -43,81 +49,17 @@ const fmt = new Intl.DateTimeFormat(
       <p class="text-sm text-zinc-500 leading-relaxed">{site.description}</p>
     </section>
 
-    <!-- Writing -->
-    {writingEnabled && writing.length > 0 && (
-      <section class="space-y-3">
-        <p class="text-sm font-bold text-zinc-500">{strings.writingTitle}</p>
-        <ul class="space-y-2">
-          {writing.map(post => (
-            <li>
-              <a href={getCollectionEntryPath(site, 'writing', post.id)}
-                 data-no-hover
-                 class="group flex items-center justify-between gap-4"
-                 style="text-decoration:none">
-                <span class="text-sm underline underline-offset-4
-                             group-hover:no-underline group-hover:px-1
-                             transition-all" data-writing-title>
-                  {post.data.title}
-                </span>
-                <span class="text-xs text-zinc-400 shrink-0">
-                  {fmt.format(post.data.date)}
-                </span>
-              </a>
-            </li>
-          ))}
-        </ul>
-        {moreWriting && (
-          <p class="pt-1">
-            <a href={writingBasePath} class="text-xs text-zinc-400">{strings.allWritingLabel}</a>
-          </p>
-        )}
-      </section>
-    )}
-
-    <!-- Docs -->
-    {docsEnabled && docs.length > 0 && (
-      <section class="space-y-3">
-        <p class="text-sm font-bold text-zinc-500">{strings.docsTitle}</p>
-        <ul class="space-y-2">
-          {docs.map(doc => (
-            <li>
-              <a href={getCollectionEntryPath(site, 'docs', doc.id)}
-                 data-no-hover
-                 class="group flex items-center justify-between gap-4"
-                 style="text-decoration:none">
-                <span class="text-sm underline underline-offset-4
-                             group-hover:no-underline group-hover:px-1
-                             transition-all" data-writing-title>
-                  {doc.data.title}
-                </span>
-                {doc.data.description && (
-                  <span class="text-xs text-zinc-400 shrink-0 hidden sm:block">
-                    {doc.data.description}
-                  </span>
-                )}
-              </a>
-            </li>
-          ))}
-        </ul>
-        {moreDocs && (
-          <p class="pt-1">
-            <a href={getCollectionEntryPath(site, 'docs', allDocs[0].id)} class="text-xs text-zinc-400">{strings.allDocsLabel}</a>
-          </p>
-        )}
-      </section>
-    )}
+    {sections.map(section => (
+      <HomePreviewSection
+        title={section.title}
+        items={section.items}
+        display={section.display}
+        showDateInList={section.showDateInList}
+        showDescriptionInList={section.showDescriptionInList}
+        moreHref={section.moreHref}
+        moreLabel={section.moreLabel}
+      />
+    ))}
 
   </div>
-
-  <!-- Footer -->
-  <footer class="max-w-3xl mx-auto px-8 py-6 mt-4">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-zinc-100 pt-6">
-      <p class="text-xs text-zinc-400">&copy; {new Date().getFullYear()} {site.name}</p>
-      <div class="flex items-center gap-4">
-        {(site.footer || []).map(({ label, href }: { label: string; href: string }) => (
-          <a href={href} class="text-xs text-zinc-400">{label}</a>
-        ))}
-      </div>
-    </div>
-  </footer>
 </Base>

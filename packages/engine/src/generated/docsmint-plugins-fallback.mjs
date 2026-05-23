@@ -1,0 +1,5 @@
+export const PLUGIN_ROUTE_VIEW_DESCRIPTORS = []
+export const PLUGIN_SHELL_LAYOUT_BY_PREFIX = {}
+export const PLUGIN_PRESENTATION_MODULES = {}
+export const PLUGIN_ASTRO_VIEW_IMPORTS = {}
+export const PLUGIN_DOC_FORM_KEYS = []

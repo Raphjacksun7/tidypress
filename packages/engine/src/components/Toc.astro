@@ -6,19 +6,84 @@ const { headings } = Astro.props
 const filtered = headings.filter(h => h.depth === 2 || h.depth === 3)
 ---
 {filtered.length > 0 && (
-  <nav class="sticky top-12 space-y-1" data-toc>
-    <p class="font-bold uppercase tracking-wide mb-2" data-toc-title>On this page</p>
-    {filtered.map(({ depth, slug, text }) => (
-      <a
-        href={`#${slug}`}
-        class:list={[
-          'block py-0.5',
-          depth === 3 ? 'pl-3 text-zinc-400' : 'text-zinc-500'
-        ]}
-        data-toc-link
-      >
-        {text}
-      </a>
-    ))}
+  <nav class="sticky top-12" data-toc>
+    <p class="font-bold uppercase tracking-wide mb-3" data-toc-title>On this page</p>
+    <div class="relative pl-3">
+      {/* Vertical guide line */}
+      <div class="toc-line" />
+      {/* Active section marker */}
+      <div class="toc-marker" data-toc-marker />
+      {filtered.map(({ depth, slug, text }) => (
+        <a
+          href={`#${slug}`}
+          class:list={['block py-0.5', depth === 3 && 'pl-3']}
+          data-toc-link
+          data-toc-depth={depth}
+        >
+          {text}
+        </a>
+      ))}
+    </div>
   </nav>
 )}
+
+<script>
+  function initToc() {
+    const nav = document.querySelector<HTMLElement>('[data-toc]')
+    if (!nav) return
+    const links = [...nav.querySelectorAll<HTMLElement>('[data-toc-link]')]
+    if (links.length === 0) return
+
+    const marker = nav.querySelector<HTMLElement>('[data-toc-marker]')
+    const container = nav.querySelector<HTMLElement>('.relative')
+
+    function setActive(activeSlug: string | null) {
+      for (const link of links) {
+        const slug = link.getAttribute('href')?.slice(1)
+        const isActive = slug === activeSlug
+        link.toggleAttribute('data-toc-active', isActive)
+        if (isActive && marker && container) {
+          const containerTop = container.getBoundingClientRect().top
+          const linkRect = link.getBoundingClientRect()
+          const top = linkRect.top - containerTop
+          marker.style.top = `${top}px`
+          marker.style.height = `${linkRect.height}px`
+          marker.style.opacity = '1'
+        }
+      }
+    }
+
+    // Initialise with the first link active
+    const firstSlug = links[0]?.getAttribute('href')?.slice(1) ?? null
+    setActive(firstSlug)
+
+    // Collect heading elements in DOM order
+    const headingIds = links
+      .map(l => l.getAttribute('href')?.slice(1))
+      .filter((id): id is string => Boolean(id))
+    const headings = headingIds
+      .map(id => document.getElementById(id))
+      .filter((el): el is HTMLElement => Boolean(el))
+
+    // Track which heading was most recently above the fold
+    let lastVisible = headingIds[0] ?? null
+
+    const observer = new IntersectionObserver(
+      entries => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            lastVisible = entry.target.id
+          }
+        }
+        setActive(lastVisible)
+      },
+      { rootMargin: '0px 0px -55% 0px', threshold: 0 },
+    )
+
+    for (const el of headings) observer.observe(el)
+  }
+
+  // Run on initial load and after client-side navigation
+  document.addEventListener('astro:page-load', initToc)
+  initToc()
+</script>

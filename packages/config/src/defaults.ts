@@ -1,4 +1,4 @@
-import type { DocsMintConfig } from './schema.js'
+import type { DocsMintConfig } from './schema/index.js'
 
 export const defaultConfig: Partial<DocsMintConfig> = {
   description: '',
@@ -18,6 +18,9 @@ export const defaultConfig: Partial<DocsMintConfig> = {
   theme: {
     mode: 'guardrailed',
     preset: 'baseline',
+    code: {
+      preset: 'claude',
+    },
     tokens: {
       light: {
         bg: '#fbfbfb',
@@ -53,7 +56,6 @@ export const defaultConfig: Partial<DocsMintConfig> = {
   },
   collections: {
     docs: {
-      kind: 'docs',
       enabled: true,
       basePath: '/docs',
     },

@@ -1,0 +1,12 @@
+---
+import RouteView from '@/routing/RouteView.astro'
+import { RoutePlanner } from '@/routing/RoutePlanner'
+
+export async function getStaticPaths() {
+  const planner = await RoutePlanner.fromProjectConfig()
+  return planner.toStaticPaths()
+}
+
+const { route } = Astro.props
+---
+<RouteView route={route} />

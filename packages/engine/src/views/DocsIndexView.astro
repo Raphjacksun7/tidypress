@@ -1,0 +1,28 @@
+---
+import type { RouteViewBundle } from '@/collections/bundle'
+
+interface Props {
+  bundle: RouteViewBundle
+  Content: any
+  mdxComponents: Record<string, any>
+  headings: { depth: number; slug: string; text: string }[]
+}
+
+const { bundle } = Astro.props
+const targetHref = bundle.firstDocHref ?? '/404'
+const redirectScript = `window.location.replace(${JSON.stringify(targetHref)})`
+---
+<!doctype html>
+<html lang={bundle.route.locale ?? 'en'} data-pagefind-ignore>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content={`0; url=${targetHref}`} />
+    <link rel="canonical" href={targetHref} />
+    <title>{bundle.title}</title>
+    <script is:inline set:html={redirectScript}></script>
+  </head>
+  <body>
+    <p><a href={targetHref}>Continue</a></p>
+  </body>
+</html>

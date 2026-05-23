@@ -1,21 +1,19 @@
 ---
-import Search from './Search.astro'
-import ThemeToggle from './ThemeToggle.astro'
+import Search from '@/components/Search.astro'
+import ThemeToggle from '@/components/ThemeToggle.astro'
 import {
   buildNavigationModel,
   isCapabilityEnabled,
   type DocsMintConfig,
   type NavItem,
 } from '@docsmint/config'
-import BrandIcon from './BrandIcon.astro'
-import VersionSelector from './VersionSelector.astro'
-import LocaleSelector from './LocaleSelector.astro'
-import { getUiStrings, resolveLocale, withLocalePrefix } from '../i18n/locale'
+import BrandIcon from '@/components/BrandIcon.astro'
+import { getUiStrings, resolveLocale, withLocalePrefix } from '@/i18n/locale'
 import {
-  getCollectionBasePath,
   getEnabledContentCollections,
-  isLegacyStarterCollectionKey,
-} from '../domain/content/collections'
+  shouldLocalizeCollection,
+} from '@/utils/collections'
+import { normalizePathname } from '@/routing/versioning'
 
 export interface Props {
   site: DocsMintConfig & {
@@ -28,19 +26,13 @@ export interface Props {
 const { site } = Astro.props
 const nav = site.nav || []
 const navModel = buildNavigationModel(site)
-const docsBasePath = getCollectionBasePath(site, 'docs')
 const localeState = resolveLocale(Astro.url.pathname, site.i18n)
 const { activeLocale, locales } = localeState
 const strings = getUiStrings(site, localeState)
-const localizedVersions = (site.versions ?? []).map(version => ({
-  ...version,
-  path: withLocalePrefix(version.path, activeLocale),
-}))
-const localizedDocsBasePath = withLocalePrefix(docsBasePath, activeLocale)
 const themingEnabled = isCapabilityEnabled(site, 'theming')
 const localizedStarterBasePaths = new Set(
   getEnabledContentCollections(site)
-    .filter(collection => isLegacyStarterCollectionKey(site, collection.key))
+    .filter(collection => shouldLocalizeCollection(site, collection.key))
     .map(collection => collection.basePath ?? `/${collection.key}`),
 )
 
@@ -51,7 +43,7 @@ function localizeNavItem(item: NavItem): NavItem {
   if (item.external || !item.href.startsWith('/')) {
     return item
   }
-  // Only legacy starter collection base paths are locale-prefixed implicitly.
+  // Starter collections with i18n use locale-prefixed base paths in nav.
   if (!localizedStarterBasePaths.has(item.href)) {
     return item
   }
@@ -62,6 +54,16 @@ const desktopVisible = navModel.desktop.visible.map(localizeNavItem)
 const desktopOverflow = navModel.desktop.overflow.map(localizeNavItem)
 const mobileVisible = navModel.mobile.visible.map(localizeNavItem)
 const mobileOverflow = navModel.mobile.overflow.map(localizeNavItem)
+
+const currentPath = normalizePathname(Astro.url.pathname)
+
+function isHeaderNavActive(href: string): boolean {
+  if (!href.startsWith('/')) {
+    return false
+  }
+  const normalizedHref = normalizePathname(href)
+  return currentPath === normalizedHref || currentPath.startsWith(`${normalizedHref}/`)
+}
 ---
 <header class="max-w-3xl mx-auto px-8 py-5">
   <div class="flex items-center justify-between gap-4">
@@ -74,18 +76,27 @@ const mobileOverflow = navModel.mobile.overflow.map(localizeNavItem)
     </a>
     <div class="flex items-center gap-5">
       {desktopVisible.map(({ label, href, target, rel }) => (
-        <a href={href} target={target} rel={rel} class="text-sm text-zinc-500 hidden sm:inline">{label}</a>
+        <a
+          href={href}
+          target={target}
+          rel={rel}
+          class="text-sm hidden sm:inline"
+          data-header-nav-link
+          data-header-nav-active={isHeaderNavActive(href) ? '' : undefined}
+        >{label}</a>
       ))}
       {desktopOverflow.length > 0 && (
         <details class="hidden sm:inline-block relative nav-more">
-          <summary class="text-sm text-zinc-500 cursor-pointer list-none">{strings.moreLabel}</summary>
+          <summary class="text-sm cursor-pointer list-none" data-header-nav-trigger>{strings.moreLabel}</summary>
           <div class="absolute right-0 mt-2 min-w-[12rem] rounded border border-zinc-200 bg-[var(--bg)] p-2 shadow-sm z-20">
             {desktopOverflow.map(({ label, href, target, rel }) => (
               <a
                 href={href}
                 target={target}
                 rel={rel}
-                class="block text-sm text-zinc-500 px-2 py-1.5 rounded"
+                class="block text-sm px-2 py-1.5 rounded"
+                data-header-nav-link
+                data-header-nav-active={isHeaderNavActive(href) ? '' : undefined}
               >
                 {label}
               </a>
@@ -93,15 +104,6 @@ const mobileOverflow = navModel.mobile.overflow.map(localizeNavItem)
           </div>
         </details>
       )}
-      {localizedVersions.length > 0 && (
-        <VersionSelector versions={localizedVersions} docsBasePath={localizedDocsBasePath} />
-      )}
-      <LocaleSelector
-        locales={locales}
-        activeLocale={activeLocale}
-        defaultLocale={localeState.defaultLocale}
-        label={strings.languageLabel}
-      />
       <Search strings={strings} />
       <ThemeToggle enabled={themingEnabled} />
     </div>
@@ -110,18 +112,27 @@ const mobileOverflow = navModel.mobile.overflow.map(localizeNavItem)
   {nav.length > 0 && (
     <nav class="flex items-center gap-4 mt-2 sm:hidden overflow-x-auto whitespace-nowrap no-scrollbar">
       {mobileVisible.map(({ label, href, target, rel }) => (
-        <a href={href} target={target} rel={rel} class="text-sm text-zinc-500 shrink-0">{label}</a>
+        <a
+          href={href}
+          target={target}
+          rel={rel}
+          class="text-sm shrink-0"
+          data-header-nav-link
+          data-header-nav-active={isHeaderNavActive(href) ? '' : undefined}
+        >{label}</a>
       ))}
       {mobileOverflow.length > 0 && (
         <details class="relative nav-more shrink-0">
-          <summary class="text-sm text-zinc-500 cursor-pointer list-none">{strings.moreLabel}</summary>
+          <summary class="text-sm cursor-pointer list-none" data-header-nav-trigger>{strings.moreLabel}</summary>
           <div class="absolute left-0 mt-2 min-w-[11rem] rounded border border-zinc-200 bg-[var(--bg)] p-2 shadow-sm z-20">
             {mobileOverflow.map(({ label, href, target, rel }) => (
               <a
                 href={href}
                 target={target}
                 rel={rel}
-                class="block text-sm text-zinc-500 px-2 py-1.5 rounded"
+                class="block text-sm px-2 py-1.5 rounded"
+                data-header-nav-link
+                data-header-nav-active={isHeaderNavActive(href) ? '' : undefined}
               >
                 {label}
               </a>

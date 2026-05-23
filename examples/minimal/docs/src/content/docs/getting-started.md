@@ -1,7 +1,11 @@
 ---
 title: Getting started
-description: Welcome to DocsMint.
+description: A starter docs page you can replace.
 order: 1
 ---
 
-Welcome to DocsMint. Edit this page at `docs/src/content/docs/getting-started.md`.
+This page lives in the docs collection.
+
+Use docs for stable instructions: setup steps, API notes, configuration, troubleshooting, and anything people should be able to find later.
+
+Edit this file at `docs/src/content/docs/getting-started.md`, then run `docsmint dev` to preview changes.
