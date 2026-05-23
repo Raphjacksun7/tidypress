@@ -146,7 +146,8 @@ export interface DocsMintDocs {
   paging?: DocsMintDocsPaging
 }
 
-export type DocsMintTypographyScale = 'default' | 'medium' | 'large' | 'extra'
+/** Resolved scales: 'small' | 'medium' | 'large'. 'default' and 'extra' are accepted aliases. */
+export type DocsMintTypographyScale = 'small' | 'medium' | 'large' | 'extra' | 'default'
 
 export interface DocsMintTypography {
   scale?: DocsMintTypographyScale

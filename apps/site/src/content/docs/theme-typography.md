@@ -8,22 +8,26 @@ Theme config is optional. The default is a guarded baseline theme with the `clau
 
 ## Typography
 
-```ts
-typography: {
-  scale: 'default',
-}
-```
-
 Scales:
 
 | Value | Use for |
 |-------|---------|
-| `default` | normal documentation density |
-| `medium` | slightly larger reading size |
+| `medium` | default reading size (used when `typography` is omitted) |
+| `small` | compact documentation density |
 | `large` | larger marketing or narrative pages |
-| `extra` | extra-large display scale |
+| `extra` | extra-large display scale (alias for `large`) |
 
-Omit `typography` to use `default`.
+Omit `typography` to use `medium`.
+
+Use a smaller scale explicitly:
+
+```ts
+typography: {
+  scale: 'small',
+}
+```
+
+`default` and `extra` are accepted aliases. `default` resolves to `medium`; `extra` resolves to `large`.
 
 ## Theme Mode
 

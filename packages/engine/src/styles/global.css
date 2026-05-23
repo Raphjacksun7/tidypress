@@ -53,6 +53,10 @@
     transition: background 0.15s, color 0.15s;
   }
 
+  html[data-text-scale="small"] {
+    font-size: 100%;
+  }
+
   html[data-text-scale="medium"] {
     font-size: 110%;
   }

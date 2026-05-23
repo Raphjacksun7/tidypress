@@ -13,7 +13,7 @@ export const defaultConfig: Partial<DocsMintConfig> = {
     description: 'Engineering notes, architectural decisions, and observations.',
   },
   typography: {
-    scale: 'default',
+    scale: 'medium',
   },
   theme: {
     mode: 'guardrailed',

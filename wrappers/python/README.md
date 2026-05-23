@@ -21,14 +21,7 @@ docsmint dev
 docsmint build
 ```
 
-## How it finds the CLI
 
-1. `DOCSMINT_CLI_JS` — path to `docsmint.js`
-2. Monorepo / project `node_modules/docsmint` or `packages/cli/bin/docsmint.js`
-3. `docsmint` on your `PATH` (from `npm install -g`)
-4. Clear error with install hints (does **not** use `npx` by default)
-
-Optional escape hatch: `DOCSMINT_USE_NPX=1` (not recommended).
 
 ## Python command routing and YAML bridge
 
@@ -47,10 +40,3 @@ python:
 ```
 
 You can also pass `--config /path/to/docsmint.yaml` for explicit config selection.
-
-## Dev
-
-```sh
-pip install -e "./wrappers/python[dev]"
-pytest wrappers/python/tests
-```

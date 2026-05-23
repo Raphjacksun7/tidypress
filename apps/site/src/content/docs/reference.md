@@ -97,6 +97,14 @@ interface DocsMintConfig {
 
 Only `name` is required.
 
+## Typography scale
+
+```ts
+type DocsMintTypographyScale = 'small' | 'medium' | 'large'
+```
+
+`medium` is the default when `typography` is omitted. `default` and `extra` are accepted aliases: `default` → `medium`, `extra` → `large`.
+
 ## Collection kinds
 
 ```ts

@@ -153,11 +153,26 @@ test('withDefaults keeps explicit collections when sections are also provided', 
 })
 
 test('withDefaults normalizes typography scale and supports "extra" alias', () => {
+  const implicitDefault = withDefaults({ name: 'site' })
+  assert.equal(implicitDefault.typography?.scale, 'medium')
+
   const medium = withDefaults({
     name: 'site',
     typography: { scale: 'medium' },
   })
   assert.equal(medium.typography?.scale, 'medium')
+
+  const small = withDefaults({
+    name: 'site',
+    typography: { scale: 'small' },
+  })
+  assert.equal(small.typography?.scale, 'small')
+
+  const defaultAlias = withDefaults({
+    name: 'site',
+    typography: { scale: 'default' },
+  })
+  assert.equal(defaultAlias.typography?.scale, 'medium')
 
   const extraAlias = withDefaults({
     name: 'site',

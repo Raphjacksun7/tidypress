@@ -7,9 +7,6 @@ export default defineConfig({
     icon: '/favicon.svg',
     favicon: '/favicon-white.svg',
   },
-  typography: {
-    scale: 'medium',
-  },
   nav: [
     { label: 'docs', href: '/docs' },
     { label: 'writing', href: '/writing' },
