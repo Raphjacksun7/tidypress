@@ -1,12 +1,9 @@
 {
   "name": "@docsmint/config",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "publishConfig": {
-    "access": "public"
-  },
   "files": [
     "dist"
   ],
@@ -17,5 +14,6 @@
   "devDependencies": {
     "@types/node": "^22.15.29",
     "typescript": "^5.9.2"
-  }
+  },
+  "private": true
 }

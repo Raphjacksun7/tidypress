@@ -14,6 +14,16 @@ export function getEnginePath() {
   return path.dirname(packageJsonPath)
 }
 
+function getConfigPath() {
+  const packageJsonPath = require.resolve('@docsmint/config/package.json')
+  return path.dirname(packageJsonPath)
+}
+
+function getDependencyModulesPath() {
+  const packageJsonPath = require.resolve('astro/package.json')
+  return path.dirname(path.dirname(packageJsonPath))
+}
+
 /**
  * @param {string} docsDir
  * @returns {string}
@@ -36,8 +46,36 @@ async function ensureFreshDirectory(targetDir) {
   await fs.mkdir(targetDir, { recursive: true })
 }
 
+async function ensureSymlink(sourcePath, targetPath) {
+  if (await exists(targetPath)) {
+    return
+  }
+  try {
+    await fs.symlink(sourcePath, targetPath, 'junction')
+  } catch (error) {
+    if (/** @type {NodeJS.ErrnoException} */ (error).code !== 'EEXIST') {
+      throw error
+    }
+  }
+}
+
 const ENGINE_STAMP_FILE = '.engine-stamp'
 const ENGINE_SKIP_TOP_LEVEL = new Set(['dist', 'node_modules'])
+const WORKDIR_RUNTIME_PACKAGES = [
+  '@astrojs/mdx',
+  '@astrojs/sitemap',
+  '@tailwindcss/vite',
+  'astro',
+  'jiti',
+  'mermaid',
+  'pagefind',
+  'rehype-external-links',
+  'rehype-pretty-code',
+  'shiki',
+  'tailwindcss',
+  'unist-util-visit',
+  'vite',
+]
 
 /**
  * Detect engine source changes so a stale `.docsmint` workdir is refreshed
@@ -166,16 +204,38 @@ async function ensureWorkdirNodeModules(workdir) {
   }
 
   const engineModules = path.join(getEnginePath(), 'node_modules')
-  if (!(await exists(engineModules))) {
-    return
-  }
-
   const workdirModules = path.join(workdir, 'node_modules')
-  if (await exists(workdirModules)) {
+
+  if (
+    (await exists(path.join(engineModules, '.bin', 'astro'))) &&
+    !(await exists(workdirModules))
+  ) {
+    await ensureSymlink(engineModules, workdirModules)
     return
   }
 
-  await fs.symlink(engineModules, workdirModules, 'junction')
+  await fs.mkdir(workdirModules, { recursive: true })
+
+  for (const [name, sourcePath] of [
+    ['@docsmint/config', getConfigPath()],
+    ['@docsmint/engine', getEnginePath()],
+  ]) {
+    const targetPath = path.join(workdirModules, ...name.split('/'))
+    if (!(await exists(targetPath))) {
+      await fs.mkdir(path.dirname(targetPath), { recursive: true })
+      await ensureSymlink(sourcePath, targetPath)
+    }
+  }
+
+  const dependencyModules = getDependencyModulesPath()
+  for (const packageName of WORKDIR_RUNTIME_PACKAGES) {
+    const sourcePath = path.join(dependencyModules, ...packageName.split('/'))
+    const targetPath = path.join(workdirModules, ...packageName.split('/'))
+    if ((await exists(sourcePath)) && !(await exists(targetPath))) {
+      await fs.mkdir(path.dirname(targetPath), { recursive: true })
+      await ensureSymlink(sourcePath, targetPath)
+    }
+  }
 }
 
 async function replacePath(targetPath, sourcePath, mode) {

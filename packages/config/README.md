@@ -8,6 +8,6 @@ End users should install `docsmint`:
 npm install docsmint
 ```
 
-This package contains the typed config surface, defaults, normalization, and validation used by the CLI and engine. It is published so the main `docsmint` package installs cleanly from npm.
+This package contains the typed config surface, defaults, normalization, and validation used by the CLI and engine. It is bundled into the public `docsmint` package.
 
 Documentation: <https://usedocsmint.pages.dev/docs/configuration>

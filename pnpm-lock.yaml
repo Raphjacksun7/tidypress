@@ -38,15 +38,51 @@ importers:
 
   packages/cli:
     dependencies:
+      '@astrojs/mdx':
+        specifier: 5.0.4
+        version: 5.0.4(astro@6.1.9(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.60.2)(typescript@5.9.3)(yaml@2.8.3))
+      '@astrojs/sitemap':
+        specifier: 3.7.2
+        version: 3.7.2
       '@docsmint/config':
         specifier: workspace:*
         version: link:../config
       '@docsmint/engine':
         specifier: workspace:*
         version: link:../engine
+      '@tailwindcss/vite':
+        specifier: 4.2.4
+        version: 4.2.4(vite@7.3.2(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(yaml@2.8.3))
+      astro:
+        specifier: 6.1.9
+        version: 6.1.9(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.60.2)(typescript@5.9.3)(yaml@2.8.3)
       jiti:
-        specifier: ^2.6.1
+        specifier: 2.6.1
         version: 2.6.1
+      mermaid:
+        specifier: 11.14.0
+        version: 11.14.0
+      pagefind:
+        specifier: 1.5.2
+        version: 1.5.2
+      rehype-external-links:
+        specifier: 3.0.0
+        version: 3.0.0
+      rehype-pretty-code:
+        specifier: 0.14.3
+        version: 0.14.3(shiki@4.0.2)
+      shiki:
+        specifier: 4.0.2
+        version: 4.0.2
+      tailwindcss:
+        specifier: 4.2.4
+        version: 4.2.4
+      unist-util-visit:
+        specifier: 5.1.0
+        version: 5.1.0
+      vite:
+        specifier: 7.3.2
+        version: 7.3.2(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(yaml@2.8.3)
 
   packages/config:
     devDependencies:
@@ -60,44 +96,47 @@ importers:
   packages/engine:
     dependencies:
       '@astrojs/mdx':
-        specifier: ^5.0.3
+        specifier: 5.0.4
         version: 5.0.4(astro@6.1.9(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.60.2)(typescript@5.9.3)(yaml@2.8.3))
       '@astrojs/sitemap':
-        specifier: ^3.7.2
+        specifier: 3.7.2
         version: 3.7.2
       '@docsmint/config':
         specifier: workspace:*
         version: link:../config
       '@tailwindcss/vite':
-        specifier: ^4.2.2
+        specifier: 4.2.4
         version: 4.2.4(vite@7.3.2(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(yaml@2.8.3))
       astro:
-        specifier: ^6.1.5
+        specifier: 6.1.9
         version: 6.1.9(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.60.2)(typescript@5.9.3)(yaml@2.8.3)
       jiti:
-        specifier: ^2.6.1
+        specifier: 2.6.1
         version: 2.6.1
       mermaid:
-        specifier: ^11.14.0
+        specifier: 11.14.0
         version: 11.14.0
       pagefind:
-        specifier: ^1.5.0
+        specifier: 1.5.2
         version: 1.5.2
       rehype-external-links:
-        specifier: ^3.0.0
+        specifier: 3.0.0
         version: 3.0.0
       rehype-pretty-code:
-        specifier: ^0.14.3
+        specifier: 0.14.3
         version: 0.14.3(shiki@4.0.2)
       shiki:
-        specifier: ^4.0.2
+        specifier: 4.0.2
         version: 4.0.2
       tailwindcss:
-        specifier: ^4.2.2
+        specifier: 4.2.4
         version: 4.2.4
       unist-util-visit:
-        specifier: ^5.1.0
+        specifier: 5.1.0
         version: 5.1.0
+      vite:
+        specifier: 7.3.2
+        version: 7.3.2(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(yaml@2.8.3)
     devDependencies:
       '@astrojs/check':
         specifier: ^0.9.5

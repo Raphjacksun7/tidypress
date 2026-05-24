@@ -8,6 +8,6 @@ End users should install `docsmint`:
 npm install docsmint
 ```
 
-This package contains the Astro runtime, layouts, routing, components, and search UI used by the CLI. It is published so the main `docsmint` package installs cleanly from npm.
+This package contains the Astro runtime, layouts, routing, components, and search UI used by the CLI. It is bundled into the public `docsmint` package.
 
 Documentation: <https://usedocsmint.pages.dev/docs>

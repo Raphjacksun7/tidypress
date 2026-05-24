@@ -11,8 +11,8 @@ Release publishing is handled by GitHub Actions with Trusted Publishing for npm 
 
 ## Release flow (Changesets)
 
-DocsMint uses [Changesets](https://github.com/changesets/changesets) to keep all npm package
-versions in sync and generate changelogs automatically.
+DocsMint uses [Changesets](https://github.com/changesets/changesets) to keep package versions
+in sync and generate changelogs automatically.
 
 ### Day-to-day: adding a changeset to your PR
 
@@ -20,8 +20,8 @@ versions in sync and generate changelogs automatically.
 pnpm changeset
 ```
 
-Follow the prompts. All three npm packages (`@docsmint/config`, `@docsmint/engine`, `docsmint`)
-are **linked** — selecting any one bumps all three to the same version.
+Follow the prompts. The npm packages (`@docsmint/config`, `@docsmint/engine`, `docsmint`)
+are linked so their versions stay together.
 
 ### Release sequence
 
@@ -38,8 +38,8 @@ git tag v1.0.4
 git push origin v1.0.4
 ```
 
-6. The `Publish` workflow validates all four versions, runs tests, publishes npm packages in
-   order, runs a real CLI smoke test, then publishes to PyPI.
+6. The `Publish` workflow validates all four versions, runs tests, publishes `docsmint` to npm,
+   runs a real CLI smoke test, then publishes to PyPI.
 
 ## Manual release (without Changesets)
 
@@ -53,13 +53,18 @@ If you need to cut a release manually without a changeset:
 2. Commit to `main`.
 3. Push a tag: `git tag vX.Y.Z && git push origin vX.Y.Z`
 
-## Package publish order
+## npm package shape
 
-The three npm packages are always published in this order:
+Users install one public npm package:
 
-1. `@docsmint/config` — no workspace deps; built from TypeScript before publish
-2. `@docsmint/engine` — depends on `@docsmint/config`
-3. `docsmint` — depends on both
+```bash
+npm install docsmint
+pnpm add docsmint
+```
+
+`@docsmint/config` and `@docsmint/engine` are internal runtime packages. They are bundled into
+the `docsmint` tarball through `bundleDependencies`, so npm users do not need to install or
+resolve separate scoped packages.
 
 `pnpm publish` replaces `workspace:*` entries with real semver at pack time.
 
@@ -82,7 +87,8 @@ match the git tag.
 1. Reads all four package versions and asserts they match the tag.
 2. Runs the full test suite and builds.
 3. Builds `@docsmint/config` TypeScript → `dist/`.
-4. Publishes `@docsmint/config` → `@docsmint/engine` → `docsmint` to npm via `pnpm publish`.
+4. Publishes `docsmint` to npm via `pnpm publish`; bundled internal packages are included in
+   the tarball.
 5. Runs a real smoke test: `npm install docsmint@<version>` in a clean dir, then
    `node ./node_modules/docsmint/bin/docsmint.js --version`.
 6. Publishes `wrappers/python` to PyPI via Trusted Publishing.
@@ -103,7 +109,7 @@ This section tracks engineering work that affects release sequencing and risk.
 - Search exclusion controls added (`search: false` + config excludes).
 - Publish pipeline fixed: `pnpm publish` replaces the former `npm publish` that shipped
   unresolved `workspace:*` dependencies to the registry.
-- Changesets added for automatic version sync across all npm packages.
+- Changesets added for automatic version sync across package versions.
 
 ### Compatibility lifecycle (sections -> collections)
 
