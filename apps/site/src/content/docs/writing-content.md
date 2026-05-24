@@ -48,6 +48,8 @@ Fields:
 
 `form` defaults to `doc`. Use `manual` for procedural guides that should use manual chrome and step-oriented navigation.
 
+Human editors and coding agents use the same files. See [Agents and markdown](/writing/agents-and-markdown) for a practical workflow.
+
 ## Writing frontmatter
 
 ```yaml

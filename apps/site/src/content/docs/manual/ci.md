@@ -22,7 +22,6 @@ Do not upload:
 
 - `~/.cache/docsmint/` (local compiler cache)
 - `node_modules/`
-- legacy `.docsmint/` (removed in current CLI versions)
 
 ## GitHub Actions pattern
 

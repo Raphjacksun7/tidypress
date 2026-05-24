@@ -1,0 +1,83 @@
+---
+title: The folder is the product
+date: "2026-04-24"
+description: A quiet preference for owning the tree you publish from.
+tags:
+  - writing
+  - markdown
+  - static
+---
+
+I like publishing when it stays close to the file system: markdown on disk, a small config, a build step, something you can host without drama. Not because platforms are bad — many teams need workflows I do not — but because **my** work is mostly writing and projects, and I want the tree to stay the source of truth.
+
+## A line worth keeping
+
+[Simon Willison](https://simonwillison.net/) has been spelling it out in public while the models arrived: keep what you can diff in git, publish pages with real URLs, and let the LLM propose edits — not custody of the canonical draft. That is the same discipline older builders named in plainer words — [Knuth](https://www-cs-faculty.stanford.edu/~knuth/) on source, [Berners-Lee](https://www.w3.org/People/Berners-Lee/) on documents and links — before “agent” was everyday vocabulary.
+
+I share that bias. A personal site should feel like that stack in miniature: files you keep, output you can ship.
+
+<Image src="/images/writing/manuscript-typewriter.gif" alt="Typewriter striking paper, line by line" caption="Source before presentation — the line on the page outlives the machine that set it." />
+
+DocsMint is built lightly in that spirit. You keep markdown, `docsmint.config.ts`, and a `build/` folder you upload. The home page foregrounds writing and projects; a manual in the sidebar is there when you need it, not the whole personality of the site.
+
+<FileTree>
+- docs/
+  - **docsmint.config.ts**
+  - src/
+    - content/
+      - writing/
+      - projects/
+      - docs/
+  - build/
+</FileTree>
+
+`writing/`, `projects/`, optional `docs/`, assets beside them — a plain layout so future-you, and any agent with read access to the repo, can find things without a map drawn in a separate product.
+
+## Build as receipt
+
+The build step matters to me the way a compiler output matters: intent becomes an artifact you can point at. `docsmint build` gives you HTML and a search index; you put them on any static host. The pull request is where I read prose; production is the bytes in `build/`.
+
+<Mermaid align="center" code={`
+flowchart LR
+  Files[Markdown in git] --> Build[docsmint build]
+  Build --> Out[build/]
+  Out --> Host[Static host]
+`} />
+
+```bash
+git diff main...HEAD -- docs/src/content/
+docsmint build
+# ship docs/build/ — same artifact CI built
+```
+
+<Image src="/images/writing/print-output.gif" alt="Sheets feeding through a printer" caption="A build is a print run: fixed pages you can ship, not a live feed to babysit." />
+
+That rhythm — pre-render once, serve files — is old and still good for text-heavy sites. [Jamstack](https://jamstack.org/) names the pattern; the [Web Almanac](https://almanac.httparchive.org/en/2022/jamstack) still describes it as fast pages delivered by pre-rendering and caching. I want that predictability: what search indexes is what you built, not a parallel copy maintained elsewhere ([Pagefind](https://pagefind.app/docs/) runs at build time for that reason).
+
+### A small gimmick that is also true
+
+Static output is just HTML on disk — which means you can **iframe your own ship artifact** inside a post, a readme, or a demo page. No app server required; same host, same bytes users get in production. (Third-party sites often block embedding; your `build/` folder does not.)
+
+<div class="not-prose dm-embed-frame">
+  <iframe
+    title="Example build/ listing"
+    src="/embeds/build-receipt.html"
+    loading="lazy"
+  />
+</div>
+
+<Callout type="tip">
+MDX accepts raw `<iframe>`. The trick is to point at something you control — a file under `docs/public/` — so the frame always loads.
+</Callout>
+
+## Docs without becoming a different company
+
+People sometimes ask if this is a documentation product. It can hold docs. I use it when the site is **mostly** essays and work on the home page, with reference pages tucked into `docs/` when a tool or library actually needs them. You should not have to dress as a wiki to get a calm reading column.
+
+<Callout type="quote">
+Own the tree. Let the build prove what shipped. Keep the reading experience quiet enough to finish a post.
+</Callout>
+
+[Git’s snapshot model](https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F#_snapshots_not_differences) and [review on pull requests](https://docs.github.com/en/get-started/using-github/github-flow) already treat text like code when teams care — I want the same habit for a personal site.
+
+So yes: for me, the folder is the product. Editors, agents, and CI stay upstream. What remains after save — and what `build/` contains — is the site.

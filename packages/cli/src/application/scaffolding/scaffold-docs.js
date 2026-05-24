@@ -58,7 +58,7 @@ export async function scaffoldDocs({ docsDir, projectName, starterPreset, withAs
   } catch {
     // File does not exist yet.
   }
-  const gitignoreLines = ['build/', '.docsmint/']
+  const gitignoreLines = ['build/']
   let updatedGitignore = gitignoreContent
   for (const line of gitignoreLines) {
     if (!updatedGitignore.includes(line)) {

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>build/</title>
+    <style>
+      :root {
+        --fg: #0a0a0a;
+        --muted: #71717a;
+        --border: #e4e4e7;
+        --surface: #fafafa;
+        --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --fg: #fafafa;
+          --muted: #a1a1aa;
+          --border: #27272a;
+          --surface: #18181b;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 1rem 1.25rem;
+        font-family: var(--mono);
+        font-size: 12px;
+        line-height: 1.65;
+        color: var(--fg);
+        background: var(--surface);
+      }
+      .label {
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin: 0 0 0.75rem;
+      }
+      .row {
+        display: flex;
+        gap: 0.75rem;
+        padding: 0.1rem 0;
+      }
+      .size {
+        color: var(--muted);
+        min-width: 2.75rem;
+        text-align: right;
+        flex-shrink: 0;
+      }
+      .name {
+        flex: 1;
+        word-break: break-all;
+      }
+      .dir .name::after {
+        content: "/";
+        color: var(--muted);
+      }
+      .foot {
+        margin: 1rem 0 0;
+        padding-top: 0.75rem;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 11px;
+      }
+    </style>
+  </head>
+  <body>
+    <p class="label">docs/build · static output</p>
+    <div class="row dir"><span class="size">—</span><span class="name">pagefind</span></div>
+    <div class="row"><span class="size">12k</span><span class="name">index.html</span></div>
+    <div class="row"><span class="size">4k</span><span class="name">writing/the-folder-is-the-product/index.html</span></div>
+    <div class="row"><span class="size">3k</span><span class="name">pagefind/pagefind.js</span></div>
+    <p class="foot">upload these bytes · no runtime database</p>
+  </body>
+</html>

@@ -82,6 +82,10 @@ docs/src/content/docs/api/<lang>.md
 
 This is a convenience helper for small projects. For large API references, keep using the dedicated tooling for that ecosystem.
 
+## Agents and markdown
+
+Agents that edit files in git use the same commands as you do: add markdown under `src/content/`, run `docsmint build`, deploy `build/`. Export `docsmint context` when the model needs a map of existing pages. Details: [Agents and markdown](/writing/agents-and-markdown).
+
 ## Help and init presets
 
 ```bash

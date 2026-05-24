@@ -128,7 +128,6 @@ jobs:
       - name: Clean previous build artifacts
         run: |
           rm -rf apps/site/build
-          rm -rf apps/site/.docsmint
           rm -rf packages/engine/dist
 
       - name: Build config package

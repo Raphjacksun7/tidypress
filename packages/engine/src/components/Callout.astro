@@ -1,12 +1,16 @@
 ---
 export interface Props {
-  type?: 'note' | 'warning' | 'tip'
+  type?: 'note' | 'warning' | 'tip' | 'quote'
 }
 const { type = 'note' } = Astro.props
-const label = { note: 'Note', warning: 'Warning', tip: 'Tip' }[type]
+const label = { note: 'Note', warning: 'Warning', tip: 'Tip', quote: 'Quote' }[type]
+const borderStyle =
+  type === 'quote'
+    ? 'border-left: 2px solid var(--muted); font-style: italic'
+    : 'border-left: 2px solid var(--fg)'
 ---
 <div class="not-prose my-6 pl-4 text-sm"
-     style="border-left: 2px solid var(--fg)">
+     style={borderStyle}>
   <p style="font-size:0.6875rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.25rem; color:var(--muted)">
     {label}
   </p>

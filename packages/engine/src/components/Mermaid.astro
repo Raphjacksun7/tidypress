@@ -1,7 +1,18 @@
 ---
-const { code } = Astro.props
+export interface Props {
+  code: string
+  align?: 'left' | 'center' | 'right'
+}
+
+const { code, align = 'left' } = Astro.props
+const alignClass =
+  align === 'center'
+    ? 'mermaid-wrapper--center'
+    : align === 'right'
+      ? 'mermaid-wrapper--right'
+      : 'mermaid-wrapper--left'
 ---
-<div class="mermaid-wrapper" data-mermaid={code}>
+<div class:list={['mermaid-wrapper', alignClass]} data-mermaid={code}>
   <p class="mermaid-source dm-mermaid-loading" aria-hidden="true">Loading diagram…</p>
 </div>
 

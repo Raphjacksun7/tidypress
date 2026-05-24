@@ -46,7 +46,8 @@ export const docsMintHomePreviewPresentation = {
   cardMetaClass: 'home-card-meta',
   listLinkClass: 'group dm-link-unstyled',
   listTitleDataAttr: 'data-writing-title',
-  listDescriptionClass: 'hidden sm:block',
+  /** Responsive visibility lives in engine global.css (`.home-list-description`). */
+  listDescriptionClass: 'home-list-description',
   moreWrapperClass: 'pt-1',
   moreLinkClass: 'text-xs',
 } as const

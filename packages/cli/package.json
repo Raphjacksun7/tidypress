@@ -1,6 +1,6 @@
 {
   "name": "docsmint",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Minimal markdown site for fast writing and project showcase.",
   "license": "MIT",
   "type": "module",

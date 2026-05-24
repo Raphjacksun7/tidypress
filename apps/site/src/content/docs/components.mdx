@@ -8,25 +8,29 @@ Components are available in `.mdx` files without imports.
 
 ## Callout
 
-Notes, warnings, and tips.
+Notes, warnings, tips, and pull quotes.
 
 ```mdx
 <Callout>The config file lives at `docs/docsmint.config.ts`.</Callout>
 
-<Callout type="warning">Do not edit `docs/.docsmint/` by hand.</Callout>
+<Callout type="warning">Do not commit `docs/build/` — it is generated. Deploy it, do not treat it as source.</Callout>
 
-<Callout type="tip">Run `docsmint clean` if a generated workdir looks stale.</Callout>
+<Callout type="tip">Run `docsmint clean` if a build looks stale after upgrading DocsMint.</Callout>
+
+<Callout type="quote">The canonical copy lives in git, not in an export workflow.</Callout>
 ```
 
 <Callout>The config file lives at `docs/docsmint.config.ts`.</Callout>
 
-<Callout type="warning">Do not edit `docs/.docsmint/` by hand.</Callout>
+<Callout type="warning">Do not commit `docs/build/` — it is generated. Deploy it, do not treat it as source.</Callout>
 
-<Callout type="tip">Run `docsmint clean` if a generated workdir looks stale.</Callout>
+<Callout type="tip">Run `docsmint clean` if a build looks stale after upgrading DocsMint.</Callout>
+
+<Callout type="quote">The canonical copy lives in git, not in an export workflow.</Callout>
 
 | Prop | Type | Default |
 |------|------|---------|
-| `type` | `"note" \| "warning" \| "tip"` | `"note"` |
+| `type` | `"note" \| "warning" \| "tip" \| "quote"` | `"note"` |
 
 ## Tabs
 
@@ -111,6 +115,8 @@ flowchart LR
   Build --> Static[Static site]
   Static --> Host[Static host]
 `} />
+
+<Mermaid align="center" code={`flowchart TB\n  A --> B`} />
 ```
 
 <Mermaid code={`
@@ -120,11 +126,12 @@ flowchart LR
   Static --> Host[Static host]
 `} />
 
-| Prop | Type | Required |
-|------|------|----------|
-| `code` | string | yes |
+| Prop | Type | Default | Required |
+|------|------|---------|----------|
+| `code` | string | — | yes |
+| `align` | `"left" \| "center" \| "right"` | `"left"` | no |
 
-Diagrams adapt when the theme changes.
+Diagrams adapt when the theme changes. Use `align="center"` for tall vertical flowcharts in narrow writing columns.
 
 ## Image
 
@@ -155,10 +162,10 @@ Same file with markdown:
 Short inline definitions.
 
 ```mdx
-The <Tooltip tip="The generated Astro project inside docs/.docsmint/">workdir</Tooltip> is rebuilt by the CLI.
+The <Tooltip tip="Static HTML and search land in docs/build/ after docsmint build.">build folder</Tooltip> is regenerated on each build.
 ```
 
-The <Tooltip tip="The generated Astro project inside docs/.docsmint/">workdir</Tooltip> is rebuilt by the CLI.
+The <Tooltip tip="Static HTML and search land in docs/build/ after docsmint build.">build folder</Tooltip> is regenerated on each build.
 
 | Prop | Type | Required |
 |------|------|----------|

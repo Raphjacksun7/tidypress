@@ -127,23 +127,26 @@ docs/build/
 
 Search is generated during `docsmint build`, so the search modal is available in `preview`, not in the dev server.
 
-Deploy that directory with your static host, CI job, or `docsmint deploy`.
+Deploy the `build/` folder with your static host, CI job, or `docsmint deploy`.
 
-## What `.docsmint/` is
+## Generated files (do not edit)
 
-`.docsmint/` is generated. Do not edit it by hand.
-
-During dev, DocsMint links your content and config into the workdir so Astro can reload changes. During build, DocsMint copies the content into the workdir and writes static output.
+DocsMint keeps your markdown in place. It writes two kinds of generated output:
 
 ```txt
 your project
 └── docs/
     ├── docsmint.config.ts      # your config
     ├── src/content/            # your markdown
-    └── .docsmint/              # generated workdir and dist output
+    └── build/                  # static site — deploy this (gitignored)
+
+~/.cache/docsmint/<key>/        # local compiler cache — not deployed
 ```
 
-If a local build behaves strangely after an engine update, run:
+- **`build/`** — HTML, assets, Pagefind search, sitemap. Upload only this folder to production.
+- **Cache** — plugin codegen and Astro cache. Safe to delete; recreated on the next `dev` or `build`.
+
+If a local build behaves strangely after an engine upgrade, run:
 
 ```bash
 npx docsmint clean
@@ -175,4 +178,5 @@ Use absolute paths in markdown:
 
 - [Markdown and frontmatter](./writing-content) covers fields, links, images, drafts, and scheduling.
 - [Configuration](./configuration) covers `docsmint.config.ts`.
-- [Deploy](./deploying) explains static output and provider targets.
+- [Deploy](./deploying) explains `build/` output and provider targets.
+- [Agents and markdown](/writing/agents-and-markdown) — same workflow for human edits and agent drafts.

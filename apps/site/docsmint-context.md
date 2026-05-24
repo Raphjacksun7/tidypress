@@ -11,7 +11,7 @@
 - [docs] Components
   - path: `src/content/docs/components.mdx`
   - description: Built-in MDX components for notes, tabs, file trees, diagrams, images, tooltips, and steps.
-  - excerpt: Components are available in `.mdx` files without imports. ## Callout Notes, warnings, and tips. ```mdx <Callout>The config file lives at `docs/docsmint.config.ts`.</Callout> <C
+  - excerpt: Components are available in `.mdx` files without imports. ## Callout Notes, warnings, tips, and pull quotes. ```mdx <Callout>The config file lives at `docs/docsmint.config.ts`.<
 - [docs] Configuration
   - path: `src/content/docs/configuration.md`
   - description: The practical shape of docs/docsmint.config.ts.
@@ -64,11 +64,15 @@
   - path: `src/content/docs/writing-content.md`
   - description: Content folders, frontmatter fields, links, assets, drafts, and scheduling.
   - excerpt: Content lives under `docs/src/content/`. Markdown is the default. MDX adds components. ## Collections ```txt docs/src/content/ ├── docs/ # documentation pages ├── writing/ 
-- [writing] Why this site has writing
+- [writing] Agents and markdown
+  - path: `src/content/writing/agents-and-markdown.mdx`
+  - description: If the site lives in git, an agent is just another author.
+  - excerpt: The interesting shift with coding agents is not that publishing got easier. It is that **authorship** got cheaper. You still need a point of view, a place on the web, and a build s
+- [writing] Hello, world
   - path: `src/content/writing/hello-world.md`
-  - description: Docs are for stable instructions. Writing is for dated context.
-  - excerpt: DocsMint keeps docs and dated writing in the same project because both usually come from the same source: markdown in git. Use docs for instructions that should stay current. Use 
+  - description: Starting a small site I actually own.
+  - excerpt: I wanted a public place that does not run on someone else's feed. Not a newsletter platform, not a docs portal that slowly becomes the whole company — just a site: something to rea
 - [writing] The folder is the product
-  - path: `src/content/writing/how-to-write-docs.md`
-  - description: DocsMint keeps the authoring model small enough to understand at a glance.
-  - excerpt: The useful unit in DocsMint is a folder: ```txt docs/ ├── docsmint.config.ts ├── public/ └── src/content/ ├── docs/ ├── writing/ └── pages/ ``` That shape is delibera
+  - path: `src/content/writing/the-folder-is-the-product.mdx`
+  - description: A quiet preference for owning the tree you publish from.
+  - excerpt: I like publishing when it stays close to the file system: markdown on disk, a small config, a build step, something you can host without drama. Not because platforms are bad — many

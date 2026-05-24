@@ -39,7 +39,7 @@ docsmint deploy ./release/docs
 docsmint deploy file:///tmp/docsmint-site
 ```
 
-Local path targets copy the built `dist/` directory.
+Local path targets copy the built `build/` directory.
 
 ## Artifact-only deploy
 
@@ -54,14 +54,14 @@ With no target, DocsMint builds the site and prints the artifact path. Upload th
 These targets call local provider tools:
 
 ```bash
-docsmint deploy vercel        # runs vercel deploy --prod <dist>
-docsmint deploy netlify       # runs netlify deploy --dir <dist> --prod
-docsmint deploy surge         # runs surge <dist>
-docsmint deploy github-pages  # runs npx gh-pages -d <dist>
-docsmint deploy cloudflare    # runs wrangler pages deploy <dist>
+docsmint deploy vercel        # runs vercel deploy --prod <build/>
+docsmint deploy netlify       # runs netlify deploy --dir <build/> --prod
+docsmint deploy surge         # runs surge <build/>
+docsmint deploy github-pages  # runs npx gh-pages -d <build/>
+docsmint deploy cloudflare    # runs wrangler pages deploy <build/>
 ```
 
-The command hands `dist/` to the selected CLI.
+The command hands your `build/` directory to the selected CLI.
 
 ## Docker
 
