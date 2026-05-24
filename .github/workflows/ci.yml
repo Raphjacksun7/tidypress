@@ -52,8 +52,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Real install e2e
-        run: ./agent-os/scripts/install-e2e.sh
+      - name: Build @docsmint/config
+        run: pnpm --filter @docsmint/config build
+
+      - name: Real install e2e (npm pack → clean install → init → build)
+        run: pnpm --filter docsmint test:install-e2e
+        timeout-minutes: 40
 
       - name: Build moat examples
         run: |
@@ -79,7 +83,7 @@ jobs:
         timeout-minutes: 30
 
       - name: Enforce minimum test count
-        run: node ./agent-os/scripts/assert-test-count.mjs
+        run: node ./.github/scripts/assert-test-count.mjs
 
       - name: Build Python package
         working-directory: wrappers/python
@@ -91,7 +95,7 @@ jobs:
     name: Deploy docs site to Cloudflare Pages
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    needs: validate
+    needs: [validate, install-e2e]
     environment: prod
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
