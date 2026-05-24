@@ -109,14 +109,10 @@ pnpm test
 pnpm build
 ```
 
-Before review:
-
-```sh
-./agent-os/scripts/verify.sh
-```
+Before review, run `pnpm test` and `pnpm build`.
 
 Release notes live in [`RELEASING.md`](./RELEASING.md).
 
 ## Backlog (contributors)
 
-Explicit backlog items (P3 stretch, import scaffolds, pending repo commits) are listed in [`agent-os/REALITY-BASELINE.md`](./agent-os/REALITY-BASELINE.md#explicit-backlog-not-regressions) and [`RELEASING.md`](./RELEASING.md#explicit-backlog-not-regressions). They are not regressions.
+Explicit backlog items (P3 stretch, import scaffolds) are listed in [`RELEASING.md`](./RELEASING.md#explicit-backlog-not-regressions). They are not regressions.

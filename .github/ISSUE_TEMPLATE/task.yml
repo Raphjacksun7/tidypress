@@ -1,5 +1,5 @@
 name: Task
-description: Work item from agent-os/TASKS
+description: Tracked engineering task
 title: "[Task NN] "
 labels: []
 body:
@@ -12,6 +12,6 @@ body:
   - type: textarea
     id: acceptance
     attributes:
-      label: Acceptance (from agent-os/TASKS)
+      label: Acceptance criteria
     validations:
       required: true

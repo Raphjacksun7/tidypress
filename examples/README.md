@@ -16,5 +16,3 @@ Run from the repo root after `pnpm install`.
 | `i18n-versioned` | default-locale root docs, French routes, and archived version docs | `pnpm --filter @docsmint/example-i18n-versioned build` |
 
 `apps/site` is the full dogfood documentation site. Use these examples when you want a narrow fixture.
-
-Moat examples (`lab`, `blog`, `persona`) may exist on disk before they are committed on `main`; see [agent-os/REALITY-BASELINE.md](../agent-os/REALITY-BASELINE.md#repo-hygiene-git) when preparing a PR.

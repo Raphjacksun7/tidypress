@@ -104,8 +104,6 @@ Tracked for planning and release notes. **Not** treated as ship blockers unless 
 | **Import: medium / ghost / substack** | Scaffold | `docsmint import devto` is live; other providers write review scaffolds (documented) |
 | **Repo hygiene** | Open | Add/commit `examples/*`, `apps/site/docsmint-context.md`, and remaining moat changes when ready for PR |
 
-Canonical detail: [agent-os/REALITY-BASELINE.md](./agent-os/REALITY-BASELINE.md#explicit-backlog-not-regressions).
-
 ## Release roadmap
 
 This section tracks engineering work that affects release sequencing and risk.
