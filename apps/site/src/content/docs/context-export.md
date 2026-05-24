@@ -2,6 +2,7 @@
 title: Context export
 description: Generate a compact markdown snapshot of your published content.
 order: 10
+published: false
 ---
 
 `docsmint context` writes a compact markdown snapshot of the site.

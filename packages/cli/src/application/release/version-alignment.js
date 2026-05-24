@@ -25,16 +25,37 @@ export function readPythonProjectVersion(pyprojectToml) {
 }
 
 /**
- * @param {{ tagName: string | undefined, cliVersion: string, pythonVersion: string }} versions
- * @returns {{ releaseVersion: string, cliVersion: string, pythonVersion: string }}
+ * @param {{
+ *   tagName: string | undefined,
+ *   cliVersion: string,
+ *   configVersion: string,
+ *   engineVersion: string,
+ *   pythonVersion: string,
+ * }} versions
+ * @returns {{ releaseVersion: string, cliVersion: string, configVersion: string, engineVersion: string, pythonVersion: string }}
  */
-export function assertReleaseVersionAlignment({ tagName, cliVersion, pythonVersion }) {
+export function assertReleaseVersionAlignment({
+  tagName,
+  cliVersion,
+  configVersion,
+  engineVersion,
+  pythonVersion,
+}) {
   const releaseVersion = parseReleaseTagVersion(tagName)
-  if (cliVersion !== releaseVersion || pythonVersion !== releaseVersion) {
+
+  const mismatches = [
+    cliVersion !== releaseVersion && `cli=${cliVersion}`,
+    configVersion !== releaseVersion && `config=${configVersion}`,
+    engineVersion !== releaseVersion && `engine=${engineVersion}`,
+    pythonVersion !== releaseVersion && `python=${pythonVersion}`,
+  ].filter(Boolean)
+
+  if (mismatches.length > 0) {
     throw new Error(
-      `Version mismatch for ${tagName}: cli=${cliVersion}, python=${pythonVersion}. Update both package versions before tagging.`,
+      `Version mismatch for ${tagName}: ${mismatches.join(', ')}. ` +
+        `Update all four package versions before tagging.`,
     )
   }
 
-  return { releaseVersion, cliVersion, pythonVersion }
+  return { releaseVersion, cliVersion, configVersion, engineVersion, pythonVersion }
 }

@@ -3,6 +3,7 @@ title: Introduction
 description: What this manual covers and who it is for.
 form: manual
 order: 1
+published: false
 ---
 
 This manual walks through setting up and running DocsMint end to end — from installation to a live static site.

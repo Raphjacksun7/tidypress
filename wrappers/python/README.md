@@ -1,34 +1,57 @@
 # docsmint (Python)
 
-Python interface for the DocsMint Node.js CLI.
+Python entrypoint for DocsMint.
 
-Minimal markdown docs and writing. Rendering uses Astro (Node ≥22.12); this package runs that CLI reliably.
+Minimal markdown docs and writing.
+
+Rendering uses the Node.js CLI and Astro engine. Node.js 22.12 or newer is required for site commands.
 
 ## Install
 
 ```sh
 pip install docsmint
-npm install -g docsmint   # or use from a repo with node_modules
 ```
 
-## Usage
+For site commands, the wrapper resolves the Node CLI in this order:
 
-Same commands as the Node CLI:
+1. `DOCSMINT_CLI_JS`
+2. local `node_modules/docsmint`
+3. `docsmint` on `PATH`
+
+It does not use `npx` by default.
+
+## Site commands
+
+These commands are delegated to the Node CLI:
 
 ```sh
 docsmint init
 docsmint dev
 docsmint build
+docsmint preview
+docsmint deploy
+docsmint context
 ```
 
+## Python-native commands
 
+`convert` turns a notebook into MDX:
 
-## Python command routing and YAML bridge
+```sh
+docsmint convert analysis.ipynb --output docs/src/content/docs/analysis.mdx
+```
 
-`convert` and `extract-docs` are routed to Python-native implementations.
+It preserves frontmatter, markdown cells, code cells, text output, and PNG image outputs.
 
-- `convert` performs a minimal `.ipynb` -> `.mdx` flow (frontmatter, markdown/code cells, text output, PNG image outputs).
-- `extract-docs` extracts basic API docs from Python/TypeScript/Go source comments.
+`extract-docs` writes simple API notes from source comments:
+
+```sh
+docsmint extract-docs src/ --lang py
+docsmint extract-docs src/ --lang ts
+docsmint extract-docs src/ --lang go
+```
+
+## YAML bridge
 
 The wrapper supports reading `docsmint.yaml` / `docsmint.yml` and bridging command-scoped args from:
 
@@ -36,7 +59,14 @@ The wrapper supports reading `docsmint.yaml` / `docsmint.yml` and bridging comma
 python:
   convert:
     input_path: analysis.ipynb
+    output_path: docs/src/content/docs/analysis.mdx
     watch: true
 ```
 
-You can also pass `--config /path/to/docsmint.yaml` for explicit config selection.
+Use an explicit config when needed:
+
+```sh
+docsmint convert --config ./docsmint.yaml
+```
+
+Full docs: <https://usedocsmint.pages.dev/docs/python>

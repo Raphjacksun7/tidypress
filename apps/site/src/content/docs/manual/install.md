@@ -3,6 +3,7 @@ title: Installation
 description: Install DocsMint and scaffold a new docs folder.
 form: manual
 order: 2
+published: false
 ---
 
 ## Install

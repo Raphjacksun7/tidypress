@@ -2,6 +2,7 @@
 title: Analytics
 description: Add optional privacy-friendly analytics scripts to the built site.
 order: 9
+published: false
 ---
 
 ```ts

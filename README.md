@@ -1,152 +1,116 @@
-# DocsMint
+<h1 align="center">
+  <img src="./packages/engine/public/favicon-white.svg" alt="" width="40" height="40">
+  docsmint
+</h1>
 
 Minimal markdown docs and writing.
 
-DocsMint is a small publishing tool for projects that want docs and writing in markdown, local control, and static output. Write files in git, preview locally, build HTML, and publish the generated directory with the host or script you already use.
+[Website](https://usedocsmint.pages.dev/) · [Documentation](https://usedocsmint.pages.dev/docs) · [npm](https://www.npmjs.com/package/docsmint) · [PyPI](https://pypi.org/project/docsmint/) · [Issues](https://github.com/Raphjacksun7/docsmint/issues)
 
-## Why DocsMint
+[![CI](https://github.com/Raphjacksun7/docsmint/actions/workflows/ci.yml/badge.svg)](https://github.com/Raphjacksun7/docsmint/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/docsmint.svg)](https://www.npmjs.com/package/docsmint)
+[![License: MIT](https://img.shields.io/badge/license-MIT-black.svg)](./LICENSE)
 
-- Write docs and dated writing from plain markdown or MDX
-- Keep content, config, and build output in your project
-- Get search, dark mode, sitemap, metadata, and clean defaults without wiring a site from scratch
-- Use starter collections for docs, writing, and pages, then add your own collections when needed
-- Keep rendering in the Astro engine while the CLI handles project setup, builds, deploy helpers, and content snapshots
+docsmint turns a `docs/` folder into a static site for documentation and dated writing. Write markdown in git, preview locally, build HTML, and deploy the generated folder with the host or script you already use.
 
 ## Install
 
-### Node.js CLI (primary)
+Node.js 22.12 or newer is required for rendering.
 
 ```sh
-npm install -g docsmint
+npm install docsmint
 # or
-npm exec docsmint@latest
+pnpm add docsmint
 ```
 
-### Python
+Python users can also install the wrapper:
 
 ```sh
 pip install docsmint
 ```
 
-The Python package invokes the Node.js CLI and still requires Node.js.
+The Python package includes Python-native helpers. Site commands still use the Node.js CLI and Astro engine.
 
 ## Quickstart
 
 ```sh
-# from your project root
-docsmint init
-docsmint dev
+npx docsmint init
+npx docsmint dev
 ```
 
 Open `http://localhost:4321`.
 
-Prefer a known-good example first? Use `examples/minimal`:
+Production build:
 
 ```sh
-pnpm install
-pnpm --filter @docsmint/example-minimal build
+npx docsmint build
+npx docsmint preview
 ```
 
-This builds a known-good site to `examples/minimal/docs/.docsmint/dist/`.
+Output:
 
-### Build for production
-
-```sh
-docsmint build
-docsmint preview
+```txt
+docs/.docsmint/dist/
 ```
 
-Production output is generated at `docs/.docsmint/dist/`.
-
-## Project structure
+## File shape
 
 ```txt
 docs/
 ├── docsmint.config.ts
-└── src/
-    └── content/
-        ├── docs/
-        │   └── getting-started.md
-        ├── writing/
-        │   └── hello.md
-        └── pages/
-            └── about.md
+├── public/
+└── src/content/
+    ├── docs/
+    ├── writing/
+    └── pages/
 ```
 
-You own content and config. Docsmint owns rendering internals.
+Docs are stable instructions. Writing is dated context. Pages map to root routes.
 
-`docs`, `writing`, and `pages` are starter collections, not hardcoded architecture. You can add collection keys like `playbooks`, `guides`, or `notes` through `collections` without editing engine code.
+## Why
 
-## Configuration
+- markdown and MDX as source
+- content and config stay in your project
+- Pagefind search at build time
+- clean default UI, dark mode, sitemap, and metadata
+- static output you can deploy anywhere
+- Astro rendering behind a small CLI
 
-```ts
-// docs/docsmint.config.ts
-import { defineConfig } from 'docsmint/config'
+## Examples
 
-export default defineConfig({
-  name: 'my-project',
-  description: 'Minimal markdown docs and writing.',
-  nav: [
-    { label: 'docs', href: '/docs', priority: 'core' },
-    { label: 'writing', href: '/writing', priority: 'core' },
-  ],
-  writing: {
-    description: 'Engineering notes, architectural decisions, and observations.',
-  },
-  collections: {
-    docs: { enabled: true, basePath: '/docs', label: 'docs' },
-    writing: { enabled: true, basePath: '/writing', kind: 'writing', label: 'writing' },
-    playbooks: { enabled: true, basePath: '/playbooks', kind: 'content', label: 'playbooks' },
-  },
-  capabilities: {
-    disable: ['pages'],
-    enable: ['docs', 'writing'],
-  },
-  pages: ['about', { slug: 'work', navLabel: 'My Work' }],
-  footer: [{ label: 'GitHub', href: 'https://github.com/your/repo' }],
-  siteUrl: 'https://example.com',
-})
-```
-
-`sections` remains available as a backward-compatibility shim, but new projects should configure routing via `collections`.
-Run `docsmint migrate-sections` to generate a deterministic migration artifact at
-`docs/.docsmint/migrations/sections-to-collections.json`.
-
-`capabilities` resolves deterministically after collection/experimental defaults using this order:
-defaults -> config (`collections` / `experimental`) -> `capabilities.disable` -> `capabilities.enable`.
-
-## CLI commands
+Run examples from the repo root after `pnpm install`:
 
 ```sh
-docsmint init               # scaffold docs/ structure
-docsmint init --preset default
-docsmint dev                # run local dev server
-docsmint build              # build static output
-docsmint preview            # preview production build
-docsmint deploy [target]    # host-agnostic deploy flow
-docsmint clean              # remove docs/.docsmint workdir
-docsmint context [output]   # export LLM-friendly content snapshot
-docsmint migrate-sections   # generate sections->collections migration output
+pnpm --filter @docsmint/example-minimal build
+pnpm --filter @docsmint/example-custom-collections build
+pnpm --filter @docsmint/example-i18n-versioned build
 ```
 
-`init` also accepts `--starter <name>` as an alias for `--preset <name>`.
+See [`examples/`](./examples/).
 
-Available presets:
+## Packages
 
-- `default` seeds docs and writing examples.
-- `custom` also seeds a `playbooks` custom collection.
+| Package | Role |
+|---------|------|
+| `docsmint` | CLI: init, dev, build, preview, deploy, context |
+| `@docsmint/engine` | Astro rendering runtime |
+| `@docsmint/config` | config schema, defaults, normalization |
+| `wrappers/python` | Python entrypoint and Python-native helpers |
 
-## Package layout
+End users install `docsmint`.
 
-- `packages/cli`: command orchestration, parsing, dependency injection
-- `packages/engine`: Astro-based rendering runtime
-- `packages/config`: typed schema, defaults, normalization, nav policy
+## Contributors
 
-DocsMint keeps Astro behind the engine boundary. Your project owns content and config; the generated `.docsmint/` workdir owns build internals.
+```sh
+pnpm install
+pnpm test
+pnpm build
+```
 
-## Documentation
+Before review:
 
-- Project docs source: `apps/site/src/content/docs/`
-- Release process and roadmap: `RELEASING.md`
-- npm package: [docsmint](https://www.npmjs.com/package/docsmint)
-- PyPI package: [docsmint](https://pypi.org/project/docsmint/)
+```sh
+./agent-os/scripts/verify.sh
+```
+
+Release notes live in [`RELEASING.md`](./RELEASING.md).

@@ -1,5 +1,5 @@
 ---
-title: Theme and typography
+title: Theme
 description: Configure typography scale, color tokens, and code highlighting presets.
 order: 8
 ---

@@ -2,6 +2,7 @@
 title: Capabilities
 description: Enable, disable, and guard product surfaces in config.
 order: 8
+published: false
 ---
 
 Feature gates for collections, theming, and experimental commands.

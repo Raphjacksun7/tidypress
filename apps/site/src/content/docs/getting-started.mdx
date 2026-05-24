@@ -4,9 +4,7 @@ description: Create a DocsMint project, run it locally, and build static output.
 order: 2
 ---
 
-DocsMint turns a `docs/` folder into a small static site for documentation and writing.
-
-You write markdown. DocsMint prepares an internal Astro workdir, renders the site, runs Pagefind during production builds, and leaves you with static files.
+Create a `docs/` folder, run the local server, write one page, then build static output.
 
 ## Install
 
@@ -14,14 +12,14 @@ You write markdown. DocsMint prepares an internal Astro workdir, renders the sit
 <Tab>
 
 ```bash
-npm install -g docsmint
+npm install docsmint
 ```
 
 </Tab>
 <Tab>
 
 ```bash
-pnpm add -g docsmint
+pnpm add docsmint
 ```
 
 </Tab>
@@ -43,13 +41,13 @@ Node.js 22.12 or newer is required for rendering. The Python package can run Pyt
 From the root of your project:
 
 ```bash
-docsmint init
-docsmint dev
+npx docsmint init
+npx docsmint dev
 ```
 
 Open `http://localhost:4321`.
 
-`docsmint init` creates a `docs/` folder:
+`init` creates a `docs/` folder:
 
 ```txt
 docs/
@@ -67,13 +65,13 @@ docs/
 
 The default starter seeds one docs page and one writing post so you can see the file shape before replacing them.
 
-Use the custom starter when you also want an example custom collection:
+Use the custom starter when you want an example custom collection:
 
 ```bash
-docsmint init --preset custom
+npx docsmint init --preset custom
 ```
 
-## Write content
+## Write one docs page
 
 Put documentation pages in `docs/src/content/docs/`:
 
@@ -104,8 +102,8 @@ What changed and why.
 ## Build and preview
 
 ```bash
-docsmint build
-docsmint preview
+npx docsmint build
+npx docsmint preview
 ```
 
 Build output is written to:
@@ -115,6 +113,8 @@ docs/.docsmint/dist/
 ```
 
 Search is generated during `docsmint build`, so the search modal is available in `preview`, not in the dev server.
+
+Deploy that directory with your static host, CI job, or `docsmint deploy`.
 
 ## What `.docsmint/` is
 
@@ -133,8 +133,8 @@ your project
 If a local build behaves strangely after an engine update, run:
 
 ```bash
-docsmint clean
-docsmint build
+npx docsmint clean
+npx docsmint build
 ```
 
 ## Static assets
@@ -160,7 +160,6 @@ Use absolute paths in markdown:
 
 ## Next steps
 
-- [Why DocsMint](./why-docsmint) explains the product shape.
-- [Writing content](./writing-content) covers markdown, frontmatter, links, and images.
+- [Markdown and frontmatter](./writing-content) covers fields, links, images, drafts, and scheduling.
 - [Configuration](./configuration) covers `docsmint.config.ts`.
-- [Deploying](./deploying) explains how build output is published.
+- [Deploy](./deploying) explains static output and provider targets.

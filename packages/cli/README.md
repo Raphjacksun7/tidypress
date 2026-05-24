@@ -1,51 +1,56 @@
 # docsmint
 
-`docsmint` is the official Node.js CLI for DocsMint.
-
 Minimal markdown docs and writing.
 
-Write markdown, preview locally, build static output, and publish the generated files with the host or script you already use.
+`docsmint` is the Node.js CLI for DocsMint. It turns a `docs/` folder into static output for documentation and dated writing.
 
 ## Install
 
+Node.js 22.12 or newer is required.
+
 ```sh
-npm install -g docsmint
+npm install docsmint
 # or
-npm exec docsmint@latest
+pnpm add docsmint
 ```
+
+## Quickstart
+
+```sh
+npx docsmint init
+npx docsmint dev
+```
+
+Open `http://localhost:4321`.
+
+```sh
+npx docsmint build
+npx docsmint preview
+```
+
+Output is written to `docs/.docsmint/dist/`.
 
 ## Commands
 
-```sh
-docsmint init [--preset <name>]
-docsmint dev
-docsmint build
-docsmint preview
-docsmint deploy [target]
-docsmint deploy [target] --with-ci
-docsmint clean
-docsmint context
-```
-
-## Quick start
-
-```sh
-docsmint init --preset default
-docsmint dev
-```
+| Command | Purpose |
+|---------|---------|
+| `docsmint init [--preset <name>]` | scaffold a `docs/` folder |
+| `docsmint dev [--port <n>]` | run the local dev server |
+| `docsmint build [--output <dir>]` | build static output |
+| `docsmint preview [--port <n>]` | preview the production build |
+| `docsmint deploy [target]` | copy or hand output to a static host/tool |
+| `docsmint clean` | remove the generated workdir |
+| `docsmint context [output]` | write a markdown snapshot of published content |
 
 `--starter <name>` is accepted as an alias for `--preset <name>`.
-
-Available presets:
-
-- `default` seeds docs and writing examples.
-- `custom` also seeds a `playbooks` custom collection.
 
 ## Minimal config
 
 ```ts
 // docs/docsmint.config.ts
-export default {
+import { defineConfig } from 'docsmint/config'
+
+export default defineConfig({
   name: 'my-project',
   description: 'Minimal markdown docs and writing.',
   nav: [
@@ -54,11 +59,11 @@ export default {
   ],
   footer: [],
   siteUrl: 'https://example.com',
-}
+})
 ```
 
-## Project links
+## Links
 
+- Documentation: <https://usedocsmint.pages.dev/docs>
 - Repository: <https://github.com/Raphjacksun7/docsmint>
 - Issues: <https://github.com/Raphjacksun7/docsmint/issues>
-

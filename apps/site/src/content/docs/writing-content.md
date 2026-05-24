@@ -1,6 +1,6 @@
 ---
-title: Writing content
-description: Frontmatter, markdown, MDX, assets, links, drafts, and file organization.
+title: Markdown and frontmatter
+description: Content folders, frontmatter fields, links, assets, drafts, and scheduling.
 order: 4
 ---
 

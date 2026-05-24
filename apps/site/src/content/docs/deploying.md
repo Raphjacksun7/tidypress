@@ -1,5 +1,5 @@
 ---
-title: Deploying
+title: Deploy
 description: Build static output, copy it, or hand it to the host you already use.
 order: 13
 ---
@@ -47,7 +47,7 @@ Local path targets copy the built `dist/` directory.
 docsmint deploy
 ```
 
-With no target, DocsMint builds the site and prints the artifact path. Upload that directory with your own CI, host, or script.
+With no target, DocsMint builds the site and prints the artifact path. Upload that directory with your own CI, host, or script. This is an artifact flow, not a hosted deploy.
 
 ## Provider CLI targets
 
@@ -161,7 +161,7 @@ server {
 }
 ```
 
-## What to deploy
+## What to upload
 
 Deploy the contents of:
 
@@ -169,4 +169,4 @@ Deploy the contents of:
 docs/.docsmint/dist/
 ```
 
-Deploy `dist/`.
+Do not upload `docs/.docsmint/` itself. Upload the `dist/` contents.

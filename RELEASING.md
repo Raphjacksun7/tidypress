@@ -6,29 +6,86 @@ Release publishing is handled by GitHub Actions with Trusted Publishing for npm 
 
 - Do not add personal accounts or maintainer names to this file.
 - Publish access is controlled in GitHub, npm, and PyPI settings.
-- Use Trusted Publishing (OIDC) instead of long-lived registry tokens.
+- Use Trusted Publishing (OIDC) instead of long-lived registry tokens for PyPI.
+- npm publishing uses `NPM_TOKEN` stored as a GitHub Actions secret.
 
-## Release
+## Release flow (Changesets)
 
-1. Bump versions:
-   - `packages/cli/package.json`
-   - `wrappers/python/pyproject.toml`
-2. Keep npm and PyPI versions aligned with the tag (example: `v0.1.1` -> `0.1.1`).
-3. Commit to `main`.
-4. Create and push a tag:
+DocsMint uses [Changesets](https://github.com/changesets/changesets) to keep all npm package
+versions in sync and generate changelogs automatically.
+
+### Day-to-day: adding a changeset to your PR
 
 ```bash
-git tag v0.1.1
-git push origin v0.1.1
+pnpm changeset
 ```
 
-## What happens after tagging
+Follow the prompts. All three npm packages (`@docsmint/config`, `@docsmint/engine`, `docsmint`)
+are **linked** — selecting any one bumps all three to the same version.
 
-The `Publish` workflow:
-- verifies the release tag version matches npm and PyPI package versions
-- runs workspace tests and builds (including `examples/minimal` smoke build)
-- publishes `packages/cli` to npm
-- builds and publishes `wrappers/python` to PyPI
+### Release sequence
+
+1. Merge your PR (with a changeset file) to `main`.
+2. The `Publish` workflow opens or updates a **"chore: release packages"** PR automatically.
+   This PR contains bumped `package.json` versions and updated `CHANGELOG.md` files.
+3. Before merging the version PR, also bump `wrappers/python/pyproject.toml` to match the
+   new version (Changesets does not manage Python).
+4. Merge the version PR to `main`.
+5. Push a tag matching the version:
+
+```bash
+git tag v1.0.4
+git push origin v1.0.4
+```
+
+6. The `Publish` workflow validates all four versions, runs tests, publishes npm packages in
+   order, runs a real CLI smoke test, then publishes to PyPI.
+
+## Manual release (without Changesets)
+
+If you need to cut a release manually without a changeset:
+
+1. Bump all four versions to the same value:
+   - `packages/config/package.json`
+   - `packages/engine/package.json`
+   - `packages/cli/package.json`
+   - `wrappers/python/pyproject.toml`
+2. Commit to `main`.
+3. Push a tag: `git tag vX.Y.Z && git push origin vX.Y.Z`
+
+## Package publish order
+
+The three npm packages are always published in this order:
+
+1. `@docsmint/config` — no workspace deps; built from TypeScript before publish
+2. `@docsmint/engine` — depends on `@docsmint/config`
+3. `docsmint` — depends on both
+
+`pnpm publish` replaces `workspace:*` entries with real semver at pack time.
+
+## Version alignment rule
+
+All four packages must share the same version on every release:
+
+| Package | File |
+|---------|------|
+| `@docsmint/config` | `packages/config/package.json` |
+| `@docsmint/engine` | `packages/engine/package.json` |
+| `docsmint` (CLI) | `packages/cli/package.json` |
+| Python wrapper | `wrappers/python/pyproject.toml` |
+
+The `validate-release` CI job enforces this — it fails if any of the four versions do not
+match the git tag.
+
+## What the publish workflow does after tagging
+
+1. Reads all four package versions and asserts they match the tag.
+2. Runs the full test suite and builds.
+3. Builds `@docsmint/config` TypeScript → `dist/`.
+4. Publishes `@docsmint/config` → `@docsmint/engine` → `docsmint` to npm via `pnpm publish`.
+5. Runs a real smoke test: `npm install docsmint@<version>` in a clean dir, then
+   `node ./node_modules/docsmint/bin/docsmint.js --version`.
+6. Publishes `wrappers/python` to PyPI via Trusted Publishing.
 
 ## Release roadmap
 
@@ -44,6 +101,9 @@ This section tracks engineering work that affects release sequencing and risk.
 - Shared docs sorting added to keep redirect/sidebar ordering consistent.
 - Edit-link support added via repository metadata.
 - Search exclusion controls added (`search: false` + config excludes).
+- Publish pipeline fixed: `pnpm publish` replaces the former `npm publish` that shipped
+  unresolved `workspace:*` dependencies to the registry.
+- Changesets added for automatic version sync across all npm packages.
 
 ### Compatibility lifecycle (sections -> collections)
 
@@ -93,13 +153,12 @@ This section tracks engineering work that affects release sequencing and risk.
 
 ### Gated release items
 
-- **Versioning (opt-in)**  
-  Scope: CLI version command, engine selector UI, versioned search indexes, route strategy.  
-  Risk: high (content snapshots, routing compatibility, build complexity).  
+- **Versioning (opt-in)**
+  Scope: CLI version command, engine selector UI, versioned search indexes, route strategy.
+  Risk: high (content snapshots, routing compatibility, build complexity).
   Release only after a dedicated implementation cycle and test matrix.
 
-- **i18n scaffold (opt-in)**  
-  Scope: locale-aware routes, nav/search localization, content folder conventions.  
-  Risk: very high (cross-cutting routing and indexing behavior).  
+- **i18n scaffold (opt-in)**
+  Scope: locale-aware routes, nav/search localization, content folder conventions.
+  Risk: very high (cross-cutting routing and indexing behavior).
   Release only as a separate milestone with explicit acceptance criteria.
-

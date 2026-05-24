@@ -10,7 +10,7 @@ DocsMint reads one config file:
 docs/docsmint.config.ts
 ```
 
-Typed config:
+Only `name` is required. Keep the file small until the site needs more shape.
 
 ```ts
 import { defineConfig } from 'docsmint/config'
@@ -30,8 +30,6 @@ export default defineConfig({
 })
 ```
 
-Only `name` is required. Everything else has defaults.
-
 ## Site metadata
 
 ```ts
@@ -44,10 +42,12 @@ siteUrl: 'https://example.com',
 
 ## Navigation
 
+Use `nav` for header links and `footer` for lower-page links.
+
 ```ts
 nav: [
-  { label: 'docs', href: '/docs', priority: 'core' },
-  { label: 'writing', href: '/writing', priority: 'core' },
+  { label: 'docs', href: '/docs' },
+  { label: 'writing', href: '/writing' },
   { label: 'GitHub', href: 'https://github.com/you/project', target: '_blank' },
 ],
 footer: [
@@ -70,7 +70,7 @@ footer: [
 
 Supported footer icons: `github`, `x`, `linkedin`, `discord`, `youtube`, `instagram`, `bluesky`, `facebook`, `reddit`, `twitch`, `mastodon`, `slack`, `telegram`, `tiktok`, `npm`, `rss`, and `email`.
 
-Relaxed mode:
+Internal links are strict by default. If a site has links that are generated outside DocsMint, use relaxed mode:
 
 ```ts
 navPolicy: {
@@ -143,14 +143,6 @@ branding: {
 
 Place files in `docs/public/`.
 
-## Sidebar, Theme, and Display
-
-Keep the root config small. These pages cover the optional display and presentation surfaces:
-
-- [Sidebar navigation](./sidebar-navigation) for explicit sidebar groups and chapter paging
-- [Display options](./display-options) for homepage and collection index layout
-- [Theme and typography](./theme-typography) for typography scale, color tokens, and code highlighting
-
 ## Search
 
 Search is powered by [Pagefind](https://pagefind.app/) and generated during `docsmint build`.
@@ -181,26 +173,10 @@ repository: {
 }
 ```
 
-## Focused config pages
+## Presentation settings
 
-The details are split into smaller pages:
+Keep presentation separate from the base config:
 
-- [i18n](./i18n) for locale routes and UI strings
-- [Versions](./versions) for versioned docs folders
-- [Sidebar navigation](./sidebar-navigation) for explicit sidebar groups and chapter paging
-- [Display options](./display-options) for homepage previews and collection index layout
-- [Theme and typography](./theme-typography) for typography and code highlighting
-- [Capabilities](./capabilities) for feature gates and experimental commands
-- [Analytics](./analytics) for optional analytics scripts
-- [Context export](./context-export) for `docsmint context`
-- [Python wrapper](./python) for Python entrypoint helpers
-- [Extensibility](./extensibility) for custom renderers and doc forms
-- [Reference](./reference) for compact command and schema notes
-
-## Homepage and collection display
-
-Homepage previews default to writing first, then docs. Writing dates are shown by default; descriptions and tags are hidden unless enabled.
-
-Collection indexes have their own display settings, separate from homepage previews.
-
-See [Display options](./display-options).
+- [Site layout](./site-layout) covers sidebar groups, chapter navigation, homepage previews, indexes, tags, and icons.
+- [Theme](./theme-typography) covers typography, theme mode, code highlighting, and custom tokens.
+- [Advanced configuration](./advanced-configuration) covers i18n, versions, analytics, capabilities, and `docsmint context`.

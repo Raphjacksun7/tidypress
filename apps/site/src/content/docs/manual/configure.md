@@ -3,6 +3,7 @@ title: Configuration
 description: Set your site name, description, nav, and branding.
 form: manual
 order: 3
+published: false
 ---
 
 Open `docs/docsmint.config.ts`:

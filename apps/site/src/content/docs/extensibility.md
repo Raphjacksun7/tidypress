@@ -1,5 +1,5 @@
 ---
-title: Extensibility
+title: Extending DocsMint
 description: Advanced rendering hooks for custom collections and custom docs forms.
 order: 11
 ---

@@ -1,5 +1,5 @@
 ---
-title: Architecture
+title: How DocsMint works
 description: How the CLI, config package, Astro engine, and generated workdir fit together.
 order: 3
 ---

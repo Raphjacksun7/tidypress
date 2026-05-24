@@ -2,6 +2,7 @@
 title: Sidebar navigation
 description: Configure docs sidebar groups, automatic ordering, and chapter navigation.
 order: 6
+published: false
 ---
 
 Sidebar config is optional.

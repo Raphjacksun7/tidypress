@@ -1,7 +1,7 @@
 ---
-title: Writing on this site
+title: The folder is the product
 date: "2026-04-11"
-description: The writing section is for dated posts; product docs live under /docs.
+description: DocsMint keeps the authoring model small enough to understand at a glance.
 author: DocsMint
 tags:
   - docs
@@ -9,12 +9,18 @@ tags:
   - content
 ---
 
-This section will hold real posts later: release notes, design notes, and short essays about building DocsMint.
+The useful unit in DocsMint is a folder:
 
-For now, the useful material lives in the docs:
+```txt
+docs/
+├── docsmint.config.ts
+├── public/
+└── src/content/
+    ├── docs/
+    ├── writing/
+    └── pages/
+```
 
-- [Why DocsMint](/docs/why-docsmint) explains the product shape.
-- [Architecture](/docs/architecture) explains the packages and build flow.
-- [Writing content](/docs/writing-content) explains markdown, frontmatter, images, drafts, and search.
+That shape is deliberate. It keeps the public site close to the source files, avoids a database, and leaves static output you can host anywhere.
 
-Keep long-lived instructions in docs. Use writing for dated context.
+Long-lived instructions belong in [docs](/docs). Dated context belongs here.

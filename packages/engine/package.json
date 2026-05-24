@@ -1,9 +1,8 @@
 {
   "name": "@docsmint/engine",
-  "version": "0.1.0",
+  "version": "1.0.4",
   "packageManager": "pnpm@10.4.1",
   "type": "module",
-  "private": true,
   "files": [
     "src",
     "public",
@@ -12,6 +11,9 @@
     "tsconfig.json",
     "docsmint.config.ts"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "exports": {
     "./package.json": "./package.json",
     "./plugins": "./src/plugins/contracts.ts"

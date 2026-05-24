@@ -16,32 +16,28 @@ export default defineConfig({
   ],
   pages: [],
 
-  // Docs sidebar: explicit section groups
+  // Docs sidebar: one reader path first; advanced details stay at the end.
   docs: {
     sidebar: [
       {
-        label: 'Getting started',
-        items: ['why-docsmint', 'getting-started', 'examples', 'architecture'],
+        label: 'Start',
+        items: ['why-docsmint', 'getting-started', 'examples'],
       },
       {
-        label: 'Authoring',
-        items: ['writing-content', 'components', 'reference'],
+        label: 'Write',
+        items: ['writing-content', 'components'],
       },
       {
-        label: 'Configuration',
-        items: ['configuration', 'sidebar-navigation', 'display-options', 'theme-typography', 'i18n', 'versions', 'capabilities', 'analytics'],
+        label: 'Configure',
+        items: ['configuration', 'site-layout', 'theme-typography'],
       },
       {
-        label: 'Tooling',
-        items: ['context-export', 'python', 'extensibility'],
+        label: 'Ship',
+        items: ['deploying', 'python'],
       },
       {
-        label: 'Deployment',
-        items: ['deploying'],
-      },
-      {
-        label: 'Manual demo',
-        items: ['manual/intro', 'manual/install', 'manual/configure', 'manual/build'],
+        label: 'Reference',
+        items: ['reference', 'advanced-configuration', 'extensibility', 'architecture'],
       },
     ],
   },

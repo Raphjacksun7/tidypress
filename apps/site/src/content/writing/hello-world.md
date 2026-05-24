@@ -1,16 +1,15 @@
 ---
-title: Hello world
+title: Why this site has writing
 date: "2026-04-01"
-description: A small example post in the writing collection.
+description: Docs are for stable instructions. Writing is for dated context.
 author: DocsMint
 tags:
   - docs
   - writing
-  - example
 ---
 
-The writing collection is for dated posts: release notes, project updates, essays, and announcements.
+DocsMint keeps docs and dated writing in the same project because both usually come from the same source: markdown in git.
 
-Docs live under `/docs`. Writing lives under `/writing`.
+Use docs for instructions that should stay current. Use writing for release notes, design notes, decisions, and short essays that belong to a date.
 
-Start with [Getting started](/docs/getting-started), then read [Writing content](/docs/writing-content) when you are ready to replace this example with your own post.
+The build output is the same static site. The ownership model is the same too: write the files, build the site, deploy the folder.

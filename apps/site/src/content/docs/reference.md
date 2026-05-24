@@ -1,6 +1,6 @@
 ---
-title: Reference
-description: Compact CLI, config, frontmatter, component, and deploy reference.
+title: CLI reference
+description: Commands, config fields, frontmatter, components, and deploy targets.
 order: 14
 ---
 
@@ -62,7 +62,7 @@ docsmint export <pdf|epub|archive> [source] --enable-experimental-export
 docsmint ai <suggest|translate|changelog> [args...] --enable-experimental-ai
 ```
 
-Experimental commands require config and CLI opt-ins. See [Capabilities](./capabilities).
+Experimental commands require config and CLI opt-ins. See [Advanced configuration](./advanced-configuration).
 
 ## Config fields
 

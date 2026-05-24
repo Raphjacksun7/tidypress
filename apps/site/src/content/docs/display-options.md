@@ -2,6 +2,7 @@
 title: Display options
 description: Configure homepage previews, collection indexes, cards, lists, dates, descriptions, tags, and gaps.
 order: 6
+published: false
 ---
 
 Display options are optional. Start without them, then add only the overrides your site needs.

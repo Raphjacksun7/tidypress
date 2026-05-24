@@ -2,6 +2,7 @@
 title: Versions
 description: Use folder-based docs versions and the version selector.
 order: 7
+published: false
 ---
 
 Folder-based docs versions.
