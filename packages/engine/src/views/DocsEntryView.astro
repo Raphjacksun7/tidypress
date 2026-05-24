@@ -1,5 +1,6 @@
 ---
 import Doc from '@/layouts/Doc.astro'
+import SearchIndexedContent from '@/components/SearchIndexedContent.astro'
 import type { RouteViewBundle } from '@/collections/bundle'
 
 interface Props {
@@ -18,7 +19,10 @@ const { bundle, Content, mdxComponents, headings } = Astro.props
   editPath={bundle.editPath}
   docForm={bundle.entryMeta?.docForm}
 >
-  <div data-pagefind-ignore={bundle.pagefindIgnore ? true : undefined}>
+  <SearchIndexedContent
+    pagefindIgnore={bundle.pagefindIgnore}
+    collectionKey={bundle.route.collectionKey}
+  >
     <Content components={mdxComponents} />
-  </div>
+  </SearchIndexedContent>
 </Doc>

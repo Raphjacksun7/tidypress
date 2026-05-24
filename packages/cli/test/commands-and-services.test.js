@@ -19,7 +19,7 @@ test('DeployService throws DocsMintError when no strategy matches', async () => 
     async () => {
       await service.deploy({
         projectRoot: '/workspace',
-        distDir: '/workspace/.docsmint/dist',
+        distDir: '/workspace/docs/build',
         target: 'unknown-provider',
       })
     },

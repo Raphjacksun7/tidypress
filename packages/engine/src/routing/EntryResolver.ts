@@ -1,4 +1,4 @@
-import { getCollection } from 'astro:content'
+import { getCollection, type CollectionKey } from 'astro:content'
 import { onlyPublished } from '@/utils/published'
 import { getCollectionEntrySlug } from '@/utils/collections'
 import type { SiteRouteDefinition } from '@/routing/types'
@@ -8,7 +8,7 @@ export class EntryResolver {
     if (!route.collectionKey) {
       return undefined
     }
-    const entries = onlyPublished(await getCollection(route.collectionKey as 'docs'))
+    const entries = onlyPublished(await getCollection(route.collectionKey as CollectionKey))
     if (route.entryId) {
       return entries.find(entry => entry.id === route.entryId)
     }

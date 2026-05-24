@@ -26,6 +26,30 @@ examples/minimal/docs/
 
 Use it to test the basic docs + writing flow.
 
+## Lab
+
+```bash
+pnpm --filter @docsmint/example-lab build
+```
+
+`examples/lab` matches `docsmint init` (lab preset): writing and projects on the home page, docs off.
+
+## Blog
+
+```bash
+pnpm --filter @docsmint/example-blog build
+```
+
+`examples/blog` matches `docsmint init --preset blog`: writing only; docs, projects, and pages off.
+
+## Persona
+
+```bash
+pnpm --filter @docsmint/example-persona build
+```
+
+`examples/persona` matches `docsmint init --preset persona`: opt-in hero, projects, writing, and an about page.
+
 ## i18n and versions
 
 ```bash

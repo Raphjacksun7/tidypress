@@ -4,6 +4,7 @@ import ThemeToggle from '@/components/ThemeToggle.astro'
 import {
   buildNavigationModel,
   isCapabilityEnabled,
+  resolveSearchFilterCollections,
   type DocsMintConfig,
   type NavItem,
 } from '@docsmint/config'
@@ -104,7 +105,7 @@ function isHeaderNavActive(href: string): boolean {
           </div>
         </details>
       )}
-      <Search strings={strings} />
+      <Search strings={strings} collections={resolveSearchFilterCollections(site)} />
       <ThemeToggle enabled={themingEnabled} />
     </div>
   </div>

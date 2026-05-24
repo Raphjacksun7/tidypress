@@ -6,13 +6,14 @@ import path from 'node:path'
 
 import { BuildService } from '../src/services/BuildService.js'
 
-test('BuildService copies dist to --output destination when provided', async () => {
+test('BuildService copies build output to --output destination when provided', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-build-service-'))
   const docsDir = path.join(root, 'docs')
-  const distDir = path.join(docsDir, '.docsmint', 'dist')
+  const buildDir = path.join(docsDir, 'build')
+  const cacheDir = path.join(os.tmpdir(), 'docsmint-cache-test')
   const outputPath = path.join(root, 'artifact')
-  await fs.mkdir(distDir, { recursive: true })
-  await fs.writeFile(path.join(distDir, 'index.html'), '<html>ok</html>', 'utf8')
+  await fs.mkdir(buildDir, { recursive: true })
+  await fs.writeFile(path.join(buildDir, 'index.html'), '<html>ok</html>', 'utf8')
 
   /** @type {Array<{ name: string, payload: Record<string, unknown> }>} */
   const calls = []
@@ -32,17 +33,25 @@ test('BuildService copies dist to --output destination when provided', async () 
       return { name: 'site' }
     },
   }
+  const session = {
+    docsDir,
+    engineRoot: '/engine',
+    buildDir,
+    cacheDir,
+    publicDir: path.join(cacheDir, 'public'),
+    manifestPath: path.join(cacheDir, 'codegen', 'docsmint-plugins.mjs'),
+  }
   const engineManager = {
     async prepare(payload) {
       calls.push({ name: 'prepare', payload })
-      return path.join(docsDir, '.docsmint')
+      return session
     },
     async runBuild(payload) {
       calls.push({ name: 'runBuild', payload })
     },
-    getDistDirectory(payload) {
-      calls.push({ name: 'getDistDirectory', payload })
-      return distDir
+    getBuildDirectory(payload) {
+      calls.push({ name: 'getBuildDirectory', payload })
+      return buildDir
     },
   }
 
@@ -50,15 +59,15 @@ test('BuildService copies dist to --output destination when provided', async () 
   const result = await service.build({ projectRoot: root, outputPath })
 
   assert.equal(result.docsDir, docsDir)
-  assert.equal(result.distDir, distDir)
-  assert.equal(result.workdir, path.join(docsDir, '.docsmint'))
+  assert.equal(result.buildDir, buildDir)
+  assert.equal(result.cacheDir, cacheDir)
   assert.deepEqual(calls.map(call => call.name), [
     'resolveDocsDirectory',
     'ensureConfigFile',
     'validateNavigation',
     'prepare',
     'runBuild',
-    'getDistDirectory',
+    'getBuildDirectory',
     'loadConfig',
   ])
 

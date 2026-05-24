@@ -7,6 +7,9 @@ from docsmint.router import is_node_command, run_python_stub
 def test_is_node_command_for_core_cli() -> None:
     assert is_node_command(["build"]) is True
     assert is_node_command(["--help"]) is True
+    assert is_node_command(["import", "devto", "https://dev.to/u/s"]) is True
+    assert is_node_command(["migrate-sections"]) is True
+    assert is_node_command(["add-version", "v2"]) is True
 
 
 def test_is_node_command_rejects_python_only_commands() -> None:

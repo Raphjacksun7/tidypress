@@ -2,7 +2,7 @@
 
 Python entrypoint for DocsMint.
 
-Minimal markdown docs and writing.
+Minimal markdown site for fast writing and project showcase.
 
 Rendering uses the Node.js CLI and Astro engine. Node.js 22.12 or newer is required for site commands.
 
@@ -22,16 +22,24 @@ It does not use `npx` by default.
 
 ## Site commands
 
-These commands are delegated to the Node CLI:
+These commands are delegated to the Node CLI (same as `npx docsmint`):
 
 ```sh
-docsmint init
+docsmint init [--preset lab|blog|persona|docs-writing|custom]
 docsmint dev
 docsmint build
 docsmint preview
+docsmint clean
 docsmint deploy
-docsmint context
+docsmint context [output.md]
+docsmint import devto <url-or-slug>   # real fetch; other providers write scaffolds
+docsmint doctor
+docsmint migrate-sections
+docsmint add-version <label>
+docsmint domain setup [domain] --platform <platform>
 ```
+
+Experimental Node commands (`editor`, `export`, `ai`) are also forwarded when enabled in config.
 
 ## Python-native commands
 
@@ -51,7 +59,22 @@ docsmint extract-docs src/ --lang ts
 docsmint extract-docs src/ --lang go
 ```
 
+## Help and init presets
+
+```sh
+docsmint --help
+docsmint init --help
+```
+
+The Python wrapper prints init preset summaries (`lab`, `blog`, `persona`, `docs-writing`, `custom`) from the same metadata as `@docsmint/config`.
+
+## Streaming build and deploy
+
+`build` and `deploy` use an async subprocess with live stdout/stderr. Pass `--sync` to use the blocking path instead.
+
 ## YAML bridge
+
+`docsmint.yaml` is validated against the shared JSON Schema shipped with `@docsmint/config` (bundled in this package under `docsmint/schemas/`).
 
 The wrapper supports reading `docsmint.yaml` / `docsmint.yml` and bridging command-scoped args from:
 

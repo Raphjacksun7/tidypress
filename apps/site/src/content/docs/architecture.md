@@ -1,6 +1,6 @@
 ---
 title: How DocsMint works
-description: How the CLI, config package, Astro engine, and generated workdir fit together.
+description: How the CLI, config package, Astro engine, build output, and cache fit together.
 order: 3
 ---
 
@@ -16,34 +16,29 @@ wrappers/
 └── python/     # Python entrypoint and Python-native helpers
 ```
 
-Three packages share the work: commands, config, rendering.
-
 ## Build flow
 
-When you run `docsmint dev` or `docsmint build`, the CLI finds your `docs/` folder and prepares `docs/.docsmint/`.
+When you run `docsmint dev` or `docsmint build`, the CLI resolves your docs directory and runs the pinned `@docsmint/engine` package. Your markdown stays in place; only a static artifact and a local cache are created.
 
 ```txt
-docs/
+docs/                          # or project root when config lives there
 ├── docsmint.config.ts
 ├── src/content/
-└── .docsmint/
-    ├── astro.config.mjs
-    ├── src/
-    ├── public/
-    ├── docsmint.config.ts
-    └── dist/
+├── public/
+└── build/                     # gitignored — upload this folder
+
+~/.cache/docsmint/<key>/       # compiler cache (not deployed)
 ```
 
-The workdir contains the engine package plus your content and config:
+Steps:
 
-1. The CLI resolves the docs directory.
-2. It validates navigation and config.
-3. It syncs the engine into `.docsmint/`.
-4. It links content during dev or copies content during build.
-5. It runs Astro inside `.docsmint/`.
-6. On build, it runs Pagefind over `dist/`.
+1. The CLI resolves the docs directory and validates config.
+2. Plugin manifest codegen writes to the cache directory.
+3. Astro runs from `node_modules/@docsmint/engine` with `DOCSMINT_PROJECT_ROOT` pointing at your project.
+4. Static HTML is written to `build/`.
+5. Pagefind indexes `build/`.
 
-The workdir is generated. Source changes belong in `docs/src/content/` and `docs/docsmint.config.ts`.
+Power users can add `@docsmint/astro` and an `astro.config.mjs` in the docs directory (`docsmint init --with-astro`).
 
 ## CLI package
 
@@ -64,7 +59,7 @@ The workdir is generated. Source changes belong in `docs/src/content/` and `docs
 
 The default command is `dev`. Ports default to `4321`.
 
-Deploy commands work from static output: local copies, provider CLIs, Docker files, or artifact paths.
+Deploy commands work from static output in `build/`.
 
 ## Config package
 
@@ -82,7 +77,7 @@ pages     -> root-level custom pages
 
 ## Engine package
 
-`packages/engine` is an Astro project. It owns:
+`packages/engine` is an Astro project published as an npm package. It owns:
 
 - layouts
 - routing strategies
@@ -93,7 +88,7 @@ pages     -> root-level custom pages
 - Pagefind search UI
 - sitemap and metadata output
 
-Routing starts from enabled collections. A `docs` page gets docs chrome. A `kind: writing` collection gets dated posts. A `kind: page` collection gets root-level pages. A `kind: content` collection uses docs-like routing.
+Bundled client assets are emitted under `assets/` in `build/` (not `_astro/`).
 
 ## Content model
 
@@ -108,15 +103,11 @@ They support `form`:
 - `doc` for normal documentation
 - `manual` for procedural pages
 
-`doc` is the default form. It includes sidebar navigation, table of contents, and chapter previous/next links. `manual` uses a procedural chrome for install, configure, and run guides.
-
 Writing posts live in:
 
 ```txt
 docs/src/content/writing/
 ```
-
-They use dates for sorting.
 
 Custom collections live beside those folders and are configured in `docsmint.config.ts`.
 
@@ -124,21 +115,11 @@ Custom collections live beside those folders and are configured in `docsmint.con
 
 Search is powered by [Pagefind](https://pagefind.app/).
 
-`docsmint build` renders HTML, then builds the Pagefind index from `docs/.docsmint/dist/`.
-
-You can exclude pages with:
-
-```yaml
----
-search: false
----
-```
-
-or with `search.exclude` in config.
+`docsmint build` renders HTML, then builds the Pagefind index inside `build/`.
 
 ## Python wrapper
 
-The Python package delegates site commands to the Node.js CLI and carries Python-native helpers for notebook conversion and source extraction.
+The Python package delegates site commands to the Node.js CLI.
 
 ## Extension points
 
@@ -147,6 +128,7 @@ Advanced projects can extend rendering with:
 - `collections.<key>.render`
 - `extensions.docForms`
 - project-local presentation modules
-- optional Astro view files
+- optional Astro view files (resolved via `@project/`)
+- `@docsmint/astro` integration for explicit Astro projects
 
-Start with markdown, collections, and config. Add custom rendering when the built-in docs, writing, and page layouts stop fitting.
+See [CI and deployment](/docs/manual/ci) for caching and upload guidance.

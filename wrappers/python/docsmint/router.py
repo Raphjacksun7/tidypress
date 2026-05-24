@@ -23,6 +23,13 @@ NODE_COMMANDS = {
     "context",
     "doctor",
     "release-check",
+    "migrate-sections",
+    "domain",
+    "import",
+    "add-version",
+    "editor",
+    "export",
+    "ai",
 }
 
 PYTHON_COMMANDS = {"convert", "extract-docs"}

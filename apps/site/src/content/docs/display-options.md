@@ -2,7 +2,6 @@
 title: Display options
 description: Configure homepage previews, collection indexes, cards, lists, dates, descriptions, tags, and gaps.
 order: 6
-published: false
 ---
 
 Display options are optional. Start without them, then add only the overrides your site needs.
@@ -42,7 +41,7 @@ home: {
 }
 ```
 
-`home.order` controls section order. Omit it to use the default: writing first, then docs.
+`home.order` controls section order. Entries are **collection keys** (for example `works`, not the display label). Omit `home.order` to use enabled collections in default order, or set `home.preset` to `lab`, `blog`, `docs-writing`, or `persona` for init-style ordering. See [Site layout](./site-layout#home-presets).
 
 `home.previewLimit` controls how many entries each homepage section shows. Omit it to use `5`.
 
@@ -130,3 +129,11 @@ tags: [release, notes]
 Tags are emitted in metadata. They render only when `showTags: true`.
 
 Icons render on card-style previews when an entry or display config provides an `icon`.
+
+## Search
+
+Pagefind indexes enabled content collections (everything except `kind: 'page'`). Each searchable region gets a `collection:<key>` filter attribute.
+
+When two or more collections are searchable, the header search modal shows filter chips (All, writing, projects, and so on). Pick a chip to scope results to that collection.
+
+Standalone pages (`kind: 'page'`) are not included in collection filter chips. Set `search: false` on an entry to exclude it from the index.

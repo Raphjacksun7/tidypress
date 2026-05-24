@@ -1,10 +1,7 @@
 import { defaultConfig } from '../defaults.js'
+import { ensureBlankTargetRel, isExternalHref } from '../links/link-attributes.js'
 import { isPageCollectionKind } from '../registry/collection-kinds.js'
 import type { DocsMintCollections, DocsMintConfig, NavItem } from '../schema/index.js'
-
-function isExternalHref(href: string): boolean {
-  return /^(https?:)?\/\//.test(href) || href.startsWith('mailto:') || href.startsWith('tel:')
-}
 
 function normalizeRel(rel: string | undefined): string | undefined {
   if (!rel) {
@@ -15,14 +12,6 @@ function normalizeRel(rel: string | undefined): string | undefined {
     .map(part => part.trim())
     .filter(Boolean)
   return Array.from(new Set(parts)).join(' ')
-}
-
-function ensureBlankTargetRel(rel: string | undefined): string {
-  const normalized = normalizeRel(rel)
-  const parts = new Set((normalized ?? '').split(/\s+/).filter(Boolean))
-  parts.add('noopener')
-  parts.add('noreferrer')
-  return Array.from(parts).join(' ')
 }
 
 export function normalizeNavItems(nav: NavItem[] | undefined): NavItem[] | undefined {

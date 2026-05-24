@@ -19,6 +19,9 @@ import { applyPagesNav, collectPageEntries } from './pages.js'
 import { normalizeSearch } from './search.js'
 import { normalizeTheme } from './theme.js'
 import { normalizeTypography } from './typography.js'
+import { normalizeFooterItems } from './footer.js'
+import { normalizeHero } from './hero.js'
+import { normalizeHome } from './home.js'
 import { normalizeVersions } from './versions.js'
 
 export function withDefaults(config: DocsMintConfig): DocsMintConfig {
@@ -70,7 +73,7 @@ export function withDefaults(config: DocsMintConfig): DocsMintConfig {
       ...config.writing,
     },
     nav,
-    footer: config.footer ?? defaultConfig.footer,
+    footer: normalizeFooterItems(config.footer ?? defaultConfig.footer),
     repository: {
       ...defaultConfig.repository,
       ...config.repository,
@@ -85,5 +88,7 @@ export function withDefaults(config: DocsMintConfig): DocsMintConfig {
     navPolicy,
     pages,
     versions,
+    hero: normalizeHero(config.hero),
+    home: normalizeHome(config.home),
   }
 }

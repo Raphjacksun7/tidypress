@@ -18,7 +18,7 @@ export class DevCommand {
     const docsDir = await this.configLoader.resolveDocsDirectory({ projectRoot })
     await this.configLoader.ensureConfigFile({ docsDir })
     await this.configLoader.validateNavigation({ docsDir })
-    const workdir = await this.engineManager.prepare({ docsDir, mode: 'dev' })
-    await this.engineManager.runDev({ workdir, port, docsDir })
+    const session = await this.engineManager.prepare({ docsDir, mode: 'dev' })
+    await this.engineManager.runDev({ session, port })
   }
 }

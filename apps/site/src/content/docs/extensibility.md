@@ -84,8 +84,8 @@ collections: {
 On `docsmint dev` and `docsmint build`:
 
 1. The config is validated.
-2. DocsMint writes a plugin manifest into `.docsmint/src/generated/`.
-3. Referenced project paths are mounted into the workdir.
+2. DocsMint writes a plugin manifest into the local cache (`~/.cache/docsmint/.../codegen/`).
+3. Custom Astro views resolve from your project via the `@project` alias.
 4. The engine imports the presentation module.
 5. `RouteViewShell` uses your view when a matching key exists.
 

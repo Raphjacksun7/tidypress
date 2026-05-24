@@ -1,10 +1,19 @@
 // @ts-check
+import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { defineConfig } from 'astro/config'
+import { createRequire } from 'node:module'
+import { defineConfig, logHandlers } from 'astro/config'
 
+const require = createRequire(import.meta.url)
 const srcDir = fileURLToPath(new URL('./src', import.meta.url))
-const siteConfigFile = fileURLToPath(new URL('./docsmint.config.ts', import.meta.url))
 const projectRoot = process.env.DOCSMINT_PROJECT_ROOT ?? import.meta.dirname
+const siteConfigFile = process.env.DOCSMINT_PROJECT_ROOT
+  ? path.resolve(projectRoot, 'docsmint.config.ts')
+  : fileURLToPath(new URL('./docsmint.config.ts', import.meta.url))
+
+const loadConfig = require('jiti')(import.meta.url, { interopDefault: true })
+const siteConfig = loadConfig(siteConfigFile)
+
 import tailwindcss from '@tailwindcss/vite'
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
@@ -14,7 +23,7 @@ import { resolveCodeThemePreset, withDefaults } from '@docsmint/config'
 import { cleanInlineCodeIntegration } from './plugins/clean-inline-code.mjs'
 import { docsmintPluginDev } from './plugins/docsmint-plugin-dev.mjs'
 import { rehypeResolveDocLinks } from './plugins/rehype-resolve-doc-links.mjs'
-import siteConfig from './docsmint.config.ts'
+import docsmintIntegration from './integration/docsmint.mjs'
 
 const normalizedSiteConfig = withDefaults(siteConfig)
 const syntaxTheme = resolveCodeThemePreset(
@@ -23,12 +32,9 @@ const syntaxTheme = resolveCodeThemePreset(
 
 /** @type {import('rehype-pretty-code').Options} */
 const prettyCodeOptions = {
-  theme: syntaxTheme,
+  theme: /** @type {any} */ (syntaxTheme),
   keepBackground: true,
   bypassInlineCode: true,
-  // No defaultLang — inline backticks without a language tag pass through
-  // as plain <code> elements, styled by CSS. Only fenced blocks with an
-  // explicit language (```js, ```bash etc.) get syntax highlighting.
 }
 
 /** @param {string} collectionKey */
@@ -42,15 +48,24 @@ const rehypePlugins = /** @type {any} */ ([
   [rehypeExternalLinks, { target: '_blank', rel: ['noopener', 'noreferrer'] }],
 ])
 
+const useJsonLogs =
+  process.env.CI === 'true' || process.env.DOCSMINT_JSON_LOGS === '1'
+
 export default defineConfig({
   site: 'https://docs.example.com',
-  cacheDir: './.astro/cache',
+  build: {
+    assets: 'assets',
+  },
+  experimental: {
+    logger: logHandlers.json({ pretty: !useJsonLogs, level: 'info' }),
+  },
   image: {
     service: {
       entrypoint: 'astro/assets/services/noop',
     },
   },
   integrations: [
+    docsmintIntegration(),
     mdx({ rehypePlugins }),
     sitemap(),
     cleanInlineCodeIntegration(),

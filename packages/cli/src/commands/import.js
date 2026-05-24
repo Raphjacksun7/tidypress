@@ -21,6 +21,10 @@ export class ImportCommand {
       source,
       scheduled,
     })
-    this.io.info(`Imported scaffold (${provider}) created at ${result.outputPath}`)
+    if (result.imported) {
+      this.io.info(`Imported ${provider} article at ${result.outputPath}`)
+    } else {
+      this.io.info(`Imported scaffold (${provider}) created at ${result.outputPath}`)
+    }
   }
 }

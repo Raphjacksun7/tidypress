@@ -2,6 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 
 import { withDefaults } from '@docsmint/config'
+import { getCacheDir } from '../infrastructure/engine/build-session.js'
 
 /**
  * BuildService orchestrates config checks and static-site build steps.
@@ -16,44 +17,43 @@ export class BuildService {
   }
 
   /**
-   * @param {{ projectRoot: string }} request
-   * @returns {Promise<{ docsDir: string, workdir: string, distDir: string }>}
+   * @param {{ projectRoot: string, outputPath?: string }} request
+   * @returns {Promise<{ docsDir: string, buildDir: string, cacheDir: string }>}
    */
   async build({ projectRoot, outputPath }) {
     const docsDir = await this.configLoader.resolveDocsDirectory({ projectRoot })
     await this.configLoader.ensureConfigFile({ docsDir })
     await this.configLoader.validateNavigation({ docsDir })
-    const workdir = await this.engineManager.prepare({ docsDir, mode: 'build' })
-    await this.engineManager.runBuild({ workdir, docsDir })
+    const session = await this.engineManager.prepare({ docsDir, mode: 'build' })
+    await this.engineManager.runBuild({ session })
 
-    const distDir = this.engineManager.getDistDirectory({ docsDir })
-    await this.#exportConfigSidecar({ docsDir, projectRoot })
+    const buildDir = this.engineManager.getBuildDirectory({ docsDir })
+    await this.#exportConfigSidecar({ docsDir, cacheDir: session.cacheDir })
 
     if (outputPath) {
       const { copyDistToDestination } = await import('../application/deployment/deploy-target.js')
       await copyDistToDestination({
-        distDir,
+        distDir: buildDir,
         destinationDir: outputPath,
       })
     }
 
     return {
       docsDir,
-      workdir,
-      distDir,
+      buildDir,
+      cacheDir: session.cacheDir,
     }
   }
 
   /**
-   * @param {{ docsDir: string, projectRoot: string }} options
+   * @param {{ docsDir: string, cacheDir: string }} options
    */
-  async #exportConfigSidecar({ docsDir, projectRoot }) {
+  async #exportConfigSidecar({ docsDir, cacheDir }) {
     const raw = await this.configLoader.loadConfig({ docsDir })
     const config = withDefaults(raw)
-    const sidecarDir = path.join(docsDir, '.docsmint')
-    await fs.mkdir(sidecarDir, { recursive: true })
+    await fs.mkdir(cacheDir, { recursive: true })
     await fs.writeFile(
-      path.join(sidecarDir, 'config.json'),
+      path.join(cacheDir, 'config.json'),
       `${JSON.stringify(config, (_key, value) => (value instanceof Date ? value.toISOString() : value), 2)}\n`,
       'utf8',
     )

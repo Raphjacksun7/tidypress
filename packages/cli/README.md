@@ -1,8 +1,8 @@
 # docsmint
 
-Minimal markdown docs and writing.
+Minimal markdown site for fast writing and project showcase.
 
-`docsmint` is the Node.js CLI for DocsMint. It turns a `docs/` folder into static output for documentation and dated writing.
+`docsmint` is the CLI: init, dev, build, preview, deploy. Markdown in `docs/` becomes static HTML.
 
 ## Install
 
@@ -17,18 +17,22 @@ pnpm add docsmint
 ## Quickstart
 
 ```sh
-npx docsmint init
+npx docsmint init              # lab preset: writing + projects
+npx docsmint init --preset blog   # writing only
+npx docsmint init --preset persona
 npx docsmint dev
 ```
 
 Open `http://localhost:4321`.
+
+Presets: `lab` (default), `persona`, `blog`, `docs-writing`, `custom`. `default` aliases `lab`.
 
 ```sh
 npx docsmint build
 npx docsmint preview
 ```
 
-Output is written to `docs/.docsmint/dist/`.
+Output is written to `docs/build/` (or `<docsDir>/build/` when config is at the project root).
 
 ## Commands
 
@@ -39,7 +43,7 @@ Output is written to `docs/.docsmint/dist/`.
 | `docsmint build [--output <dir>]` | build static output |
 | `docsmint preview [--port <n>]` | preview the production build |
 | `docsmint deploy [target]` | copy or hand output to a static host/tool |
-| `docsmint clean` | remove the generated workdir |
+| `docsmint clean` | remove `build/` and local docsmint cache |
 | `docsmint context [output]` | write a markdown snapshot of published content |
 
 `--starter <name>` is accepted as an alias for `--preset <name>`.
@@ -52,7 +56,7 @@ import { defineConfig } from 'docsmint/config'
 
 export default defineConfig({
   name: 'my-project',
-  description: 'Minimal markdown docs and writing.',
+  description: 'Minimal markdown site for fast writing and project showcase.',
   nav: [
     { label: 'docs', href: '/docs' },
     { label: 'writing', href: '/writing' },

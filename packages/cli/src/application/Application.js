@@ -10,7 +10,7 @@ Commands:
   dev        Start dev server
   build      Build production site (--output <dir>)
   preview    Preview production build
-  clean      Remove docs/.docsmint workdir
+  clean      Remove docs/build/ and local docsmint cache
   deploy     Deploy using registered strategy plugins
   domain     Print custom domain setup plan
   context    Emit an LLM-friendly docs snapshot
@@ -150,8 +150,13 @@ export class Application {
   #parseInitRequest(args) {
     /** @type {string | undefined} */
     let starterPreset
+    let withAstro = false
     for (let index = 0; index < args.length; index += 1) {
       const arg = args[index]
+      if (arg === '--with-astro') {
+        withAstro = true
+        continue
+      }
       if (arg === '--preset' || arg === '--starter') {
         const value = args[index + 1]
         if (!value || value.startsWith('-')) {
@@ -189,6 +194,7 @@ export class Application {
     return {
       projectRoot: this.projectRoot,
       starterPreset,
+      withAstro,
     }
   }
 

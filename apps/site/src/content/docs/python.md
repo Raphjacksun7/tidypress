@@ -24,17 +24,23 @@ It does not use `npx` by default. `DOCSMINT_USE_NPX=1` is available as an explic
 
 ## Site commands
 
-These commands are delegated to the Node CLI:
+These commands are delegated to the Node CLI (same surface as `npx docsmint`):
 
 ```bash
-docsmint init
+docsmint init [--preset lab|blog|persona|docs-writing|custom]
 docsmint dev
 docsmint build
 docsmint preview
 docsmint clean
 docsmint deploy
-docsmint context
+docsmint context [output.md]
+docsmint import devto <url-or-slug>
+docsmint doctor
+docsmint migrate-sections
+docsmint add-version <label>
 ```
+
+`import devto` fetches real markdown. Other import providers write review scaffolds. Experimental Node commands (`editor`, `export`, `ai`) forward when enabled in config.
 
 ## Notebook conversion
 
@@ -76,7 +82,22 @@ docs/src/content/docs/api/<lang>.md
 
 This is a convenience helper for small projects. For large API references, keep using the dedicated tooling for that ecosystem.
 
+## Help and init presets
+
+```bash
+docsmint --help
+docsmint init --help
+```
+
+The Python entrypoint lists the same init presets as the Node CLI (`lab`, `blog`, `persona`, `docs-writing`, `custom`). `default` is an alias for `lab`.
+
+## Streaming build and deploy
+
+`docsmint build` and `docsmint deploy` stream Node CLI output live through an async subprocess. Add `--sync` to use the legacy blocking runner (for scripts that capture output).
+
 ## YAML bridge
+
+`docsmint.yaml` is validated against the shared JSON Schema from `@docsmint/config` before Python commands read bridged flags.
 
 The wrapper can read `docsmint.yaml` or `docsmint.yml`:
 

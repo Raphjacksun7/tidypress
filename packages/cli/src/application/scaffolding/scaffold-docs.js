@@ -1,54 +1,20 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { resolveStarterPreset } from '../../templates/starters.js'
+import { buildStarterConfig, formatConfigModule } from './starter-config.js'
 
-function toQuotedValue(value) {
-  return `'${value.replaceAll("'", "\\'")}'`
-}
+const ASTRO_CONFIG_TEMPLATE = `import { defineConfig } from 'astro/config'
+import docsmint from '@docsmint/astro'
 
-/**
- * @param {string} projectName
- * @param {import('../../templates/starters.js').StarterPreset} preset
- */
-function buildConfigTemplate(projectName, preset) {
-  const navItems = preset.nav.map(item => `    { label: ${toQuotedValue(item.label)}, href: ${toQuotedValue(item.href)} },`)
-  const collectionLines = preset.collections.map(collection => {
-    const parts = [`enabled: ${collection.enabled}`]
-    if (collection.basePath) {
-      parts.push(`basePath: ${toQuotedValue(collection.basePath)}`)
-    }
-    if (collection.kind) {
-      parts.push(`kind: ${toQuotedValue(collection.kind)}`)
-    }
-    if (collection.label) {
-      parts.push(`label: ${toQuotedValue(collection.label)}`)
-    }
-    return `    ${collection.key}: { ${parts.join(', ')} },`
-  })
-
-  return `export default {
-  name: ${toQuotedValue(projectName)},
-  description: ${toQuotedValue(preset.description)},
-  nav: [
-${navItems.join('\n')}
-  ],
-  // Text shown on the writing index page (optional).
-  writing: {
-    description: ${toQuotedValue(preset.writingDescription)},
-  },
-  collections: {
-${collectionLines.join('\n')}
-  },
-  footer: [],
-  siteUrl: 'https://example.com',
-}
+export default defineConfig({
+  integrations: [docsmint()],
+})
 `
-}
 
 /**
- * @param {{ docsDir: string, projectName: string, starterPreset?: string }} options
+ * @param {{ docsDir: string, projectName: string, starterPreset?: string, withAstro?: boolean }} options
  */
-export async function scaffoldDocs({ docsDir, projectName, starterPreset }) {
+export async function scaffoldDocs({ docsDir, projectName, starterPreset, withAstro = false }) {
   const preset = resolveStarterPreset(starterPreset)
   const collectionDirectories = preset.collections.map(collection =>
     path.resolve(docsDir, `src/content/${collection.key}`),
@@ -66,7 +32,11 @@ export async function scaffoldDocs({ docsDir, projectName, starterPreset }) {
   const gitignorePath = path.resolve(docsDir, '.gitignore')
 
   await fs
-    .writeFile(configPath, buildConfigTemplate(projectName, preset), { flag: 'wx' })
+    .writeFile(
+      configPath,
+      formatConfigModule(buildStarterConfig(projectName, preset)),
+      { flag: 'wx' },
+    )
     .catch(() => {})
   for (const entry of preset.entries) {
     const entryPath = path.resolve(docsDir, `src/content/${entry.collection}/${entry.filePath}`)
@@ -88,8 +58,20 @@ export async function scaffoldDocs({ docsDir, projectName, starterPreset }) {
   } catch {
     // File does not exist yet.
   }
-  if (!gitignoreContent.includes('.docsmint/')) {
-    const suffix = gitignoreContent.length > 0 && !gitignoreContent.endsWith('\n') ? '\n' : ''
-    await fs.writeFile(gitignorePath, `${gitignoreContent}${suffix}.docsmint/\n`, 'utf8')
+  const gitignoreLines = ['build/', '.docsmint/']
+  let updatedGitignore = gitignoreContent
+  for (const line of gitignoreLines) {
+    if (!updatedGitignore.includes(line)) {
+      const suffix = updatedGitignore.length > 0 && !updatedGitignore.endsWith('\n') ? '\n' : ''
+      updatedGitignore = `${updatedGitignore}${suffix}${line}\n`
+    }
+  }
+  if (updatedGitignore !== gitignoreContent) {
+    await fs.writeFile(gitignorePath, updatedGitignore, 'utf8')
+  }
+
+  if (withAstro) {
+    const astroConfigPath = path.resolve(docsDir, 'astro.config.mjs')
+    await fs.writeFile(astroConfigPath, ASTRO_CONFIG_TEMPLATE, { flag: 'wx' }).catch(() => {})
   }
 }

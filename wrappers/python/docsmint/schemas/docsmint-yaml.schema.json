@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://docsmint.dev/schema/docsmint-yaml.json",
+  "title": "DocsMint YAML bridge config",
+  "description": "Optional docsmint.yaml used by the Python wrapper for command defaults.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "python": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "convert": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "input": { "type": "string", "minLength": 1 },
+            "input_path": { "type": "string", "minLength": 1 },
+            "output": { "type": "string", "minLength": 1 },
+            "output_path": { "type": "string", "minLength": 1 },
+            "watch": { "type": "boolean" },
+            "dry_run": { "type": "boolean" }
+          }
+        },
+        "extract-docs": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": { "type": "string", "minLength": 1 },
+            "lang": { "type": "string", "enum": ["py", "ts", "go"] },
+            "output": { "type": "string", "minLength": 1 },
+            "output_path": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    }
+  }
+}

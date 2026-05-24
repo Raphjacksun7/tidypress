@@ -2,7 +2,7 @@ import type { DocsMintConfig, PageEntry, PageEntryObject } from '../schema/index
 import type { NavItem } from '../schema/index.js'
 
 const pageSlugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
-const reservedPageSlugs = new Set(['docs', 'writing', 'pagefind', '_astro', '404', 'index'])
+const reservedPageSlugs = new Set(['docs', 'writing', 'pagefind', 'assets', '404', 'index'])
 
 export interface NormalizedPageEntry {
   slug: string

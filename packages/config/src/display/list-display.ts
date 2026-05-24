@@ -21,13 +21,13 @@ export const docsMintListLayoutRegistry = {
     rowClass: 'home-list-row',
     titleClass: 'home-list-title',
     metaClass: 'home-list-meta',
-    metaToneClass: 'text-zinc-400',
     titleDataAttr: 'data-entry-list-title',
   },
   card: {
     containerClass: 'flex flex-col',
     articleClass: 'entry-index-card',
     linkClass: 'group block',
+    statusClass: 'entry-index-status',
     metaClass: 'entry-index-meta',
     titleClass: 'entry-index-title',
     descriptionClass: 'entry-index-description',
@@ -36,6 +36,24 @@ export const docsMintListLayoutRegistry = {
   DocsMintListLayout,
   Record<string, string>
 >
+
+export const docsMintHomePreviewPresentation = {
+  sectionClass: 'space-y-3',
+  cardLinkClass: 'group home-card-row dm-link-unstyled',
+  cardContentClass: 'min-w-0',
+  cardTitleClass: 'home-card-title',
+  cardDescriptionClass: 'home-card-description',
+  cardMetaClass: 'home-card-meta',
+  listLinkClass: 'group dm-link-unstyled',
+  listTitleDataAttr: 'data-writing-title',
+  listDescriptionClass: 'hidden sm:block',
+  moreWrapperClass: 'pt-1',
+  moreLinkClass: 'text-xs',
+} as const
+
+export const docsMintCollectionIndexPresentation = {
+  listLinkClass: 'group dm-link-unstyled',
+} as const
 
 export interface DocsMintListDisplay {
   layout?: DocsMintListLayout
@@ -47,11 +65,14 @@ export interface DocsMintListDisplay {
   icon?: string
 }
 
+export type DocsMintHomePreset = 'lab' | 'blog' | 'docs-writing' | 'persona'
+
 export interface DocsMintHome {
   previewLimit?: number
   display?: DocsMintListDisplay
   collections?: Record<string, DocsMintListDisplay>
   order?: string[]
+  preset?: DocsMintHomePreset
 }
 
 export interface DocsMintWritingEntryDisplay {
@@ -80,7 +101,7 @@ function isHomePreviewCollection(site: DocsMintConfig, key: string): boolean {
   if (isLegacySectionKey(key)) {
     return true
   }
-  return kind === 'content'
+  return kind === 'content' || kind === 'projects'
 }
 
 export function resolveDefaultHomeSectionKeys(site: DocsMintConfig): string[] {
@@ -175,7 +196,9 @@ export function listGapStackClass(gap: DocsMintListGap): string {
   return docsMintListGapRegistry[gap].stackClass
 }
 
-export function listLayoutPresentation(layout: DocsMintListLayout) {
+export function listLayoutPresentation<T extends DocsMintListLayout>(
+  layout: T,
+): (typeof docsMintListLayoutRegistry)[T] {
   return docsMintListLayoutRegistry[layout]
 }
 

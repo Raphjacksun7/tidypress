@@ -13,6 +13,11 @@ const { bundle, Content, mdxComponents } = Astro.props
 ---
 <Base title={bundle.title} description={bundle.description}>
   <div class="max-w-3xl mx-auto px-8 py-16">
-    <ProseContent Content={Content} components={mdxComponents} pagefindIgnore={bundle.pagefindIgnore} />
+    <ProseContent
+      Content={Content}
+      components={mdxComponents}
+      pagefindIgnore={bundle.pagefindIgnore}
+      pagefindCollection="pages"
+    />
   </div>
 </Base>

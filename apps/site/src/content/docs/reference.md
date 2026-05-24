@@ -32,12 +32,15 @@ docsmint deploy [target] --with-ci
 docsmint context [output]
 ```
 
-Starter presets:
+Starter presets (`default` is an alias for `lab`):
 
 | Preset | Seeds |
 |--------|-------|
-| `default` | docs and writing examples |
-| `custom` | docs, writing, and a `playbooks` custom collection |
+| `lab` | writing + projects (default `init`) |
+| `persona` | hero, projects, writing, about page |
+| `blog` | writing only |
+| `docs-writing` | docs + writing |
+| `custom` | docs, writing, and a `playbooks` content collection |
 
 Maintenance and scaffold commands:
 
@@ -47,12 +50,14 @@ docsmint doctor
 docsmint release-check
 docsmint add-version <label> [--set-latest]
 docsmint domain setup [domain] --platform <platform>
-docsmint import <medium|devto|substack|ghost> [options]
+docsmint import <medium|devto|substack|ghost> <url-or-path>
 docsmint convert <file.ipynb> [--output <file.mdx>]      # Python wrapper
 docsmint extract-docs <path> [--lang py|ts|go]           # Python wrapper
 ```
 
-`import`, `domain`, `editor`, `export`, and `ai` are scaffold or planning surfaces unless explicitly documented by their command output. The Python-only commands are available through the Python package entrypoint.
+`devto` fetches public article markdown from the Dev.to API. Other import providers write a review scaffold.
+
+`domain`, `editor`, `export`, and `ai` are scaffold or planning surfaces unless explicitly documented by their command output. The Python-only commands are available through the Python package entrypoint.
 
 Experimental commands:
 
@@ -70,6 +75,8 @@ Experimental commands require config and CLI opt-ins. See [Advanced configuratio
 interface DocsMintConfig {
   name: string
   description?: string
+  hero?: DocsMintHero
+  home?: DocsMintHome // order, previewLimit, collections display, preset: lab | blog | docs-writing | persona
   nav?: NavItem[]
   footer?: FooterItem[]
   pages?: PageEntry[]
@@ -108,10 +115,23 @@ type DocsMintTypographyScale = 'small' | 'medium' | 'large'
 ## Collection kinds
 
 ```ts
-type DocsMintCollectionKind = 'content' | 'writing' | 'page'
+type DocsMintCollectionKind = 'content' | 'writing' | 'projects' | 'page'
 ```
 
 `collections.docs` is the main docs collection. It has no `kind` or `render`.
+
+```ts
+interface DocsMintHero {
+  enabled?: boolean
+  role?: string
+  pronunciation?: string
+  lead?: string
+  image?: string
+  links?: Array<{ label: string; href: string; external?: boolean }>
+}
+```
+
+Hero renders only when `hero.enabled === true`.
 
 ## Capability names
 
@@ -166,10 +186,28 @@ title: Release notes
 date: "2026-05-22"
 description: Notes from the latest release.
 author: Raph
+featured: true
+ogImage: /images/release.png
 tags: [release]
 search: true
 published: true
 scheduled: 2026-06-01T09:00:00Z
+---
+```
+
+Projects:
+
+```yaml
+---
+title: Sample project
+description: One line about the work.
+status: active
+featured: true
+url: https://example.com
+linkOnly: true
+repo: https://github.com/you/project
+tags: [oss]
+published: true
 ---
 ```
 
@@ -211,11 +249,11 @@ See [Components](./components).
 ## Build output
 
 ```txt
-docs/.docsmint/dist/
+docs/build/
 ├── index.html
 ├── docs/
 ├── writing/
-├── _astro/
+├── assets/
 ├── pagefind/
 └── sitemap-index.xml
 ```

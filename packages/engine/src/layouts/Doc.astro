@@ -4,7 +4,7 @@ import Sidebar from '@/components/Sidebar.astro'
 import Toc from '@/components/Toc.astro'
 import VersionSelector from '@/components/VersionSelector.astro'
 import { getCollection } from 'astro:content'
-import type { DocsMintDocForm } from '@docsmint/config'
+import { LINK_NEW_TAB_ATTRIBUTES, type DocsMintDocForm } from '@docsmint/config'
 import { getConfig } from '@/config/getConfig'
 import { getUiStrings, resolveLocale } from '@/i18n/locale'
 import { versionSelectorState } from '@/routing/route-equivalents'
@@ -77,7 +77,7 @@ const versionSelector = versionSelectorState(site, Astro.url.pathname, docsEntri
         <Toc headings={headings} />
         {resolvedEditUrl && (
           <p class="mt-4 text-xs">
-            <a href={resolvedEditUrl} target="_blank" rel="noopener noreferrer" class="text-zinc-500">
+            <a href={resolvedEditUrl} class="dm-edit-link" {...LINK_NEW_TAB_ATTRIBUTES}>
               {strings.editThisPageLabel} ->
             </a>
           </p>

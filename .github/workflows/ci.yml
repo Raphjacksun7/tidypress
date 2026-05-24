@@ -32,6 +32,41 @@ jobs:
       - name: Build workspace
         run: pnpm -r build
 
+  install-e2e:
+    name: Real install e2e (npm pack)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Real install e2e
+        run: ./agent-os/scripts/install-e2e.sh
+
+      - name: Build moat examples
+        run: |
+          pnpm --filter @docsmint/example-lab build
+          pnpm --filter @docsmint/example-blog build
+          pnpm --filter @docsmint/example-persona build
+
+      - name: Generate marketing site context snapshot
+        run: pnpm --filter @docsmint/site context
+
+      - name: Verify site context snapshot is committed
+        run: git diff --exit-code apps/site/docsmint-context.md
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -41,6 +76,7 @@ jobs:
         run: |
           python -m pip install -e "./wrappers/python[dev]"
           pytest wrappers/python/tests -q
+        timeout-minutes: 30
 
       - name: Enforce minimum test count
         run: node ./agent-os/scripts/assert-test-count.mjs
@@ -77,8 +113,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Cache docsmint build inputs
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/docsmint
+          key: docsmint-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'packages/engine/**', 'apps/site/**') }}
+          restore-keys: |
+            docsmint-${{ runner.os }}-
+
       - name: Clean previous build artifacts
         run: |
+          rm -rf apps/site/build
           rm -rf apps/site/.docsmint
           rm -rf packages/engine/dist
 
@@ -94,6 +139,6 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: usedocsmint
-          directory: apps/site/.docsmint/dist
+          directory: apps/site/build
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           branch: main

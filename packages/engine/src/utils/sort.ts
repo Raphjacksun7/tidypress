@@ -1,6 +1,6 @@
 type DocEntry = {
   id: string
-  data: {
+  data: Record<string, unknown> & {
     order?: number
   }
 }

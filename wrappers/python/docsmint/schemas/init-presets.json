@@ -1,0 +1,28 @@
+{
+  "defaultPreset": "lab",
+  "aliases": {
+    "default": "lab"
+  },
+  "presets": [
+    {
+      "name": "lab",
+      "summary": "Writing + projects on the home page; docs and pages off (default for docsmint init)."
+    },
+    {
+      "name": "blog",
+      "summary": "Writing-only personal blog; docs, projects, and pages off."
+    },
+    {
+      "name": "persona",
+      "summary": "Hero block, projects, writing, and an about page for CV or portfolio sites."
+    },
+    {
+      "name": "docs-writing",
+      "summary": "Docs manual plus writing; writing appears before docs on the home page."
+    },
+    {
+      "name": "custom",
+      "summary": "Docs, writing, and a sample playbooks content collection."
+    }
+  ]
+}

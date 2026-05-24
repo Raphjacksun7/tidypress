@@ -2,7 +2,7 @@ import type { DocsMintConfig } from '@docsmint/config'
 
 const config: DocsMintConfig = {
   name: 'docsmint',
-  description: 'Minimal markdown docs and writing.',
+  description: 'Minimal markdown site for fast writing and project showcase.',
   nav: [
     { label: 'docs', href: '/docs' },
     { label: 'writing', href: '/writing' },

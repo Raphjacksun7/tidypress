@@ -1,7 +1,6 @@
 import type { DocsMintConfig } from '@docsmint/config'
-import { getCollection } from 'astro:content'
 import { sortDocs } from '@/utils/sort'
-import { onlyPublished } from '@/utils/published'
+import { loadPublishedCollectionEntries } from '@/utils/collection-entries'
 import {
   getCollectionBasePath,
   getCollectionEntryPath,
@@ -14,6 +13,12 @@ import { resolveCollectionRouteViewKey } from '@/routing/view-registry'
 import type { RouteViewBundle } from '@/collections/bundle'
 import type { ICollection } from '@/collections/ICollection'
 
+type CollectionEntry = {
+  title?: string
+  description?: string
+  search?: boolean
+}
+
 export class ContentCollection implements ICollection {
   readonly presentationTarget = 'content' as const
 
@@ -25,7 +30,7 @@ export class ContentCollection implements ICollection {
     const localePrefix = route.locale ? `/${route.locale}` : ''
     const localizedBase = `${localePrefix}${basePath}`.replace(/\/{2,}/g, '/') || basePath
 
-    const docs = sortDocs(onlyPublished(await getCollection(collectionKey as 'docs')))
+    const docs = sortDocs(await loadPublishedCollectionEntries<CollectionEntry>(collectionKey))
     const firstVersionPrefix = this.site.versions?.[0]
       ? versionContentPrefix(this.site.versions[0].path, basePath)
       : undefined
@@ -57,11 +62,10 @@ export class ContentCollection implements ICollection {
       viewKey: resolveCollectionRouteViewKey(this.presentationTarget, route),
       site: this.site,
       route,
-      title: (first.data as { title?: string }).title ?? first.id,
-      description: (first.data as { description?: string }).description,
+      title: first.data.title ?? first.id,
+      description: first.data.description,
       headings: [],
-      pagefindIgnore:
-        (first.data as { search?: boolean }).search === false || isSearchExcluded(this.site, pagePath),
+      pagefindIgnore: first.data.search === false || isSearchExcluded(this.site, pagePath),
       editPath: pagePath,
       collectionRootPath: localizedBase,
       firstDocHref: firstHref,
@@ -70,7 +74,7 @@ export class ContentCollection implements ICollection {
 
   async buildEntry(route: SiteRouteDefinition): Promise<RouteViewBundle> {
     const collectionKey = route.collectionKey!
-    const entries = onlyPublished(await getCollection(collectionKey as 'docs'))
+    const entries = await loadPublishedCollectionEntries<CollectionEntry>(collectionKey)
     const entry = entries.find(
       candidate => candidate.id === route.entryId || getCollectionEntrySlug(candidate.id) === route.slug,
     )
@@ -94,11 +98,10 @@ export class ContentCollection implements ICollection {
       viewKey: resolveCollectionRouteViewKey(this.presentationTarget, route),
       site: this.site,
       route,
-      title: (entry.data as { title?: string }).title ?? entry.id,
-      description: (entry.data as { description?: string }).description,
+      title: entry.data.title ?? entry.id,
+      description: entry.data.description,
       headings: [],
-      pagefindIgnore:
-        (entry.data as { search?: boolean }).search === false || isSearchExcluded(this.site, pagePath),
+      pagefindIgnore: entry.data.search === false || isSearchExcluded(this.site, pagePath),
       editPath: getCollectionEntryPath(this.site, collectionKey, entry.id),
     }
   }

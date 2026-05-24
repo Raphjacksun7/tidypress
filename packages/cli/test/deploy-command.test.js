@@ -48,7 +48,7 @@ test('DeployCommand builds and deploys when --with-ci is disabled', async () => 
     buildService: {
       async build(request) {
         assert.deepEqual(request, { projectRoot: '/workspace' })
-        return { distDir: '/workspace/.docsmint/dist' }
+        return { buildDir: '/workspace/docs/build', docsDir: '/workspace/docs', cacheDir: '/tmp/cache' }
       },
     },
     deployService: {
@@ -67,7 +67,7 @@ test('DeployCommand builds and deploys when --with-ci is disabled', async () => 
 
   assert.equal(deployRequests.length, 1)
   assert.equal(deployRequests[0].projectRoot, '/workspace')
-  assert.equal(deployRequests[0].distDir, '/workspace/.docsmint/dist')
+  assert.equal(deployRequests[0].distDir, '/workspace/docs/build')
   assert.equal(deployRequests[0].target, 'netlify')
   assert.equal(typeof deployRequests[0].io, 'object')
   assert.equal(typeof /** @type {{ info?: unknown }} */ (deployRequests[0].io).info, 'function')

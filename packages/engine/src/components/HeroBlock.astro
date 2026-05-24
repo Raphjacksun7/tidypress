@@ -1,0 +1,56 @@
+---
+import {
+  docsMintHeroScalarFields,
+  heroHasRenderableContent,
+  resolveHeroLinkAttributes,
+  type DocsMintHero,
+} from '@docsmint/config'
+import { isRemoteOrPublicImageSrc } from '@/utils/image'
+
+interface Props {
+  hero: DocsMintHero
+  imageBaseUrl?: string
+}
+
+const { hero, imageBaseUrl } = Astro.props
+const hasContent = heroHasRenderableContent(hero)
+
+function resolveHeroImageSrc(imagePath: string | undefined, baseUrl: string | undefined): string | undefined {
+  if (!imagePath || !isRemoteOrPublicImageSrc(imagePath)) {
+    return undefined
+  }
+  if (/^https?:\/\//i.test(imagePath)) {
+    return imagePath
+  }
+  if (!baseUrl) {
+    return imagePath
+  }
+  return `${baseUrl}${imagePath.startsWith('/') ? imagePath : `/${imagePath}`}`
+}
+
+const heroImageSrc = resolveHeroImageSrc(hero.image, imageBaseUrl)
+const heroTextScalars = docsMintHeroScalarFields.filter(key => key !== 'image')
+---
+{hasContent && (
+  <div class="dm-hero">
+    {heroImageSrc && (
+      <img class="dm-hero__image" src={heroImageSrc} alt="" width="96" height="96" loading="lazy" decoding="async" />
+    )}
+    {heroTextScalars.map(key => {
+      const value = hero[key]
+      if (!value) {
+        return null
+      }
+      return <p class={`dm-hero__${key}`}>{value}</p>
+    })}
+    {hero.links && hero.links.length > 0 && (
+      <p class="dm-hero__links">
+        {hero.links.map(link => (
+          <a href={link.href} class="dm-hero__link" {...resolveHeroLinkAttributes(link)}>
+            {link.label}
+          </a>
+        ))}
+      </p>
+    )}
+  </div>
+)}

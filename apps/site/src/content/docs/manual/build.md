@@ -14,7 +14,7 @@ From your `docs/` folder:
 docsmint build
 ```
 
-Output lands in `docs/.docsmint/dist/`. Every file is static — HTML, CSS, JS, and the Pagefind search index.
+Output lands in `build/` under your docs directory (for example `docs/build/` or `apps/site/build/`). Every file is static — HTML, CSS, JS under `assets/`, and the Pagefind search index.
 
 ## Clean first
 

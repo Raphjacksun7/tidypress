@@ -1,12 +1,23 @@
 ---
+import { resolvePagefindContentAttributes } from '@docsmint/config'
+
 interface Props {
   Content: any
   components: Record<string, any>
   pagefindIgnore?: boolean
+  pagefindCollection?: string
 }
 
-const { Content, components, pagefindIgnore } = Astro.props
+const { Content, components, pagefindIgnore, pagefindCollection } = Astro.props
+const pagefind = resolvePagefindContentAttributes({
+  pagefindIgnore,
+  collectionKey: pagefindCollection,
+})
 ---
-<article class="prose" data-pagefind-ignore={pagefindIgnore ? true : undefined}>
+<article
+  class="prose"
+  data-pagefind-ignore={pagefind['data-pagefind-ignore']}
+  data-pagefind-filter={pagefind['data-pagefind-filter']}
+>
   <Content components={components} />
 </article>

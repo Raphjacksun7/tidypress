@@ -1,7 +1,10 @@
 import fs from 'node:fs/promises'
+import path from 'node:path'
+
+import { getBuildDir, getCacheDir } from '../infrastructure/engine/build-session.js'
 
 /**
- * Cleans generated .docsmint working directory.
+ * Removes generated build output and docsmint cache for a project.
  */
 export class CleanService {
   /**
@@ -14,12 +17,18 @@ export class CleanService {
 
   /**
    * @param {{ projectRoot: string }} request
-   * @returns {Promise<{ workdir: string }>}
+   * @returns {Promise<{ buildDir: string, cacheDir: string }>}
    */
   async clean({ projectRoot }) {
     const docsDir = await this.configLoader.resolveDocsDirectory({ projectRoot })
-    const workdir = this.engineManager.getWorkdir({ docsDir })
-    await fs.rm(workdir, { recursive: true, force: true })
-    return { workdir }
+    const buildDir = getBuildDir(docsDir)
+    const cacheDir = await getCacheDir(docsDir)
+    const legacyWorkdir = path.join(docsDir, '.docsmint')
+
+    await fs.rm(buildDir, { recursive: true, force: true })
+    await fs.rm(cacheDir, { recursive: true, force: true })
+    await fs.rm(legacyWorkdir, { recursive: true, force: true })
+
+    return { buildDir, cacheDir }
   }
 }

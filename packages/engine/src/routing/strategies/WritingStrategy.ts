@@ -1,3 +1,4 @@
+import { collectionMetaIndexSlug } from '@docsmint/config'
 import type { ICollectionRouteStrategy, CollectionRouteContext, SiteRouteDefinition } from '@/routing/types'
 import { RoutePath } from '@/routing/RoutePath'
 import {
@@ -9,6 +10,45 @@ import {
   resolveLocaleState,
   resolveRoutePolicy,
 } from '@/routing/route-planning'
+import { planCollectionTagRoutes } from '@/routing/collection-meta-routes'
+
+function writingArchiveYears(entries: CollectionRouteContext['entries']): string[] {
+  const years = new Set<string>()
+  for (const entry of entries) {
+    const date = (entry.data as { date?: string | Date }).date
+    if (!date) {
+      continue
+    }
+    years.add(new Date(date).getUTCFullYear().toString())
+  }
+  return [...years].sort((a, b) => Number(b) - Number(a))
+}
+
+function planWritingMetaIndexRoutes(
+  base: RoutePath,
+  collectionKey: string,
+  entries: CollectionRouteContext['entries'],
+  locale?: string,
+): SiteRouteDefinition[] {
+  const routes: SiteRouteDefinition[] = []
+  const localizedBase = locale ? base.withLocale(locale) : base
+
+  for (const year of writingArchiveYears(entries)) {
+    const slug = collectionMetaIndexSlug('archive', year)
+    routes.push(
+      defineRoute(localizedBase.append(slug), {
+        mode: 'collection-index',
+        collectionKey,
+        locale,
+        slug,
+      }),
+    )
+  }
+
+  routes.push(...planCollectionTagRoutes(localizedBase, collectionKey, entries, locale))
+
+  return routes
+}
 
 export class WritingStrategy implements ICollectionRouteStrategy {
   readonly strategyKind = 'writing' as const
@@ -26,6 +66,7 @@ export class WritingStrategy implements ICollectionRouteStrategy {
         mode: 'collection-index',
         collectionKey: context.collection.key,
       }),
+      ...planWritingMetaIndexRoutes(base, context.collection.key, context.entries),
       ...planDefaultLocaleEntryRoutes(context.site, context.collection.key, context.entries, localeState),
     ]
 
@@ -37,6 +78,7 @@ export class WritingStrategy implements ICollectionRouteStrategy {
             collectionKey: context.collection.key,
             locale,
           }),
+          ...planWritingMetaIndexRoutes(base, context.collection.key, context.entries, locale),
           ...planLocalizedEntryRoutes(
             context.site,
             context.collection.key,

@@ -15,7 +15,7 @@ export class CleanCommand {
    * @returns {Promise<void>}
    */
   async execute({ projectRoot }) {
-    const { workdir } = await this.cleanService.clean({ projectRoot })
-    this.io.info(`Cleaned ${workdir}`)
+    const { buildDir, cacheDir } = await this.cleanService.clean({ projectRoot })
+    this.io.info(`Cleaned ${buildDir} and ${cacheDir}`)
   }
 }

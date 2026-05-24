@@ -3,12 +3,14 @@ import { ContentStrategy } from '@/routing/strategies/ContentStrategy'
 import { PageStrategy } from '@/routing/strategies/PageStrategy'
 import { DocsStrategy } from '@/routing/strategies/DocsStrategy'
 import { WritingStrategy } from '@/routing/strategies/WritingStrategy'
+import { ProjectsStrategy } from '@/routing/strategies/ProjectsStrategy'
 
 export class RouteRegistry {
   private readonly strategies: ICollectionRouteStrategy[]
 
   constructor(strategies: ICollectionRouteStrategy[] = [
     new DocsStrategy(),
+    new ProjectsStrategy(),
     new ContentStrategy(),
     new WritingStrategy(),
     new PageStrategy(),

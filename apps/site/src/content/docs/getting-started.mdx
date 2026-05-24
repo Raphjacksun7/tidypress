@@ -63,11 +63,24 @@ docs/
         └── pages/
 ```
 
-The default starter seeds one docs page and one writing post so you can see the file shape before replacing them.
+`init` defaults to the **lab** preset: writing and projects on the home page, docs disabled. Replace the seeded markdown with your own content.
 
-Use the custom starter when you want an example custom collection:
+Other presets:
+
+| Preset | Shape |
+|--------|--------|
+| `lab` (default) | writing + projects |
+| `persona` | hero bar, projects, writing, about page |
+| `blog` | writing only (docs and pages off) |
+| `docs-writing` | docs + writing |
+| `custom` | docs + writing + a `playbooks` content collection |
+
+`default` is an alias for `lab`.
 
 ```bash
+npx docsmint init --preset blog
+npx docsmint init --preset persona
+npx docsmint init --preset docs-writing
 npx docsmint init --preset custom
 ```
 
@@ -109,7 +122,7 @@ npx docsmint preview
 Build output is written to:
 
 ```txt
-docs/.docsmint/dist/
+docs/build/
 ```
 
 Search is generated during `docsmint build`, so the search modal is available in `preview`, not in the dev server.

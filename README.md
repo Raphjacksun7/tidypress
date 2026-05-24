@@ -3,7 +3,7 @@
   docsmint
 </h1>
 
-Minimal markdown docs and writing.
+Minimal markdown site for fast writing and project showcase.
 
 [Website](https://usedocsmint.pages.dev/) · [Documentation](https://usedocsmint.pages.dev/docs) · [npm](https://www.npmjs.com/package/docsmint) · [PyPI](https://pypi.org/project/docsmint/) · [Issues](https://github.com/Raphjacksun7/docsmint/issues)
 
@@ -11,7 +11,7 @@ Minimal markdown docs and writing.
 [![npm](https://img.shields.io/npm/v/docsmint.svg)](https://www.npmjs.com/package/docsmint)
 [![License: MIT](https://img.shields.io/badge/license-MIT-black.svg)](./LICENSE)
 
-docsmint turns a `docs/` folder into a static site for documentation and dated writing. Write markdown in git, preview locally, build HTML, and deploy the generated folder with the host or script you already use.
+Markdown in git. `docsmint init`, `dev`, `build` — static output you own. Optional docs when you need a manual.
 
 ## Install
 
@@ -50,7 +50,7 @@ npx docsmint preview
 Output:
 
 ```txt
-docs/.docsmint/dist/
+docs/build/
 ```
 
 ## File shape
@@ -69,18 +69,20 @@ Docs are stable instructions. Writing is dated context. Pages map to root routes
 
 ## Why
 
-- markdown and MDX as source
-- content and config stay in your project
-- Pagefind search at build time
-- clean default UI, dark mode, sitemap, and metadata
-- static output you can deploy anywhere
-- Astro rendering behind a small CLI
+- writing and projects on the home page
+- optional docs when you need a manual
+- markdown and MDX in git, one CLI, static output
+- Pagefind search, RSS for writing, archive and tags
+- deploy anywhere you host static files
 
 ## Examples
 
 Run examples from the repo root after `pnpm install`:
 
 ```sh
+pnpm --filter @docsmint/example-lab build
+pnpm --filter @docsmint/example-blog build
+pnpm --filter @docsmint/example-persona build
 pnpm --filter @docsmint/example-minimal build
 pnpm --filter @docsmint/example-custom-collections build
 pnpm --filter @docsmint/example-i18n-versioned build
@@ -114,3 +116,7 @@ Before review:
 ```
 
 Release notes live in [`RELEASING.md`](./RELEASING.md).
+
+## Backlog (contributors)
+
+Explicit backlog items (P3 stretch, import scaffolds, pending repo commits) are listed in [`agent-os/REALITY-BASELINE.md`](./agent-os/REALITY-BASELINE.md#explicit-backlog-not-regressions) and [`RELEASING.md`](./RELEASING.md#explicit-backlog-not-regressions). They are not regressions.

@@ -11,9 +11,10 @@ export interface Props {
   description?: string
   noindex?: boolean
   tags?: string[]
+  ogImage?: string
 }
 
-const { title, description, noindex = false, tags = [] } = Astro.props
+const { title, description, noindex = false, tags = [], ogImage } = Astro.props
 const rawSite = (await import('@site-config')).default
 const site = getConfig(rawSite)
 const capabilityFlags = resolveCapabilityFlags(site)
@@ -54,7 +55,20 @@ const metaDescription = description || site.description || ''
 
 const siteBaseUrl = site.siteUrl ? site.siteUrl.replace(/\/$/, '') : undefined
 const canonicalHref = siteBaseUrl ? `${siteBaseUrl}${Astro.url.pathname}` : undefined
-const ogImageHref = siteBaseUrl ? `${siteBaseUrl}/og.svg` : undefined
+function resolveOgImageHref(imagePath: string | undefined, baseUrl: string | undefined): string | undefined {
+  if (!imagePath) {
+    return baseUrl ? `${baseUrl}/og.svg` : undefined
+  }
+  if (/^https?:\/\//i.test(imagePath)) {
+    return imagePath
+  }
+  if (!baseUrl) {
+    return imagePath
+  }
+  return `${baseUrl}${imagePath.startsWith('/') ? imagePath : `/${imagePath}`}`
+}
+
+const ogImageHref = resolveOgImageHref(ogImage, siteBaseUrl)
 ---
 <!doctype html>
 <html

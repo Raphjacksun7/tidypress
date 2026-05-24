@@ -1,3 +1,5 @@
+import path from 'node:path'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { defineCollection, z } from 'astro:content'
 import { glob } from 'astro/loaders'
 import {
@@ -15,6 +17,20 @@ import rawSiteConfig from '@site-config'
 
 const siteConfig = withDefaults(rawSiteConfig)
 
+const enginePackageRoot = path.resolve(
+  fileURLToPath(new URL('.', import.meta.url)),
+  '..',
+)
+const projectRoot = process.env.DOCSMINT_PROJECT_ROOT ?? enginePackageRoot
+
+function collectionContentBase(collectionKey: string) {
+  const absolute = path.join(projectRoot, 'src/content', collectionKey)
+  if (process.env.DOCSMINT_PROJECT_ROOT) {
+    return pathToFileURL(`${absolute}/`)
+  }
+  return `./src/content/${collectionKey}`
+}
+
 const customDocFormKeys = Object.keys(siteConfig.extensions?.docForms ?? {}).filter(
   key => !isDocsMintDocForm(key),
 )
@@ -28,7 +44,6 @@ const docsFormSchema =
 
 const docsSchema = z.object({
   title: z.string(),
-  /** Documentation form inside the `docs` collection — not a folder name or collection `kind`. */
   form: docsFormSchema.default(defaultDocsMintDocForm),
   description: z.string().optional(),
   icon: z.string().optional(),
@@ -47,9 +62,25 @@ const writingSchema = z.object({
   author: z.string().optional(),
   icon: z.string().optional(),
   tags: z.array(z.string()).optional(),
+  featured: z.boolean().optional(),
+  ogImage: z.string().optional(),
   search: z.boolean().optional(),
   published: z.boolean().optional().default(true),
   scheduled: z.coerce.date().optional(),
+})
+
+const projectsSchema = z.object({
+  title: z.string(),
+  description: z.string().optional(),
+  url: z.string().optional(),
+  repo: z.string().optional(),
+  status: z.string().optional(),
+  featured: z.boolean().optional(),
+  icon: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  linkOnly: z.boolean().optional(),
+  search: z.boolean().optional(),
+  published: z.boolean().optional().default(true),
 })
 
 const pageSchema = z.object({
@@ -62,6 +93,7 @@ const schemasByContentSchema = {
   docs: docsSchema,
   writing: writingSchema,
   page: pageSchema,
+  projects: projectsSchema,
 } as const
 
 function schemaForCollection(key: string, kind?: string) {
@@ -80,7 +112,7 @@ export const collections = Object.fromEntries(
     defineCollection({
       loader: glob({
         pattern: '**/*.{md,mdx}',
-        base: `./src/content/${key}`,
+        base: collectionContentBase(key),
         generateId: ({ entry }) => toCollectionAwareContentId(key, entry),
       }),
       schema: schemaForCollection(key, collection.kind),

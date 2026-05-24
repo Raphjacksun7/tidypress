@@ -15,7 +15,7 @@ pnpm --filter @docsmint/example-i18n-versioned build
 Output:
 
 ```txt
-examples/i18n-versioned/docs/.docsmint/dist/
+examples/i18n-versioned/docs/build/
 ```
 
 Inspect:

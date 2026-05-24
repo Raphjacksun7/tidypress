@@ -1,6 +1,8 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
+import { fetchDevToArticle } from '../application/import/devto.js'
+import { formatWritingImportMarkdown } from '../application/import/format-writing-import.js'
 import { DocsMintError } from '../errors/DocsMintError.js'
 
 /**
@@ -16,7 +18,7 @@ export class ImportService {
 
   /**
    * @param {{ projectRoot: string, provider: 'medium' | 'devto' | 'substack' | 'ghost', source: string, scheduled?: string }} request
-   * @returns {Promise<{ outputPath: string }>}
+   * @returns {Promise<{ outputPath: string, imported: boolean }>}
    */
   async run({ projectRoot, provider, source, scheduled }) {
     const scheduledAt = this.#parseScheduled(scheduled)
@@ -28,25 +30,44 @@ export class ImportService {
     const dateKey = date.toISOString().replace(/[-:.TZ]/g, '').slice(0, 14)
     const slug = this.#slugify(`${provider}-${source}`) || provider
     const filePath = path.join(writingDir, `${slug}-${dateKey}.md`)
+
+    if (provider === 'devto') {
+      try {
+        const article = await fetchDevToArticle(source)
+        const body = formatWritingImportMarkdown({
+          title: article.title,
+          description: article.description,
+          body: article.body,
+          date: article.date,
+          tags: article.tags,
+          source,
+          scheduled: scheduledAt,
+        })
+        await fs.writeFile(filePath, body, { flag: 'wx' })
+        return { outputPath: filePath, imported: true }
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error)
+        throw new DocsMintError(
+          `Dev.to import failed: ${message}`,
+          'IMPORT_FAILED',
+          'Use a public dev.to article URL or username/slug path.',
+          { exitCode: 2 },
+        )
+      }
+    }
+
     const dateString = date.toISOString().slice(0, 10)
-    const title = `Imported ${provider} draft`
-    const description = `Imported from ${source}`
-
-    const scheduledLine = scheduledAt ? `scheduled: ${scheduledAt.toISOString()}\n` : ''
-    const body = `---
-title: ${title}
-description: ${description}
-date: ${dateString}
-published: true
-${scheduledLine}---
-
-Source: ${source}
-
-Review and replace this scaffold body with the imported article content.
-`
+    const body = formatWritingImportMarkdown({
+      title: `Imported ${provider} draft`,
+      description: `Imported from ${source}`,
+      body: `Source: ${source}\n\nReview and replace this scaffold body with the imported article content.`,
+      date: dateString,
+      source,
+      scheduled: scheduledAt,
+    })
 
     await fs.writeFile(filePath, body, { flag: 'wx' })
-    return { outputPath: filePath }
+    return { outputPath: filePath, imported: false }
   }
 
   /**

@@ -61,7 +61,11 @@ test('Application dispatches init command with preset option', async () => {
 
   await app.run(['init', '--preset', 'default'])
   assert.equal(init.calls.length, 1)
-  assert.deepEqual(init.calls[0], { projectRoot: '/workspace', starterPreset: 'default' })
+  assert.deepEqual(init.calls[0], {
+    projectRoot: '/workspace',
+    starterPreset: 'default',
+    withAstro: false,
+  })
 })
 
 test('Application emits help text for --help', async () => {

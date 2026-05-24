@@ -1,8 +1,11 @@
 import {
   defaultDocsMintDocForm,
+  docsMintCollectionKindRegistry,
   isDocsMintDocForm,
-  type DocsMintDocForm,
+  type CollectionRouteViewMode,
+  type CollectionShellLayout,
   type DocsMintCollectionKind,
+  type DocsMintDocForm,
 } from '@docsmint/config'
 import type { SiteRouteMode } from '@/routing/types'
 import { getPluginRouteViewDescriptors } from '@/plugins/manifest'
@@ -11,10 +14,7 @@ import { getPluginRouteViewDescriptors } from '@/plugins/manifest'
 
 export type CollectionPresentationTarget = DocsMintCollectionKind | 'site-docs'
 
-// ─── View Modes ─────────────────────────────────────────────────────────────
-
-export type CollectionRouteViewMode = 'collection-index' | 'collection-entry' | 'version-root'
-export type CollectionShellLayout = 'docs' | 'writing' | 'page'
+export type { CollectionRouteViewMode, CollectionShellLayout }
 
 export function isCollectionRouteViewMode(mode: SiteRouteMode): mode is CollectionRouteViewMode {
   return mode === 'collection-index' || mode === 'collection-entry' || mode === 'version-root'
@@ -31,44 +31,27 @@ export interface CollectionRouteViewDescriptor {
 type CollectionViewConfig = {
   readonly prefix: string
   readonly shellLayout: CollectionShellLayout
-  readonly modes: Record<CollectionRouteViewMode, { readonly requiresRenderedEntry: boolean }>
+  readonly modes: Record<string, { readonly requiresRenderedEntry: boolean }>
+}
+
+function collectionViewConfig(
+  kind: DocsMintCollectionKind,
+  prefix: string,
+): CollectionViewConfig {
+  const entry = docsMintCollectionKindRegistry[kind]
+  return {
+    prefix,
+    shellLayout: entry.shellLayout,
+    modes: entry.routeModes,
+  }
 }
 
 export const collectionPresentationViewRegistry = {
-  'site-docs': {
-    prefix: 'docs',
-    shellLayout: 'docs' as CollectionShellLayout,
-    modes: {
-      'collection-index': { requiresRenderedEntry: false },
-      'collection-entry': { requiresRenderedEntry: true },
-      'version-root': { requiresRenderedEntry: true },
-    },
-  },
-  content: {
-    prefix: 'content',
-    shellLayout: 'docs' as CollectionShellLayout,
-    modes: {
-      'collection-index': { requiresRenderedEntry: false },
-      'collection-entry': { requiresRenderedEntry: true },
-      'version-root': { requiresRenderedEntry: true },
-    },
-  },
-  writing: {
-    prefix: 'writing',
-    shellLayout: 'writing' as CollectionShellLayout,
-    modes: {
-      'collection-index': { requiresRenderedEntry: false },
-      'collection-entry': { requiresRenderedEntry: true },
-    },
-  },
-  page: {
-    prefix: 'page',
-    shellLayout: 'page' as CollectionShellLayout,
-    modes: {
-      'collection-index': { requiresRenderedEntry: false },
-      'collection-entry': { requiresRenderedEntry: true },
-    },
-  },
+  'site-docs': collectionViewConfig('content', 'docs'),
+  content: collectionViewConfig('content', 'content'),
+  writing: collectionViewConfig('writing', 'writing'),
+  page: collectionViewConfig('page', 'page'),
+  projects: collectionViewConfig('projects', 'projects'),
 } as const satisfies Record<CollectionPresentationTarget, CollectionViewConfig>
 
 export function collectionViewKeyPrefix(target: CollectionPresentationTarget): string {
@@ -142,7 +125,7 @@ export const docFormEntryViewRegistry = {
   {
     readonly prefix: string
     readonly shellLayout: CollectionShellLayout
-    readonly modes: Record<CollectionRouteViewMode, { readonly requiresRenderedEntry: boolean }>
+    readonly modes: Record<string, { readonly requiresRenderedEntry: boolean }>
   }
 >
 

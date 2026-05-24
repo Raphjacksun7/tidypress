@@ -1,7 +1,7 @@
 {
   "name": "docsmint",
-  "version": "1.0.5",
-  "description": "Minimal markdown docs and writing.",
+  "version": "1.0.6",
+  "description": "Minimal markdown site for fast writing and project showcase.",
   "license": "MIT",
   "type": "module",
   "author": "Raphael Avocegamou",
@@ -33,7 +33,8 @@
     "./config": "./src/config.js"
   },
   "scripts": {
-    "test": "node --test --test-timeout=420000",
+    "test": "node --test --test-timeout=420000 test/*.test.js",
+    "test:install-e2e": "node --test --test-timeout=2400000 test/install-e2e.test.js",
     "dev": "node ./bin/docsmint.js dev",
     "build": "node -e \"console.log('docsmint CLI package does not require a compile step')\""
   },
@@ -43,7 +44,7 @@
     "@docsmint/config": "workspace:*",
     "@docsmint/engine": "workspace:*",
     "@tailwindcss/vite": "4.2.4",
-    "astro": "6.1.9",
+    "astro": "6.2.2",
     "jiti": "2.6.1",
     "mermaid": "11.14.0",
     "pagefind": "1.5.2",

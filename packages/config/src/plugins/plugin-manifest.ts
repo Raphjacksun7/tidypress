@@ -1,15 +1,16 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { isDocsMintCollectionKind } from '../registry/collection-kinds.js'
+import {
+  collectionKindModeRequiresRenderedEntry,
+  collectionKindRouteModes,
+  collectionKindShellLayout,
+  docsMintDocFormViewConfig,
+  resolveCollectionKind,
+} from '../registry/collection-kinds.js'
 import { isDocsMintDocForm } from '../registry/doc-forms.js'
 import { isDocsCollectionKey } from '../registry/legacy.js'
+import type { CollectionRouteViewMode } from '../registry/collection-kinds.js'
 import type { DocsMintConfig } from '../schema/index.js'
-
-const COLLECTION_MODES_BY_KIND = {
-  content: ['collection-index', 'collection-entry', 'version-root'],
-  writing: ['collection-index', 'collection-entry'],
-  page: ['collection-index', 'collection-entry'],
-} as const
 
 export interface PluginManifest {
   viewDescriptors: Array<{
@@ -51,6 +52,51 @@ function registerAstroViewImport(
   astroViewImports[viewKey] = astroPath
 }
 
+function registerCollectionViews(options: {
+  prefix: string
+  kind: ReturnType<typeof resolveCollectionKind>
+  modes: CollectionRouteViewMode[]
+  shellLayout: ReturnType<typeof collectionKindShellLayout>
+  render: NonNullable<NonNullable<DocsMintConfig['collections']>[string]['render']>
+  projectRoot: string | undefined
+  viewDescriptors: PluginManifest['viewDescriptors']
+  shellLayoutByPrefix: PluginManifest['shellLayoutByPrefix']
+  presentationModules: Record<string, string>
+  astroViewImports: Record<string, string>
+}): void {
+  const {
+    prefix,
+    kind,
+    modes,
+    shellLayout,
+    render,
+    projectRoot,
+    viewDescriptors,
+    shellLayoutByPrefix,
+    presentationModules,
+    astroViewImports,
+  } = options
+
+  shellLayoutByPrefix[prefix] = shellLayout
+
+  for (const mode of modes) {
+    viewDescriptors.push({
+      viewKey: `${prefix}:${mode}`,
+      requiresRenderedEntry: collectionKindModeRequiresRenderedEntry(kind, mode),
+      shell: true,
+    })
+  }
+
+  if (render.presentation) {
+    presentationModules[prefix] = render.presentation
+  }
+  if (render.views) {
+    for (const mode of modes) {
+      registerAstroViewImport(astroViewImports, projectRoot, `${prefix}:${mode}`, render.views, mode)
+    }
+  }
+}
+
 /** @param site Config after `withDefaults()`. */
 export function collectPluginManifest(
   site: DocsMintConfig,
@@ -72,47 +118,37 @@ export function collectPluginManifest(
     if (!render?.presentation && !render?.views) {
       continue
     }
-    const kind = collection.kind
-    const modes =
-      kind && isDocsMintCollectionKind(kind)
-        ? [...COLLECTION_MODES_BY_KIND[kind]]
-        : [...COLLECTION_MODES_BY_KIND.content]
-    const shellLayout = kind === 'writing' ? 'writing' : kind === 'page' ? 'page' : 'docs'
-    shellLayoutByPrefix[collectionKey] = shellLayout
-
-    for (const mode of modes) {
-      viewDescriptors.push({
-        viewKey: `${collectionKey}:${mode}`,
-        requiresRenderedEntry:
-          mode === 'collection-entry' ||
-          mode === 'version-root' ||
-          (mode === 'collection-index' && shellLayout === 'docs'),
-        shell: true,
-      })
-    }
-
-    if (render.presentation) {
-      presentationModules[collectionKey] = render.presentation
-    }
-    if (render.views) {
-      for (const mode of modes) {
-        registerAstroViewImport(astroViewImports, projectRoot, `${collectionKey}:${mode}`, render.views, mode)
-      }
-    }
+    const kind = resolveCollectionKind(collection.kind)
+    registerCollectionViews({
+      prefix: collectionKey,
+      kind,
+      modes: collectionKindRouteModes(kind),
+      shellLayout: collectionKindShellLayout(kind),
+      render,
+      projectRoot,
+      viewDescriptors,
+      shellLayoutByPrefix,
+      presentationModules,
+      astroViewImports,
+    })
   }
 
   const docForms = site.extensions?.docForms ?? {}
+  const docFormShell = docsMintDocFormViewConfig.shellLayout
+  const docFormModes = Object.keys(docsMintDocFormViewConfig.routeModes) as CollectionRouteViewMode[]
+
   for (const [formKey, descriptor] of Object.entries(docForms)) {
     if (isDocsMintDocForm(formKey)) {
       continue
     }
     docFormKeys.push(formKey)
     const formPrefix = `form-${formKey}`
-    shellLayoutByPrefix[formPrefix] = 'docs'
-    for (const mode of ['collection-index', 'collection-entry', 'version-root'] as const) {
+    shellLayoutByPrefix[formPrefix] = docFormShell
+
+    for (const mode of docFormModes) {
       viewDescriptors.push({
         viewKey: `${formPrefix}:${mode}`,
-        requiresRenderedEntry: true,
+        requiresRenderedEntry: docsMintDocFormViewConfig.routeModes[mode].requiresRenderedEntry,
         shell: true,
       })
       if (descriptor.views) {

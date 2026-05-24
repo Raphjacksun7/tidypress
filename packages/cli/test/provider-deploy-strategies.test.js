@@ -11,27 +11,27 @@ const CLOUD_PROVIDER_CASES = [
   {
     provider: 'vercel',
     expectedCommand: 'vercel',
-    expectedArgs: ['deploy', '--prod', '/workspace/.docsmint/dist'],
+    expectedArgs: ['deploy', '--prod', '/workspace/docs/build'],
   },
   {
     provider: 'netlify',
     expectedCommand: 'netlify',
-    expectedArgs: ['deploy', '--dir', '/workspace/.docsmint/dist', '--prod'],
+    expectedArgs: ['deploy', '--dir', '/workspace/docs/build', '--prod'],
   },
   {
     provider: 'surge',
     expectedCommand: 'surge',
-    expectedArgs: ['/workspace/.docsmint/dist'],
+    expectedArgs: ['/workspace/docs/build'],
   },
   {
     provider: 'github-pages',
     expectedCommand: 'npx',
-    expectedArgs: ['gh-pages', '-d', '/workspace/.docsmint/dist'],
+    expectedArgs: ['gh-pages', '-d', '/workspace/docs/build'],
   },
   {
     provider: 'cloudflare',
     expectedCommand: 'wrangler',
-    expectedArgs: ['pages', 'deploy', '/workspace/.docsmint/dist'],
+    expectedArgs: ['pages', 'deploy', '/workspace/docs/build'],
   },
 ]
 
@@ -52,7 +52,7 @@ for (const scenario of CLOUD_PROVIDER_CASES) {
 
     const request = {
       projectRoot: '/workspace',
-      distDir: '/workspace/.docsmint/dist',
+      distDir: '/workspace/docs/build',
       target: scenario.provider,
     }
 
@@ -114,12 +114,12 @@ test('static provider logs readiness without shell commands', async () => {
 
   await strategy.execute({
     projectRoot: '/workspace',
-    distDir: '/workspace/.docsmint/dist',
+    distDir: '/workspace/docs/build',
     target: 'static',
   })
 
   assert.equal(commands.length, 0)
-  assert.deepEqual(messages, ['Static output ready at /workspace/.docsmint/dist'])
+  assert.deepEqual(messages, ['Static output ready at /workspace/docs/build'])
 })
 
 test('s3 provider requires a target when none is supplied', async () => {
@@ -129,7 +129,7 @@ test('s3 provider requires a target when none is supplied', async () => {
     async () => {
       await strategy.execute({
         projectRoot: '/workspace',
-        distDir: '/workspace/.docsmint/dist',
+        distDir: '/workspace/docs/build',
         target: 's3',
       })
     },
@@ -153,14 +153,14 @@ test('s3 provider executes aws sync command for URI targets', async () => {
 
   await strategy.execute({
     projectRoot: '/workspace',
-    distDir: '/workspace/.docsmint/dist',
+    distDir: '/workspace/docs/build',
     target: 's3://bucket/docs',
   })
 
   assert.deepEqual(commands, [
     {
       command: 'aws',
-      args: ['s3', 'sync', '/workspace/.docsmint/dist/', 's3://bucket/docs', '--delete'],
+      args: ['s3', 'sync', '/workspace/docs/build/', 's3://bucket/docs', '--delete'],
     },
   ])
 })
@@ -177,14 +177,14 @@ test('ssh provider executes rsync command for scp targets', async () => {
 
   await strategy.execute({
     projectRoot: '/workspace',
-    distDir: '/workspace/.docsmint/dist',
+    distDir: '/workspace/docs/build',
     target: 'deploy@example.com:/var/www/site',
   })
 
   assert.deepEqual(commands, [
     {
       command: 'rsync',
-      args: ['-az', '--delete', '/workspace/.docsmint/dist/', 'deploy@example.com:/var/www/site'],
+      args: ['-az', '--delete', '/workspace/docs/build/', 'deploy@example.com:/var/www/site'],
     },
   ])
 })

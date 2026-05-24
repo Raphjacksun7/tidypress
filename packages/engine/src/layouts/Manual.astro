@@ -6,6 +6,7 @@ import ManualChrome from '@/components/ManualChrome.astro'
 import ChapterNav from '@/components/ChapterNav.astro'
 import { getCollection } from 'astro:content'
 import type { DocChapterNav } from '@/routing/chapter-nav'
+import { LINK_NEW_TAB_ATTRIBUTES } from '@docsmint/config'
 import { getConfig } from '@/config/getConfig'
 import { getUiStrings, resolveLocale } from '@/i18n/locale'
 import { versionSelectorState } from '@/routing/route-equivalents'
@@ -70,7 +71,7 @@ const versionSelector = versionSelectorState(site, Astro.url.pathname, docsEntri
       )}
       {resolvedEditUrl && (
         <p class="mt-8 text-xs">
-          <a href={resolvedEditUrl} target="_blank" rel="noopener noreferrer" class="text-zinc-500">
+          <a href={resolvedEditUrl} class="dm-edit-link" {...LINK_NEW_TAB_ATTRIBUTES}>
             {strings.editThisPageLabel} ->
           </a>
         </p>

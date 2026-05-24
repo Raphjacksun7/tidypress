@@ -5,6 +5,62 @@ import { normalizePages, type NormalizedPageEntry } from './normalize/pages.js'
 
 export { defineConfig }
 export { withDefaults }
+export { normalizeHero, heroHasRenderableContent } from './normalize/hero.js'
+export {
+  docsMintHeroScalarFields,
+  heroHasRenderableScalarField,
+  heroHasRenderableLinks,
+  pickHeroConfigFields,
+  type DocsMintHeroScalarField,
+} from './registry/hero-fields.js'
+export {
+  docsMintCollectionMetaIndexSegments,
+  collectionMetaIndexSlug,
+  parseCollectionMetaIndexSlug,
+  resolveCollectionMetaIndexTitle,
+  type DocsMintCollectionMetaIndexSegment,
+} from './registry/collection-meta-index.js'
+export {
+  PAGEFIND_COLLECTION_FILTER_KEY,
+  pagefindCollectionFilter,
+  resolvePagefindContentAttributes,
+  type PagefindContentAttributes,
+} from './search/pagefind.js'
+export {
+  resolveSearchFilterCollections,
+  type DocsMintSearchFilterCollection,
+} from './search/filter-collections.js'
+export {
+  formatWritingImportMarkdown,
+  docsMintWritingImportFrontmatterFields,
+  type DocsMintWritingImportArticle,
+} from './content/writing-import.js'
+
+export {
+  docsMintInitPresets,
+  docsMintYamlSchema,
+  type DocsMintInitPresetDescriptor,
+  type DocsMintInitPresetsFile,
+} from './yaml/schema-files.js'
+
+export {
+  validateDocsMintYaml,
+  type DocsMintYamlValidationIssue,
+  type DocsMintYamlValidationResult,
+} from './yaml/validate.js'
+export { normalizeHome } from './normalize/home.js'
+export { normalizeFooterItems } from './normalize/footer.js'
+export {
+  LINK_NEW_TAB_ATTRIBUTES,
+  LINK_REL_BLANK,
+  LINK_TARGET_BLANK,
+  ensureBlankTargetRel,
+  isExternalHref,
+  resolveEntryLinkAttributes,
+  resolveHeroLinkAttributes,
+  resolveNewTabLinkAttributes,
+  type ResolvedLinkAttributes,
+} from './links/link-attributes.js'
 export { buildNavigationModel }
 export { normalizePages, type NormalizedPageEntry }
 export {
@@ -27,6 +83,8 @@ export type {
   DocsMintDocsPaging,
   DocsMintDocsSidebarGroup,
   DocsMintExperimental,
+  DocsMintHero,
+  DocsMintHeroLink,
   DocsMintHome,
   DocsMintI18n,
   DocsMintI18nStrings,
@@ -54,6 +112,8 @@ export type {
 export {
   defaultListDisplay,
   docsMintListGapRegistry,
+  docsMintCollectionIndexPresentation,
+  docsMintHomePreviewPresentation,
   docsMintListLayoutRegistry,
   isCardListLayout,
   listGapStackClass,
@@ -103,7 +163,16 @@ export {
   formatDocsMintCollectionKinds,
   collectionKindUsesDocsSidebar,
   collectionKindContentSchema,
+  collectionKindShellLayout,
+  collectionKindRouteModes,
+  collectionKindModeRequiresRenderedEntry,
+  resolveCollectionKind,
+  defaultCollectionKind,
+  docsMintDocFormViewConfig,
   isPageCollectionKind,
+  isSearchableCollectionKind,
+  type CollectionRouteViewMode,
+  type CollectionShellLayout,
   type DocsMintCollectionContentSchema,
 } from './registry/collection-kinds.js'
 

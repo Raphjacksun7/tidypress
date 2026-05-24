@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "docsmint dev",
     "build": "docsmint build",
-    "preview": "docsmint preview"
+    "preview": "docsmint preview",
+    "context": "docsmint context docsmint-context.md"
   },
   "dependencies": {
     "docsmint": "workspace:*"

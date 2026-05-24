@@ -15,7 +15,7 @@ pnpm --filter @docsmint/example-custom-collections build
 Output:
 
 ```txt
-examples/custom-collections/docs/.docsmint/dist/
+examples/custom-collections/docs/build/
 ```
 
 Inspect:

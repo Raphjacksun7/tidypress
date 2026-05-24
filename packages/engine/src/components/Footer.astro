@@ -1,5 +1,6 @@
 ---
 import type { DocsMintConfig, FooterItemIcon } from '@docsmint/config'
+import { normalizeFooterItems, resolveCapabilityFlags } from '@docsmint/config'
 import LanguageSelector from '@/components/LanguageSelector.astro'
 
 export interface Props {
@@ -10,9 +11,23 @@ export interface Props {
   languageLabel: string
 }
 
+function getWritingBasePath(siteConfig: DocsMintConfig): string {
+  return siteConfig.collections?.writing?.basePath ?? '/writing'
+}
+
 const { site, locales, activeLocale, defaultLocale, languageLabel } = Astro.props
 
-const footerItems = site.footer ?? []
+const capabilityFlags = resolveCapabilityFlags(site)
+const footerSource = [...(site.footer ?? [])]
+if (capabilityFlags.writing && !footerSource.some(item => item.icon === 'rss')) {
+  footerSource.push({
+    label: 'RSS',
+    href: `${getWritingBasePath(site)}/rss.xml`,
+    icon: 'rss',
+    external: false,
+  })
+}
+const footerItems = normalizeFooterItems(footerSource) ?? []
 const iconItems = footerItems.filter(item => item.icon)
 const textItems = footerItems.filter(item => !item.icon)
 const hasRight = footerItems.length > 0
@@ -57,9 +72,9 @@ const icons: Record<FooterItemIcon, string> = {
 }
 ---
 <footer class="max-w-3xl mx-auto px-8 py-6 mt-4">
-  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-zinc-100 pt-6">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 dm-footer pt-6">
     <div class="flex items-center gap-3">
-      <p class="text-xs text-zinc-400">&copy; {new Date().getFullYear()} {site.name}</p>
+      <p class="dm-footer-copyright">&copy; {new Date().getFullYear()} {site.name}</p>
       <LanguageSelector
         locales={locales}
         activeLocale={activeLocale}
@@ -75,8 +90,8 @@ const icons: Record<FooterItemIcon, string> = {
           <a
             href={item.href}
             class="footer-icon-link"
-            target={item.external !== false ? '_blank' : undefined}
-            rel={item.external !== false ? 'noopener noreferrer' : undefined}
+            target={item.target}
+            rel={item.rel}
             aria-label={item.label}
           >
             <span class="sr-only">{item.label}</span>
@@ -94,9 +109,9 @@ const icons: Record<FooterItemIcon, string> = {
         {textItems.map(item => (
           <a
             href={item.href}
-            class="text-xs text-zinc-400 footer-text-link"
-            target={item.external !== false && item.href.startsWith('http') ? '_blank' : undefined}
-            rel={item.external !== false && item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+            class="dm-footer-copyright footer-text-link"
+            target={item.target}
+            rel={item.rel}
           >
             {item.label}
           </a>

@@ -1,7 +1,6 @@
 import type { DocsMintConfig } from '@docsmint/config'
 import { resolveCollectionIndexDisplay } from '@docsmint/config'
-import { getCollection } from 'astro:content'
-import { onlyPublished } from '@/utils/published'
+import { loadPublishedCollectionEntries } from '@/utils/collection-entries'
 import {
   getCollectionBasePath,
   getCollectionEntrySlug,
@@ -11,6 +10,12 @@ import type { SiteRouteDefinition } from '@/routing/types'
 import { resolveCollectionRouteViewKey } from '@/routing/view-registry'
 import type { RouteViewBundle } from '@/collections/bundle'
 import type { ICollection } from '@/collections/ICollection'
+
+type CollectionEntry = {
+  title?: string
+  description?: string
+  search?: boolean
+}
 
 export class PageCollection implements ICollection {
   readonly presentationTarget = 'page' as const
@@ -23,7 +28,7 @@ export class PageCollection implements ICollection {
     const basePath = getCollectionBasePath(this.site, collectionKey)
     const localePrefix = route.locale ? `/${route.locale}` : ''
     const localizedBase = `${localePrefix}${basePath}`.replace(/\/{2,}/g, '/') || basePath
-    const entries = onlyPublished(await getCollection(collectionKey as 'pages'))
+    const entries = await loadPublishedCollectionEntries<CollectionEntry>(collectionKey)
 
     return {
       viewKey: resolveCollectionRouteViewKey(this.presentationTarget, route),
@@ -35,7 +40,7 @@ export class PageCollection implements ICollection {
       pagefindIgnore: true,
       indexEntries: entries.map(entry => ({
         slug: getCollectionEntrySlug(entry.id),
-        title: (entry.data as { title?: string }).title ?? entry.id,
+        title: entry.data.title ?? entry.id,
         href: `${localizedBase}/${getCollectionEntrySlug(entry.id)}`,
       })),
       collectionDisplay: resolveCollectionIndexDisplay(collection?.display),
@@ -44,7 +49,7 @@ export class PageCollection implements ICollection {
 
   async buildEntry(route: SiteRouteDefinition): Promise<RouteViewBundle> {
     const collectionKey = route.collectionKey!
-    const entries = onlyPublished(await getCollection(collectionKey as 'pages'))
+    const entries = await loadPublishedCollectionEntries<CollectionEntry>(collectionKey)
     const entry = entries.find(
       candidate => candidate.id === route.entryId || getCollectionEntrySlug(candidate.id) === route.slug,
     )
@@ -69,11 +74,10 @@ export class PageCollection implements ICollection {
       viewKey: resolveCollectionRouteViewKey(this.presentationTarget, route),
       site: this.site,
       route,
-      title: (entry.data as { title?: string }).title ?? entry.id,
-      description: (entry.data as { description?: string }).description,
+      title: entry.data.title ?? entry.id,
+      description: entry.data.description,
       headings: [],
-      pagefindIgnore:
-        (entry.data as { search?: boolean }).search === false || isSearchExcluded(this.site, pagePath),
+      pagefindIgnore: entry.data.search === false || isSearchExcluded(this.site, pagePath),
     }
   }
 }

@@ -1,6 +1,7 @@
 import path from 'node:path'
 
 import { scaffoldDocs } from '../application/scaffolding/scaffold-docs.js'
+import { STARTER_PRESETS } from '../templates/starters.js'
 import { getDocsDir } from '../infrastructure/project/config.js'
 import { DocsMintError } from '../errors/DocsMintError.js'
 
@@ -9,20 +10,20 @@ import { DocsMintError } from '../errors/DocsMintError.js'
  */
 export class ScaffoldService {
   /**
-   * @param {{ projectRoot: string, starterPreset?: string }} request
+   * @param {{ projectRoot: string, starterPreset?: string, withAstro?: boolean }} request
    * @returns {Promise<{ docsDir: string, starterPreset: string }>}
    */
-  async scaffold({ projectRoot, starterPreset }) {
+  async scaffold({ projectRoot, starterPreset, withAstro }) {
     const docsDir = getDocsDir(projectRoot)
     const projectName = path.basename(projectRoot)
     try {
-      await scaffoldDocs({ docsDir, projectName, starterPreset })
+      await scaffoldDocs({ docsDir, projectName, starterPreset, withAstro })
     } catch (error) {
       if (error instanceof Error && error.message.startsWith('Unknown starter preset')) {
         throw new DocsMintError(
           error.message,
           'INVALID_INIT_OPTION',
-          'Use docsmint init [--preset default]',
+          `Use docsmint init [--preset ${Object.keys(STARTER_PRESETS).join('|')}]`,
           { exitCode: 2 },
         )
       }

@@ -93,6 +93,19 @@ match the git tag.
    `node ./node_modules/docsmint/bin/docsmint.js --version`.
 6. Publishes `wrappers/python` to PyPI via Trusted Publishing.
 
+## Explicit backlog (not regressions)
+
+Tracked for planning and release notes. **Not** treated as ship blockers unless a release explicitly scopes them.
+
+| Item | Status | Notes |
+|------|--------|--------|
+| **P3: newsletter embed** | Backlog | Config link/iframe block — not a hosted newsletter product |
+| **P3: `talks` collection kind** | Backlog | Only if event schema is repeatedly requested |
+| **Import: medium / ghost / substack** | Scaffold | `docsmint import devto` is live; other providers write review scaffolds (documented) |
+| **Repo hygiene** | Open | Add/commit `examples/*`, `apps/site/docsmint-context.md`, and remaining moat changes when ready for PR |
+
+Canonical detail: [agent-os/REALITY-BASELINE.md](./agent-os/REALITY-BASELINE.md#explicit-backlog-not-regressions).
+
 ## Release roadmap
 
 This section tracks engineering work that affects release sequencing and risk.
@@ -103,7 +116,7 @@ This section tracks engineering work that affects release sequencing and risk.
 - `sections.docs.enabled` and `sections.writing.enabled` added for section-level control.
 - `collections` is the canonical routing surface; `sections` remains compatibility-only.
 - `docsmint migrate-sections` generates deterministic migration output at
-  `docs/.docsmint/migrations/sections-to-collections.json`.
+  `~/.cache/docsmint/<project>/migrations/sections-to-collections.json`.
 - Shared docs sorting added to keep redirect/sidebar ordering consistent.
 - Edit-link support added via repository metadata.
 - Search exclusion controls added (`search: false` + config excludes).

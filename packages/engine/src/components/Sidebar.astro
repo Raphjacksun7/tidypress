@@ -1,8 +1,7 @@
 ---
-import { getCollection } from 'astro:content'
 import { getConfig } from '@/config/getConfig'
 import { sortDocs } from '@/utils/sort'
-import { onlyPublished } from '@/utils/published'
+import { loadPublishedCollectionEntries } from '@/utils/collection-entries'
 import { localizeEntries, resolveLocale, withLocalePrefix } from '@/i18n/locale'
 import { collectionKindUsesDocsSidebar, isDocsMintCollectionKind, isDocsStarterKey } from '@docsmint/config'
 import {
@@ -41,7 +40,7 @@ if (!activeDocsCollection) {
 const docsBasePath = activeDocsCollection.basePath
 const targetLocale = localeState.activeLocale ?? localeState.defaultLocale
 const docs = sortDocs(localizeEntries(
-  onlyPublished(await getCollection(activeDocsCollection.id as any)),
+  await loadPublishedCollectionEntries(activeDocsCollection.id),
   localeState,
   targetLocale,
 ).map(item => ({
@@ -78,7 +77,7 @@ for (const entry of visibleDocs) {
       ? entryId.slice(activeContentPrefix.length + 1)
       : entryId
   entryByDisplaySlug.set(displayId, {
-    title: entry.data.title,
+    title: (entry.data as { title?: string }).title ?? entry.id,
     href: `${docsBasePath}/${entryId}`,
   })
 }

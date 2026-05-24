@@ -43,32 +43,36 @@ export async function validatePresentationModules(docsDir, presentationModules) 
 export { collectPluginManifest }
 
 /**
- * @param {string} docsDir
- * @param {import('@docsmint/config').DocsMintConfig} config
- * @param {string} workdir
+ * @param {{ docsDir: string, config: import('@docsmint/config').DocsMintConfig, manifestPath: string }} options
  */
-export async function writePluginManifest({ docsDir, config, workdir }) {
+export async function writePluginManifest({ docsDir, config, manifestPath }) {
   const site = withDefaults(config)
   const manifest = collectPluginManifest(site, { projectRoot: docsDir })
-  const generatedDir = path.resolve(workdir, 'src/generated')
-  await fs.mkdir(generatedDir, { recursive: true })
-
-  const outPath = path.resolve(generatedDir, 'docsmint-plugins.mjs')
-  await fs.writeFile(outPath, formatPluginManifestModule(manifest), 'utf8')
+  await fs.mkdir(path.dirname(manifestPath), { recursive: true })
+  await fs.writeFile(manifestPath, formatPluginManifestModule(manifest), 'utf8')
   await validatePresentationModules(docsDir, manifest.presentationModules)
 
   return { manifest, pathsToMount: collectPluginPathsToMount(manifest) }
 }
 
 /**
+ * Symlink optional project extension trees into the cache for dev file watching only.
+ * Astro view imports resolve via the `@project` alias — no copy required for build.
+ *
  * @param {string} docsDir
  * @param {Set<string>} pathsToMount
+ * @param {string} cacheDir
  * @param {'dev' | 'build' | 'preview'} mode
  */
-export async function mountProjectPaths(docsDir, pathsToMount, mode) {
+export async function mountProjectPaths(docsDir, pathsToMount, cacheDir, mode) {
+  if (mode !== 'dev') {
+    return
+  }
+  const mountsRoot = path.join(cacheDir, 'mounts')
+  await fs.mkdir(mountsRoot, { recursive: true })
   for (const topLevel of pathsToMount) {
     const sourcePath = path.resolve(docsDir, topLevel)
-    const targetPath = path.resolve(docsDir, '.docsmint', topLevel)
+    const targetPath = path.join(mountsRoot, topLevel)
     try {
       await fs.lstat(sourcePath)
     } catch {
@@ -76,10 +80,6 @@ export async function mountProjectPaths(docsDir, pathsToMount, mode) {
     }
     await fs.rm(targetPath, { recursive: true, force: true })
     await fs.mkdir(path.dirname(targetPath), { recursive: true })
-    if (mode === 'dev') {
-      await fs.symlink(sourcePath, targetPath, 'junction')
-    } else {
-      await fs.cp(sourcePath, targetPath, { recursive: true })
-    }
+    await fs.symlink(sourcePath, targetPath, 'junction')
   }
 }

@@ -1,4 +1,5 @@
 import type { DocsMintConfig, DocsMintI18nStrings } from '@docsmint/config'
+import { resolveCapabilityFlags } from '@docsmint/config'
 
 export type I18nConfig = {
   defaultLocale?: string
@@ -21,6 +22,8 @@ const defaultUiStrings: Required<DocsMintI18nStrings> = {
   searchEmptyLabel: 'Type to search...',
   searchUnavailableLabel: 'Search unavailable in dev mode - run docsmint build, then docsmint preview.',
   searchNoResultsLabel: 'No results for "{query}"',
+  searchFilterLabel: 'Filter by collection',
+  searchFilterAllLabel: 'all',
   untitledLabel: 'Untitled',
   onThisPageLabel: 'On this page',
   editThisPageLabel: 'Edit this page',
@@ -79,12 +82,24 @@ export function switchLocalePath(pathname: string, targetLocale: string, i18n?: 
   return withLocalePrefix(basePath, targetLocale)
 }
 
+function defaultSearchPlaceholder(site: DocsMintConfig): string {
+  const flags = resolveCapabilityFlags(site)
+  if (flags.docs) {
+    return defaultUiStrings.searchPlaceholder
+  }
+  if (flags.writing) {
+    return 'Search writing...'
+  }
+  return 'Search...'
+}
+
 export function getUiStrings(site: DocsMintConfig, localeState: LocaleState): Required<DocsMintI18nStrings> {
   const locale = localeState.activeLocale ?? localeState.defaultLocale
   const defaultStrings = site.i18n?.strings?.[localeState.defaultLocale] ?? {}
   const localeStrings = site.i18n?.strings?.[locale] ?? {}
   return {
     ...defaultUiStrings,
+    searchPlaceholder: defaultSearchPlaceholder(site),
     ...defaultStrings,
     ...localeStrings,
   }

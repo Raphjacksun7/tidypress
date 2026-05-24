@@ -14,9 +14,11 @@ import {
   isCollectionEnabled,
 } from '@/utils/collections'
 import { localizeEntries, resolveLocale } from '@/i18n/locale'
+import { resolveEntryHrefFromData } from '@/utils/entry-href'
 
 export interface HomePreviewItem {
   href: string
+  external?: boolean
   title: string
   description?: string
   dateLabel?: string
@@ -79,11 +81,20 @@ export async function buildHomePreviewItems(
   const activeLocale = options.locale ?? localeState.defaultLocale
   const localized = localizeEntries(entries, localeState, activeLocale)
 
-  const sorted = sortCollectionEntries(
-    site,
-    collectionKey,
-    localized.map(item => ({ ...item.entry, id: item.slug })),
-  )
+  const mapped = localized.map(item => ({ ...item.entry, id: item.slug }))
+  const sorted = isWritingLikeCollection(site, collectionKey)
+    ? [...mapped].sort((a, b) => {
+        const aFeatured = (a.data as { featured?: boolean }).featured === true ? 1 : 0
+        const bFeatured = (b.data as { featured?: boolean }).featured === true ? 1 : 0
+        if (aFeatured !== bFeatured) {
+          return bFeatured - aFeatured
+        }
+        return (
+          new Date((b.data as { date?: string | Date }).date ?? 0).getTime() -
+          new Date((a.data as { date?: string | Date }).date ?? 0).getTime()
+        )
+      })
+    : sortCollectionEntries(site, collectionKey, mapped)
 
   const basePath = getCollectionBasePath(site, collectionKey)
   const localePrefix = options.locale ? `/${options.locale}` : ''
@@ -95,14 +106,16 @@ export async function buildHomePreviewItems(
       icon?: string
       tags?: string[]
       date?: string | Date
+      url?: string
     }
     const slug = entry.id
-    const href = options.locale
-      ? `${localePrefix}${basePath}/${getCollectionEntrySlug(slug)}`.replace(/\/{2,}/g, '/')
-      : getCollectionEntryPath(site, collectionKey, slug)
+    const { href, external } = resolveEntryHrefFromData(site, collectionKey, slug, data, {
+      locale: options.locale,
+    })
 
     return {
       href,
+      external,
       title: data.title ?? slug,
       description: data.description,
       icon: data.icon,

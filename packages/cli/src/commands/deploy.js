@@ -29,8 +29,8 @@ export class DeployCommand {
       this.io.info(`Generated deploy workflow: ${workflowPath}`)
       return
     }
-    const { distDir } = await this.buildService.build({ projectRoot })
-    await this.deployService.deploy({ projectRoot, distDir, target, io: this.io })
+    const { buildDir } = await this.buildService.build({ projectRoot })
+    await this.deployService.deploy({ projectRoot, distDir: buildDir, target, io: this.io })
 
     if (target) {
       this.io.info(`Deploy flow completed for target: ${target}`)

@@ -37,9 +37,9 @@ test('collectPluginManifest registers custom collection view keys', () => {
   assert.deepEqual(manifest.docFormKeys, ['api-reference'])
 })
 
-test('writePluginManifest emits generated module in workdir', async () => {
+test('writePluginManifest emits generated module in cache codegen path', async () => {
   const docsDir = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-plugin-manifest-'))
-  const workdir = path.join(docsDir, '.docsmint')
+  const manifestPath = path.join(docsDir, 'codegen', 'docsmint-plugins.mjs')
   await fs.mkdir(path.join(docsDir, 'site/renderers'), { recursive: true })
   await fs.writeFile(
     path.join(docsDir, 'site/renderers/api-presentation.ts'),
@@ -61,19 +61,16 @@ test('writePluginManifest emits generated module in workdir', async () => {
         },
       },
     },
-    workdir,
+    manifestPath,
   })
-  const generated = await fs.readFile(
-    path.join(workdir, 'src/generated/docsmint-plugins.mjs'),
-    'utf8',
-  )
+  const generated = await fs.readFile(manifestPath, 'utf8')
   assert.match(generated, /api:collection-entry/)
   assert.match(generated, /PLUGIN_PRESENTATION_MODULES/)
 })
 
 test('writePluginManifest rejects presentation modules without createPresentation', async () => {
   const docsDir = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-plugin-invalid-'))
-  const workdir = path.join(docsDir, '.docsmint')
+  const manifestPath = path.join(docsDir, 'codegen', 'docsmint-plugins.mjs')
   await fs.mkdir(path.join(docsDir, 'site/renderers'), { recursive: true })
   await fs.writeFile(path.join(docsDir, 'site/renderers/broken.ts'), 'export const nope = 1\n', 'utf8')
 
@@ -92,7 +89,7 @@ test('writePluginManifest rejects presentation modules without createPresentatio
             },
           },
         },
-        workdir,
+        manifestPath,
       }),
     /createPresentation/i,
   )

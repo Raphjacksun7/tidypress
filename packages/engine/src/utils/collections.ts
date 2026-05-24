@@ -1,8 +1,16 @@
-import { isStarterCollectionKey, resolveCapabilityFlags, type DocsMintConfig } from '@docsmint/config'
+import {
+  isDocsCollectionKey,
+  isDocsMintCollectionKind,
+  isSearchableCollectionKind,
+  isStarterCollectionKey,
+  resolveCapabilityFlags,
+  type DocsMintCollectionKind,
+  type DocsMintConfig,
+} from '@docsmint/config'
 import { withLocalePrefix } from '@/i18n/locale'
 import { stripDocExtension } from '@/routing/versioning'
 
-export type CollectionKind = 'docs' | 'writing' | 'page'
+export type CollectionKind = 'docs' | DocsMintCollectionKind
 
 export interface CollectionDefinition {
   key: string
@@ -14,6 +22,18 @@ export interface CollectionDefinition {
 
 function getCollectionRecord(site: DocsMintConfig, key: string) {
   return site.collections?.[key]
+}
+
+function resolveInternalCollectionKind(key: string, kind: string | undefined): CollectionKind {
+  if (isDocsCollectionKey(key)) {
+    return 'docs'
+  }
+  if (isDocsMintCollectionKind(kind)) {
+    return kind
+  }
+  throw new Error(
+    `collections.${key}.kind is invalid or missing at runtime. Ensure config normalization ran before route planning.`,
+  )
 }
 
 export function isCollectionEnabled(site: DocsMintConfig, key: string): boolean {
@@ -61,18 +81,22 @@ export function getLocalizedCollectionBasePath(
 export function getEnabledCollections(site: DocsMintConfig): CollectionDefinition[] {
   const capabilityFlags = resolveCapabilityFlags(site)
   return Object.entries(site.collections ?? {})
-    .map(([key, collection]) => ({
-      key,
-      kind: collection.kind ?? 'docs',
-      enabled: isStarterCollectionKey(key) ? capabilityFlags[key] : (collection.enabled ?? false),
-      basePath: collection.basePath,
-      label: collection.label ?? key,
-    }))
+    .map(([key, collection]) => {
+      return {
+        key,
+        kind: resolveInternalCollectionKind(key, collection.kind),
+        enabled: isStarterCollectionKey(key) ? capabilityFlags[key] : (collection.enabled ?? false),
+        basePath: collection.basePath,
+        label: collection.label ?? key,
+      }
+    })
     .filter(collection => collection.enabled)
 }
 
 export function getEnabledContentCollections(site: DocsMintConfig): CollectionDefinition[] {
-  return getEnabledCollections(site).filter(collection => collection.kind !== 'page')
+  return getEnabledCollections(site).filter(collection =>
+    isSearchableCollectionKind(collection.kind),
+  )
 }
 
 export function shouldLocalizeCollection(site: DocsMintConfig, key: string): boolean {

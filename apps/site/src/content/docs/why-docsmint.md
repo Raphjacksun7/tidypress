@@ -1,17 +1,15 @@
 ---
 title: Why DocsMint
-description: A small publishing tool for markdown docs and writing.
+description: Minimal markdown site for fast writing and project showcase.
 order: 1
 paging: false
 ---
 
-> Minimal markdown docs and writing.
+> Minimal markdown site for fast writing and project showcase.
 
-DocsMint is for projects that need a public site without turning publishing into a second job.
+DocsMint is for engineers who want a public site that stays in git — writing, projects on the home page, and reference docs only when you need them.
 
-Write markdown in git. Preview locally. Build static files. Deploy the output with the host or script you already trust.
-
-The tool should feel closer to a folder than a platform.
+Write markdown. Preview locally. Build static files. Deploy with whatever host you already use.
 
 ## What stays simple
 
@@ -19,7 +17,7 @@ The tool should feel closer to a folder than a platform.
 - docs and dated writing in one tree
 - a clean default interface
 - Pagefind search at build time
-- static output in `docs/.docsmint/dist/`
+- static output in `docs/build/`
 - deploy targets that hand off to normal static hosting tools
 
 ## What DocsMint is not

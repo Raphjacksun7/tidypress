@@ -5,15 +5,13 @@ import {
   type DocsMintDocForm,
   type DocsMintDocsPaging,
 } from '@docsmint/config'
-import { getCollection } from 'astro:content'
 import { sortDocs } from '@/utils/sort'
-import { onlyPublished } from '@/utils/published'
 import {
   getCollectionBasePath,
   getCollectionEntryPath,
   getCollectionEntrySlug,
 } from '@/utils/collections'
-import { localizeEntries, resolveLocale } from '@/i18n/locale'
+import { loadPublishedCollectionEntries, type EngineCollectionEntry } from '@/utils/collection-entries'
 import { isSearchExcluded } from '@/search/exclusion'
 import { versionContentPrefix } from '@/routing/versioning'
 import type { SiteRouteDefinition } from '@/routing/types'
@@ -22,8 +20,32 @@ import { resolveCollectionRouteViewKey, resolveDocFormRouteViewKey } from '@/rou
 import type { RouteViewBundle } from '@/collections/bundle'
 import type { ICollection } from '@/collections/ICollection'
 
+type CollectionEntry = {
+  title?: string
+  form?: string
+  part?: string
+  paging?: DocsMintDocsPaging
+  search?: boolean
+  description?: string
+}
+
+const MANUAL_DOC_FORM: DocsMintDocForm = 'manual'
+
 function readEntryDocForm(data: { form?: string }): DocsMintDocForm | undefined {
   return isDocsMintDocForm(data.form) ? data.form : undefined
+}
+
+function buildChapterNav(
+  site: DocsMintConfig,
+  collectionKey: string,
+  entries: EngineCollectionEntry<CollectionEntry>[],
+  route: Pick<SiteRouteDefinition, 'entryId' | 'slug' | 'locale'>,
+  docForm: DocsMintDocForm | undefined,
+) {
+  if (docForm === MANUAL_DOC_FORM) {
+    return buildManualChapterNav(site, collectionKey, entries, route)
+  }
+  return buildDocChapterNav(site, collectionKey, entries, route)
 }
 
 function resolveChapterNavVisibility(
@@ -54,7 +76,7 @@ export class DocsCollection implements ICollection {
     const localePrefix = route.locale ? `/${route.locale}` : ''
     const localizedBase = `${localePrefix}${basePath}`.replace(/\/{2,}/g, '/') || basePath
 
-    const docs = sortDocs(onlyPublished(await getCollection(collectionKey as 'docs')))
+    const docs = sortDocs(await loadPublishedCollectionEntries<CollectionEntry>(collectionKey))
     const plannedFirst = route.entryId ? docs.find(entry => entry.id === route.entryId) : undefined
     const firstVersionPrefix = this.site.versions?.[0]
       ? versionContentPrefix(this.site.versions[0].path, basePath)
@@ -101,7 +123,7 @@ export class DocsCollection implements ICollection {
 
   async buildEntry(route: SiteRouteDefinition): Promise<RouteViewBundle> {
     const collectionKey = route.collectionKey!
-    const entries = onlyPublished(await getCollection(collectionKey as 'docs'))
+    const entries = await loadPublishedCollectionEntries<CollectionEntry>(collectionKey)
     const entry = entries.find(
       candidate => candidate.id === route.entryId || getCollectionEntrySlug(candidate.id) === route.slug,
     )
@@ -121,30 +143,20 @@ export class DocsCollection implements ICollection {
     const pagePath = route.locale
       ? `/${route.locale}${basePath}/${route.slug ?? getCollectionEntrySlug(entry.id)}`.replace(/\/{2,}/g, '/')
       : getCollectionEntryPath(this.site, collectionKey, entry.id)
-    const entryData = entry.data as {
-      title?: string
-      form?: string
-      part?: string
-      paging?: DocsMintDocsPaging
-    }
+    const entryData = entry.data
     const docForm = readEntryDocForm(entryData)
     const chapterNavVisibility = resolveChapterNavVisibility(this.site, entryData.paging)
     const navRoute = { entryId: route.entryId, slug: route.slug, locale: route.locale }
-    // All doc-form entries get chapter navigation; manual has its own sequence.
-    const chapterNav =
-      docForm === 'manual'
-        ? buildManualChapterNav(this.site, collectionKey, entries, navRoute)
-        : buildDocChapterNav(this.site, collectionKey, entries, navRoute)
+    const chapterNav = buildChapterNav(this.site, collectionKey, entries, navRoute, docForm)
 
     return {
       viewKey: resolveDocFormRouteViewKey(docForm, route),
       site: this.site,
       route,
       title: entryData.title ?? entry.id,
-      description: (entry.data as { description?: string }).description,
+      description: entryData.description,
       headings: [],
-      pagefindIgnore:
-        (entry.data as { search?: boolean }).search === false || isSearchExcluded(this.site, pagePath),
+      pagefindIgnore: entryData.search === false || isSearchExcluded(this.site, pagePath),
       editPath: getCollectionEntryPath(this.site, collectionKey, entry.id),
       entryMeta: {
         docForm,

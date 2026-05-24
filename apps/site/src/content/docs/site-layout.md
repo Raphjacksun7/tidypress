@@ -6,6 +6,23 @@ order: 6
 
 Start without layout config. Add only the overrides your site needs.
 
+## Hero bar
+
+The home hero is off by default. Enable it in config when you want role, pronunciation, lead, and links above homepage previews:
+
+```ts
+hero: {
+  enabled: true,
+  role: 'Engineer',
+  lead: 'Short bio on the home page.',
+  links: [
+    { label: 'GitHub', href: 'https://github.com/you', external: true },
+  ],
+},
+```
+
+Use `docsmint init --preset persona` for a starter layout with hero, projects, and an about page.
+
 ## Sidebar
 
 Without `docs.sidebar`, DocsMint builds the docs sidebar from published docs entries and their `order` frontmatter.
@@ -88,6 +105,37 @@ home: {
   },
 }
 ```
+
+`home.order` lists **collection keys** from `collections`, not `label` values. A projects showcase keyed as `works` belongs in the array as `'works'`:
+
+```ts
+home: {
+  order: ['writing', 'works'],
+  collections: {
+    works: { layout: 'card', showDescription: true },
+  },
+},
+```
+
+### Home presets
+
+`home.preset` applies default section order (and lab/persona project card layout) when you omit `home.order`. It does **not** enable or disable collections — set `collections` and `capabilities` separately.
+
+| `home.preset` | Default `home.order` |
+|---------------|----------------------|
+| `lab` | `['writing', 'projects']` + project cards on homepage |
+| `blog` | `['writing']` |
+| `docs-writing` | `['writing', 'docs']` |
+| `persona` | `['projects', 'writing']` + project cards on homepage |
+
+```ts
+home: {
+  preset: 'lab',
+  previewLimit: 4,
+},
+```
+
+Explicit `home.order` and `home.collections` override preset defaults.
 
 Defaults:
 

@@ -1,8 +1,10 @@
 ---
 import {
+  docsMintCollectionIndexPresentation,
   isCardListLayout,
   listGapStackClass,
   listLayoutPresentation,
+  resolveEntryLinkAttributes,
   type ResolvedListDisplay,
 } from '@docsmint/config'
 import TagList from '@/components/TagList.astro'
@@ -15,44 +17,63 @@ interface Props {
 
 const { entries, display } = Astro.props
 const stackClass = listGapStackClass(display.gap)
-const presentation = listLayoutPresentation(display.layout)
+const cardPresentation = listLayoutPresentation('card')
+const listPresentation = listLayoutPresentation('list')
+const indexPresentation = docsMintCollectionIndexPresentation
 ---
 {isCardListLayout(display.layout) ? (
-  <div class:list={[presentation.containerClass, stackClass]}>
-    {entries.map(entry => (
-      <article class={presentation.articleClass}>
-        <a href={entry.href} class={presentation.linkClass}>
-          {display.showDate && (entry.dateLabel || entry.author) && (
-            <div class={presentation.metaClass}>
-              {entry.dateLabel && (
-                <time datetime={entry.dateIso ?? entry.dateLabel}>{entry.dateLabel}</time>
-              )}
-              {entry.dateLabel && entry.author && <span>·</span>}
-              {entry.author && <span>{entry.author}</span>}
-            </div>
-          )}
-          <h2 class={presentation.titleClass}>{entry.title}</h2>
-          {display.showDescription && entry.description && (
-            <p class={presentation.descriptionClass}>{entry.description}</p>
-          )}
-          {display.showTags && entry.tags && entry.tags.length > 0 && (
-            <TagList tags={entry.tags} />
-          )}
-        </a>
-      </article>
-    ))}
+  <div class:list={[cardPresentation.containerClass, stackClass]}>
+    {entries.map(entry => {
+      const linkAttrs = resolveEntryLinkAttributes(entry)
+      return (
+        <article class={cardPresentation.articleClass}>
+          <a href={entry.href} class={cardPresentation.linkClass} {...linkAttrs}>
+            {entry.status && (
+              <span class={cardPresentation.statusClass}>{entry.status}</span>
+            )}
+            {display.showDate && (entry.dateLabel || entry.author) && (
+              <div class={cardPresentation.metaClass}>
+                {entry.dateLabel && (
+                  <time datetime={entry.dateIso ?? entry.dateLabel}>{entry.dateLabel}</time>
+                )}
+                {entry.dateLabel && entry.author && <span>·</span>}
+                {entry.author && <span>{entry.author}</span>}
+              </div>
+            )}
+            <h2 class={cardPresentation.titleClass}>{entry.title}</h2>
+            {display.showDescription && entry.description && (
+              <p class={cardPresentation.descriptionClass}>{entry.description}</p>
+            )}
+            {display.showTags && entry.tags && entry.tags.length > 0 && (
+              <TagList tags={entry.tags} />
+            )}
+          </a>
+        </article>
+      )
+    })}
   </div>
 ) : (
   <ul class:list={[stackClass]}>
-    {entries.map(entry => (
-      <li>
-        <a href={entry.href} data-no-hover class:list={['group', presentation.rowClass]} style="text-decoration:none">
-          <span class={presentation.titleClass} {...{ [presentation.titleDataAttr]: true }}>{entry.title}</span>
-          {display.showDate && entry.dateLabel && (
-                <span class:list={[presentation.metaClass, presentation.metaToneClass]}>{entry.dateLabel}</span>
-              )}
-        </a>
-      </li>
-    ))}
+    {entries.map(entry => {
+      const linkAttrs = resolveEntryLinkAttributes(entry)
+      return (
+        <li>
+          <a
+            href={entry.href}
+            data-no-hover
+            class:list={[indexPresentation.listLinkClass, listPresentation.rowClass]}
+            {...linkAttrs}
+          >
+            <span class={listPresentation.titleClass} {...{ [listPresentation.titleDataAttr]: true }}>{entry.title}</span>
+            {entry.status && (
+              <span class={listPresentation.metaClass}>{entry.status}</span>
+            )}
+            {display.showDate && entry.dateLabel && (
+              <span class={listPresentation.metaClass}>{entry.dateLabel}</span>
+            )}
+          </a>
+        </li>
+      )
+    })}
   </ul>
 )}

@@ -4,6 +4,7 @@ import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 
+import { scaffoldDocs } from '../src/application/scaffolding/scaffold-docs.js'
 import { BuildService } from '../src/services/BuildService.js'
 import { ConfigLoader } from '../src/services/ConfigLoader.js'
 import { EngineManager } from '../src/services/EngineManager.js'
@@ -202,7 +203,11 @@ test('BuildService renders MDX and emits pagefind artifacts', { timeout: 900_000
     engineManager: new EngineManager(),
   })
 
-  const { distDir } = await service.build({ projectRoot: root })
+  const { buildDir, cacheDir } = await service.build({ projectRoot: root })
+  const distDir = buildDir
+  await assert.rejects(async () => {
+    await fs.access(path.join(docsDir, '.docsmint'))
+  })
 
   const docsHtml = await fs.readFile(path.join(distDir, 'fr/docs/getting-started/index.html'), 'utf8')
   assert.match(docsHtml, /Guide francais/)
@@ -282,6 +287,100 @@ test('BuildService renders MDX and emits pagefind artifacts', { timeout: 900_000
   await fs.access(path.join(distDir, 'pagefind/pagefind-entry.json'))
   await fs.access(path.join(distDir, 'og.svg'))
 
-  const configSidecar = await fs.readFile(path.join(docsDir, '.docsmint/config.json'), 'utf8')
+  const configSidecar = await fs.readFile(path.join(cacheDir, 'config.json'), 'utf8')
   assert.match(configSidecar, /"name": "Engine e2e fixture"/)
+})
+
+test('blog preset build produces writing-only routes and homepage', async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-engine-blog-'))
+  const docsDir = path.join(root, 'docs')
+
+  await scaffoldDocs({ docsDir, projectName: 'blog-e2e', starterPreset: 'blog' })
+
+  const service = new BuildService({
+    configLoader: new ConfigLoader(),
+    engineManager: new EngineManager(),
+  })
+  const { buildDir } = await service.build({ projectRoot: root })
+
+  const homeHtml = await fs.readFile(path.join(buildDir, 'index.html'), 'utf8')
+  assert.match(homeHtml, /dm-home-section-title">writing/)
+  assert.match(homeHtml, /href="\/writing\/hello"/)
+  assert.match(homeHtml, /placeholder="Search writing\.\.\."/)
+  assert.match(homeHtml, /href="\/writing\/rss\.xml"/)
+  assert.doesNotMatch(homeHtml, /href="\/docs/)
+  assert.doesNotMatch(homeHtml, /href="\/projects/)
+  assert.doesNotMatch(homeHtml, /dm-hero/)
+
+  await fs.access(path.join(buildDir, 'writing/hello/index.html'))
+  await fs.access(path.join(buildDir, 'writing/index.html'))
+  await fs.access(path.join(buildDir, 'writing/rss.xml'))
+  await assert.rejects(() => fs.access(path.join(buildDir, 'docs/index.html')))
+  await assert.rejects(() => fs.access(path.join(buildDir, 'projects/index.html')))
+  await assert.rejects(() => fs.access(path.join(buildDir, 'pages/index.html')))
+})
+
+test('lab preset build produces writing, projects, and collection search filters', { timeout: 900_000 }, async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-engine-lab-'))
+  const docsDir = path.join(root, 'docs')
+
+  await scaffoldDocs({ docsDir, projectName: 'lab-e2e', starterPreset: 'lab' })
+
+  await fs.writeFile(
+    path.join(docsDir, 'src/content/projects/sample-project.md'),
+    `---
+title: Tagged project
+description: Project with a tag index route.
+status: active
+featured: true
+tags: [oss]
+---
+
+On-site project page.
+`,
+    'utf8',
+  )
+
+  const service = new BuildService({
+    configLoader: new ConfigLoader(),
+    engineManager: new EngineManager(),
+  })
+  const { buildDir } = await service.build({ projectRoot: root })
+
+  const homeHtml = await fs.readFile(path.join(buildDir, 'index.html'), 'utf8')
+  assert.match(homeHtml, /dm-home-section-title">writing/)
+  assert.match(homeHtml, /dm-home-section-title">projects/)
+  assert.match(homeHtml, /search-filters/)
+  assert.match(homeHtml, /data-search-filter="writing"/)
+  assert.match(homeHtml, /data-search-filter="projects"/)
+  assert.doesNotMatch(homeHtml, /dm-hero/)
+  assert.doesNotMatch(homeHtml, /href="\/docs\//)
+
+  const writingHtml = await fs.readFile(path.join(buildDir, 'writing/hello/index.html'), 'utf8')
+  assert.match(writingHtml, /data-pagefind-filter="collection:writing"/)
+
+  await fs.access(path.join(buildDir, 'projects/tags/oss/index.html'))
+  await fs.access(path.join(buildDir, 'writing/rss.xml'))
+  await assert.rejects(() => fs.access(path.join(buildDir, 'docs/index.html')))
+})
+
+test('persona preset build renders hero and about page', { timeout: 900_000 }, async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-engine-persona-'))
+  const docsDir = path.join(root, 'docs')
+
+  await scaffoldDocs({ docsDir, projectName: 'persona-e2e', starterPreset: 'persona' })
+
+  const service = new BuildService({
+    configLoader: new ConfigLoader(),
+    engineManager: new EngineManager(),
+  })
+  const { buildDir } = await service.build({ projectRoot: root })
+
+  const homeHtml = await fs.readFile(path.join(buildDir, 'index.html'), 'utf8')
+  assert.match(homeHtml, /dm-hero/)
+  assert.match(homeHtml, /dm-hero__role/)
+  assert.match(homeHtml, /dm-home-section-title">projects/)
+
+  await fs.access(path.join(buildDir, 'about/index.html'))
+  await fs.access(path.join(buildDir, 'projects/highlight/index.html'))
 })

@@ -3,18 +3,22 @@
 // Triggered by pressing / or clicking the search link in the nav.
 import { getConfig } from '@/config/getConfig'
 import type { DocsMintI18nStrings } from '@docsmint/config'
+import { PAGEFIND_COLLECTION_FILTER_KEY } from '@docsmint/config'
 import { resolveLocale, withLocalePrefix } from '@/i18n/locale'
 
 export interface Props {
   strings: Required<DocsMintI18nStrings>
+  collections?: Array<{ key: string; label: string }>
 }
-const { strings: searchStrings } = Astro.props
+
+const { strings: searchStrings, collections = [] } = Astro.props
 const rawSite = (await import('@site-config')).default
 const site = getConfig(rawSite)
 const localeState = resolveLocale(Astro.url.pathname, site.i18n)
 const localizedVersionPaths = (site.versions ?? []).map(version =>
   withLocalePrefix(version.path, localeState.activeLocale),
 )
+const showCollectionFilters = collections.length > 1
 ---
 
 <!-- Search trigger -->
@@ -53,6 +57,23 @@ const localizedVersionPaths = (site.versions ?? []).map(version =>
         <kbd id="search-close-hint" class="search-kbd">esc</kbd>
       </div>
 
+      {showCollectionFilters && (
+        <div id="search-filters" class="search-filters" role="group" aria-label={searchStrings.searchFilterLabel}>
+          <button type="button" class="search-filter search-filter--active" data-search-filter="">
+            {searchStrings.searchFilterAllLabel}
+          </button>
+          {collections.map(collection => (
+            <button
+              type="button"
+              class="search-filter"
+              data-search-filter={collection.key}
+            >
+              {collection.label}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div id="search-results" class="search-results">
         <p id="search-empty" class="search-empty">
           {searchStrings.searchEmptyLabel}
@@ -62,9 +83,18 @@ const localizedVersionPaths = (site.versions ?? []).map(version =>
   </div>
 </div>
 
-<script is:inline define:vars={{ localizedVersionPaths, searchStrings }}>
+<script
+  is:inline
+  define:vars={{
+    localizedVersionPaths,
+    searchStrings,
+    pagefindCollectionFilterKey: PAGEFIND_COLLECTION_FILTER_KEY,
+    showCollectionFilters,
+  }}
+>
 let pagefind = null
 const versionPaths = [...localizedVersionPaths]
+let activeCollectionFilter = ''
 
 function normalizePath(value) {
   if (value.length > 1 && value.endsWith('/')) {
@@ -98,6 +128,17 @@ function isExcludedSearchResult(item) {
   return pathname === '/404' || pathname.endsWith('/404')
 }
 
+function pagefindSearchOptions() {
+  if (!showCollectionFilters || !activeCollectionFilter) {
+    return {}
+  }
+  return {
+    filters: {
+      [pagefindCollectionFilterKey]: activeCollectionFilter,
+    },
+  }
+}
+
 async function loadPagefind() {
   if (pagefind) return pagefind
   try {
@@ -116,10 +157,37 @@ const input = document.getElementById('search-input')
 const results = document.getElementById('search-results')
 const empty = document.getElementById('search-empty')
 const trigger = document.getElementById('search-trigger')
+const filtersRoot = document.getElementById('search-filters')
 
 if (!modal || !backdrop || !input || !results || !empty || !trigger) {
   // Search UI not mounted (e.g. partial render)
 } else {
+  function setActiveFilterButton(key) {
+    if (!filtersRoot) {
+      return
+    }
+    for (const button of filtersRoot.querySelectorAll('[data-search-filter]')) {
+      const value = button.getAttribute('data-search-filter') ?? ''
+      button.classList.toggle('search-filter--active', value === key)
+    }
+  }
+
+  if (filtersRoot) {
+    filtersRoot.addEventListener('click', event => {
+      const target = event.target
+      if (!(target instanceof HTMLElement)) {
+        return
+      }
+      const button = target.closest('[data-search-filter]')
+      if (!(button instanceof HTMLButtonElement)) {
+        return
+      }
+      activeCollectionFilter = button.getAttribute('data-search-filter') ?? ''
+      setActiveFilterButton(activeCollectionFilter)
+      input.dispatchEvent(new Event('input'))
+    })
+  }
+
   function openSearch() {
     modal.classList.remove('hidden')
     input.placeholder = searchStrings.searchPlaceholder
@@ -165,7 +233,7 @@ if (!modal || !backdrop || !input || !results || !empty || !trigger) {
         results.appendChild(empty)
         return
       }
-      const search = await pf.search(q)
+      const search = await pf.search(q, pagefindSearchOptions())
       if (!search.results.length) {
         empty.textContent = searchStrings.searchNoResultsLabel.replace('{query}', q)
         results.innerHTML = ''

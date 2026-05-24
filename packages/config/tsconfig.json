@@ -6,8 +6,10 @@
     "declaration": true,
     "emitDeclarationOnly": false,
     "outDir": "dist",
+    "rootDir": "src",
     "strict": true,
     "skipLibCheck": true,
+    "resolveJsonModule": true,
     "types": ["node"]
   },
   "include": ["src/**/*.ts"]

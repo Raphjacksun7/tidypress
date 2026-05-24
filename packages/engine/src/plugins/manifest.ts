@@ -20,7 +20,7 @@ let cachedEpoch = -1
 async function loadGeneratedManifest(): Promise<GeneratedPluginManifest> {
   const epoch = import.meta.env.DEV ? (globalThis.__DOCSMINT_MANIFEST_EPOCH ?? 0) : 0
   if (!import.meta.env.DEV || epoch === 0) {
-    return staticPluginManifest
+    return staticPluginManifest as GeneratedPluginManifest
   }
   if (cachedManifest && cachedEpoch === epoch) {
     return cachedManifest

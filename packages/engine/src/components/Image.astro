@@ -5,6 +5,10 @@
 //   ![alt text](./diagram.png)          ← local, gets optimized
 //   ![alt text](/public-image.png)      ← served from public/, no processing
 import { Image as AstroImage } from 'astro:assets'
+import {
+  DOCSMINT_IMAGE_PRESENTATION,
+  isRemoteOrPublicImageSrc,
+} from '@/utils/image'
 
 export interface Props {
   src: string | ImageMetadata
@@ -15,17 +19,18 @@ export interface Props {
 }
 
 const { src, alt, width, height, caption } = Astro.props
-const isRemoteOrPublic = typeof src === 'string' && (src.startsWith('http') || src.startsWith('/'))
+const isRemoteOrPublic = isRemoteOrPublicImageSrc(src)
 ---
-<figure class="my-8">
+<figure class={DOCSMINT_IMAGE_PRESENTATION.figureClass}>
   {isRemoteOrPublic
     ? <img src={src as string} alt={alt} width={width} height={height}
-           class="max-w-full rounded border border-zinc-200" loading="lazy" />
+           class={DOCSMINT_IMAGE_PRESENTATION.frameClass} loading="lazy" />
     : <AstroImage src={src as ImageMetadata} alt={alt}
-           width={width ?? 800} height={height ?? 450}
-           class="max-w-full rounded border border-zinc-200" />
+           width={width ?? DOCSMINT_IMAGE_PRESENTATION.optimizedWidth}
+           height={height ?? DOCSMINT_IMAGE_PRESENTATION.optimizedHeight}
+           class={DOCSMINT_IMAGE_PRESENTATION.frameClass} />
   }
   {caption && (
-    <figcaption class="text-xs text-zinc-400 mt-2 text-center">{caption}</figcaption>
+    <figcaption class={DOCSMINT_IMAGE_PRESENTATION.captionClass}>{caption}</figcaption>
   )}
 </figure>

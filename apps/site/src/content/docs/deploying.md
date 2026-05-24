@@ -13,7 +13,7 @@ docsmint build
 Output:
 
 ```txt
-docs/.docsmint/dist/
+docs/build/
 ```
 
 That directory contains HTML, Astro assets, sitemap files, public assets, and the Pagefind search index.
@@ -69,12 +69,12 @@ The command hands `dist/` to the selected CLI.
 docsmint deploy docker
 ```
 
-This writes `Dockerfile` and `docker-compose.yml` into `docs/.docsmint/dist/`.
+This writes `Dockerfile` and `docker-compose.yml` into `docs/build/`.
 
 Then run:
 
 ```bash
-cd docs/.docsmint/dist
+cd docs/build
 docker compose up -d --build
 ```
 
@@ -97,7 +97,7 @@ DOCSMINT_S3_TARGET=s3://my-bucket/docs docsmint deploy s3
 DocsMint runs:
 
 ```bash
-aws s3 sync docs/.docsmint/dist/ s3://my-bucket/docs --delete
+aws s3 sync docs/build/ s3://my-bucket/docs --delete
 ```
 
 You need the AWS CLI installed and authenticated.
@@ -119,7 +119,7 @@ DOCSMINT_SSH_TARGET=deploy@example.com:/var/www/docs docsmint deploy ssh
 DocsMint runs:
 
 ```bash
-rsync -az --delete docs/.docsmint/dist/ deploy@example.com:/var/www/docs
+rsync -az --delete docs/build/ deploy@example.com:/var/www/docs
 ```
 
 You need `rsync` and SSH access.
@@ -166,7 +166,7 @@ server {
 Deploy the contents of:
 
 ```txt
-docs/.docsmint/dist/
+docs/build/
 ```
 
-Do not upload `docs/.docsmint/` itself. Upload the `dist/` contents.
+Do not upload `~/.cache/docsmint/`. Upload only the `build/` contents.

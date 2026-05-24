@@ -2,7 +2,7 @@ import { defineConfig } from 'docsmint/config'
 
 export default defineConfig({
   name: 'docsmint',
-  description: 'Minimal markdown docs and writing.',
+  description: 'Minimal markdown site for fast writing and project showcase.',
   branding: {
     icon: '/favicon.svg',
     favicon: '/favicon-white.svg',
@@ -29,7 +29,7 @@ export default defineConfig({
       },
       {
         label: 'Configure',
-        items: ['configuration', 'site-layout', 'theme-typography'],
+        items: ['configuration', 'site-layout', 'display-options', 'theme-typography'],
       },
       {
         label: 'Ship',

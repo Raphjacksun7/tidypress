@@ -7,18 +7,18 @@ import fs from 'node:fs/promises'
 import { scaffoldDocs } from '../src/application/scaffolding/scaffold-docs.js'
 import { createContentSnapshot, writeContentSnapshot } from '../src/application/content/context-snapshot.js'
 import { copyDistToDestination, resolveDeployTarget } from '../src/application/deployment/deploy-target.js'
-import { getWorkdir } from '../src/infrastructure/engine/workdir.js'
+import { getBuildDir } from '../src/infrastructure/engine/build-session.js'
 
-test('getWorkdir resolves .docsmint under docs directory', () => {
+test('getBuildDir resolves build/ under docs directory', () => {
   const docsDir = '/tmp/project/docs'
-  assert.equal(getWorkdir(docsDir), '/tmp/project/docs/.docsmint')
+  assert.equal(getBuildDir(docsDir), '/tmp/project/docs/build')
 })
 
 test('scaffoldDocs creates docs and writing content structure', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-scaffold-'))
   const docsDir = path.join(root, 'docs')
 
-  await scaffoldDocs({ docsDir, projectName: 'example-project' })
+  await scaffoldDocs({ docsDir, projectName: 'example-project', starterPreset: 'docs-writing' })
 
   const config = await fs.readFile(path.join(docsDir, 'docsmint.config.ts'), 'utf8')
   const docsPage = await fs.readFile(
@@ -32,9 +32,35 @@ test('scaffoldDocs creates docs and writing content structure', async () => {
 
   assert.match(config, /export default \{/)
   assert.match(config, /siteUrl/)
-  assert.match(config, /collections:/)
+  assert.match(config, /"collections":/)
   assert.match(docsPage, /title: Getting started/)
   assert.match(writingPage, /title: Hello/)
+})
+
+test('scaffoldDocs blog preset creates writing only and disables docs', async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-scaffold-blog-'))
+  const docsDir = path.join(root, 'docs')
+
+  await scaffoldDocs({ docsDir, projectName: 'blog-site', starterPreset: 'blog' })
+
+  const config = await fs.readFile(path.join(docsDir, 'docsmint.config.ts'), 'utf8')
+  assert.match(config, /"disable": \[\s*"docs",\s*"pages"\s*\]/)
+  assert.match(config, /"pages":\s*\{[^}]*"enabled": false/)
+  assert.doesNotMatch(config, /"kind": "projects"/)
+  await fs.access(path.join(docsDir, 'src/content/writing/hello.md'))
+  await assert.rejects(fs.access(path.join(docsDir, 'src/content/docs/getting-started.md')))
+})
+
+test('scaffoldDocs lab preset creates writing and projects', async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-scaffold-lab-'))
+  const docsDir = path.join(root, 'docs')
+
+  await scaffoldDocs({ docsDir, projectName: 'lab-site', starterPreset: 'lab' })
+
+  const config = await fs.readFile(path.join(docsDir, 'docsmint.config.ts'), 'utf8')
+  assert.match(config, /"kind": "projects"/)
+  assert.match(config, /"disable": \[\s*"docs",\s*"pages"\s*\]/)
+  await fs.access(path.join(docsDir, 'src/content/projects/sample-project.md'))
 })
 
 test('scaffoldDocs custom preset creates a custom content collection example', async () => {
@@ -47,7 +73,7 @@ test('scaffoldDocs custom preset creates a custom content collection example', a
   const playbook = await fs.readFile(path.join(docsDir, 'src/content/playbooks/on-call.md'), 'utf8')
 
   assert.match(config, /playbooks/)
-  assert.match(config, /kind: 'content'/)
+  assert.match(config, /"kind": "content"/)
   assert.match(playbook, /title: On-call playbook/)
 })
 

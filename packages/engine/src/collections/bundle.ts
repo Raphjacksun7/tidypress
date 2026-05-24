@@ -16,6 +16,8 @@ export interface IndexEntryPreview {
   dateIso?: string
   icon?: string
   tags?: string[]
+  external?: boolean
+  status?: string
 }
 
 export interface RouteViewBundle {
@@ -57,6 +59,8 @@ export interface RouteViewBundle {
     dateLabel?: string
     author?: string
     tags?: string[]
+    readingTimeLabel?: string
+    ogImage?: string
     docForm?: DocsMintDocForm
     formLabel?: string
     part?: string

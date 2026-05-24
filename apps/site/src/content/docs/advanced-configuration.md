@@ -154,8 +154,23 @@ Enable or disable capabilities:
 capabilities: {
   disable: ['pages'],
   enable: ['themingCustom'],
-}
+},
 ```
+
+Writing-only sites often disable `docs` and `pages` (as the `blog` init preset does) so `/docs` and empty `/pages/` routes are not built:
+
+```ts
+capabilities: {
+  disable: ['docs', 'pages'],
+},
+collections: {
+  docs: { enabled: false, basePath: '/docs' },
+  writing: { enabled: true, basePath: '/writing', kind: 'writing' },
+  pages: { enabled: false, kind: 'page' },
+},
+```
+
+When `docs` is disabled, the search modal placeholder defaults to **Search writing...** instead of **Search docs...**. Override with `i18n.strings` if needed.
 
 Experimental commands require config and CLI opt-ins:
 

@@ -1,8 +1,10 @@
 ---
 import {
+  docsMintHomePreviewPresentation,
   isCardListLayout,
   listGapStackClass,
   listLayoutPresentation,
+  resolveEntryLinkAttributes,
   type ResolvedListDisplay,
 } from '@docsmint/config'
 import EntryIcon from '@/components/EntryIcon.astro'
@@ -21,33 +23,35 @@ interface Props {
 
 const { title, items, display, showDateInList, showDescriptionInList, moreHref, moreLabel } = Astro.props
 const stackClass = listGapStackClass(display.gap)
-const presentation = listLayoutPresentation(display.layout)
+const cardPresentation = listLayoutPresentation('card')
 const listPresentation = listLayoutPresentation('list')
+const previewPresentation = docsMintHomePreviewPresentation
 const shouldRenderCardRows = isCardListLayout(display.layout) && display.showDescription
 ---
 {items.length > 0 && (
-  <section class="space-y-3">
-    <p class="text-sm font-bold text-zinc-500">{title}</p>
+  <section class={previewPresentation.sectionClass}>
+    <p class="dm-home-section-title">{title}</p>
     {shouldRenderCardRows ? (
-      <ul class:list={[presentation.containerClass, stackClass]}>
+      <ul class:list={[cardPresentation.containerClass, stackClass]}>
         {items.map(item => {
           const iconSrc = item.icon ?? display.icon
+          const linkAttrs = resolveEntryLinkAttributes(item)
           return (
             <li>
-              <a href={item.href} class="group home-card-row" style="text-decoration:none">
+              <a href={item.href} class={previewPresentation.cardLinkClass} {...linkAttrs}>
                 {iconSrc && (
                   <EntryIcon src={iconSrc} />
                 )}
-                <div class="min-w-0">
-                  <span class="home-card-title">{item.title}</span>
+                <div class={previewPresentation.cardContentClass}>
+                  <span class={previewPresentation.cardTitleClass}>{item.title}</span>
                   {display.showDescription && item.description && (
-                    <p class="home-card-description">{item.description}</p>
+                    <p class={previewPresentation.cardDescriptionClass}>{item.description}</p>
                   )}
                   {display.showTags && item.tags && item.tags.length > 0 && (
                     <TagList tags={item.tags} />
                   )}
                   {showDateInList && item.dateLabel && (
-                    <p class="home-card-meta">{item.dateLabel}</p>
+                    <p class={previewPresentation.cardMetaClass}>{item.dateLabel}</p>
                   )}
                 </div>
               </a>
@@ -57,24 +61,31 @@ const shouldRenderCardRows = isCardListLayout(display.layout) && display.showDes
       </ul>
     ) : (
       <ul class:list={[stackClass]}>
-        {items.map(item => (
+        {items.map(item => {
+          const linkAttrs = resolveEntryLinkAttributes(item)
+          return (
           <li>
-            <a href={item.href} data-no-hover class:list={['group', listPresentation.rowClass]} style="text-decoration:none">
-              <span class={listPresentation.titleClass} data-writing-title>{item.title}</span>
+            <a
+              href={item.href}
+              data-no-hover
+              class:list={[previewPresentation.listLinkClass, listPresentation.rowClass]}
+              {...linkAttrs}
+            >
+              <span class={listPresentation.titleClass} {...{ [previewPresentation.listTitleDataAttr]: true }}>{item.title}</span>
               {showDateInList && item.dateLabel && (
-                <span class:list={[listPresentation.metaClass, listPresentation.metaToneClass]}>{item.dateLabel}</span>
+                <span class={listPresentation.metaClass}>{item.dateLabel}</span>
               )}
               {showDescriptionInList && item.description && (
-                <span class:list={[listPresentation.metaClass, listPresentation.metaToneClass, 'hidden', 'sm:block']}>{item.description}</span>
+                <span class:list={[listPresentation.metaClass, previewPresentation.listDescriptionClass]}>{item.description}</span>
               )}
             </a>
           </li>
-        ))}
+        )})}
       </ul>
     )}
     {moreHref && moreLabel && (
-      <p class="pt-1">
-        <a href={moreHref} class="text-xs" data-home-more-link>{moreLabel}</a>
+      <p class={previewPresentation.moreWrapperClass}>
+        <a href={moreHref} class={previewPresentation.moreLinkClass} data-home-more-link>{moreLabel}</a>
       </p>
     )}
   </section>

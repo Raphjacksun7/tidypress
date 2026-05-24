@@ -15,7 +15,7 @@ pnpm --filter @docsmint/example-minimal build
 Output:
 
 ```txt
-examples/minimal/docs/.docsmint/dist/
+examples/minimal/docs/build/
 ```
 
 ## Dev

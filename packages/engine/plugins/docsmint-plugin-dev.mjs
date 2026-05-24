@@ -24,9 +24,12 @@ export function docsmintPluginDev() {
         return
       }
 
-      const workdir = path.join(projectRoot, '.docsmint')
-      const configPath = path.join(workdir, 'docsmint.config.ts')
-      const manifestPath = path.join(workdir, 'src/generated/docsmint-plugins.mjs')
+      const cacheDir =
+        process.env.DOCSMINT_CACHE_DIR ?? path.join(projectRoot, '.docsmint')
+      const configPath = path.join(projectRoot, 'docsmint.config.ts')
+      const manifestPath =
+        process.env.DOCSMINT_MANIFEST_PATH ??
+        path.join(cacheDir, 'codegen', 'docsmint-plugins.mjs')
       /** @type {Set<string>} */
       const watchedRoots = new Set()
 
@@ -68,8 +71,7 @@ export function docsmintPluginDev() {
 
             globalThis.__DOCSMINT_MANIFEST_EPOCH = (globalThis.__DOCSMINT_MANIFEST_EPOCH ?? 0) + 1
 
-            const moduleId = manifestPath
-            const moduleNode = server.moduleGraph.getModuleById(moduleId)
+            const moduleNode = server.moduleGraph.getModuleById(manifestPath)
             if (moduleNode) {
               server.moduleGraph.invalidateModule(moduleNode)
             }

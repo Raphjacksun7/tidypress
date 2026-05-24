@@ -1,0 +1,19 @@
+{
+  "name": "@docsmint/astro",
+  "version": "1.0.6",
+  "description": "DocsMint Astro integration for power-user projects.",
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": "./index.mjs",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@docsmint/engine": "workspace:*"
+  },
+  "peerDependencies": {
+    "astro": "^6.0.0"
+  },
+  "keywords": ["withastro", "astro-integration", "docsmint"],
+  "private": true
+}

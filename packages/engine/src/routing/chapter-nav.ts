@@ -19,7 +19,7 @@ export interface DocChapterNav {
 
 type DocLikeEntry = {
   id: string
-  data: {
+  data: Record<string, unknown> & {
     title?: string
     form?: string
   }

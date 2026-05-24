@@ -12,10 +12,12 @@ Content lives under `docs/src/content/`. Markdown is the default. MDX adds compo
 docs/src/content/
 ├── docs/       # documentation pages
 ├── writing/    # dated posts
+├── projects/   # default folder when the collection key is `projects`
+├── works/      # same `kind: 'projects'` behavior when the key is `works`
 └── pages/      # root-level pages
 ```
 
-`docs` uses sidebar order. `writing` uses dates. `pages` maps to root routes.
+`docs` uses sidebar order. `writing` uses dates. A collection with `kind: 'projects'` powers the home page showcase. The folder name matches the collection **key** in config (`projects`, `works`, or any other key). `pages` maps to root routes.
 
 ## Docs frontmatter
 
@@ -66,10 +68,73 @@ Fields:
 | `description` | Metadata and index summaries |
 | `author` | Optional byline |
 | `icon` | Optional card icon path |
-| `tags` | Optional SEO tags; hidden in the UI unless `showTags` is enabled |
+| `featured` | Pin toward the top of indexes and homepage previews |
+| `ogImage` | Open Graph image path (for example `/images/post.png`) |
+| `tags` | Optional SEO tags; tag index routes at `/writing/tags/<tag>` when tags are set |
 | `search` | Set `false` to exclude from search |
 | `published` | Set `false` to keep as a draft |
 | `scheduled` | Future ISO datetime; hidden until that time |
+
+Writing posts show estimated reading time on the entry page. Year archive pages are available at `/writing/archive/<year>` when posts exist for that year.
+
+RSS is generated at `/writing/rss.xml` during build (relative to the writing collection `basePath`).
+
+## Projects frontmatter
+
+```yaml
+---
+title: Sample project
+description: One line about the work.
+status: active
+featured: true
+url: https://example.com
+linkOnly: true
+---
+```
+
+Fields:
+
+| Field | Purpose |
+|-------|---------|
+| `title` | Card title |
+| `description` | Card summary and metadata |
+| `status` | Optional label on cards (for example `active`) |
+| `featured` | Pin toward the top of indexes and homepage previews |
+| `url` | External link; use with `linkOnly: true` for cards that skip an on-site page |
+| `repo` | Repository URL used as the card link when `url` is omitted |
+| `linkOnly` | When `true` with `url` or `repo`, the card links out without a full project page |
+| `icon` | Optional card icon path |
+| `tags` | Optional tags; tag index routes at `<basePath>/tags/<tag>` (same pattern as writing) |
+| `search` | Set `false` to exclude from search |
+| `published` | Set `false` to hide from routes and previews |
+
+Enable the collection in config:
+
+```ts
+collections: {
+  projects: {
+    enabled: true,
+    basePath: '/projects',
+    kind: 'projects',
+    label: 'projects',
+  },
+},
+```
+
+Use a custom key and URL (see [Configuration](./configuration#collection-key-url-and-label)):
+
+```ts
+collections: {
+  works: {
+    enabled: true,
+    basePath: '/works',
+    kind: 'projects',
+    label: 'works',
+  },
+},
+```
+
+Files live in `docs/src/content/works/`. Add `works` to `nav`, `home.order`, and match `href` to `basePath`.
 
 ## Headings
 

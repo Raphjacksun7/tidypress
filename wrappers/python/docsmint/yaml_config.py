@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from docsmint.errors import DocsMintError
+from docsmint.schema_validation import validate_docsmint_yaml
 
 try:
     import yaml
@@ -57,6 +58,7 @@ def load_yaml_config(config_path: Path | str | None = None) -> tuple[Path | None
             code="CONFIG_INVALID_SHAPE",
             hint="The root of docsmint.yaml must be an object/map.",
         )
+    validate_docsmint_yaml(parsed)
     return resolved, parsed
 
 

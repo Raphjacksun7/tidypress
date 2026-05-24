@@ -1,107 +1,159 @@
+import fs from 'node:fs'
 import path from 'node:path'
-import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
+import { build, dev, preview } from 'astro'
 
-import { getWorkdir, prepareWorkdir } from '../infrastructure/engine/workdir.js'
+import {
+  buildSessionEnv,
+  getBuildDir,
+  getEnginePath,
+  prepareBuildSession,
+  resolveAstroInlineConfig,
+} from '../infrastructure/engine/build-session.js'
 import { runCommand } from '../infrastructure/process/run-command.js'
 
-const require = createRequire(import.meta.url)
+function resolvePagefindBin() {
+  let dir = path.dirname(fileURLToPath(import.meta.url))
+  while (dir !== path.dirname(dir)) {
+    const candidate = path.join(dir, 'node_modules/pagefind/lib/runner/bin.cjs')
+    if (fs.existsSync(candidate)) {
+      return candidate
+    }
+    dir = path.dirname(dir)
+  }
+  throw new Error('Could not locate pagefind. Ensure the docsmint CLI is installed with its dependencies.')
+}
 
-function resolvePackageRoot(packageName) {
+/** @type {import('astro').DevServer | null} */
+let activeDevServer = null
+
+/** @type {import('astro').PreviewServer | null} */
+let activePreviewServer = null
+
+/**
+ * @param {Record<string, string>} env
+ * @param {() => Promise<void>} run
+ */
+async function withSessionEnv(env, run) {
+  const previous = /** @type {Record<string, string | undefined>} */ ({})
+  for (const [key, value] of Object.entries(env)) {
+    previous[key] = process.env[key]
+    process.env[key] = value
+  }
   try {
-    return path.dirname(require.resolve(`${packageName}/package.json`))
-  } catch {
-    let current = path.dirname(fileURLToPath(import.meta.url))
-    while (current !== path.dirname(current)) {
-      const candidate = path.join(current, 'node_modules', packageName, 'package.json')
-      try {
-        require(candidate)
-        return path.dirname(candidate)
-      } catch {
-        current = path.dirname(current)
+    await run()
+  } finally {
+    for (const [key, value] of Object.entries(previous)) {
+      if (value === undefined) {
+        delete process.env[key]
+      } else {
+        process.env[key] = value
       }
     }
-    throw new Error(`Unable to resolve ${packageName} package root.`)
   }
 }
 
-function resolveAstroBin() {
-  return path.join(resolvePackageRoot('astro'), 'bin/astro.mjs')
-}
-
-function resolvePagefindBin() {
-  return path.join(resolvePackageRoot('pagefind'), 'lib/runner/bin.cjs')
+function registerShutdown(server) {
+  const stop = async () => {
+    await server.stop()
+    process.exit(0)
+  }
+  process.once('SIGINT', stop)
+  process.once('SIGTERM', stop)
 }
 
 /**
- * Coordinates engine workspace preparation and Astro command execution.
+ * Coordinates engine build sessions and programmatic Astro commands.
  */
 export class EngineManager {
   /**
    * @param {{ docsDir: string, mode: 'dev' | 'build' | 'preview' }} options
-   * @returns {Promise<string>}
+   * @returns {Promise<Awaited<ReturnType<typeof prepareBuildSession>>>}
    */
   async prepare({ docsDir, mode }) {
-    return prepareWorkdir({ docsDir, mode })
+    return prepareBuildSession({ docsDir, mode })
   }
 
   /**
    * @param {{ docsDir: string }} options
    * @returns {string}
    */
+  getBuildDirectory({ docsDir }) {
+    return getBuildDir(docsDir)
+  }
+
+  /** @deprecated Use getBuildDirectory */
   getWorkdir({ docsDir }) {
-    return getWorkdir(docsDir)
+    return getEnginePath()
   }
 
-  /**
-   * @param {{ workdir: string, port: number }} options
-   * @returns {Promise<void>}
-   */
-  async runDev({ workdir, port, docsDir }) {
-    await runCommand({
-      command: process.execPath,
-      args: [resolveAstroBin(), 'dev', '--port', String(port)],
-      cwd: workdir,
-      env: { DOCSMINT_PROJECT_ROOT: docsDir },
-    })
-  }
-
-  /**
-   * @param {{ workdir: string }} options
-   * @returns {Promise<void>}
-   */
-  async runBuild({ workdir, docsDir }) {
-    await runCommand({
-      command: process.execPath,
-      args: [resolveAstroBin(), 'build'],
-      cwd: workdir,
-      env: { DOCSMINT_PROJECT_ROOT: docsDir },
-    })
-    await runCommand({
-      command: process.execPath,
-      args: [resolvePagefindBin(), '--site', 'dist'],
-      cwd: workdir,
-    })
-  }
-
-  /**
-   * @param {{ workdir: string, port: number }} options
-   * @returns {Promise<void>}
-   */
-  async runPreview({ workdir, port, docsDir }) {
-    await runCommand({
-      command: process.execPath,
-      args: [resolveAstroBin(), 'preview', '--port', String(port)],
-      cwd: workdir,
-      env: { DOCSMINT_PROJECT_ROOT: docsDir },
-    })
-  }
-
-  /**
-   * @param {{ docsDir: string }} options
-   * @returns {string}
-   */
+  /** @deprecated Use getBuildDirectory */
   getDistDirectory({ docsDir }) {
-    return path.resolve(this.getWorkdir({ docsDir }), 'dist')
+    return getBuildDir(docsDir)
+  }
+
+  /**
+   * @param {{ session: Awaited<ReturnType<typeof prepareBuildSession>>, port: number }} options
+   * @returns {Promise<void>}
+   */
+  async runDev({ session, port }) {
+    if (activeDevServer) {
+      await activeDevServer.stop()
+      activeDevServer = null
+    }
+
+    await withSessionEnv(buildSessionEnv(session), async () => {
+      const inlineConfig = await resolveAstroInlineConfig({ session, port })
+      activeDevServer = await dev({
+        ...inlineConfig,
+        root: session.engineRoot,
+        configFile: false,
+      })
+      registerShutdown(activeDevServer)
+      await new Promise(() => {})
+    })
+  }
+
+  /**
+   * @param {{ session: Awaited<ReturnType<typeof prepareBuildSession>> }} options
+   * @returns {Promise<void>}
+   */
+  async runBuild({ session }) {
+    await withSessionEnv(buildSessionEnv(session), async () => {
+      const inlineConfig = await resolveAstroInlineConfig({ session })
+      await build({
+        ...inlineConfig,
+        root: session.engineRoot,
+        configFile: false,
+      })
+      await runCommand({
+        command: process.execPath,
+        args: [resolvePagefindBin(), '--site', session.buildDir],
+        cwd: session.engineRoot,
+        env: buildSessionEnv(session),
+      })
+    })
+  }
+
+  /**
+   * @param {{ session: Awaited<ReturnType<typeof prepareBuildSession>>, port: number }} options
+   * @returns {Promise<void>}
+   */
+  async runPreview({ session, port }) {
+    if (activePreviewServer) {
+      await activePreviewServer.stop()
+      activePreviewServer = null
+    }
+
+    await withSessionEnv(buildSessionEnv(session), async () => {
+      const inlineConfig = await resolveAstroInlineConfig({ session, port })
+      activePreviewServer = await preview({
+        ...inlineConfig,
+        root: session.engineRoot,
+        configFile: false,
+      })
+      registerShutdown(activePreviewServer)
+      await new Promise(() => {})
+    })
   }
 }

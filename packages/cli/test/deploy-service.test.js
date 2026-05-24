@@ -17,7 +17,7 @@ test('DeployService uses artifact strategy by default', async () => {
 
   await service.deploy({
     projectRoot: '/workspace',
-    distDir: '/workspace/.docsmint/dist',
+    distDir: '/workspace/docs/build',
   })
 
   assert.equal(messages.length, 2)
@@ -31,7 +31,7 @@ test('DeployService sets usage exit code when target is unsupported', async () =
     async () => {
       await service.deploy({
         projectRoot: '/workspace',
-        distDir: '/workspace/.docsmint/dist',
+        distDir: '/workspace/docs/build',
         target: 'unsupported-target',
       })
     },

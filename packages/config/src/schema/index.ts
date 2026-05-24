@@ -23,6 +23,8 @@ export type {
   DocsMintDocsPaging,
   DocsMintDocsSidebarGroup,
   DocsMintExperimental,
+  DocsMintHero,
+  DocsMintHeroLink,
   DocsMintI18n,
   DocsMintI18nStrings,
   DocsMintRenderingExtensions,

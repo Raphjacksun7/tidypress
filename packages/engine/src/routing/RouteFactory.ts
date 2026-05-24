@@ -22,6 +22,7 @@ import { ContentCollection } from '@/collections/ContentCollection'
 import { DocsCollection } from '@/collections/DocsCollection'
 import { PageCollection } from '@/collections/PageCollection'
 import { WritingCollection } from '@/collections/WritingCollection'
+import { ProjectsCollection } from '@/collections/ProjectsCollection'
 import type { ICollection } from '@/collections/ICollection'
 import {
   ensurePluginRouteViewRegistry,
@@ -59,6 +60,7 @@ export class RouteFactory {
     this.builtinRegistry = new PresentationRegistry([
       new DocsCollection(site),
       new ContentCollection(site),
+      new ProjectsCollection(site),
       new WritingCollection(site, dateFormatter),
       new PageCollection(site),
     ])

@@ -14,6 +14,8 @@ from docsmint.errors import DocsMintError
 
 MIN_NODE = (22, 12)
 
+STREAM_COMMANDS = frozenset({"build", "deploy"})
+
 
 @dataclass(frozen=True)
 class RuntimePaths:
@@ -168,14 +170,26 @@ def run_cli(argv: list[str]) -> int:
 
 
 def main_entry() -> None:
+    import asyncio
+
+    from docsmint.async_cli import run_cli_async, strip_cli_mode_flags
+    from docsmint.help_text import print_python_help, should_print_python_help
     from docsmint.router import is_node_command, run_python_stub
 
     argv = sys.argv[1:]
     try:
+        if should_print_python_help(argv):
+            print_python_help(argv)
+            sys.exit(0)
+
         if not is_node_command(argv):
             code = run_python_stub(argv)
         else:
-            code = run_cli(argv)
+            node_argv, use_streaming = strip_cli_mode_flags(argv)
+            if use_streaming:
+                code = asyncio.run(run_cli_async(node_argv))
+            else:
+                code = run_cli(node_argv)
     except DocsMintError as err:
         print(err.format_user_message(), file=sys.stderr)
         sys.exit(1)

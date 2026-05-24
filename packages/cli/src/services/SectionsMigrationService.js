@@ -2,6 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 
 import { migrateSectionsToCollections } from '@docsmint/config'
+import { getCacheDir } from '../infrastructure/engine/build-session.js'
 
 /**
  * Generates deterministic sections->collections migration output.
@@ -22,7 +23,7 @@ export class SectionsMigrationService {
     const docsDir = await this.configLoader.resolveDocsDirectory({ projectRoot })
     const rawConfig = await this.configLoader.loadConfig({ docsDir })
     const result = migrateSectionsToCollections(rawConfig)
-    const outputDir = path.join(docsDir, '.docsmint', 'migrations')
+    const outputDir = path.join(await getCacheDir(docsDir), 'migrations')
     const outputPath = path.join(outputDir, 'sections-to-collections.json')
     await fs.mkdir(outputDir, { recursive: true })
 

@@ -17,7 +17,7 @@ import { defineConfig } from 'docsmint/config'
 
 export default defineConfig({
   name: 'my-project',
-  description: 'Minimal markdown docs and writing.',
+  description: 'Minimal markdown site for fast writing and project showcase.',
   nav: [
     { label: 'docs', href: '/docs' },
     { label: 'writing', href: '/writing' },
@@ -34,7 +34,7 @@ export default defineConfig({
 
 ```ts
 name: 'my-project',
-description: 'Minimal markdown docs and writing.',
+description: 'Minimal markdown site for fast writing and project showcase.',
 siteUrl: 'https://example.com',
 ```
 
@@ -52,9 +52,11 @@ nav: [
 ],
 footer: [
   { label: 'GitHub', href: 'https://github.com/you/project' },
-  { label: 'RSS', href: '/rss.xml', icon: 'rss', external: false },
+  { label: 'RSS', href: '/writing/rss.xml', icon: 'rss', external: false },
 ],
 ```
+
+RSS is generated at `<writing basePath>/rss.xml` (for example `/writing/rss.xml`). The footer can link to it explicitly, or omit the link and rely on the default RSS icon when writing is enabled.
 
 Navigation is strict by default. Internal `href` values are validated against built routes.
 
@@ -111,25 +113,162 @@ Kinds:
 | omitted on `docs` | the main docs collection |
 | `content` | docs-like sections |
 | `writing` | dated posts |
+| `projects` | project cards and optional project pages |
 | `page` | standalone pages |
+
+Example projects collection:
+
+```ts
+projects: {
+  enabled: true,
+  basePath: '/projects',
+  kind: 'projects',
+  label: 'projects',
+},
+```
+
+### Collection key, URL, and label
+
+Three settings control different surfaces. They are not renamed automatically for each other.
+
+| Setting | Controls |
+|---------|----------|
+| Collection **key** (for example `works`) | Content folder `docs/src/content/works/` and `home.order` entries |
+| **`basePath`** | Public URLs (`/works`, `/works/sample`) |
+| **`label`** | UI copy on indexes and the homepage section title |
+| **`kind`** | Engine behavior (schema, layout, routing). Must be one of the kinds in the table above |
+
+There is no `kind: 'works'`. Use `kind: 'projects'` for project cards and optional project pages, then pick any key and paths you want.
+
+Rename a projects showcase to **works** everywhere visitors see it:
+
+```ts
+nav: [
+  { label: 'writing', href: '/writing' },
+  { label: 'works', href: '/works' },
+],
+home: {
+  order: ['writing', 'works'],
+},
+collections: {
+  docs: { enabled: false, basePath: '/docs', label: 'docs' },
+  writing: { enabled: true, basePath: '/writing', kind: 'writing', label: 'writing' },
+  works: {
+    enabled: true,
+    basePath: '/works',
+    kind: 'projects',
+    label: 'works',
+  },
+},
+capabilities: {
+  disable: ['docs'],
+},
+```
+
+Place markdown in `docs/src/content/works/`. Match `nav` `href` values to each collection `basePath`.
+
+### Init presets
+
+`docsmint init` seeds content and config. `default` is an alias for `lab`.
+
+| Preset | Shape |
+|--------|--------|
+| `lab` | writing + projects, docs off |
+| `blog` | writing only, docs and pages off |
+| `persona` | hero, projects, writing, about page |
+| `docs-writing` | docs + writing |
+| `custom` | docs + writing + a `playbooks` content collection |
+
+```bash
+npx docsmint init --preset blog
+```
+
+See [Examples](./examples) for runnable copies under `examples/`.
+
+### Capabilities
+
+Starter collections (`docs`, `writing`, `pages`) respect `capabilities.disable` and `capabilities.enable` after per-collection `enabled` flags. The blog preset disables `docs` and `pages` so empty `/pages/` routes are not generated.
+
+```ts
+capabilities: {
+  disable: ['docs', 'pages'],
+},
+```
+
+See [Advanced configuration](./advanced-configuration#capabilities) for the full capability list.
 
 `sections` is the legacy shim.
 
-## Pages
+## Hero bar
 
-Root pages:
+The home hero bar is opt-in. Set `enabled: true` to show role, pronunciation, lead, and links above homepage previews:
 
 ```ts
-pages: [
-  'about',
-  { slug: 'work', navLabel: 'work' },
-]
+hero: {
+  enabled: true,
+  role: 'Engineer',
+  pronunciation: 'your-name',
+  lead: 'Short bio on the home page.',
+  image: '/images/portrait.jpg',
+  links: [
+    { label: 'Email', href: 'mailto:you@example.com' },
+    { label: 'GitHub', href: 'https://github.com/you', external: true },
+  ],
+},
 ```
 
-The files live in `docs/src/content/pages/`:
+Omit `hero` or leave `enabled` unset/false to hide the bar. The `persona` init preset enables a starter hero.
+
+### Persona / CV sites
+
+The `persona` preset gives you a hero, projects, optional writing, and an `/about` page. **Experience, education, and skills belong in markdown** on that page (or in writing posts) — not in structured config blocks.
+
+DocsMint does not ship résumé schema (no job blocks, degree blocks, or employment location fields). That keeps the product markdown-first and avoids vague HR metadata (`hybrid`, `remote`, `present`, and similar).
+
+When you need a CV section, use normal headings on `/about`:
+
+```md
+## Experience
+
+**Company — Role** · 2022–2024
+
+What you shipped.
+
+## Education
+
+**School — Degree** · 2020
+```
+
+Use `projects` for highlights and `writing` for essays; link out with `url` + `linkOnly` when a row is only a link.
+
+## Pages
+
+Two related mechanisms — do not confuse them:
+
+| Mechanism | Purpose |
+|-----------|---------|
+| `pages: [...]` in config | Register root routes and optional nav labels |
+| `collections.pages` with `kind: 'page'` | Astro collection under `src/content/pages/` (includes a `/pages/` index when enabled) |
+
+For a single **About** or **CV** page at `/about`, use a file in `src/content/pages/` and list it in config:
+
+```ts
+pages: [{ slug: 'about', navLabel: 'about' }],
+collections: {
+  pages: { enabled: true, kind: 'page' },
+},
+```
 
 ```txt
 docs/src/content/pages/about.md -> /about
+```
+
+**Lab** and **blog** presets disable the pages collection so an empty `/pages/` route is not generated. Enable `pages` only when you add root pages (persona enables it for `/about`).
+
+Legacy shorthand (slug only):
+
+```ts
+pages: ['about', { slug: 'work', navLabel: 'work' }],
 ```
 
 ## Branding

@@ -1,8 +1,7 @@
-import { getCollection } from 'astro:content'
 import { isStarterCollectionKey, type DocsMintConfig } from '@docsmint/config'
 import { getConfig } from '@/config/getConfig'
 import { getEnabledCollections } from '@/utils/collections'
-import { onlyPublished } from '@/utils/published'
+import { loadPublishedCollectionEntries } from '@/utils/collection-entries'
 import { RouteRegistry } from '@/routing/RouteRegistry'
 import { LocaleHomeStrategy } from '@/routing/strategies/LocaleHomeStrategy'
 import { RoutePath } from '@/routing/RoutePath'
@@ -30,7 +29,7 @@ export class RoutePlanner {
     const defaultLocale = this.site.i18n?.defaultLocale ?? locales[0] ?? 'en'
 
     for (const collection of getEnabledCollections(this.site)) {
-      const entries = onlyPublished(await getCollection(collection.key as 'docs'))
+      const entries = await loadPublishedCollectionEntries(collection.key)
       const context: CollectionRouteContext = {
         site: this.site,
         collection,
@@ -50,13 +49,14 @@ export class RoutePlanner {
     if ((this.site.pages?.length ?? 0) === 0) {
       return []
     }
-    return (this.site.pages ?? []).map(page =>
-      defineRoute(RoutePath.fromPathname(`/${page.slug}`), {
+    return (this.site.pages ?? []).map(page => {
+      const slug = typeof page === 'string' ? page : page.slug
+      return defineRoute(RoutePath.fromPathname(`/${slug}`), {
         mode: 'root-page',
         collectionKey: 'pages',
-        slug: page.slug,
-      }),
-    )
+        slug,
+      })
+    })
   }
 
   async toStaticPaths(): Promise<Array<{ params: { path: string | undefined }; props: { route: SiteRouteDefinition } }>> {

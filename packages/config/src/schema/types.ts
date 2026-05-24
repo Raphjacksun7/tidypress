@@ -40,6 +40,10 @@ export interface FooterItem {
    */
   icon?: FooterItemIcon
   external?: boolean
+  /** Set by config normalization; do not set in user config. */
+  target?: string
+  /** Set by config normalization; do not set in user config. */
+  rel?: string
 }
 
 export interface PageEntryObject {
@@ -217,6 +221,8 @@ export interface DocsMintI18nStrings {
   searchEmptyLabel?: string
   searchUnavailableLabel?: string
   searchNoResultsLabel?: string
+  searchFilterLabel?: string
+  searchFilterAllLabel?: string
   untitledLabel?: string
   onThisPageLabel?: string
   editThisPageLabel?: string
@@ -265,9 +271,27 @@ export interface DocsMintBranding {
   favicon?: string
 }
 
+export interface DocsMintHeroLink {
+  label: string
+  href: string
+  external?: boolean
+}
+
+export interface DocsMintHero {
+  /** Opt-in home hero bar (role, pronunciation, lead, links). Default: false. */
+  enabled?: boolean
+  role?: string
+  pronunciation?: string
+  lead?: string
+  /** Public image path (for example `/images/portrait.jpg`) or absolute URL. */
+  image?: string
+  links?: DocsMintHeroLink[]
+}
+
 export interface DocsMintConfig {
   name: string
   description?: string
+  hero?: DocsMintHero
   home?: DocsMintHome
   analytics?: DocsMintAnalytics
   versions?: DocsMintVersion[]
