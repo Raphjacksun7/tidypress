@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import { migrateSectionsToCollections } from '@docsmint/config'
+import { migrateSectionsToCollections } from '@tidypress/config'
 import { getCacheDir } from '../infrastructure/engine/build-session.js'
 
 /**

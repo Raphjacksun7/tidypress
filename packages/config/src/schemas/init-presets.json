@@ -6,7 +6,7 @@
   "presets": [
     {
       "name": "lab",
-      "summary": "Writing + projects on the home page; docs and pages off (default for docsmint init)."
+      "summary": "Writing + projects on the home page; docs and pages off (default for tidypress init)."
     },
     {
       "name": "blog",

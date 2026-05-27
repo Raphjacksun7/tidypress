@@ -1,14 +1,14 @@
 {
-  "name": "@docsmint/site",
+  "name": "@tidypress/site",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "docsmint dev",
-    "build": "docsmint build",
-    "preview": "docsmint preview",
-    "context": "docsmint context docsmint-context.md"
+    "dev": "tidypress dev",
+    "build": "tidypress build",
+    "preview": "tidypress preview",
+    "context": "tidypress context tidypress-context.md"
   },
   "dependencies": {
-    "docsmint": "workspace:*"
+    "tidypress": "workspace:*"
   }
 }

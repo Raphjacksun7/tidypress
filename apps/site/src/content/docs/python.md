@@ -1,43 +1,43 @@
 ---
 title: Python wrapper
-description: Use DocsMint from Python and run Python-native helper commands.
+description: Use TidyPress from Python and run Python-native helper commands.
 order: 12
 ---
 
-The Python package provides a `docsmint` entrypoint for Python environments.
+The Python package provides a `tidypress` entrypoint for Python environments.
 
 Rendering still uses the Node.js CLI and Astro engine. Node.js 22.12 or newer is required for `init`, `dev`, `build`, `preview`, `deploy`, and `context`.
 
 ## Install
 
 ```bash
-pip install docsmint
+pip install tidypress
 ```
 
 For site commands, the wrapper resolves the Node CLI in this order:
 
-1. `DOCSMINT_CLI_JS`
-2. a local monorepo or project `node_modules/docsmint`
-3. `docsmint` on `PATH`
+1. `TIDYPRESS_CLI_JS`
+2. a local monorepo or project `node_modules/tidypress`
+3. `tidypress` on `PATH`
 
-It does not use `npx` by default. `DOCSMINT_USE_NPX=1` is available as an explicit escape hatch.
+It does not use `npx` by default. `TIDYPRESS_USE_NPX=1` is available as an explicit escape hatch.
 
 ## Site commands
 
-These commands are delegated to the Node CLI (same surface as `npx docsmint`):
+These commands are delegated to the Node CLI (same surface as `npx tidypress`):
 
 ```bash
-docsmint init [--preset lab|blog|persona|docs-writing|custom]
-docsmint dev
-docsmint build
-docsmint preview
-docsmint clean
-docsmint deploy
-docsmint context [output.md]
-docsmint import devto <url-or-slug>
-docsmint doctor
-docsmint migrate-sections
-docsmint add-version <label>
+tidypress init [--preset lab|blog|persona|docs-writing|custom]
+tidypress dev
+tidypress build
+tidypress preview
+tidypress clean
+tidypress deploy
+tidypress context [output.md]
+tidypress import devto <url-or-slug>
+tidypress doctor
+tidypress migrate-sections
+tidypress add-version <label>
 ```
 
 `import devto` fetches real markdown. Other import providers write review scaffolds. Experimental Node commands (`editor`, `export`, `ai`) forward when enabled in config.
@@ -47,7 +47,7 @@ docsmint add-version <label>
 `convert` is Python-native:
 
 ```bash
-docsmint convert analysis.ipynb
+tidypress convert analysis.ipynb
 ```
 
 By default, output goes to:
@@ -59,7 +59,7 @@ docs/src/content/docs/analysis.mdx
 You can choose the output file:
 
 ```bash
-docsmint convert analysis.ipynb --output docs/src/content/docs/reports/analysis.mdx
+tidypress convert analysis.ipynb --output docs/src/content/docs/reports/analysis.mdx
 ```
 
 The converter preserves markdown cells, code cells, text outputs, and PNG image outputs.
@@ -69,9 +69,9 @@ The converter preserves markdown cells, code cells, text outputs, and PNG image 
 `extract-docs` writes a simple API notes file from Python, TypeScript, or Go comments:
 
 ```bash
-docsmint extract-docs src/ --lang py
-docsmint extract-docs src/ --lang ts
-docsmint extract-docs src/ --lang go
+tidypress extract-docs src/ --lang py
+tidypress extract-docs src/ --lang ts
+tidypress extract-docs src/ --lang go
 ```
 
 Default output:
@@ -84,26 +84,26 @@ This is a convenience helper for small projects. For large API references, keep 
 
 ## Agents and markdown
 
-Agents that edit files in git use the same commands as you do: add markdown under `src/content/`, run `docsmint build`, deploy `build/`. Export `docsmint context` when the model needs a map of existing pages. Details: [Agents and markdown](/writing/agents-and-markdown).
+Agents that edit files in git use the same commands as you do: add markdown under `src/content/`, run `tidypress build`, deploy `build/`. Export `tidypress context` when the model needs a map of existing pages. Details: [Agents and markdown](/writing/agents-and-markdown).
 
 ## Help and init presets
 
 ```bash
-docsmint --help
-docsmint init --help
+tidypress --help
+tidypress init --help
 ```
 
 The Python entrypoint lists the same init presets as the Node CLI (`lab`, `blog`, `persona`, `docs-writing`, `custom`). `default` is an alias for `lab`.
 
 ## Streaming build and deploy
 
-`docsmint build` and `docsmint deploy` stream Node CLI output live through an async subprocess. Add `--sync` to use the legacy blocking runner (for scripts that capture output).
+`tidypress build` and `tidypress deploy` stream Node CLI output live through an async subprocess. Add `--sync` to use the legacy blocking runner (for scripts that capture output).
 
 ## YAML bridge
 
-`docsmint.yaml` is validated against the shared JSON Schema from `@docsmint/config` before Python commands read bridged flags.
+`tidypress.yaml` is validated against the shared JSON Schema from `@tidypress/config` before Python commands read bridged flags.
 
-The wrapper can read `docsmint.yaml` or `docsmint.yml`:
+The wrapper can read `tidypress.yaml` or `tidypress.yml`:
 
 ```yaml
 python:
@@ -115,5 +115,5 @@ python:
 Run with an explicit config:
 
 ```bash
-docsmint convert --config ./docsmint.yaml
+tidypress convert --config ./tidypress.yaml
 ```

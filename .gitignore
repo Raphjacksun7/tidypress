@@ -33,3 +33,4 @@ agent-os/
 AGENTS.md
 .worktrees/
 .cursor/
+wrangler.toml

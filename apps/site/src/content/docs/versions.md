@@ -42,7 +42,7 @@ Routes:
 ## Scaffold a version
 
 ```bash
-docsmint add-version 2.0
+tidypress add-version 2.0
 ```
 
 ```txt
@@ -52,7 +52,7 @@ docs/src/content/docs/v2.0/getting-started.md
 Set `latest` at the same time:
 
 ```bash
-docsmint add-version 2.0 --set-latest
+tidypress add-version 2.0 --set-latest
 ```
 
 ```txt

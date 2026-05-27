@@ -1,5 +1,5 @@
 /**
- * Handles `docsmint dev`.
+ * Handles `tidypress dev`.
  */
 export class DevCommand {
   /**

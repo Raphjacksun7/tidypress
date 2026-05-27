@@ -2,12 +2,12 @@
 // Pagefind search — custom UI matching the transfa monospace aesthetic.
 // Triggered by pressing / or clicking the search link in the nav.
 import { getConfig } from '@/config/getConfig'
-import type { DocsMintI18nStrings } from '@docsmint/config'
-import { PAGEFIND_COLLECTION_FILTER_KEY } from '@docsmint/config'
+import type { TidyPressI18nStrings } from '@tidypress/config'
+import { PAGEFIND_COLLECTION_FILTER_KEY } from '@tidypress/config'
 import { resolveLocale, withLocalePrefix } from '@/i18n/locale'
 
 export interface Props {
-  strings: Required<DocsMintI18nStrings>
+  strings: Required<TidyPressI18nStrings>
   collections?: Array<{ key: string; label: string }>
 }
 

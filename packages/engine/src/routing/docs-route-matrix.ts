@@ -1,4 +1,4 @@
-import type { DocsMintConfig } from '@docsmint/config'
+import type { TidyPressConfig } from '@tidypress/config'
 import { getCollectionBasePath, getCollectionEntrySlug } from '@/utils/collections'
 import { sortDocs } from '@/utils/sort'
 import { RoutePath } from '@/routing/RoutePath'
@@ -72,7 +72,7 @@ function localizedEntries(entries: DocEntry[], locale: string, policy: RoutePoli
   return localized
 }
 
-function versionPrefixes(site: DocsMintConfig, collectionKey: string): string[] {
+function versionPrefixes(site: TidyPressConfig, collectionKey: string): string[] {
   const basePath = getCollectionBasePath(site, collectionKey)
   return (site.versions ?? [])
     .map(version => versionContentPrefix(version.path, basePath))
@@ -86,7 +86,7 @@ function firstEntryForVersion(entries: LocaleEntry[], prefix: string): LocaleEnt
 }
 
 // When a sidebar is configured, prefer its item order to determine the first entry.
-function sidebarFirstEntry(candidates: LocaleEntry[], site: DocsMintConfig): LocaleEntry | undefined {
+function sidebarFirstEntry(candidates: LocaleEntry[], site: TidyPressConfig): LocaleEntry | undefined {
   const sidebarItems = site.docs?.sidebar?.flatMap(group => group.items) ?? []
   if (sidebarItems.length === 0) return undefined
   for (const slug of sidebarItems) {
@@ -96,7 +96,7 @@ function sidebarFirstEntry(candidates: LocaleEntry[], site: DocsMintConfig): Loc
   return undefined
 }
 
-function firstEntry(entries: LocaleEntry[], site: DocsMintConfig, collectionKey: string): LocaleEntry | undefined {
+function firstEntry(entries: LocaleEntry[], site: TidyPressConfig, collectionKey: string): LocaleEntry | undefined {
   const basePath = getCollectionBasePath(site, collectionKey)
   const allPrefixes = versionPrefixes(site, collectionKey)
 
@@ -138,7 +138,7 @@ function entryRoute(
 }
 
 function versionRootRoutes(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   collectionKey: string,
   base: RoutePath,
   entries: LocaleEntry[],
@@ -164,7 +164,7 @@ function versionRootRoutes(
 }
 
 export function buildDocsRouteMatrix(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   collectionKey: string,
   entries: DocEntry[],
 ): SiteRouteDefinition[] {

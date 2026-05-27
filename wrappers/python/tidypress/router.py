@@ -4,14 +4,14 @@ from __future__ import annotations
 
 from typing import Sequence
 
-from docsmint.errors import DocsMintError
-from docsmint.python_commands import (
+from tidypress.errors import TidyPressError
+from tidypress.python_commands import (
     convert_notebook,
     extract_docs,
     parse_convert_args,
     parse_extract_args,
 )
-from docsmint.yaml_config import bridge_command_args, load_yaml_config
+from tidypress.yaml_config import bridge_command_args, load_yaml_config
 
 NODE_COMMANDS = {
     "init",
@@ -55,7 +55,7 @@ def _extract_config_path(argv: Sequence[str]) -> tuple[str | None, list[str]]:
         token = argv[i]
         if token == "--config":
             if i + 1 >= len(argv):
-                raise DocsMintError(
+                raise TidyPressError(
                     "Missing value for --config",
                     code="CONFIG_ARG_MISSING",
                     hint="Pass a YAML file path after --config.",

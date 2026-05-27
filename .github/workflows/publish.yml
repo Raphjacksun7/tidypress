@@ -104,7 +104,7 @@ jobs:
         run: pnpm -r test
 
       - name: Build workspace
-        run: pnpm -r build
+        run: pnpm -r --workspace-concurrency=1 build
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -147,10 +147,10 @@ jobs:
       - name: Run tests
         run: pnpm -r test
 
-      - name: Build @docsmint/config
-        run: pnpm --filter @docsmint/config build
+      - name: Build @tidypress/config
+        run: pnpm --filter @tidypress/config build
 
-      - name: Publish docsmint
+      - name: Publish tidypress
         working-directory: packages/cli
         run: pnpm publish --access public --no-git-checks
         env:
@@ -163,9 +163,9 @@ jobs:
           VERSION="${CLI_VERSION#v}"
           SMOKE_DIR=$(mktemp -d)
           cd "$SMOKE_DIR"
-          npm install "docsmint@${VERSION}"
-          node ./node_modules/docsmint/bin/docsmint.js --version
-          echo "smoke test OK: docsmint@${VERSION}"
+          npm install "tidypress@${VERSION}"
+          node ./node_modules/tidypress/bin/tidypress.js --version
+          echo "smoke test OK: tidypress@${VERSION}"
 
   # ── PyPI ─────────────────────────────────────────────────────────────────────
   publish-pypi:

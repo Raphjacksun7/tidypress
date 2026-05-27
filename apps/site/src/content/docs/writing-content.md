@@ -219,7 +219,7 @@ scheduled: 2026-06-01T09:00:00Z
 ---
 ```
 
-Unpublished and future-scheduled content is skipped by routes, search, and `docsmint context`.
+Unpublished and future-scheduled content is skipped by routes, search, and `tidypress context`.
 
 ## Search exclusion
 

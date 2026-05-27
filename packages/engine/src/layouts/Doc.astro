@@ -4,7 +4,7 @@ import Sidebar from '@/components/Sidebar.astro'
 import Toc from '@/components/Toc.astro'
 import VersionSelector from '@/components/VersionSelector.astro'
 import { getCollection } from 'astro:content'
-import { LINK_NEW_TAB_ATTRIBUTES, type DocsMintDocForm } from '@docsmint/config'
+import { LINK_NEW_TAB_ATTRIBUTES, type TidyPressDocForm } from '@tidypress/config'
 import { getConfig } from '@/config/getConfig'
 import { getUiStrings, resolveLocale } from '@/i18n/locale'
 import { versionSelectorState } from '@/routing/route-equivalents'
@@ -15,7 +15,7 @@ export interface Props {
   description?: string
   headings?: { depth: number; slug: string; text: string }[]
   editPath?: string
-  docForm?: DocsMintDocForm
+  docForm?: TidyPressDocForm
 }
 
 const { title, description, headings = [], editPath, docForm } = Astro.props

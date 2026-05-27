@@ -1,5 +1,5 @@
-import type { DocsMintConfig } from '@docsmint/config'
-import { resolveCollectionIndexDisplay, resolveCollectionMetaIndexTitle } from '@docsmint/config'
+import type { TidyPressConfig } from '@tidypress/config'
+import { resolveCollectionIndexDisplay, resolveCollectionMetaIndexTitle } from '@tidypress/config'
 import { filterCollectionIndexEntries } from '@/utils/collection-meta-index-entries'
 import { loadPublishedCollectionEntries } from '@/utils/collection-entries'
 import { resolveEntryHrefFromData } from '@/utils/entry-href'
@@ -26,7 +26,7 @@ type CollectionEntry = {
 export class ProjectsCollection implements ICollection {
   readonly presentationTarget = 'projects' as const
 
-  constructor(private readonly site: DocsMintConfig) {}
+  constructor(private readonly site: TidyPressConfig) {}
 
   private indexTitle(route: SiteRouteDefinition, collectionKey: string): string {
     const collection = this.site.collections?.[collectionKey]

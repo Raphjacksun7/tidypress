@@ -1,4 +1,4 @@
-"""Validate docsmint.yaml using the shared JSON Schema from @docsmint/config."""
+"""Validate tidypress.yaml using the shared JSON Schema from @tidypress/config."""
 
 from __future__ import annotations
 
@@ -7,15 +7,15 @@ import os
 from pathlib import Path
 from typing import Any
 
-from docsmint.errors import DocsMintError
+from tidypress.errors import TidyPressError
 
 try:
     import jsonschema
     from jsonschema import Draft202012Validator
 except ModuleNotFoundError as exc:  # pragma: no cover
-    raise RuntimeError("jsonschema is required for docsmint YAML validation.") from exc
+    raise RuntimeError("jsonschema is required for tidypress YAML validation.") from exc
 
-_SCHEMA_FILE = "docsmint-yaml.schema.json"
+_SCHEMA_FILE = "tidypress-yaml.schema.json"
 
 
 def _bundled_schema_path() -> Path:
@@ -26,12 +26,12 @@ def _resolve_schema_from_node_modules() -> Path | None:
     cursor = Path.cwd().resolve()
     for directory in [cursor, *cursor.parents]:
         for parts in (
-            ("node_modules", "@docsmint", "config", "src", "schemas", _SCHEMA_FILE),
+            ("node_modules", "@tidypress", "config", "src", "schemas", _SCHEMA_FILE),
             (
                 "node_modules",
-                "docsmint",
+                "tidypress",
                 "node_modules",
-                "@docsmint",
+                "@tidypress",
                 "config",
                 "src",
                 "schemas",
@@ -45,11 +45,11 @@ def _resolve_schema_from_node_modules() -> Path | None:
 
 
 def resolve_yaml_schema_path() -> Path:
-    override = os.environ.get("DOCSMINT_YAML_SCHEMA")
+    override = os.environ.get("TIDYPRESS_YAML_SCHEMA")
     if override:
         path = Path(override).expanduser().resolve()
         if not path.is_file():
-            raise DocsMintError(f"DOCSMINT_YAML_SCHEMA not found: {path}", code="SCHEMA_NOT_FOUND")
+            raise TidyPressError(f"TIDYPRESS_YAML_SCHEMA not found: {path}", code="SCHEMA_NOT_FOUND")
         return path
 
     from_node = _resolve_schema_from_node_modules()
@@ -60,10 +60,10 @@ def resolve_yaml_schema_path() -> Path:
     if bundled.is_file():
         return bundled
 
-    raise DocsMintError(
-        "Shared docsmint.yaml schema not found.",
+    raise TidyPressError(
+        "Shared tidypress.yaml schema not found.",
         code="SCHEMA_NOT_FOUND",
-        hint="Install docsmint from npm or use the bundled Python package.",
+        hint="Install tidypress from npm or use the bundled Python package.",
     )
 
 
@@ -71,8 +71,8 @@ def load_yaml_schema() -> dict[str, Any]:
     return json.loads(resolve_yaml_schema_path().read_text(encoding="utf-8"))
 
 
-def validate_docsmint_yaml(document: Any) -> None:
-    """Raise DocsMintError when the document violates the shared schema."""
+def validate_tidypress_yaml(document: Any) -> None:
+    """Raise TidyPressError when the document violates the shared schema."""
     schema = load_yaml_schema()
     validator = Draft202012Validator(schema)
     errors = sorted(validator.iter_errors(document), key=lambda err: list(err.absolute_path))
@@ -86,8 +86,8 @@ def validate_docsmint_yaml(document: Any) -> None:
     if len(errors) > 8:
         lines.append(f"- …and {len(errors) - 8} more")
 
-    raise DocsMintError(
-        "docsmint.yaml failed schema validation.",
+    raise TidyPressError(
+        "tidypress.yaml failed schema validation.",
         code="CONFIG_SCHEMA_INVALID",
         hint="\n".join(lines),
     )

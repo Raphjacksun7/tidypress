@@ -1,7 +1,7 @@
 import { defaultConfig } from '../defaults.js'
-import type { DocsMintConfig, DocsMintSearch } from '../schema/index.js'
+import type { TidyPressConfig, TidyPressSearch } from '../schema/index.js'
 
-export function normalizeSearch(config: DocsMintConfig): DocsMintSearch {
+export function normalizeSearch(config: TidyPressConfig): TidyPressSearch {
   return {
     ...defaultConfig.search,
     ...(config.search ?? {}),

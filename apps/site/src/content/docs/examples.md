@@ -1,6 +1,6 @@
 ---
 title: Examples
-description: Runnable example projects for common DocsMint shapes.
+description: Runnable example projects for common TidyPress shapes.
 order: 4
 ---
 
@@ -11,14 +11,14 @@ Use the examples when you want to see one site shape without the full product do
 ## Minimal
 
 ```bash
-pnpm --filter @docsmint/example-minimal build
+pnpm --filter @tidypress/example-minimal build
 ```
 
-`examples/minimal` is the smallest runnable project. It mirrors the default `docsmint init` shape:
+`examples/minimal` is the smallest runnable project. It mirrors the default `tidypress init` shape:
 
 ```txt
 examples/minimal/docs/
-├── docsmint.config.ts
+├── tidypress.config.ts
 └── src/content/
     ├── docs/getting-started.md
     └── writing/hello.md
@@ -29,31 +29,31 @@ Use it to test the basic docs + writing flow.
 ## Lab
 
 ```bash
-pnpm --filter @docsmint/example-lab build
+pnpm --filter @tidypress/example-lab build
 ```
 
-`examples/lab` matches `docsmint init` (lab preset): writing and projects on the home page, docs off.
+`examples/lab` matches `tidypress init` (lab preset): writing and projects on the home page, docs off.
 
 ## Blog
 
 ```bash
-pnpm --filter @docsmint/example-blog build
+pnpm --filter @tidypress/example-blog build
 ```
 
-`examples/blog` matches `docsmint init --preset blog`: writing only; docs, projects, and pages off.
+`examples/blog` matches `tidypress init --preset blog`: writing only; docs, projects, and pages off.
 
 ## Persona
 
 ```bash
-pnpm --filter @docsmint/example-persona build
+pnpm --filter @tidypress/example-persona build
 ```
 
-`examples/persona` matches `docsmint init --preset persona`: opt-in hero, projects, writing, and an about page.
+`examples/persona` matches `tidypress init --preset persona`: opt-in hero, projects, writing, and an about page.
 
 ## i18n and versions
 
 ```bash
-pnpm --filter @docsmint/example-i18n-versioned build
+pnpm --filter @tidypress/example-i18n-versioned build
 ```
 
 `examples/i18n-versioned` shows:
@@ -66,7 +66,7 @@ pnpm --filter @docsmint/example-i18n-versioned build
 ## Custom collections
 
 ```bash
-pnpm --filter @docsmint/example-custom-collections build
+pnpm --filter @tidypress/example-custom-collections build
 ```
 
 `examples/custom-collections` adds a `playbooks` collection:
@@ -86,4 +86,4 @@ Use this when docs and writing are not enough for the shape of your site.
 
 ## Product docs site
 
-`apps/site` is the full DocsMint site. It is useful as a larger dogfood fixture, but the focused examples are better starting points for copying.
+`apps/site` is the full TidyPress site. It is useful as a larger dogfood fixture, but the focused examples are better starting points for copying.

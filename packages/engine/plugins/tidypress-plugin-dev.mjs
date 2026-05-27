@@ -5,31 +5,31 @@ import {
   collectPluginPathsToMount,
   formatPluginManifestModule,
   withDefaults,
-} from '@docsmint/config'
+} from '@tidypress/config'
 
 /**
  * Regenerate plugin manifest and reload when config or plugin sources change in dev.
  * @returns {import('vite').Plugin}
  */
-export function docsmintPluginDev() {
+export function tidypressPluginDev() {
   /** @type {Promise<void>} */
   let regenQueue = Promise.resolve()
 
   return {
-    name: 'docsmint:plugin-dev',
+    name: 'tidypress:plugin-dev',
     apply: 'serve',
     configureServer(server) {
-      const projectRoot = process.env.DOCSMINT_PROJECT_ROOT
+      const projectRoot = process.env.TIDYPRESS_PROJECT_ROOT
       if (!projectRoot) {
         return
       }
 
       const cacheDir =
-        process.env.DOCSMINT_CACHE_DIR ?? path.join(projectRoot, '.docsmint')
-      const configPath = path.join(projectRoot, 'docsmint.config.ts')
+        process.env.TIDYPRESS_CACHE_DIR ?? path.join(projectRoot, '.tidypress')
+      const configPath = path.join(projectRoot, 'tidypress.config.ts')
       const manifestPath =
-        process.env.DOCSMINT_MANIFEST_PATH ??
-        path.join(cacheDir, 'codegen', 'docsmint-plugins.mjs')
+        process.env.TIDYPRESS_MANIFEST_PATH ??
+        path.join(cacheDir, 'codegen', 'tidypress-plugins.mjs')
       /** @type {Set<string>} */
       const watchedRoots = new Set()
 
@@ -69,18 +69,18 @@ export function docsmintPluginDev() {
             await fs.writeFile(manifestPath, formatPluginManifestModule(manifest), 'utf8')
             await syncWatchRoots(manifest)
 
-            globalThis.__DOCSMINT_MANIFEST_EPOCH = (globalThis.__DOCSMINT_MANIFEST_EPOCH ?? 0) + 1
+            globalThis.__TIDYPRESS_MANIFEST_EPOCH = (globalThis.__TIDYPRESS_MANIFEST_EPOCH ?? 0) + 1
 
             const moduleNode = server.moduleGraph.getModuleById(manifestPath)
             if (moduleNode) {
               server.moduleGraph.invalidateModule(moduleNode)
             }
             server.ws.send({ type: 'full-reload', path: '*' })
-            server.config.logger.info(`[docsmint] plugin manifest updated (${reason})`)
+            server.config.logger.info(`[tidypress] plugin manifest updated (${reason})`)
           })
           .catch(error => {
             const message = error instanceof Error ? error.message : String(error)
-            server.config.logger.error(`[docsmint] plugin manifest failed: ${message}`)
+            server.config.logger.error(`[tidypress] plugin manifest failed: ${message}`)
           })
         return regenQueue
       }

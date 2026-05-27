@@ -1,5 +1,5 @@
 import { defaultConfig } from '../defaults.js'
-import type { DocsMintConfig, NavItem } from '../schema/index.js'
+import type { TidyPressConfig, NavItem } from '../schema/index.js'
 import { withDefaults } from '../normalize/with-defaults.js'
 
 function pickVisible(nav: NavItem[], limit: number): { visible: NavItem[]; overflow: NavItem[] } {
@@ -25,7 +25,7 @@ function pickVisible(nav: NavItem[], limit: number): { visible: NavItem[]; overf
   return { visible, overflow }
 }
 
-export function buildNavigationModel(config: DocsMintConfig): {
+export function buildNavigationModel(config: TidyPressConfig): {
   desktop: { visible: NavItem[]; overflow: NavItem[] }
   mobile: { visible: NavItem[]; overflow: NavItem[] }
 } {

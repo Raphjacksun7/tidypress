@@ -1,6 +1,6 @@
 export default {
   name: 'i18n-versioned-example',
-  description: 'DocsMint i18n and versioning example.',
+  description: 'TidyPress i18n and versioning example.',
   nav: [
     { label: 'docs', href: '/docs' },
     { label: 'writing', href: '/writing' },

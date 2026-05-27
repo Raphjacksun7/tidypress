@@ -1,4 +1,4 @@
-import { isStarterCollectionKey, type DocsMintConfig } from '@docsmint/config'
+import { isStarterCollectionKey, type TidyPressConfig } from '@tidypress/config'
 import { getConfig } from '@/config/getConfig'
 import { getEnabledCollections } from '@/utils/collections'
 import { loadPublishedCollectionEntries } from '@/utils/collection-entries'
@@ -10,7 +10,7 @@ import type { CollectionRouteContext, SiteRouteDefinition } from '@/routing/type
 
 export class RoutePlanner {
   constructor(
-    private readonly site: DocsMintConfig,
+    private readonly site: TidyPressConfig,
     private readonly registry: RouteRegistry = new RouteRegistry(),
     private readonly localeHomeStrategy: LocaleHomeStrategy = new LocaleHomeStrategy(),
   ) {}

@@ -1,5 +1,5 @@
 import { defaultConfig } from '../defaults.js'
-import type { DocsMintConfig, DocsMintTypography } from '../schema/index.js'
+import type { TidyPressConfig, TidyPressTypography } from '../schema/index.js'
 
 export const TYPOGRAPHY_SCALES = ['small', 'medium', 'large'] as const
 export type ResolvedTypographyScale = (typeof TYPOGRAPHY_SCALES)[number]
@@ -9,7 +9,7 @@ const SCALE_ALIASES: Record<string, ResolvedTypographyScale> = {
   extra: 'large',
 }
 
-export function normalizeTypography(config: DocsMintConfig): DocsMintTypography {
+export function normalizeTypography(config: TidyPressConfig): TidyPressTypography {
   const defaults = defaultConfig.typography ?? { scale: 'medium' }
   const typography = {
     ...defaults,

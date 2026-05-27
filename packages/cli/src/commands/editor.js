@@ -1,7 +1,7 @@
-import { DocsMintError } from '../errors/DocsMintError.js'
+import { TidyPressError } from '../errors/TidyPressError.js'
 
 /**
- * Handles `docsmint editor` (stretch scaffold).
+ * Handles `tidypress editor` (stretch scaffold).
  */
 export class EditorCommand {
   /**
@@ -20,11 +20,11 @@ export class EditorCommand {
       projectRoot,
       feature: 'editor',
       cliEnabled: enableExperimentalEditor,
-      cliHint: 'Use docsmint editor --enable-experimental-editor',
-      configHint: 'Set experimental.editor = true in docs/docsmint.config.ts',
+      cliHint: 'Use tidypress editor --enable-experimental-editor',
+      configHint: 'Set experimental.editor = true in docs/tidypress.config.ts',
     })
 
-    throw new DocsMintError(
+    throw new TidyPressError(
       'Experimental editor scaffold is ready, but implementation is not available yet.',
       'EXPERIMENTAL_NOT_IMPLEMENTED',
       'Task 19 keeps stretch work guarded until prerequisites are production-ready.',

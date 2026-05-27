@@ -3,7 +3,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 
 const ROOT = process.cwd()
-const MIN_TESTS = Number.parseInt(process.env.DOCSMINT_MIN_TESTS ?? '50', 10)
+const MIN_TESTS = Number.parseInt(process.env.TIDYPRESS_MIN_TESTS ?? '50', 10)
 
 /**
  * @param {string} directory

@@ -7,7 +7,7 @@ published: false
 
 Sidebar config is optional.
 
-Without `docs.sidebar`, DocsMint builds the docs sidebar from published docs entries and their `order` frontmatter.
+Without `docs.sidebar`, TidyPress builds the docs sidebar from published docs entries and their `order` frontmatter.
 
 Use `docs.sidebar` only when you want explicit groups, custom ordering, or hidden pages.
 
@@ -22,7 +22,7 @@ order: 1
 ---
 ```
 
-DocsMint sorts docs pages by `order`, then by title/slug.
+TidyPress sorts docs pages by `order`, then by title/slug.
 
 ## Explicit Groups
 
@@ -33,7 +33,7 @@ docs: {
   sidebar: [
     {
       label: 'Getting started',
-      items: ['why-docsmint', 'getting-started'],
+      items: ['why-tidypress', 'getting-started'],
     },
     {
       label: 'Configuration',
@@ -104,7 +104,7 @@ Override one page:
 
 ```yaml
 ---
-title: Why DocsMint
+title: Why TidyPress
 paging: false
 ---
 ```

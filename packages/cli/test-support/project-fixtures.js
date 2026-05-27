@@ -9,12 +9,12 @@ import path from 'node:path'
  * @returns {Promise<{ root: string, docsDir: string }>}
  */
 export async function createDocsProjectFixture({ configSource }) {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-config-loader-'))
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-config-loader-'))
   const docsDir = path.join(root, 'docs')
   await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
   await fs.mkdir(path.join(docsDir, 'src/content/writing'), { recursive: true })
   await fs.writeFile(path.join(docsDir, 'src/content/docs/getting-started.md'), '# docs', 'utf8')
   await fs.writeFile(path.join(docsDir, 'src/content/writing/hello.md'), '# writing', 'utf8')
-  await fs.writeFile(path.join(docsDir, 'docsmint.config.ts'), configSource, 'utf8')
+  await fs.writeFile(path.join(docsDir, 'tidypress.config.ts'), configSource, 'utf8')
   return { root, docsDir }
 }

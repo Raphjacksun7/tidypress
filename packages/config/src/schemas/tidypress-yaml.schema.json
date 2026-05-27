@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://docsmint.dev/schema/docsmint-yaml.json",
-  "title": "DocsMint YAML bridge config",
-  "description": "Optional docsmint.yaml used by the Python wrapper for command defaults.",
+  "$id": "https://tidypress.dev/schema/tidypress-yaml.json",
+  "title": "TidyPress YAML bridge config",
+  "description": "Optional tidypress.yaml used by the Python wrapper for command defaults.",
   "type": "object",
   "additionalProperties": false,
   "properties": {

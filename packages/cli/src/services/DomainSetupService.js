@@ -1,4 +1,4 @@
-import { DocsMintError } from '../errors/DocsMintError.js'
+import { TidyPressError } from '../errors/TidyPressError.js'
 
 const DOMAIN_PATTERN = /^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/i
 
@@ -48,7 +48,7 @@ export class DomainSetupService {
     const normalizedPlatform = this.#normalizePlatform(platform)
     const instructions = PLATFORM_INSTRUCTIONS[normalizedPlatform]
     if (!instructions) {
-      throw new DocsMintError(
+      throw new TidyPressError(
         `Unsupported platform: ${platform}`,
         'INVALID_DOMAIN_PLATFORM',
         `Use one of: ${Object.keys(PLATFORM_INSTRUCTIONS).join(', ')}`,
@@ -62,10 +62,10 @@ export class DomainSetupService {
     const domainFromConfig = this.#extractDomainFromSiteUrl(configSiteUrl)
     const rawDomain = typeof domain === 'string' && domain.trim().length > 0 ? domain : domainFromConfig
     if (!rawDomain) {
-      throw new DocsMintError(
+      throw new TidyPressError(
         'Missing domain value for setup.',
         'INVALID_DOMAIN_VALUE',
-        'Pass a domain argument or set siteUrl in docs/docsmint.config.ts',
+        'Pass a domain argument or set siteUrl in docs/tidypress.config.ts',
         { exitCode: 2 },
       )
     }
@@ -119,7 +119,7 @@ export class DomainSetupService {
   #normalizeDomain(domain) {
     const normalized = domain.trim().toLowerCase()
     if (!normalized || normalized.includes('://') || normalized.includes('/')) {
-      throw new DocsMintError(
+      throw new TidyPressError(
         `Invalid domain: ${domain}`,
         'INVALID_DOMAIN_VALUE',
         'Pass a bare host like docs.example.com',
@@ -127,7 +127,7 @@ export class DomainSetupService {
       )
     }
     if (!DOMAIN_PATTERN.test(normalized)) {
-      throw new DocsMintError(
+      throw new TidyPressError(
         `Invalid domain: ${domain}`,
         'INVALID_DOMAIN_VALUE',
         'Use a valid hostname like docs.example.com',

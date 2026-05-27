@@ -1,9 +1,9 @@
-import type { DocsMintConfig } from '@docsmint/config'
+import type { TidyPressConfig } from '@tidypress/config'
 import {
   isDocsCollectionKey,
-  isDocsMintCollectionKind,
-  isDocsMintDocForm,
-} from '@docsmint/config'
+  isTidyPressCollectionKind,
+  isTidyPressDocForm,
+} from '@tidypress/config'
 import { getCollection } from 'astro:content'
 import { isCollectionEnabled } from '@/utils/collections'
 import { getUiStrings, resolveLocale } from '@/i18n/locale'
@@ -49,7 +49,7 @@ export class RouteFactory {
   private readonly entryResolver = new EntryResolver()
 
   private constructor(
-    private readonly site: DocsMintConfig,
+    private readonly site: TidyPressConfig,
     pluginByScope: Map<string, ICollection>,
     customDocForms: string[],
   ) {
@@ -75,7 +75,7 @@ export class RouteFactory {
     }
   }
 
-  static async create(site: DocsMintConfig, projectRoot: string): Promise<RouteFactory> {
+  static async create(site: TidyPressConfig, projectRoot: string): Promise<RouteFactory> {
     await ensurePluginRouteViewRegistry()
     const presentationModules = await getPluginPresentationModules()
     const pluginByScope = await loadPluginPresentations(site, projectRoot, presentationModules)
@@ -137,7 +137,7 @@ export class RouteFactory {
     if (isDocsCollectionKey(collectionKey) && (route.mode === 'collection-entry' || route.mode === 'version-root')) {
       const entry = await this.entryResolver.resolve(route)
       const form = (entry?.data as { form?: string } | undefined)?.form
-      if (form && !isDocsMintDocForm(form) && this.customDocForms.has(form)) {
+      if (form && !isTidyPressDocForm(form) && this.customDocForms.has(form)) {
         const scope = `form:${form}`
         if (this.pluginByScope.has(scope)) {
           return this.pluginByScope.get(scope)!
@@ -149,7 +149,7 @@ export class RouteFactory {
       return this.builtinRegistry.resolve('site-docs')
     }
     const kind = this.site.collections?.[collectionKey]?.kind
-    if (isDocsMintCollectionKind(kind)) {
+    if (isTidyPressCollectionKind(kind)) {
       return this.builtinRegistry.resolve(kind)
     }
     throw new Error(

@@ -2,7 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import jitiFactory from 'jiti'
 
-import { DocsMintError } from '../../errors/DocsMintError.js'
+import { TidyPressError } from '../../errors/TidyPressError.js'
 
 /**
  * @param {string} projectRoot
@@ -18,8 +18,8 @@ export function getDocsDir(projectRoot) {
  */
 export async function findConfigFile(docsDir) {
   const candidates = [
-    path.resolve(docsDir, 'docsmint.config.ts'),
-    path.resolve(docsDir, 'docsmint.config.js'),
+    path.resolve(docsDir, 'tidypress.config.ts'),
+    path.resolve(docsDir, 'tidypress.config.js'),
   ]
   for (const candidate of candidates) {
     try {
@@ -29,10 +29,10 @@ export async function findConfigFile(docsDir) {
       // Keep checking remaining candidates.
     }
   }
-  throw new DocsMintError(
-    'Missing docs/docsmint.config.ts (or .js).',
+  throw new TidyPressError(
+    'Missing docs/tidypress.config.ts (or .js).',
     'CONFIG_NOT_FOUND',
-    'Run `docsmint init` first.',
+    'Run `tidypress init` first.',
   )
 }
 

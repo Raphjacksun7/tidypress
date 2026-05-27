@@ -1,1 +1,1 @@
-export { formatWritingImportMarkdown } from '@docsmint/config'
+export { formatWritingImportMarkdown } from '@tidypress/config'

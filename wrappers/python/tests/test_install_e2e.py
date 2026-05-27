@@ -1,4 +1,4 @@
-"""Real install e2e: pip install wrapper + packed docsmint tarball + subprocess init/build."""
+"""Real install e2e: pip install wrapper + packed tidypress tarball + subprocess init/build."""
 
 from __future__ import annotations
 
@@ -28,48 +28,48 @@ def _run(cmd: list[str], *, cwd: Path, env: dict[str, str] | None = None) -> sub
 
 
 @pytest.fixture(scope="module")
-def docsmint_tarball() -> Path:
+def tidypress_tarball() -> Path:
     subprocess.run(
-        ["pnpm", "--filter", "@docsmint/config", "build"],
+        ["pnpm", "--filter", "@tidypress/config", "build"],
         cwd=REPO_ROOT,
         check=True,
     )
-    pack_dir = Path(tempfile.mkdtemp(prefix="docsmint-pack-"))
+    pack_dir = Path(tempfile.mkdtemp(prefix="tidypress-pack-"))
     _run(["npm", "pack", "--pack-destination", str(pack_dir)], cwd=CLI_PACKAGE)
-    tarballs = sorted(pack_dir.glob("docsmint-*.tgz"))
-    assert tarballs, "npm pack did not produce docsmint tarball"
+    tarballs = sorted(pack_dir.glob("tidypress-*.tgz"))
+    assert tarballs, "npm pack did not produce tidypress tarball"
     return tarballs[-1]
 
 
-def test_python_entrypoint_init_and_build_lab(docsmint_tarball: Path) -> None:
-    with tempfile.TemporaryDirectory(prefix="docsmint-py-e2e-") as tmp:
+def test_python_entrypoint_init_and_build_lab(tidypress_tarball: Path) -> None:
+    with tempfile.TemporaryDirectory(prefix="tidypress-py-e2e-") as tmp:
         root = Path(tmp)
         install_root = root / "project"
         install_root.mkdir()
-        _run(["npm", "init", "-y"], cwd=install_root)
-        _run(["npm", "install", str(docsmint_tarball)], cwd=install_root)
+        # Match packages/cli install-e2e: install tarball in an empty dir (no package.json).
+        _run(["npm", "install", str(tidypress_tarball)], cwd=install_root)
 
-        cli_js = install_root / "node_modules" / "docsmint" / "bin" / "docsmint.js"
+        cli_js = install_root / "node_modules" / "tidypress" / "bin" / "tidypress.js"
         assert cli_js.is_file()
 
         venv_dir = root / "venv"
         _run([sys.executable, "-m", "venv", str(venv_dir)], cwd=root)
         pip = venv_dir / "bin" / "pip"
-        docsmint_bin = venv_dir / "bin" / "docsmint"
+        tidypress_bin = venv_dir / "bin" / "tidypress"
         _run([str(pip), "install", "-e", f"{REPO_ROOT / 'wrappers' / 'python'}[dev]"], cwd=root)
 
         cli_env = {
-            "DOCSMINT_CLI_JS": str(cli_js),
+            "TIDYPRESS_CLI_JS": str(cli_js),
             "CI": "true",
-            "DOCSMINT_JSON_LOGS": "1",
+            "TIDYPRESS_JSON_LOGS": "1",
         }
         site = install_root / "site"
         site.mkdir()
-        _run([str(docsmint_bin), "init", "--preset", "lab"], cwd=site, env=cli_env)
+        _run([str(tidypress_bin), "init", "--preset", "lab"], cwd=site, env=cli_env)
         docs = site / "docs"
-        assert (docs / "docsmint.config.ts").is_file()
+        assert (docs / "tidypress.config.ts").is_file()
 
-        _run([str(docsmint_bin), "build", "--sync"], cwd=site, env=cli_env)
+        _run([str(tidypress_bin), "build", "--sync"], cwd=site, env=cli_env)
         build = docs / "build"
         assert (build / "index.html").is_file()
         assert (build / "writing" / "rss.xml").is_file()

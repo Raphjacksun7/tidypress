@@ -1,5 +1,5 @@
 /**
- * Handles `docsmint add-version`.
+ * Handles `tidypress add-version`.
  */
 export class AddVersionCommand {
   /**

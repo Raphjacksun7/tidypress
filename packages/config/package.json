@@ -1,6 +1,6 @@
 {
-  "name": "@docsmint/config",
-  "version": "1.0.7",
+  "name": "@tidypress/config",
+  "version": "1.0.8",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

@@ -1,4 +1,4 @@
-# Releasing DocsMint
+# Releasing TidyPress
 
 Release publishing is handled by GitHub Actions with Trusted Publishing for npm and PyPI.
 
@@ -11,7 +11,7 @@ Release publishing is handled by GitHub Actions with Trusted Publishing for npm 
 
 ## Release flow (Changesets)
 
-DocsMint uses [Changesets](https://github.com/changesets/changesets) to keep package versions
+TidyPress uses [Changesets](https://github.com/changesets/changesets) to keep package versions
 in sync and generate changelogs automatically.
 
 ### Day-to-day: adding a changeset to your PR
@@ -20,7 +20,7 @@ in sync and generate changelogs automatically.
 pnpm changeset
 ```
 
-Follow the prompts. The npm packages (`@docsmint/config`, `@docsmint/engine`, `docsmint`)
+Follow the prompts. The npm packages (`@tidypress/config`, `@tidypress/engine`, `tidypress`)
 are linked so their versions stay together.
 
 ### Release sequence
@@ -38,7 +38,7 @@ git tag v1.0.4
 git push origin v1.0.4
 ```
 
-6. The `Publish` workflow validates all four versions, runs tests, publishes `docsmint` to npm,
+6. The `Publish` workflow validates all four versions, runs tests, publishes `tidypress` to npm,
    runs a real CLI smoke test, then publishes to PyPI.
 
 ## Manual release (without Changesets)
@@ -58,15 +58,46 @@ If you need to cut a release manually without a changeset:
 Users install one public npm package:
 
 ```bash
-npm install docsmint
-pnpm add docsmint
+npm install tidypress
+pnpm add tidypress
 ```
 
-`@docsmint/config` and `@docsmint/engine` are internal runtime packages. They are bundled into
-the `docsmint` tarball through `bundleDependencies`, so npm users do not need to install or
+`@tidypress/config` and `@tidypress/engine` are internal runtime packages. They are bundled into
+the `tidypress` tarball through `bundleDependencies`, so npm users do not need to install or
 resolve separate scoped packages.
 
 `pnpm publish` replaces `workspace:*` entries with real semver at pack time.
+
+## External rename checklist
+
+The TidyPress rename is a clean break in this repository. Before publishing a renamed release:
+
+- Reserve or verify npm package ownership for `tidypress` and the `@tidypress` scope.
+- Configure PyPI Trusted Publishing for the `tidypress` project.
+- Create or rename the Cloudflare Pages project to `tidypress` so the default URL is `tidypress.pages.dev`.
+- Rename the GitHub repository or update repository URLs if the canonical repo moves.
+- Deprecate the old npm/PyPI package names with a pointer to TidyPress after the new release is live.
+
+## Required GitHub secrets / publisher setup
+
+CI publishing and deployment need these external settings:
+
+- `NPM_TOKEN` — GitHub Actions secret with publish access to the `tidypress` npm package.
+- `CLOUDFLARE_API_TOKEN` — GitHub Actions secret with Cloudflare Pages edit/deploy access.
+- `CLOUDFLARE_ACCOUNT_ID` — GitHub Actions secret for the Cloudflare account that owns the `tidypress` Pages project.
+- PyPI Trusted Publisher for `tidypress`:
+  - Owner: `Raphjacksun7`
+  - Repository: current GitHub repository name
+  - Workflow: `publish.yml`
+  - Environment: leave blank unless the workflow adds a PyPI environment.
+
+Local Pages deploy:
+
+```bash
+npm exec --yes wrangler -- login
+npm exec --yes wrangler -- pages project create tidypress --production-branch main
+pnpm deploy:site
+```
 
 ## Version alignment rule
 
@@ -74,9 +105,9 @@ All four packages must share the same version on every release:
 
 | Package | File |
 |---------|------|
-| `@docsmint/config` | `packages/config/package.json` |
-| `@docsmint/engine` | `packages/engine/package.json` |
-| `docsmint` (CLI) | `packages/cli/package.json` |
+| `@tidypress/config` | `packages/config/package.json` |
+| `@tidypress/engine` | `packages/engine/package.json` |
+| `tidypress` (CLI) | `packages/cli/package.json` |
 | Python wrapper | `wrappers/python/pyproject.toml` |
 
 The `validate-release` CI job enforces this — it fails if any of the four versions do not
@@ -86,11 +117,11 @@ match the git tag.
 
 1. Reads all four package versions and asserts they match the tag.
 2. Runs the full test suite and builds.
-3. Builds `@docsmint/config` TypeScript → `dist/`.
-4. Publishes `docsmint` to npm via `pnpm publish`; bundled internal packages are included in
+3. Builds `@tidypress/config` TypeScript → `dist/`.
+4. Publishes `tidypress` to npm via `pnpm publish`; bundled internal packages are included in
    the tarball.
-5. Runs a real smoke test: `npm install docsmint@<version>` in a clean dir, then
-   `node ./node_modules/docsmint/bin/docsmint.js --version`.
+5. Runs a real smoke test: `npm install tidypress@<version>` in a clean dir, then
+   `node ./node_modules/tidypress/bin/tidypress.js --version`.
 6. Publishes `wrappers/python` to PyPI via Trusted Publishing.
 
 ## Explicit backlog (not regressions)
@@ -101,8 +132,10 @@ Tracked for planning and release notes. **Not** treated as ship blockers unless 
 |------|--------|--------|
 | **P3: newsletter embed** | Backlog | Config link/iframe block — not a hosted newsletter product |
 | **P3: `talks` collection kind** | Backlog | Only if event schema is repeatedly requested |
-| **Import: medium / ghost / substack** | Scaffold | `docsmint import devto` is live; other providers write review scaffolds (documented) |
-| **Repo hygiene** | Open | Add/commit `examples/*`, `apps/site/docsmint-context.md`, and remaining moat changes when ready for PR |
+| **Import: medium / ghost / substack** | Scaffold | `tidypress import devto` is live; other providers write review scaffolds (documented) |
+| **Repo hygiene** | Open | Add/commit `examples/*`, `apps/site/tidypress-context.md`, and remaining moat changes when ready for PR |
+| **Git-backed editor (task 19)** | Post-launch | Separate **editor app** — Medium-style UI → markdown files; not part of core tool story |
+| **Hosted platform** | Post-launch | Separate **free hosting** layer — uses `tidypress build`; not core CLI pitch |
 
 ## Release roadmap
 
@@ -113,8 +146,8 @@ This section tracks engineering work that affects release sequencing and risk.
 - `pages` custom routes (`docs/src/content/pages/`) replaced legacy extension page routing.
 - `sections.docs.enabled` and `sections.writing.enabled` added for section-level control.
 - `collections` is the canonical routing surface; `sections` remains compatibility-only.
-- `docsmint migrate-sections` generates deterministic migration output at
-  `~/.cache/docsmint/<project>/migrations/sections-to-collections.json`.
+- `tidypress migrate-sections` generates deterministic migration output at
+  `~/.cache/tidypress/<project>/migrations/sections-to-collections.json`.
 - Shared docs sorting added to keep redirect/sidebar ordering consistent.
 - Edit-link support added via repository metadata.
 - Search exclusion controls added (`search: false` + config excludes).
@@ -129,6 +162,17 @@ This section tracks engineering work that affects release sequencing and risk.
 - Migration guidance must remain in `README.md` and site docs until a formal deprecation release is announced.
 - Any future removal requires a major-version announcement and explicit migration notes.
 
+### Post-launch product sequence (after task 20)
+
+**Core package stays free and simple.** Platform and editor are separate layers on top.
+
+1. **Core launch (task 20)** — `tidypress` tool only in npm/README pitch.
+2. **Hosted platform MVP** — free tier: repo → build → URL; uses core package.
+3. **Editor app Phase 1** — separate Medium-style app → `writing/*.md`; for non-dev writers.
+4. **Editor app Phase 2** — projects form → `projects/*.md`.
+
+See `agent-os/CONSTITUTION.md` (product layers) and `agent-os/TASKS/19-v4-stretch.md`.
+
 ### Next release targets
 
 - Autosidebar hardening (reduce manual ordering dependency).
@@ -139,7 +183,7 @@ This section tracks engineering work that affects release sequencing and risk.
 
 ### Architecture decisions (release policy)
 
-- Keep Astro as the engine build core (`docsmint build` -> Astro build).
+- Keep Astro as the engine build core (`tidypress build` -> Astro build).
 - Keep package boundaries strict:
   - `packages/cli`: orchestration, command parsing, DI.
   - `packages/engine`: rendering/build runtime (Astro).
@@ -155,7 +199,7 @@ This section tracks engineering work that affects release sequencing and risk.
   2. `services`
   3. `commands`
   4. `Application` and bootstrap wiring
-- Keep `bin/docsmint.js` as a thin launcher.
+- Keep `bin/tidypress.js` as a thin launcher.
 - Require tests to pass at each phase before moving forward.
 - Prioritize product features and reliability over migration churn when JS remains stable.
 

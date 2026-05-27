@@ -1,2 +1,2 @@
 export { runCli, runCliMain } from './runCli.js'
-export { DocsMintError } from './errors/DocsMintError.js'
+export { TidyPressError } from './errors/TidyPressError.js'

@@ -1,23 +1,23 @@
 ---
 title: Configuration
-description: The practical shape of docs/docsmint.config.ts.
+description: The practical shape of docs/tidypress.config.ts.
 order: 5
 ---
 
-DocsMint reads one config file:
+TidyPress reads one config file:
 
 ```txt
-docs/docsmint.config.ts
+docs/tidypress.config.ts
 ```
 
 Only `name` is required. Keep the file small until the site needs more shape.
 
 ```ts
-import { defineConfig } from 'docsmint/config'
+import { defineConfig } from 'tidypress/config'
 
 export default defineConfig({
   name: 'my-project',
-  description: 'Minimal markdown site for fast writing and project showcase.',
+  description: 'A publishing framework for Git-native authorship.',
   nav: [
     { label: 'docs', href: '/docs' },
     { label: 'writing', href: '/writing' },
@@ -34,7 +34,7 @@ export default defineConfig({
 
 ```ts
 name: 'my-project',
-description: 'Minimal markdown site for fast writing and project showcase.',
+description: 'A publishing framework for Git-native authorship.',
 siteUrl: 'https://example.com',
 ```
 
@@ -72,7 +72,7 @@ footer: [
 
 Supported footer icons: `github`, `x`, `linkedin`, `discord`, `youtube`, `instagram`, `bluesky`, `facebook`, `reddit`, `twitch`, `mastodon`, `slack`, `telegram`, `tiktok`, `npm`, `rss`, and `email`.
 
-Internal links are strict by default. If a site has links that are generated outside DocsMint, use relaxed mode:
+Internal links are strict by default. If a site has links that are generated outside TidyPress, use relaxed mode:
 
 ```ts
 navPolicy: {
@@ -169,7 +169,7 @@ Place markdown in `docs/src/content/works/`. Match `nav` `href` values to each c
 
 ### Init presets
 
-`docsmint init` seeds content and config. `default` is an alias for `lab`.
+`tidypress init` seeds content and config. `default` is an alias for `lab`.
 
 | Preset | Shape |
 |--------|--------|
@@ -180,7 +180,7 @@ Place markdown in `docs/src/content/works/`. Match `nav` `href` values to each c
 | `custom` | docs + writing + a `playbooks` content collection |
 
 ```bash
-npx docsmint init --preset blog
+npx tidypress init --preset blog
 ```
 
 See [Examples](./examples) for runnable copies under `examples/`.
@@ -223,7 +223,7 @@ Omit `hero` or leave `enabled` unset/false to hide the bar. The `persona` init p
 
 The `persona` preset gives you a hero, projects, optional writing, and an `/about` page. **Experience, education, and skills belong in markdown** on that page (or in writing posts) — not in structured config blocks.
 
-DocsMint does not ship résumé schema (no job blocks, degree blocks, or employment location fields). That keeps the product markdown-first and avoids vague HR metadata (`hybrid`, `remote`, `present`, and similar).
+TidyPress does not ship résumé schema (no job blocks, degree blocks, or employment location fields). That keeps the product markdown-first and avoids vague HR metadata (`hybrid`, `remote`, `present`, and similar).
 
 When you need a CV section, use normal headings on `/about`:
 
@@ -284,7 +284,7 @@ Place files in `docs/public/`.
 
 ## Search
 
-Search is powered by [Pagefind](https://pagefind.app/) and generated during `docsmint build`.
+Search is powered by [Pagefind](https://pagefind.app/) and generated during `tidypress build`.
 
 ```ts
 search: {
@@ -318,4 +318,4 @@ Keep presentation separate from the base config:
 
 - [Site layout](./site-layout) covers sidebar groups, chapter navigation, homepage previews, indexes, tags, and icons.
 - [Theme](./theme-typography) covers typography, theme mode, code highlighting, and custom tokens.
-- [Advanced configuration](./advanced-configuration) covers i18n, versions, analytics, capabilities, and `docsmint context`.
+- [Advanced configuration](./advanced-configuration) covers i18n, versions, analytics, capabilities, and `tidypress context`.

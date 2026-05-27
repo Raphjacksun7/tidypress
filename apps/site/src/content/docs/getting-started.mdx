@@ -1,6 +1,6 @@
 ---
 title: Getting started
-description: Create a DocsMint project, run it locally, and build static output.
+description: Create a TidyPress project, run it locally, and build static output.
 order: 2
 ---
 
@@ -12,21 +12,21 @@ Create a `docs/` folder, run the local server, write one page, then build static
 <Tab>
 
 ```bash
-npm install docsmint
+npm install tidypress
 ```
 
 </Tab>
 <Tab>
 
 ```bash
-pnpm add docsmint
+pnpm add tidypress
 ```
 
 </Tab>
 <Tab>
 
 ```bash
-pip install docsmint
+pip install tidypress
 ```
 
 </Tab>
@@ -41,8 +41,8 @@ Node.js 22.12 or newer is required for rendering. The Python package can run Pyt
 From the root of your project:
 
 ```bash
-npx docsmint init
-npx docsmint dev
+npx tidypress init
+npx tidypress dev
 ```
 
 Open `http://localhost:4321`.
@@ -51,7 +51,7 @@ Open `http://localhost:4321`.
 
 ```txt
 docs/
-├── docsmint.config.ts
+├── tidypress.config.ts
 ├── public/
 │   └── images/
 └── src/
@@ -78,10 +78,10 @@ Other presets:
 `default` is an alias for `lab`.
 
 ```bash
-npx docsmint init --preset blog
-npx docsmint init --preset persona
-npx docsmint init --preset docs-writing
-npx docsmint init --preset custom
+npx tidypress init --preset blog
+npx tidypress init --preset persona
+npx tidypress init --preset docs-writing
+npx tidypress init --preset custom
 ```
 
 ## Write one docs page
@@ -115,8 +115,8 @@ What changed and why.
 ## Build and preview
 
 ```bash
-npx docsmint build
-npx docsmint preview
+npx tidypress build
+npx tidypress preview
 ```
 
 Build output is written to:
@@ -125,22 +125,22 @@ Build output is written to:
 docs/build/
 ```
 
-Search is generated during `docsmint build`, so the search modal is available in `preview`, not in the dev server.
+Search is generated during `tidypress build`, so the search modal is available in `preview`, not in the dev server.
 
-Deploy the `build/` folder with your static host, CI job, or `docsmint deploy`.
+Deploy the `build/` folder with your static host, CI job, or `tidypress deploy`.
 
 ## Generated files (do not edit)
 
-DocsMint keeps your markdown in place. It writes two kinds of generated output:
+TidyPress keeps your markdown in place. It writes two kinds of generated output:
 
 ```txt
 your project
 └── docs/
-    ├── docsmint.config.ts      # your config
+    ├── tidypress.config.ts      # your config
     ├── src/content/            # your markdown
     └── build/                  # static site — deploy this (gitignored)
 
-~/.cache/docsmint/<key>/        # local compiler cache — not deployed
+~/.cache/tidypress/<key>/        # local compiler cache — not deployed
 ```
 
 - **`build/`** — HTML, assets, Pagefind search, sitemap. Upload only this folder to production.
@@ -149,8 +149,8 @@ your project
 If a local build behaves strangely after an engine upgrade, run:
 
 ```bash
-npx docsmint clean
-npx docsmint build
+npx tidypress clean
+npx tidypress build
 ```
 
 ## Static assets
@@ -177,6 +177,6 @@ Use absolute paths in markdown:
 ## Next steps
 
 - [Markdown and frontmatter](./writing-content) covers fields, links, images, drafts, and scheduling.
-- [Configuration](./configuration) covers `docsmint.config.ts`.
+- [Configuration](./configuration) covers `tidypress.config.ts`.
 - [Deploy](./deploying) explains `build/` output and provider targets.
 - [Agents and markdown](/writing/agents-and-markdown) — same workflow for human edits and agent drafts.

@@ -1,7 +1,7 @@
 import { writeDeployWorkflowTemplate } from '../deployment/CiWorkflowTemplates.js'
 
 /**
- * Handles `docsmint deploy`.
+ * Handles `tidypress deploy`.
  */
 export class DeployCommand {
   /**

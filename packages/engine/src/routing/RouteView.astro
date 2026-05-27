@@ -15,7 +15,7 @@ interface Props {
 const { route } = Astro.props
 const rawSite = (await import('@site-config')).default
 const site = getConfig(rawSite)
-const projectRoot = import.meta.env.DOCSMINT_PROJECT_ROOT ?? ''
+const projectRoot = import.meta.env.TIDYPRESS_PROJECT_ROOT ?? ''
 const factory = await RouteFactory.create(site, projectRoot)
 const resolver = new EntryResolver()
 const bundle = await factory.create(route)

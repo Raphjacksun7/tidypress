@@ -1,16 +1,16 @@
 import { defaultConfig } from '../defaults.js'
 import type {
-  DocsMintCapabilityName,
-  DocsMintCodeThemePreset,
-  DocsMintConfig,
-  DocsMintTheme,
-  DocsMintThemeTokenName,
-  DocsMintThemeTokenSurface,
+  TidyPressCapabilityName,
+  TidyPressCodeThemePreset,
+  TidyPressConfig,
+  TidyPressTheme,
+  TidyPressThemeTokenName,
+  TidyPressThemeTokenSurface,
 } from '../schema/index.js'
-import { docsMintCodeThemePresets } from '../schema/index.js'
-import { isDocsMintCodeThemePreset } from '../registry/code-themes.js'
+import { tidyPressCodeThemePresets } from '../schema/index.js'
+import { isTidyPressCodeThemePreset } from '../registry/code-themes.js'
 
-const allowedThemeTokens = new Set<DocsMintThemeTokenName>([
+const allowedThemeTokens = new Set<TidyPressThemeTokenName>([
   'bg',
   'fg',
   'muted',
@@ -21,10 +21,10 @@ const allowedThemeTokens = new Set<DocsMintThemeTokenName>([
 ])
 
 export function normalizeTheme(
-  config: DocsMintConfig,
-  capabilityFlags: Partial<Record<DocsMintCapabilityName, boolean>>,
-): DocsMintTheme {
-  const fallback: DocsMintTheme = structuredClone(defaultConfig.theme ?? {
+  config: TidyPressConfig,
+  capabilityFlags: Partial<Record<TidyPressCapabilityName, boolean>>,
+): TidyPressTheme {
+  const fallback: TidyPressTheme = structuredClone(defaultConfig.theme ?? {
     mode: 'guardrailed',
     preset: 'baseline',
     code: { preset: 'claude' },
@@ -34,12 +34,12 @@ export function normalizeTheme(
   const mode = source.mode ?? fallback.mode ?? 'guardrailed'
   const preset = source.preset ?? fallback.preset ?? 'baseline'
   const requestedCodePresetRaw = source.code?.preset ?? fallback.code?.preset ?? 'claude'
-  if (!isDocsMintCodeThemePreset(requestedCodePresetRaw)) {
+  if (!isTidyPressCodeThemePreset(requestedCodePresetRaw)) {
     throw new Error(
-      `theme.code.preset must be one of: ${docsMintCodeThemePresets.join(', ')}.`,
+      `theme.code.preset must be one of: ${tidyPressCodeThemePresets.join(', ')}.`,
     )
   }
-  const requestedCodePreset: DocsMintCodeThemePreset = requestedCodePresetRaw
+  const requestedCodePreset: TidyPressCodeThemePreset = requestedCodePresetRaw
   if (preset !== 'baseline') {
     throw new Error('theme.preset must be "baseline".')
   }
@@ -86,12 +86,12 @@ export function normalizeTheme(
   }
 
   const normalizeTokenMap = (
-    tokenMap: Partial<DocsMintThemeTokenSurface>,
+    tokenMap: Partial<TidyPressThemeTokenSurface>,
     field: 'theme.tokens.light' | 'theme.tokens.dark',
-  ): Partial<DocsMintThemeTokenSurface> => {
-    const normalized: Partial<DocsMintThemeTokenSurface> = {}
+  ): Partial<TidyPressThemeTokenSurface> => {
+    const normalized: Partial<TidyPressThemeTokenSurface> = {}
     for (const [key, rawValue] of Object.entries(tokenMap)) {
-      if (!allowedThemeTokens.has(key as DocsMintThemeTokenName)) {
+      if (!allowedThemeTokens.has(key as TidyPressThemeTokenName)) {
         throw new Error(
           `${field} contains unsupported token "${key}". Allowed tokens: ${Array.from(allowedThemeTokens).join(', ')}.`,
         )
@@ -103,7 +103,7 @@ export function normalizeTheme(
       if (!/^[#(),.%/\-\sA-Za-z0-9]+$/.test(value)) {
         throw new Error(`${field}.${key} contains unsupported characters for a CSS token.`)
       }
-      normalized[key as DocsMintThemeTokenName] = value
+      normalized[key as TidyPressThemeTokenName] = value
     }
     if (Object.keys(normalized).length === 0) {
       throw new Error(`${field} must include at least one token override.`)

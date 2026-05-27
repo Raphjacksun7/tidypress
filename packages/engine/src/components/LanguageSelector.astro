@@ -1,12 +1,12 @@
 ---
-import type { DocsMintConfig } from '@docsmint/config'
+import type { TidyPressConfig } from '@tidypress/config'
 import { switchLocaleTarget } from '@/routing/route-equivalents'
 
 const { activeLocale, defaultLocale, label, site } = Astro.props as {
   activeLocale?: string
   defaultLocale: string
   label: string
-  site: DocsMintConfig
+  site: TidyPressConfig
 }
 const locales: string[] = Array.isArray(Astro.props.locales) ? Astro.props.locales : []
 const pathname = Astro.url.pathname

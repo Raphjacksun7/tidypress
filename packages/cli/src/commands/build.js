@@ -1,5 +1,5 @@
 /**
- * Handles `docsmint build`.
+ * Handles `tidypress build`.
  */
 export class BuildCommand {
   /**

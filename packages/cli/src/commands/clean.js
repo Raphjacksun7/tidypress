@@ -1,5 +1,5 @@
 /**
- * Handles `docsmint clean`.
+ * Handles `tidypress clean`.
  */
 export class CleanCommand {
   /**

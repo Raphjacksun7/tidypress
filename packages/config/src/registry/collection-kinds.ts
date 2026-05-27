@@ -7,7 +7,7 @@ type CollectionKindRouteModeConfig = {
 }
 
 /** Single registry for user-selectable collection kinds (not the `docs` collection key). */
-export const docsMintCollectionKindRegistry = {
+export const tidyPressCollectionKindRegistry = {
   content: {
     contentSchema: 'docs',
     usesDocsSidebar: true,
@@ -47,61 +47,61 @@ export const docsMintCollectionKindRegistry = {
   },
 } as const
 
-export type DocsMintCollectionKind = keyof typeof docsMintCollectionKindRegistry
+export type TidyPressCollectionKind = keyof typeof tidyPressCollectionKindRegistry
 
-export const docsMintCollectionKinds = Object.keys(
-  docsMintCollectionKindRegistry,
-) as DocsMintCollectionKind[]
+export const tidyPressCollectionKinds = Object.keys(
+  tidyPressCollectionKindRegistry,
+) as TidyPressCollectionKind[]
 
-export type DocsMintCollectionContentSchema =
-  (typeof docsMintCollectionKindRegistry)[DocsMintCollectionKind]['contentSchema']
+export type TidyPressCollectionContentSchema =
+  (typeof tidyPressCollectionKindRegistry)[TidyPressCollectionKind]['contentSchema']
 
-export function isDocsMintCollectionKind(value: string | undefined): value is DocsMintCollectionKind {
-  return value !== undefined && value in docsMintCollectionKindRegistry
+export function isTidyPressCollectionKind(value: string | undefined): value is TidyPressCollectionKind {
+  return value !== undefined && value in tidyPressCollectionKindRegistry
 }
 
-export function formatDocsMintCollectionKinds(): string {
-  return docsMintCollectionKinds.map(kind => `"${kind}"`).join(', ')
+export function formatTidyPressCollectionKinds(): string {
+  return tidyPressCollectionKinds.map(kind => `"${kind}"`).join(', ')
 }
 
-export function collectionKindUsesDocsSidebar(kind: DocsMintCollectionKind): boolean {
-  return docsMintCollectionKindRegistry[kind].usesDocsSidebar
+export function collectionKindUsesDocsSidebar(kind: TidyPressCollectionKind): boolean {
+  return tidyPressCollectionKindRegistry[kind].usesDocsSidebar
 }
 
-export function collectionKindContentSchema(kind: DocsMintCollectionKind): DocsMintCollectionContentSchema {
-  return docsMintCollectionKindRegistry[kind].contentSchema
+export function collectionKindContentSchema(kind: TidyPressCollectionKind): TidyPressCollectionContentSchema {
+  return tidyPressCollectionKindRegistry[kind].contentSchema
 }
 
 /** Collections indexed by Pagefind and listed in search filter chips (excludes standalone pages). */
-export function isSearchableCollectionKind(kind: DocsMintCollectionKind | undefined): boolean {
+export function isSearchableCollectionKind(kind: TidyPressCollectionKind | undefined): boolean {
   return !kind || !isPageCollectionKind(kind)
 }
 
-export function isPageCollectionKind(kind: DocsMintCollectionKind): boolean {
+export function isPageCollectionKind(kind: TidyPressCollectionKind): boolean {
   return kind === 'page'
 }
 
-export const defaultCollectionKind: DocsMintCollectionKind = 'content'
+export const defaultCollectionKind: TidyPressCollectionKind = 'content'
 
-export function resolveCollectionKind(kind: string | undefined): DocsMintCollectionKind {
-  return kind && isDocsMintCollectionKind(kind) ? kind : defaultCollectionKind
+export function resolveCollectionKind(kind: string | undefined): TidyPressCollectionKind {
+  return kind && isTidyPressCollectionKind(kind) ? kind : defaultCollectionKind
 }
 
-export function collectionKindShellLayout(kind: DocsMintCollectionKind): CollectionShellLayout {
-  return docsMintCollectionKindRegistry[kind].shellLayout
+export function collectionKindShellLayout(kind: TidyPressCollectionKind): CollectionShellLayout {
+  return tidyPressCollectionKindRegistry[kind].shellLayout
 }
 
-export function collectionKindRouteModes(kind: DocsMintCollectionKind): CollectionRouteViewMode[] {
-  return Object.keys(docsMintCollectionKindRegistry[kind].routeModes) as CollectionRouteViewMode[]
+export function collectionKindRouteModes(kind: TidyPressCollectionKind): CollectionRouteViewMode[] {
+  return Object.keys(tidyPressCollectionKindRegistry[kind].routeModes) as CollectionRouteViewMode[]
 }
 
 export function collectionKindModeRequiresRenderedEntry(
-  kind: DocsMintCollectionKind,
+  kind: TidyPressCollectionKind,
   mode: CollectionRouteViewMode,
 ): boolean {
   const entry =
-    docsMintCollectionKindRegistry[kind].routeModes[
-      mode as keyof (typeof docsMintCollectionKindRegistry)[typeof kind]['routeModes']
+    tidyPressCollectionKindRegistry[kind].routeModes[
+      mode as keyof (typeof tidyPressCollectionKindRegistry)[typeof kind]['routeModes']
     ]
   if (!entry) {
     throw new Error(`Collection kind "${kind}" does not support route mode "${mode}".`)
@@ -110,7 +110,7 @@ export function collectionKindModeRequiresRenderedEntry(
 }
 
 /** Custom doc forms use the docs shell and full route surface. */
-export const docsMintDocFormViewConfig = {
+export const tidyPressDocFormViewConfig = {
   shellLayout: 'docs' as const satisfies CollectionShellLayout,
   routeModes: {
     'collection-index': { requiresRenderedEntry: true },

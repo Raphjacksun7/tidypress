@@ -1,5 +1,5 @@
 /**
- * Handles `docsmint import`.
+ * Handles `tidypress import`.
  */
 export class ImportCommand {
   /**

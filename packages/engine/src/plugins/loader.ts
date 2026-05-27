@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
-import type { DocsMintConfig } from '@docsmint/config'
-import type { DocsMintPluginPresentation, DocsMintPluginPresentationFactory } from '@/plugins/contracts'
+import type { TidyPressConfig } from '@tidypress/config'
+import type { TidyPressPluginPresentation, TidyPressPluginPresentationFactory } from '@/plugins/contracts'
 import type { ICollection } from '@/collections/ICollection'
 import type { SiteRouteDefinition } from '@/routing/types'
 import type { RouteViewBundle } from '@/collections/bundle'
@@ -18,9 +18,9 @@ class PluginCollection implements ICollection {
   readonly presentationTarget = 'content' as const
 
   constructor(
-    private readonly site: DocsMintConfig,
+    private readonly site: TidyPressConfig,
     private readonly scopeKey: string,
-    private readonly delegate: DocsMintPluginPresentation,
+    private readonly delegate: TidyPressPluginPresentation,
   ) {}
 
   async buildIndex(route: SiteRouteDefinition): Promise<RouteViewBundle> {
@@ -37,14 +37,14 @@ class PluginCollection implements ICollection {
 async function importPresentationModule(
   projectRoot: string,
   modulePath: string,
-): Promise<DocsMintPluginPresentationFactory> {
+): Promise<TidyPressPluginPresentationFactory> {
   const projectRelative = modulePath.replace(/^\.\//, '')
   const loaded = import.meta.env.DEV
     ? await import(`@project/${projectRelative}`)
     : await import(/* @vite-ignore */ pathToFileURL(path.resolve(projectRoot, projectRelative)).href)
   const factory =
-    (loaded.createPresentation as DocsMintPluginPresentationFactory | undefined) ??
-    (loaded.default as DocsMintPluginPresentationFactory | undefined)
+    (loaded.createPresentation as TidyPressPluginPresentationFactory | undefined) ??
+    (loaded.default as TidyPressPluginPresentationFactory | undefined)
   if (typeof factory !== 'function') {
     throw new Error(
       `Plugin module "${modulePath}" must export createPresentation(site, context) or a default factory function.`,
@@ -54,7 +54,7 @@ async function importPresentationModule(
 }
 
 export async function loadPluginPresentations(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   projectRoot: string,
   modules: Record<string, string>,
 ): Promise<Map<string, ICollection>> {

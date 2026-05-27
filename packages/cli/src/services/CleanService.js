@@ -4,7 +4,7 @@ import path from 'node:path'
 import { getBuildDir, getCacheDir } from '../infrastructure/engine/build-session.js'
 
 /**
- * Removes generated build output and docsmint cache for a project.
+ * Removes generated build output and tidypress cache for a project.
  */
 export class CleanService {
   /**
@@ -23,7 +23,7 @@ export class CleanService {
     const docsDir = await this.configLoader.resolveDocsDirectory({ projectRoot })
     const buildDir = getBuildDir(docsDir)
     const cacheDir = await getCacheDir(docsDir)
-    const legacyWorkdir = path.join(docsDir, '.docsmint')
+    const legacyWorkdir = path.join(docsDir, '.tidypress')
 
     await fs.rm(buildDir, { recursive: true, force: true })
     await fs.rm(cacheDir, { recursive: true, force: true })

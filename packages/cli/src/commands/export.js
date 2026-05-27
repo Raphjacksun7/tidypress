@@ -1,7 +1,7 @@
-import { DocsMintError } from '../errors/DocsMintError.js'
+import { TidyPressError } from '../errors/TidyPressError.js'
 
 /**
- * Handles `docsmint export` (stretch scaffold).
+ * Handles `tidypress export` (stretch scaffold).
  */
 export class ExportCommand {
   /**
@@ -25,11 +25,11 @@ export class ExportCommand {
       projectRoot,
       feature: 'export',
       cliEnabled: enableExperimentalExport,
-      cliHint: 'Use docsmint export <pdf|epub|archive> [source] --enable-experimental-export',
-      configHint: 'Set experimental.export = true in docs/docsmint.config.ts',
+      cliHint: 'Use tidypress export <pdf|epub|archive> [source] --enable-experimental-export',
+      configHint: 'Set experimental.export = true in docs/tidypress.config.ts',
     })
 
-    throw new DocsMintError(
+    throw new TidyPressError(
       `Experimental export (${format}) scaffold is ready, but implementation is not available yet.`,
       'EXPERIMENTAL_NOT_IMPLEMENTED',
       'Task 19 keeps stretch work guarded until prerequisites are production-ready.',

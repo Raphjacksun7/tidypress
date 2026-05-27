@@ -18,7 +18,7 @@ export function createEngineJiti(importMetaUrl) {
   return createJiti(importMetaUrl, {
     alias: {
       '@': engineSrc,
-      '@site-config': path.join(engineRoot, 'docsmint.config.ts'),
+      '@site-config': path.join(engineRoot, 'tidypress.config.ts'),
     },
   })
 }

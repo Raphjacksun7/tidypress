@@ -4,10 +4,10 @@ import { resolveStarterPreset } from '../../templates/starters.js'
 import { buildStarterConfig, formatConfigModule } from './starter-config.js'
 
 const ASTRO_CONFIG_TEMPLATE = `import { defineConfig } from 'astro/config'
-import docsmint from '@docsmint/astro'
+import tidypress from '@tidypress/astro'
 
 export default defineConfig({
-  integrations: [docsmint()],
+  integrations: [tidypress()],
 })
 `
 
@@ -28,7 +28,7 @@ export async function scaffoldDocs({ docsDir, projectName, starterPreset, withAs
     .writeFile(path.resolve(docsDir, 'public/images/.gitkeep'), '', { flag: 'wx' })
     .catch(() => {})
 
-  const configPath = path.resolve(docsDir, 'docsmint.config.ts')
+  const configPath = path.resolve(docsDir, 'tidypress.config.ts')
   const gitignorePath = path.resolve(docsDir, '.gitignore')
 
   await fs

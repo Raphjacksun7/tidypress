@@ -1,6 +1,6 @@
-import type { DocsMintConfig } from './schema/index.js'
+import type { TidyPressConfig } from './schema/index.js'
 
-export const defaultConfig: Partial<DocsMintConfig> = {
+export const defaultConfig: Partial<TidyPressConfig> = {
   description: '',
   analytics: { type: 'none' },
   experimental: {

@@ -5,20 +5,20 @@ order: 10
 published: false
 ---
 
-`docsmint context` writes a compact markdown snapshot of the site.
+`tidypress context` writes a compact markdown snapshot of the site.
 
 ## Run it
 
 ```bash
-docsmint context
+tidypress context
 ```
 
 ```txt
-docsmint-context.md
+tidypress-context.md
 ```
 
 ```bash
-docsmint context ./docs-context.md
+tidypress context ./docs-context.md
 ```
 
 ## Output
@@ -32,7 +32,7 @@ Each entry includes:
 - excerpt
 
 ```md
-# DocsMint Context Snapshot
+# TidyPress Context Snapshot
 
 - [docs] Getting started
   - path: `src/content/docs/getting-started.md`

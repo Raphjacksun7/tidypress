@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 
 import { DeploymentStrategyRegistry } from '../src/deployment/DeploymentStrategyRegistry.js'
-import { DocsMintError } from '../src/errors/DocsMintError.js'
+import { TidyPressError } from '../src/errors/TidyPressError.js'
 
 test('DeploymentStrategyRegistry resolves the first matching strategy', () => {
   const registry = new DeploymentStrategyRegistry({
@@ -49,7 +49,7 @@ test('DeploymentStrategyRegistry rejects duplicate strategy ids', () => {
       })
     },
     error => {
-      assert.ok(error instanceof DocsMintError)
+      assert.ok(error instanceof TidyPressError)
       assert.equal(error.code, 'DEPLOY_STRATEGY_DUPLICATE')
       return true
     },
@@ -70,7 +70,7 @@ test('DeploymentStrategyRegistry validates strategy plugin shape', () => {
       )
     },
     error => {
-      assert.ok(error instanceof DocsMintError)
+      assert.ok(error instanceof TidyPressError)
       assert.equal(error.code, 'DEPLOY_STRATEGY_INVALID')
       return true
     },

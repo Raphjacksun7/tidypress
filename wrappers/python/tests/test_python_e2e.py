@@ -13,7 +13,7 @@ def _run_python_cli(args: list[str], cwd: Path, path_value: str = "") -> subproc
     env["PYTHONPATH"] = str(PYTHON_WRAPPER_ROOT)
     env["PATH"] = path_value
     return subprocess.run(
-        [sys.executable, "-m", "docsmint.cli", *args],
+        [sys.executable, "-m", "tidypress.cli", *args],
         cwd=cwd,
         env=env,
         text=True,

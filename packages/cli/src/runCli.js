@@ -2,7 +2,7 @@ import process from 'node:process'
 import { createRequire } from 'node:module'
 
 import { createApplication } from './bootstrap/createApplication.js'
-import { DocsMintError } from './errors/DocsMintError.js'
+import { TidyPressError } from './errors/TidyPressError.js'
 
 const require = createRequire(import.meta.url)
 const { version } = require('../package.json')
@@ -45,7 +45,7 @@ function normalizeThrown(thrown) {
  * @returns {number}
  */
 export function handleCliError(error, { io, verboseErrors }) {
-  if (error instanceof DocsMintError) {
+  if (error instanceof TidyPressError) {
     io.error(error.formatUserMessage())
     if (verboseErrors && error.stack) {
       io.error(error.stack)

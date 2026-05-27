@@ -1,7 +1,7 @@
 import { defaultConfig } from '../defaults.js'
 import {
-  formatDocsMintCollectionKinds,
-  isDocsMintCollectionKind,
+  formatTidyPressCollectionKinds,
+  isTidyPressCollectionKind,
 } from '../registry/collection-kinds.js'
 import { validateCollectionRender } from '../registry/collection-render.js'
 import {
@@ -13,18 +13,18 @@ import {
   starterCollectionKeys,
 } from '../registry/legacy.js'
 import type {
-  DocsMintCapabilityName,
-  DocsMintCollectionKind,
-  DocsMintCollections,
-  DocsMintConfig,
-  DocsMintSections,
+  TidyPressCapabilityName,
+  TidyPressCollectionKind,
+  TidyPressCollections,
+  TidyPressConfig,
+  TidyPressSections,
 } from '../schema/index.js'
 
 function resolveCollectionKindForKey(
   key: string,
-  configured: DocsMintCollections[string],
-  preset: DocsMintCollections[string],
-): DocsMintCollectionKind | undefined {
+  configured: TidyPressCollections[string],
+  preset: TidyPressCollections[string],
+): TidyPressCollectionKind | undefined {
   const explicitKind = configured?.kind ?? preset?.kind
   if (isReservedDocsKind(explicitKind)) {
     throw new Error(
@@ -38,19 +38,19 @@ function resolveCollectionKindForKey(
     return undefined
   }
   const resolved = explicitKind ?? inferStarterCollectionKind(key)
-  if (!isDocsMintCollectionKind(resolved)) {
+  if (!isTidyPressCollectionKind(resolved)) {
     throw new Error(
-      `collections.${key}.kind is required. Use one of: ${formatDocsMintCollectionKinds()}.`,
+      `collections.${key}.kind is required. Use one of: ${formatTidyPressCollectionKinds()}.`,
     )
   }
   return resolved
 }
 
-export function normalizeCollections(config: DocsMintConfig): DocsMintCollections {
+export function normalizeCollections(config: TidyPressConfig): TidyPressCollections {
   const defaults = defaultConfig.collections ?? {}
   const collections = config.collections ?? {}
   const sections = config.sections ?? {}
-  const normalized: DocsMintCollections = {}
+  const normalized: TidyPressCollections = {}
   const keys = new Set<string>([
     ...Object.keys(defaults),
     ...Object.keys(collections),
@@ -107,7 +107,7 @@ export function normalizeCollections(config: DocsMintConfig): DocsMintCollection
   return normalized
 }
 
-export function deriveSectionsFromCollections(collections: DocsMintCollections): DocsMintSections {
+export function deriveSectionsFromCollections(collections: TidyPressCollections): TidyPressSections {
   const docs = collections.docs
   const writing = collections.writing
   return {
@@ -123,9 +123,9 @@ export function deriveSectionsFromCollections(collections: DocsMintCollections):
 }
 
 export function applyStarterCapabilityOverrides(
-  collections: DocsMintCollections,
-  flags: Partial<Record<DocsMintCapabilityName, boolean>>,
-): DocsMintCollections {
+  collections: TidyPressCollections,
+  flags: Partial<Record<TidyPressCapabilityName, boolean>>,
+): TidyPressCollections {
   const next = { ...collections }
   for (const key of starterCollectionKeys) {
     if (!next[key]) {

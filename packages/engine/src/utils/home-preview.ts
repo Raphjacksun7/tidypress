@@ -1,10 +1,10 @@
 import type { CollectionKey } from 'astro:content'
-import type { DocsMintConfig } from '@docsmint/config'
+import type { TidyPressConfig } from '@tidypress/config'
 import {
   isDocsCollectionKey,
   resolveDefaultHomeSectionKeys,
   resolveHomeCollectionDisplay,
-} from '@docsmint/config'
+} from '@tidypress/config'
 import { getCollection } from 'astro:content'
 import { sortDocs } from '@/utils/sort'
 import {
@@ -31,23 +31,23 @@ type HomePreviewEntry = {
   data: Record<string, unknown>
 }
 
-export function getHomePreviewLimit(site: DocsMintConfig): number {
+export function getHomePreviewLimit(site: TidyPressConfig): number {
   return site.home?.previewLimit ?? 5
 }
 
-export function getHomeSectionKeys(site: DocsMintConfig): string[] {
+export function getHomeSectionKeys(site: TidyPressConfig): string[] {
   if (site.home?.order?.length) {
     return site.home.order.filter(key => isCollectionEnabled(site, key))
   }
   return resolveDefaultHomeSectionKeys(site)
 }
 
-function isWritingLikeCollection(site: DocsMintConfig, collectionKey: string): boolean {
+function isWritingLikeCollection(site: TidyPressConfig, collectionKey: string): boolean {
   return site.collections?.[collectionKey]?.kind === 'writing'
 }
 
 function sortCollectionEntries<T extends HomePreviewEntry>(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   collectionKey: string,
   entries: T[],
 ): T[] {
@@ -62,7 +62,7 @@ function sortCollectionEntries<T extends HomePreviewEntry>(
 }
 
 export async function buildHomePreviewItems(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   collectionKey: string,
   options: {
     locale?: string
@@ -134,7 +134,7 @@ export async function buildHomePreviewItems(
   return { items, moreHref }
 }
 
-export function resolveHomeDisplayForCollection(site: DocsMintConfig, collectionKey: string) {
+export function resolveHomeDisplayForCollection(site: TidyPressConfig, collectionKey: string) {
   return resolveHomeCollectionDisplay(
     site.home,
     site.collections?.[collectionKey]?.display,
@@ -143,7 +143,7 @@ export function resolveHomeDisplayForCollection(site: DocsMintConfig, collection
 }
 
 export function homeSectionTitle(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   collectionKey: string,
   strings: { writingTitle: string; docsTitle: string },
 ): string {
@@ -161,7 +161,7 @@ export function homeSectionTitle(
 }
 
 export function homeSectionMoreLabel(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   collectionKey: string,
   strings: { allWritingLabel: string; allDocsLabel: string },
 ): string {
@@ -174,11 +174,11 @@ export function homeSectionMoreLabel(
   return `all ${collectionKey} ->`
 }
 
-export function isWritingSection(site: DocsMintConfig, collectionKey: string): boolean {
+export function isWritingSection(site: TidyPressConfig, collectionKey: string): boolean {
   return isWritingLikeCollection(site, collectionKey)
 }
 
-export function homePreviewListFlags(site: DocsMintConfig, collectionKey: string): {
+export function homePreviewListFlags(site: TidyPressConfig, collectionKey: string): {
   showDateInList: boolean
   showDescriptionInList: boolean
 } {

@@ -18,11 +18,11 @@ I share that bias. A personal site should feel like that stack in miniature: fil
 
 <Image src="/images/writing/manuscript-typewriter.gif" alt="Typewriter striking paper, line by line" caption="Source before presentation — the line on the page outlives the machine that set it." />
 
-DocsMint is built lightly in that spirit. You keep markdown, `docsmint.config.ts`, and a `build/` folder you upload. The home page foregrounds writing and projects; a manual in the sidebar is there when you need it, not the whole personality of the site.
+TidyPress is built lightly in that spirit. You keep markdown, `tidypress.config.ts`, and a `build/` folder you upload. The home page foregrounds writing and projects; a manual in the sidebar is there when you need it, not the whole personality of the site.
 
 <FileTree>
 - docs/
-  - **docsmint.config.ts**
+  - **tidypress.config.ts**
   - src/
     - content/
       - writing/
@@ -35,18 +35,18 @@ DocsMint is built lightly in that spirit. You keep markdown, `docsmint.config.ts
 
 ## Build as receipt
 
-The build step matters to me the way a compiler output matters: intent becomes an artifact you can point at. `docsmint build` gives you HTML and a search index; you put them on any static host. The pull request is where I read prose; production is the bytes in `build/`.
+The build step matters to me the way a compiler output matters: intent becomes an artifact you can point at. `tidypress build` gives you HTML and a search index; you put them on any static host. The pull request is where I read prose; production is the bytes in `build/`.
 
 <Mermaid align="center" code={`
 flowchart LR
-  Files[Markdown in git] --> Build[docsmint build]
+  Files[Markdown in git] --> Build[tidypress build]
   Build --> Out[build/]
   Out --> Host[Static host]
 `} />
 
 ```bash
 git diff main...HEAD -- docs/src/content/
-docsmint build
+tidypress build
 # ship docs/build/ — same artifact CI built
 ```
 

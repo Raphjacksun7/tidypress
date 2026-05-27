@@ -1,4 +1,4 @@
-import { DocsMintError } from '../errors/DocsMintError.js'
+import { TidyPressError } from '../errors/TidyPressError.js'
 import { DeploymentStrategyRegistry } from '../deployment/DeploymentStrategyRegistry.js'
 
 /**
@@ -22,10 +22,10 @@ export class DeployService {
   async deploy(request) {
     const strategy = this.strategyRegistry.resolve(request)
     if (!strategy) {
-      throw new DocsMintError(
+      throw new TidyPressError(
         'No deployment strategy matched the given target.',
         'DEPLOY_NO_STRATEGY',
-        'Run docsmint deploy --help or use a known provider target',
+        'Run tidypress deploy --help or use a known provider target',
         { exitCode: 2 },
       )
     }

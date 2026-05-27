@@ -11,8 +11,8 @@ import { mountProjectPaths, writePluginManifest } from './plugin-manifest.js'
 const require = createRequire(import.meta.url)
 
 /**
- * Resolve bundled workspace packages when docsmint is installed from npm
- * (nested under node_modules/docsmint, not hoisted to the project root).
+ * Resolve bundled workspace packages when tidypress is installed from npm
+ * (nested under node_modules/tidypress, not hoisted to the project root).
  * @param {string} packageName
  * @returns {string | undefined}
  */
@@ -32,7 +32,7 @@ function resolveBundledPackageRoot(packageName) {
  * @returns {string}
  */
 export function getEnginePath() {
-  const packageJsonPath = require.resolve('@docsmint/engine/package.json')
+  const packageJsonPath = require.resolve('@tidypress/engine/package.json')
   return path.dirname(packageJsonPath)
 }
 
@@ -53,9 +53,9 @@ export function getBuildDir(docsDir) {
 export function getCacheHome() {
   const xdg = process.env.XDG_CACHE_HOME
   if (xdg) {
-    return path.join(xdg, 'docsmint')
+    return path.join(xdg, 'tidypress')
   }
-  return path.join(os.homedir(), '.cache', 'docsmint')
+  return path.join(os.homedir(), '.cache', 'tidypress')
 }
 
 async function exists(targetPath) {
@@ -99,7 +99,7 @@ export async function getCacheDir(docsDir) {
  * @deprecated Removed — use getBuildDir
  */
 export function getWorkdir(docsDir) {
-  return path.resolve(docsDir, '.docsmint')
+  return path.resolve(docsDir, '.tidypress')
 }
 
 /**
@@ -137,7 +137,7 @@ export async function prepareBuildSession({ docsDir, mode }) {
   const buildDir = getBuildDir(docsDir)
   const cacheDir = await getCacheDir(docsDir)
   const codegenDir = path.join(cacheDir, 'codegen')
-  const manifestPath = path.join(codegenDir, 'docsmint-plugins.mjs')
+  const manifestPath = path.join(codegenDir, 'tidypress-plugins.mjs')
 
   await fs.mkdir(codegenDir, { recursive: true })
   await fs.mkdir(path.join(cacheDir, 'astro'), { recursive: true })
@@ -171,25 +171,25 @@ export async function prepareBuildSession({ docsDir, mode }) {
  */
 export async function resolveAstroInlineConfig({ session, port }) {
   const { docsDir, engineRoot, buildDir, cacheDir, publicDir, manifestPath } = session
-  const siteConfigPath = path.resolve(docsDir, 'docsmint.config.ts')
+  const siteConfigPath = path.resolve(docsDir, 'tidypress.config.ts')
   const srcDir = path.join(engineRoot, 'src')
-  const engineGenerated = path.join(engineRoot, 'src', 'generated', 'docsmint-plugins.mjs')
+  const engineGenerated = path.join(engineRoot, 'src', 'generated', 'tidypress-plugins.mjs')
 
   const configUrl = pathToFileURL(path.join(engineRoot, 'astro.config.mjs')).href
   const { default: baseConfig } = await import(configUrl)
 
   const useJsonLogs =
-    process.env.CI === 'true' || process.env.DOCSMINT_JSON_LOGS === '1'
+    process.env.CI === 'true' || process.env.TIDYPRESS_JSON_LOGS === '1'
 
-  const configPackageRoot = resolveBundledPackageRoot('@docsmint/config')
+  const configPackageRoot = resolveBundledPackageRoot('@tidypress/config')
   const viteAliases = {
     '@site-config': siteConfigPath,
     '@project': docsDir,
-    '@/generated/docsmint-plugins.mjs': manifestPath,
-    [path.join(srcDir, 'generated', 'docsmint-plugins.mjs')]: manifestPath,
+    '@/generated/tidypress-plugins.mjs': manifestPath,
+    [path.join(srcDir, 'generated', 'tidypress-plugins.mjs')]: manifestPath,
   }
   if (configPackageRoot) {
-    viteAliases['@docsmint/config'] = configPackageRoot
+    viteAliases['@tidypress/config'] = configPackageRoot
   }
 
   return mergeConfig(typeof baseConfig === 'function' ? baseConfig({}) : baseConfig, {
@@ -206,11 +206,11 @@ export async function resolveAstroInlineConfig({ session, port }) {
         alias: viteAliases,
       },
       ssr: {
-        noExternal: configPackageRoot ? ['@docsmint/config'] : [],
+        noExternal: configPackageRoot ? ['@tidypress/config'] : [],
       },
       define: {
-        'import.meta.env.DOCSMINT_PROJECT_ROOT': JSON.stringify(docsDir),
-        'import.meta.env.DOCSMINT_MANIFEST_PATH': JSON.stringify(manifestPath),
+        'import.meta.env.TIDYPRESS_PROJECT_ROOT': JSON.stringify(docsDir),
+        'import.meta.env.TIDYPRESS_MANIFEST_PATH': JSON.stringify(manifestPath),
       },
     },
     experimental: {
@@ -225,10 +225,10 @@ export async function resolveAstroInlineConfig({ session, port }) {
  */
 export function buildSessionEnv(session) {
   return {
-    DOCSMINT_PROJECT_ROOT: session.docsDir,
-    DOCSMINT_CACHE_DIR: session.cacheDir,
-    DOCSMINT_MANIFEST_PATH: session.manifestPath,
-    DOCSMINT_BUILD_DIR: session.buildDir,
+    TIDYPRESS_PROJECT_ROOT: session.docsDir,
+    TIDYPRESS_CACHE_DIR: session.cacheDir,
+    TIDYPRESS_MANIFEST_PATH: session.manifestPath,
+    TIDYPRESS_BUILD_DIR: session.buildDir,
   }
 }
 

@@ -38,7 +38,7 @@ theme: {
 }
 ```
 
-`guardrailed` is the default. It keeps the baseline token set and lets DocsMint handle light and dark mode safely.
+`guardrailed` is the default. It keeps the baseline token set and lets TidyPress handle light and dark mode safely.
 
 `preset` currently supports:
 

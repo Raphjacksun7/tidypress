@@ -1,4 +1,4 @@
-import type { DocsMintVersion } from '@docsmint/config'
+import type { TidyPressVersion } from '@tidypress/config'
 
 export function normalizePathname(pathValue: string): string {
   if (pathValue.length > 1 && pathValue.endsWith('/')) {
@@ -12,7 +12,7 @@ function normalizePath(pathValue: string): string {
 }
 
 export function resolveActiveVersionPath(
-  versions: DocsMintVersion[] | undefined,
+  versions: TidyPressVersion[] | undefined,
   pathname: string,
 ): string | undefined {
   if (!versions || versions.length === 0) {

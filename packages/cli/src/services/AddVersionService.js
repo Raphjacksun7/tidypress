@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import { DocsMintError } from '../errors/DocsMintError.js'
+import { TidyPressError } from '../errors/TidyPressError.js'
 
 /**
  * Scaffolds folder-based docs versions.
@@ -48,13 +48,13 @@ export class AddVersionService {
   #normalizeVersionLabel(versionLabel) {
     const trimmed = versionLabel.trim()
     if (!trimmed) {
-      throw new DocsMintError('Version label cannot be empty.', 'INVALID_VERSION_LABEL', 'Use labels like 1.0 or v2.0', {
+      throw new TidyPressError('Version label cannot be empty.', 'INVALID_VERSION_LABEL', 'Use labels like 1.0 or v2.0', {
         exitCode: 2,
       })
     }
     const normalized = trimmed.startsWith('v') ? trimmed : `v${trimmed}`
     if (!/^v[0-9]+(?:\.[0-9]+)*$/.test(normalized)) {
-      throw new DocsMintError(
+      throw new TidyPressError(
         `Invalid version label "${versionLabel}".`,
         'INVALID_VERSION_LABEL',
         'Use semantic labels like 1.0 or v2.0',

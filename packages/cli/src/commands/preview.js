@@ -1,5 +1,5 @@
 /**
- * Handles `docsmint preview`.
+ * Handles `tidypress preview`.
  */
 export class PreviewCommand {
   /**

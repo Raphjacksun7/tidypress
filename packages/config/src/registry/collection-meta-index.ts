@@ -1,26 +1,26 @@
 /** Route slug segments for collection meta-index pages (tags, year archives). */
-export const docsMintCollectionMetaIndexSegments = {
+export const tidyPressCollectionMetaIndexSegments = {
   tags: 'tags',
   archive: 'archive',
 } as const
 
-export type DocsMintCollectionMetaIndexSegment = keyof typeof docsMintCollectionMetaIndexSegments
+export type TidyPressCollectionMetaIndexSegment = keyof typeof tidyPressCollectionMetaIndexSegments
 
 export function collectionMetaIndexSlug(
-  segment: DocsMintCollectionMetaIndexSegment,
+  segment: TidyPressCollectionMetaIndexSegment,
   value: string,
 ): string {
-  return `${docsMintCollectionMetaIndexSegments[segment]}/${value}`
+  return `${tidyPressCollectionMetaIndexSegments[segment]}/${value}`
 }
 
 export function parseCollectionMetaIndexSlug(
   slug: string | undefined,
-  segment: DocsMintCollectionMetaIndexSegment,
+  segment: TidyPressCollectionMetaIndexSegment,
 ): string | undefined {
   if (!slug) {
     return undefined
   }
-  const prefix = `${docsMintCollectionMetaIndexSegments[segment]}/`
+  const prefix = `${tidyPressCollectionMetaIndexSegments[segment]}/`
   if (!slug.startsWith(prefix)) {
     return undefined
   }
@@ -32,8 +32,8 @@ export function resolveCollectionMetaIndexTitle(
   slug: string | undefined,
 ): string {
   for (const segment of Object.keys(
-    docsMintCollectionMetaIndexSegments,
-  ) as DocsMintCollectionMetaIndexSegment[]) {
+    tidyPressCollectionMetaIndexSegments,
+  ) as TidyPressCollectionMetaIndexSegment[]) {
     const value = parseCollectionMetaIndexSlug(slug, segment)
     if (value) {
       return `${value} — ${collectionLabel}`

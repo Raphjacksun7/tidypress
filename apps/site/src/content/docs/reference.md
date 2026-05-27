@@ -11,25 +11,25 @@ This is the compact reference. Use the focused guides when you need context.
 Global flags:
 
 ```bash
-docsmint --help
-docsmint --version
-docsmint --verbose <command>
+tidypress --help
+tidypress --version
+tidypress --verbose <command>
 ```
 
-No command defaults to `docsmint dev`.
+No command defaults to `tidypress dev`.
 
 Core commands:
 
 ```bash
-docsmint init [--preset <name>]
-docsmint init [--starter <name>]
-docsmint dev [--port <n>]
-docsmint build [--output <dir>]
-docsmint preview [--port <n>]
-docsmint clean
-docsmint deploy [target]
-docsmint deploy [target] --with-ci
-docsmint context [output]
+tidypress init [--preset <name>]
+tidypress init [--starter <name>]
+tidypress dev [--port <n>]
+tidypress build [--output <dir>]
+tidypress preview [--port <n>]
+tidypress clean
+tidypress deploy [target]
+tidypress deploy [target] --with-ci
+tidypress context [output]
 ```
 
 Starter presets (`default` is an alias for `lab`):
@@ -45,14 +45,14 @@ Starter presets (`default` is an alias for `lab`):
 Maintenance and scaffold commands:
 
 ```bash
-docsmint migrate-sections
-docsmint doctor
-docsmint release-check
-docsmint add-version <label> [--set-latest]
-docsmint domain setup [domain] --platform <platform>
-docsmint import <medium|devto|substack|ghost> <url-or-path>
-docsmint convert <file.ipynb> [--output <file.mdx>]      # Python wrapper
-docsmint extract-docs <path> [--lang py|ts|go]           # Python wrapper
+tidypress migrate-sections
+tidypress doctor
+tidypress release-check
+tidypress add-version <label> [--set-latest]
+tidypress domain setup [domain] --platform <platform>
+tidypress import <medium|devto|substack|ghost> <url-or-path>
+tidypress convert <file.ipynb> [--output <file.mdx>]      # Python wrapper
+tidypress extract-docs <path> [--lang py|ts|go]           # Python wrapper
 ```
 
 `devto` fetches public article markdown from the Dev.to API. Other import providers write a review scaffold.
@@ -62,9 +62,9 @@ docsmint extract-docs <path> [--lang py|ts|go]           # Python wrapper
 Experimental commands:
 
 ```bash
-docsmint editor --enable-experimental-editor
-docsmint export <pdf|epub|archive> [source] --enable-experimental-export
-docsmint ai <suggest|translate|changelog> [args...] --enable-experimental-ai
+tidypress editor --enable-experimental-editor
+tidypress export <pdf|epub|archive> [source] --enable-experimental-export
+tidypress ai <suggest|translate|changelog> [args...] --enable-experimental-ai
 ```
 
 Experimental commands require config and CLI opt-ins. See [Advanced configuration](./advanced-configuration).
@@ -72,32 +72,32 @@ Experimental commands require config and CLI opt-ins. See [Advanced configuratio
 ## Config fields
 
 ```ts
-interface DocsMintConfig {
+interface TidyPressConfig {
   name: string
   description?: string
-  hero?: DocsMintHero
-  home?: DocsMintHome // order, previewLimit, collections display, preset: lab | blog | docs-writing | persona
+  hero?: TidyPressHero
+  home?: TidyPressHome // order, previewLimit, collections display, preset: lab | blog | docs-writing | persona
   nav?: NavItem[]
   footer?: FooterItem[]
   pages?: PageEntry[]
-  collections?: DocsMintCollections
+  collections?: TidyPressCollections
   siteUrl?: string
-  repository?: DocsMintRepository
-  search?: DocsMintSearch
-  branding?: DocsMintBranding
-  typography?: DocsMintTypography
-  theme?: DocsMintTheme
-  capabilities?: DocsMintCapabilities
-  experimental?: DocsMintExperimental
-  versions?: DocsMintVersion[]
-  i18n?: DocsMintI18n
-  analytics?: DocsMintAnalytics
-  docs?: DocsMintDocs
-  writing?: DocsMintWriting
+  repository?: TidyPressRepository
+  search?: TidyPressSearch
+  branding?: TidyPressBranding
+  typography?: TidyPressTypography
+  theme?: TidyPressTheme
+  capabilities?: TidyPressCapabilities
+  experimental?: TidyPressExperimental
+  versions?: TidyPressVersion[]
+  i18n?: TidyPressI18n
+  analytics?: TidyPressAnalytics
+  docs?: TidyPressDocs
+  writing?: TidyPressWriting
   dateLocale?: string
   dateFormat?: Intl.DateTimeFormatOptions
-  navPolicy?: DocsMintNavPolicy
-  extensions?: DocsMintRenderingExtensions
+  navPolicy?: TidyPressNavPolicy
+  extensions?: TidyPressRenderingExtensions
   sections?: unknown // legacy shim
 }
 ```
@@ -107,7 +107,7 @@ Only `name` is required.
 ## Typography scale
 
 ```ts
-type DocsMintTypographyScale = 'small' | 'medium' | 'large'
+type TidyPressTypographyScale = 'small' | 'medium' | 'large'
 ```
 
 `medium` is the default when `typography` is omitted. `default` and `extra` are accepted aliases: `default` → `medium`, `extra` → `large`.
@@ -115,13 +115,13 @@ type DocsMintTypographyScale = 'small' | 'medium' | 'large'
 ## Collection kinds
 
 ```ts
-type DocsMintCollectionKind = 'content' | 'writing' | 'projects' | 'page'
+type TidyPressCollectionKind = 'content' | 'writing' | 'projects' | 'page'
 ```
 
 `collections.docs` is the main docs collection. It has no `kind` or `render`.
 
 ```ts
-interface DocsMintHero {
+interface TidyPressHero {
   enabled?: boolean
   role?: string
   pronunciation?: string
@@ -136,7 +136,7 @@ Hero renders only when `hero.enabled === true`.
 ## Capability names
 
 ```ts
-type DocsMintCapabilityName =
+type TidyPressCapabilityName =
   | 'docs'
   | 'writing'
   | 'pages'
@@ -150,7 +150,7 @@ type DocsMintCapabilityName =
 ## Theme token names
 
 ```ts
-type DocsMintThemeTokenName =
+type TidyPressThemeTokenName =
   | 'bg'
   | 'fg'
   | 'muted'
@@ -258,24 +258,24 @@ docs/build/
 └── sitemap-index.xml
 ```
 
-Search is generated by [Pagefind](https://pagefind.app/) during `docsmint build`.
+Search is generated by [Pagefind](https://pagefind.app/) during `tidypress build`.
 
 ## Deploy targets
 
 ```bash
-docsmint deploy                   # print build/ path
-docsmint deploy ./public-docs     # copy build/ locally
-docsmint deploy file:///tmp/site  # copy build/ locally
-docsmint deploy vercel            # calls vercel CLI
-docsmint deploy netlify           # calls netlify CLI
-docsmint deploy surge             # calls surge CLI
-docsmint deploy github-pages      # calls npx gh-pages
-docsmint deploy cloudflare        # calls wrangler
-docsmint deploy docker            # writes Dockerfile + docker-compose.yml
-docsmint deploy static            # report build/ path for artifact-only deploy
-docsmint deploy s3://bucket/path  # calls aws s3 sync
-docsmint deploy ssh://host/path   # calls rsync
-docsmint deploy gs://bucket/path  # prints external upload instructions
+tidypress deploy                   # print build/ path
+tidypress deploy ./public-docs     # copy build/ locally
+tidypress deploy file:///tmp/site  # copy build/ locally
+tidypress deploy vercel            # calls vercel CLI
+tidypress deploy netlify           # calls netlify CLI
+tidypress deploy surge             # calls surge CLI
+tidypress deploy github-pages      # calls npx gh-pages
+tidypress deploy cloudflare        # calls wrangler
+tidypress deploy docker            # writes Dockerfile + docker-compose.yml
+tidypress deploy static            # report build/ path for artifact-only deploy
+tidypress deploy s3://bucket/path  # calls aws s3 sync
+tidypress deploy ssh://host/path   # calls rsync
+tidypress deploy gs://bucket/path  # prints external upload instructions
 ```
 
 Provider targets require their local CLIs or tools. Targets that only report the `build/` path are artifact flows, not full hosted deploys.
@@ -283,7 +283,7 @@ Provider targets require their local CLIs or tools. Targets that only report the
 ## Python wrapper
 
 ```bash
-pip install docsmint
+pip install tidypress
 ```
 
 The Python package delegates site commands to the Node.js CLI. Node.js 22.12 or newer is still required for rendering.

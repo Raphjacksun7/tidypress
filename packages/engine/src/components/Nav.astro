@@ -5,9 +5,9 @@ import {
   buildNavigationModel,
   isCapabilityEnabled,
   resolveSearchFilterCollections,
-  type DocsMintConfig,
+  type TidyPressConfig,
   type NavItem,
-} from '@docsmint/config'
+} from '@tidypress/config'
 import BrandIcon from '@/components/BrandIcon.astro'
 import { getUiStrings, resolveLocale, withLocalePrefix } from '@/i18n/locale'
 import {
@@ -17,7 +17,7 @@ import {
 import { normalizePathname } from '@/routing/versioning'
 
 export interface Props {
-  site: DocsMintConfig & {
+  site: TidyPressConfig & {
     name: string
     nav?: NavItem[]
     branding?: { icon?: string; favicon?: string }

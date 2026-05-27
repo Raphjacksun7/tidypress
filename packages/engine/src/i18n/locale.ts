@@ -1,10 +1,10 @@
-import type { DocsMintConfig, DocsMintI18nStrings } from '@docsmint/config'
-import { resolveCapabilityFlags } from '@docsmint/config'
+import type { TidyPressConfig, TidyPressI18nStrings } from '@tidypress/config'
+import { resolveCapabilityFlags } from '@tidypress/config'
 
 export type I18nConfig = {
   defaultLocale?: string
   locales?: string[]
-  strings?: Record<string, DocsMintI18nStrings>
+  strings?: Record<string, TidyPressI18nStrings>
 }
 
 export type LocaleState = {
@@ -13,14 +13,14 @@ export type LocaleState = {
   defaultLocale: string
 }
 
-const defaultUiStrings: Required<DocsMintI18nStrings> = {
+const defaultUiStrings: Required<TidyPressI18nStrings> = {
   docsLabel: 'docs',
   writingLabel: 'writing',
   moreLabel: 'more',
   searchLabel: 'search',
   searchPlaceholder: 'Search docs...',
   searchEmptyLabel: 'Type to search...',
-  searchUnavailableLabel: 'Search unavailable in dev mode - run docsmint build, then docsmint preview.',
+  searchUnavailableLabel: 'Search unavailable in dev mode - run tidypress build, then tidypress preview.',
   searchNoResultsLabel: 'No results for "{query}"',
   searchFilterLabel: 'Filter by collection',
   searchFilterAllLabel: 'all',
@@ -82,7 +82,7 @@ export function switchLocalePath(pathname: string, targetLocale: string, i18n?: 
   return withLocalePrefix(basePath, targetLocale)
 }
 
-function defaultSearchPlaceholder(site: DocsMintConfig): string {
+function defaultSearchPlaceholder(site: TidyPressConfig): string {
   const flags = resolveCapabilityFlags(site)
   if (flags.docs) {
     return defaultUiStrings.searchPlaceholder
@@ -93,7 +93,7 @@ function defaultSearchPlaceholder(site: DocsMintConfig): string {
   return 'Search...'
 }
 
-export function getUiStrings(site: DocsMintConfig, localeState: LocaleState): Required<DocsMintI18nStrings> {
+export function getUiStrings(site: TidyPressConfig, localeState: LocaleState): Required<TidyPressI18nStrings> {
   const locale = localeState.activeLocale ?? localeState.defaultLocale
   const defaultStrings = site.i18n?.strings?.[localeState.defaultLocale] ?? {}
   const localeStrings = site.i18n?.strings?.[locale] ?? {}

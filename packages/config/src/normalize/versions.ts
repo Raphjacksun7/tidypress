@@ -1,9 +1,9 @@
-import type { DocsMintCollections, DocsMintConfig, DocsMintVersion } from '../schema/index.js'
+import type { TidyPressCollections, TidyPressConfig, TidyPressVersion } from '../schema/index.js'
 
 export function normalizeVersions(
-  config: DocsMintConfig,
-  collections: DocsMintCollections,
-): DocsMintVersion[] | undefined {
+  config: TidyPressConfig,
+  collections: TidyPressCollections,
+): TidyPressVersion[] | undefined {
   const versions = config.versions
   if (!versions || versions.length === 0) {
     return undefined

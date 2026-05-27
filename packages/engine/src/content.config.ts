@@ -4,14 +4,14 @@ import { defineCollection, z } from 'astro:content'
 import { glob } from 'astro/loaders'
 import {
   collectionKindContentSchema,
-  docsMintDocsPagingModes,
-  docsMintDocFormSchema,
-  defaultDocsMintDocForm,
+  tidyPressDocsPagingModes,
+  tidyPressDocFormSchema,
+  defaultTidyPressDocForm,
   isDocsCollectionKey,
-  isDocsMintCollectionKind,
-  isDocsMintDocForm,
+  isTidyPressCollectionKind,
+  isTidyPressDocForm,
   withDefaults,
-} from '@docsmint/config'
+} from '@tidypress/config'
 import { toCollectionAwareContentId } from '@/utils/content-loader'
 import rawSiteConfig from '@site-config'
 
@@ -21,35 +21,35 @@ const enginePackageRoot = path.resolve(
   fileURLToPath(new URL('.', import.meta.url)),
   '..',
 )
-const projectRoot = process.env.DOCSMINT_PROJECT_ROOT ?? enginePackageRoot
+const projectRoot = process.env.TIDYPRESS_PROJECT_ROOT ?? enginePackageRoot
 
 function collectionContentBase(collectionKey: string) {
   const absolute = path.join(projectRoot, 'src/content', collectionKey)
-  if (process.env.DOCSMINT_PROJECT_ROOT) {
+  if (process.env.TIDYPRESS_PROJECT_ROOT) {
     return pathToFileURL(`${absolute}/`)
   }
   return `./src/content/${collectionKey}`
 }
 
 const customDocFormKeys = Object.keys(siteConfig.extensions?.docForms ?? {}).filter(
-  key => !isDocsMintDocForm(key),
+  key => !isTidyPressDocForm(key),
 )
 const docsFormSchema =
   customDocFormKeys.length > 0
     ? z.union([
-        z.enum(docsMintDocFormSchema),
+        z.enum(tidyPressDocFormSchema),
         z.enum(customDocFormKeys as [string, ...string[]]),
       ])
-    : z.enum(docsMintDocFormSchema)
+    : z.enum(tidyPressDocFormSchema)
 
 const docsSchema = z.object({
   title: z.string(),
-  form: docsFormSchema.default(defaultDocsMintDocForm),
+  form: docsFormSchema.default(defaultTidyPressDocForm),
   description: z.string().optional(),
   icon: z.string().optional(),
   tags: z.array(z.string()).optional(),
   order: z.number().optional(),
-  paging: z.union([z.boolean(), z.enum(docsMintDocsPagingModes)]).optional(),
+  paging: z.union([z.boolean(), z.enum(tidyPressDocsPagingModes)]).optional(),
   search: z.boolean().optional(),
   published: z.boolean().optional().default(true),
   scheduled: z.coerce.date().optional(),
@@ -100,7 +100,7 @@ function schemaForCollection(key: string, kind?: string) {
   if (isDocsCollectionKey(key)) {
     return docsSchema
   }
-  if (isDocsMintCollectionKind(kind)) {
+  if (isTidyPressCollectionKind(kind)) {
     return schemasByContentSchema[collectionKindContentSchema(kind)]
   }
   return docsSchema

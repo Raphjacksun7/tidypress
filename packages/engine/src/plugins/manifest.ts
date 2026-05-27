@@ -1,9 +1,9 @@
 import type { CollectionShellLayout, RouteViewDescriptor } from '@/routing/view-registry'
-import * as staticPluginManifest from '@/generated/docsmint-plugins.mjs'
+import * as staticPluginManifest from '@/generated/tidypress-plugins.mjs'
 
 declare global {
   // eslint-disable-next-line no-var
-  var __DOCSMINT_MANIFEST_EPOCH: number | undefined
+  var __TIDYPRESS_MANIFEST_EPOCH: number | undefined
 }
 
 type GeneratedPluginManifest = {
@@ -18,14 +18,14 @@ let cachedManifest: GeneratedPluginManifest | null = null
 let cachedEpoch = -1
 
 async function loadGeneratedManifest(): Promise<GeneratedPluginManifest> {
-  const epoch = import.meta.env.DEV ? (globalThis.__DOCSMINT_MANIFEST_EPOCH ?? 0) : 0
+  const epoch = import.meta.env.DEV ? (globalThis.__TIDYPRESS_MANIFEST_EPOCH ?? 0) : 0
   if (!import.meta.env.DEV || epoch === 0) {
     return staticPluginManifest as GeneratedPluginManifest
   }
   if (cachedManifest && cachedEpoch === epoch) {
     return cachedManifest
   }
-  const href = new URL('../../generated/docsmint-plugins.mjs', import.meta.url).href
+  const href = new URL('../../generated/tidypress-plugins.mjs', import.meta.url).href
   cachedManifest = (await import(/* @vite-ignore */ `${href}?t=${epoch}`)) as GeneratedPluginManifest
   cachedEpoch = epoch
   return cachedManifest

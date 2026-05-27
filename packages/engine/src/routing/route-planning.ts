@@ -1,17 +1,17 @@
-import type { DocsMintConfig, DocsMintVersion } from '@docsmint/config'
+import type { TidyPressConfig, TidyPressVersion } from '@tidypress/config'
 import { localizeEntries, type LocaleState } from '@/i18n/locale'
 import { getCollectionBasePath, getCollectionEntrySlug } from '@/utils/collections'
 import { versionContentPrefix, stripDocExtension } from '@/routing/versioning'
 import { RoutePath } from '@/routing/RoutePath'
 import type { RoutePolicy, SiteRouteDefinition } from '@/routing/types'
 
-export function resolveLocaleState(site: DocsMintConfig): LocaleState {
+export function resolveLocaleState(site: TidyPressConfig): LocaleState {
   const locales = site.i18n?.locales?.filter(Boolean) ?? []
   const defaultLocale = site.i18n?.defaultLocale ?? locales[0] ?? 'en'
   return { activeLocale: undefined, locales, defaultLocale }
 }
 
-export function resolveRoutePolicy(site: DocsMintConfig): RoutePolicy {
+export function resolveRoutePolicy(site: TidyPressConfig): RoutePolicy {
   const localeState = resolveLocaleState(site)
   return {
     localeMode: 'root-default',
@@ -25,7 +25,7 @@ export function nonDefaultLocales(policy: RoutePolicy): string[] {
   return policy.locales.filter(locale => locale !== policy.defaultLocale)
 }
 
-export function collectionBasePath(site: DocsMintConfig, key: string): string {
+export function collectionBasePath(site: TidyPressConfig, key: string): string {
   return getCollectionBasePath(site, key).replace(/^\/+/, '')
 }
 
@@ -37,10 +37,10 @@ export function defineRoute(
 }
 
 export function planVersionRootRoutes(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   collectionKey: string,
   entries: Array<{ id: string }>,
-  versions: DocsMintVersion[] | undefined,
+  versions: TidyPressVersion[] | undefined,
   locale?: string,
 ): SiteRouteDefinition[] {
   if (!versions || versions.length === 0) {
@@ -95,10 +95,10 @@ export function planVersionRootRoutes(
  * to the default locale when a translation is missing.
  */
 export function planVersionedFallbackRoutes(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   collectionKey: string,
   entries: Array<{ id: string }>,
-  versions: DocsMintVersion[] | undefined,
+  versions: TidyPressVersion[] | undefined,
   locale: string,
   localeState: LocaleState,
 ): SiteRouteDefinition[] {
@@ -148,7 +148,7 @@ export function planVersionedFallbackRoutes(
 }
 
 export function planLocalizedEntryRoutes(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   collectionKey: string,
   entries: Array<{ id: string }>,
   locale: string,
@@ -170,7 +170,7 @@ export function planLocalizedEntryRoutes(
 }
 
 export function planDefaultLocaleEntryRoutes(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   collectionKey: string,
   entries: Array<{ id: string }>,
   localeState: LocaleState,
@@ -192,7 +192,7 @@ export function planDefaultLocaleEntryRoutes(
 }
 
 export function planDefaultEntryRoutes(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   collectionKey: string,
   entries: Array<{ id: string }>,
 ): SiteRouteDefinition[] {

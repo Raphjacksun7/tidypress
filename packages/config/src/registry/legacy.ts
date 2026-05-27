@@ -1,4 +1,4 @@
-import type { DocsMintCollectionKind, DocsMintSections } from '../schema/index.js'
+import type { TidyPressCollectionKind, TidyPressSections } from '../schema/index.js'
 
 export const starterCollectionKeys = ['docs', 'writing', 'pages'] as const
 export type StarterCollectionKey = (typeof starterCollectionKeys)[number]
@@ -10,7 +10,7 @@ export type LegacySectionKey = (typeof legacySectionKeys)[number]
 export const defaultHomePreviewSectionKeys = ['writing', 'docs'] as const
 export type DefaultHomePreviewSectionKey = (typeof defaultHomePreviewSectionKeys)[number]
 
-const starterCollectionKindByKey: Partial<Record<StarterCollectionKey, DocsMintCollectionKind>> = {
+const starterCollectionKindByKey: Partial<Record<StarterCollectionKey, TidyPressCollectionKind>> = {
   writing: 'writing',
   pages: 'page',
 }
@@ -28,7 +28,7 @@ export function isReservedDocsKind(kind: string | undefined): boolean {
   return kind === 'docs'
 }
 
-export function inferStarterCollectionKind(key: string): DocsMintCollectionKind | undefined {
+export function inferStarterCollectionKind(key: string): TidyPressCollectionKind | undefined {
   if (isDocsCollectionKey(key)) {
     return undefined
   }
@@ -40,9 +40,9 @@ export function isLegacySectionKey(key: string): key is LegacySectionKey {
 }
 
 export function getLegacySectionForCollection(
-  sections: DocsMintSections | undefined,
+  sections: TidyPressSections | undefined,
   key: string,
-): DocsMintSections[LegacySectionKey] | undefined {
+): TidyPressSections[LegacySectionKey] | undefined {
   if (!isLegacySectionKey(key)) {
     return undefined
   }

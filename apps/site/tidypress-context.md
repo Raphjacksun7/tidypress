@@ -1,53 +1,53 @@
-# DocsMint Context Snapshot
+# TidyPress Context Snapshot
 
 - [docs] Advanced configuration
   - path: `src/content/docs/advanced-configuration.md`
   - description: Optional settings for i18n, versions, analytics, capabilities, and content snapshots.
   - excerpt: Most sites do not need this page on day one. Add these settings when the default docs and writing flow stops being enough. ## i18n Configure locale-prefixed routes and UI labels:
-- [docs] How DocsMint works
+- [docs] How TidyPress works
   - path: `src/content/docs/architecture.md`
   - description: How the CLI, config package, Astro engine, build output, and cache fit together.
-  - excerpt: DocsMint is split into three packages and one optional Python wrapper. ```txt packages/ ├── cli/ # commands, project setup, builds, deploy helpers ├── config/ # typed c
+  - excerpt: TidyPress is split into three packages and one optional Python wrapper. ```txt packages/ ├── cli/ # commands, project setup, builds, deploy helpers ├── config/ # typed 
 - [docs] Components
   - path: `src/content/docs/components.mdx`
   - description: Built-in MDX components for notes, tabs, file trees, diagrams, images, tooltips, and steps.
-  - excerpt: Components are available in `.mdx` files without imports. ## Callout Notes, warnings, tips, and pull quotes. ```mdx <Callout>The config file lives at `docs/docsmint.config.ts`.<
+  - excerpt: Components are available in `.mdx` files without imports. ## Callout Notes, warnings, tips, and pull quotes. ```mdx <Callout>The config file lives at `docs/tidypress.config.ts`.
 - [docs] Configuration
   - path: `src/content/docs/configuration.md`
-  - description: The practical shape of docs/docsmint.config.ts.
-  - excerpt: DocsMint reads one config file: ```txt docs/docsmint.config.ts ``` Only `name` is required. Keep the file small until the site needs more shape. ```ts import { defineConfig } fr
+  - description: The practical shape of docs/tidypress.config.ts.
+  - excerpt: TidyPress reads one config file: ```txt docs/tidypress.config.ts ``` Only `name` is required. Keep the file small until the site needs more shape. ```ts import { defineConfig } 
 - [docs] Deploy
   - path: `src/content/docs/deploying.md`
   - description: Build static output, copy it, or hand it to the host you already use.
-  - excerpt: DocsMint builds static files. Deployment is whatever you do with those files. ```bash docsmint build ``` Output: ```txt docs/build/ ``` That directory contains HTML, Astro asse
+  - excerpt: TidyPress builds static files. Deployment is whatever you do with those files. ```bash tidypress build ``` Output: ```txt docs/build/ ``` That directory contains HTML, Astro as
 - [docs] Display options
   - path: `src/content/docs/display-options.md`
   - description: Configure homepage previews, collection indexes, cards, lists, dates, descriptions, tags, and gaps.
   - excerpt: Display options are optional. Start without them, then add only the overrides your site needs. ## Defaults Homepage defaults: | Option | Default | |--------|---------| | `home.p
 - [docs] Examples
   - path: `src/content/docs/examples.md`
-  - description: Runnable example projects for common DocsMint shapes.
+  - description: Runnable example projects for common TidyPress shapes.
   - excerpt: The repository keeps focused examples under `examples/`. Use the examples when you want to see one site shape without the full product documentation site. ## Minimal ```bash pnp
-- [docs] Extending DocsMint
+- [docs] Extending TidyPress
   - path: `src/content/docs/extensibility.md`
   - description: Advanced rendering hooks for custom collections and custom docs forms.
-  - excerpt: Project-local presentation hooks for custom sections and docs forms. ## Two axes DocsMint separates content location from page model: | Axis | Declared in | Use for | |------|--
+  - excerpt: Project-local presentation hooks for custom sections and docs forms. ## Two axes TidyPress separates content location from page model: | Axis | Declared in | Use for | |------|-
 - [docs] Getting started
   - path: `src/content/docs/getting-started.mdx`
-  - description: Create a DocsMint project, run it locally, and build static output.
-  - excerpt: Create a `docs/` folder, run the local server, write one page, then build static output. ## Install <Tabs labels={["npm", "pnpm", "python"]}> <Tab> ```bash npm install docsmint 
+  - description: Create a TidyPress project, run it locally, and build static output.
+  - excerpt: Create a `docs/` folder, run the local server, write one page, then build static output. ## Install <Tabs labels={["npm", "pnpm", "python"]}> <Tab> ```bash npm install tidypress
 - [docs] CI and deployment
   - path: `src/content/docs/manual/ci.md`
   - description: Cache build inputs and upload only the static build/ artifact.
-  - excerpt: DocsMint builds are deterministic static sites. In CI, cache compiler inputs and publish only `build/`. ## What to upload Upload the contents of your docs directory `build/` fold
+  - excerpt: TidyPress builds are deterministic static sites. In CI, cache compiler inputs and publish only `build/`. ## What to upload Upload the contents of your docs directory `build/` fol
 - [docs] Python wrapper
   - path: `src/content/docs/python.md`
-  - description: Use DocsMint from Python and run Python-native helper commands.
-  - excerpt: The Python package provides a `docsmint` entrypoint for Python environments. Rendering still uses the Node.js CLI and Astro engine. Node.js 22.12 or newer is required for `init`, 
+  - description: Use TidyPress from Python and run Python-native helper commands.
+  - excerpt: The Python package provides a `tidypress` entrypoint for Python environments. Rendering still uses the Node.js CLI and Astro engine. Node.js 22.12 or newer is required for `init`,
 - [docs] CLI reference
   - path: `src/content/docs/reference.md`
   - description: Commands, config fields, frontmatter, components, and deploy targets.
-  - excerpt: This is the compact reference. Use the focused guides when you need context. ## CLI Global flags: ```bash docsmint --help docsmint --version docsmint --verbose <command> ``` No
+  - excerpt: This is the compact reference. Use the focused guides when you need context. ## CLI Global flags: ```bash tidypress --help tidypress --version tidypress --verbose <command> ``` 
 - [docs] Site layout
   - path: `src/content/docs/site-layout.md`
   - description: Configure sidebar groups, chapter navigation, homepage previews, indexes, tags, and icons.
@@ -56,10 +56,10 @@
   - path: `src/content/docs/theme-typography.md`
   - description: Configure typography scale, color tokens, and code highlighting presets.
   - excerpt: Theme config is optional. The default is a guarded baseline theme with the `claude` code highlighting preset. ## Typography Scales: | Value | Use for | |-------|---------| | `me
-- [docs] Why DocsMint
-  - path: `src/content/docs/why-docsmint.md`
-  - description: Minimal markdown site for fast writing and project showcase.
-  - excerpt: > Minimal markdown site for fast writing and project showcase. DocsMint is for engineers who want a public site that stays in git — writing, projects on the home page, and referen
+- [docs] Why TidyPress
+  - path: `src/content/docs/why-tidypress.md`
+  - description: A publishing framework for Git-native authorship.
+  - excerpt: > A publishing framework for Git-native authorship. TidyPress is the public interface for your repos and work. It gives engineers a way to talk about their projects, showcase idea
 - [docs] Markdown and frontmatter
   - path: `src/content/docs/writing-content.md`
   - description: Content folders, frontmatter fields, links, assets, drafts, and scheduling.

@@ -1,6 +1,6 @@
 export default {
   name: 'custom-collections-example',
-  description: 'DocsMint custom collections example.',
+  description: 'TidyPress custom collections example.',
   nav: [
     { label: 'docs', href: '/docs' },
     { label: 'playbooks', href: '/playbooks' },

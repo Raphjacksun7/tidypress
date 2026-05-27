@@ -28,7 +28,7 @@ export function cleanInlineCodeIntegration() {
           let fixed = html
 
           // ── Block code: keep theme backgrounds for syntax-highlighted blocks
-          // (bash, js, md, etc.), but let plain text/tree blocks use DocsMint's
+          // (bash, js, md, etc.), but let plain text/tree blocks use TidyPress's
           // surface styling.
           fixed = fixed.replace(
             /(<pre\b[^>]*\bdata-language="[^"]*"[^>]*)>/g,

@@ -1,7 +1,7 @@
-import { DocsMintError } from '../errors/DocsMintError.js'
+import { TidyPressError } from '../errors/TidyPressError.js'
 
 /**
- * Handles `docsmint ai` (stretch scaffold).
+ * Handles `tidypress ai` (stretch scaffold).
  */
 export class AiCommand {
   /**
@@ -25,11 +25,11 @@ export class AiCommand {
       projectRoot,
       feature: 'ai',
       cliEnabled: enableExperimentalAi,
-      cliHint: 'Use docsmint ai <suggest|translate|changelog> [args] --enable-experimental-ai',
-      configHint: 'Set experimental.ai = true in docs/docsmint.config.ts',
+      cliHint: 'Use tidypress ai <suggest|translate|changelog> [args] --enable-experimental-ai',
+      configHint: 'Set experimental.ai = true in docs/tidypress.config.ts',
     })
 
-    throw new DocsMintError(
+    throw new TidyPressError(
       `Experimental AI action (${action}) scaffold is ready, but implementation is not available yet.`,
       'EXPERIMENTAL_NOT_IMPLEMENTED',
       'Task 19 keeps stretch work guarded until prerequisites are production-ready.',

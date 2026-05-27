@@ -21,11 +21,11 @@ hero: {
 },
 ```
 
-Use `docsmint init --preset persona` for a starter layout with hero, projects, and an about page.
+Use `tidypress init --preset persona` for a starter layout with hero, projects, and an about page.
 
 ## Sidebar
 
-Without `docs.sidebar`, DocsMint builds the docs sidebar from published docs entries and their `order` frontmatter.
+Without `docs.sidebar`, TidyPress builds the docs sidebar from published docs entries and their `order` frontmatter.
 
 ```yaml
 ---
@@ -41,7 +41,7 @@ docs: {
   sidebar: [
     {
       label: 'Start',
-      items: ['why-docsmint', 'getting-started'],
+      items: ['why-tidypress', 'getting-started'],
     },
     {
       label: 'Configure',
@@ -84,7 +84,7 @@ Override one page:
 
 ```yaml
 ---
-title: Why DocsMint
+title: Why TidyPress
 paging: false
 ---
 ```

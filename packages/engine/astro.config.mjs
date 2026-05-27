@@ -6,10 +6,10 @@ import { defineConfig, logHandlers } from 'astro/config'
 
 const require = createRequire(import.meta.url)
 const srcDir = fileURLToPath(new URL('./src', import.meta.url))
-const projectRoot = process.env.DOCSMINT_PROJECT_ROOT ?? import.meta.dirname
-const siteConfigFile = process.env.DOCSMINT_PROJECT_ROOT
-  ? path.resolve(projectRoot, 'docsmint.config.ts')
-  : fileURLToPath(new URL('./docsmint.config.ts', import.meta.url))
+const projectRoot = process.env.TIDYPRESS_PROJECT_ROOT ?? import.meta.dirname
+const siteConfigFile = process.env.TIDYPRESS_PROJECT_ROOT
+  ? path.resolve(projectRoot, 'tidypress.config.ts')
+  : fileURLToPath(new URL('./tidypress.config.ts', import.meta.url))
 
 const loadConfig = require('jiti')(import.meta.url, { interopDefault: true })
 const siteConfig = loadConfig(siteConfigFile)
@@ -19,11 +19,11 @@ import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
 import rehypePrettyCode from 'rehype-pretty-code'
 import rehypeExternalLinks from 'rehype-external-links'
-import { resolveCodeThemePreset, withDefaults } from '@docsmint/config'
+import { resolveCodeThemePreset, withDefaults } from '@tidypress/config'
 import { cleanInlineCodeIntegration } from './plugins/clean-inline-code.mjs'
-import { docsmintPluginDev } from './plugins/docsmint-plugin-dev.mjs'
+import { tidypressPluginDev } from './plugins/tidypress-plugin-dev.mjs'
 import { rehypeResolveDocLinks } from './plugins/rehype-resolve-doc-links.mjs'
-import docsmintIntegration from './integration/docsmint.mjs'
+import tidypressIntegration from './integration/tidypress.mjs'
 
 const normalizedSiteConfig = withDefaults(siteConfig)
 const syntaxTheme = resolveCodeThemePreset(
@@ -49,7 +49,7 @@ const rehypePlugins = /** @type {any} */ ([
 ])
 
 const useJsonLogs =
-  process.env.CI === 'true' || process.env.DOCSMINT_JSON_LOGS === '1'
+  process.env.CI === 'true' || process.env.TIDYPRESS_JSON_LOGS === '1'
 
 export default defineConfig({
   site: 'https://docs.example.com',
@@ -65,7 +65,7 @@ export default defineConfig({
     },
   },
   integrations: [
-    docsmintIntegration(),
+    tidypressIntegration(),
     mdx({ rehypePlugins }),
     sitemap(),
     cleanInlineCodeIntegration(),
@@ -83,11 +83,11 @@ export default defineConfig({
       },
     },
     define: {
-      'import.meta.env.DOCSMINT_PROJECT_ROOT': JSON.stringify(projectRoot),
+      'import.meta.env.TIDYPRESS_PROJECT_ROOT': JSON.stringify(projectRoot),
     },
     plugins: [
       tailwindcss(),
-      ...(process.env.DOCSMINT_PROJECT_ROOT ? [docsmintPluginDev()] : []),
+      ...(process.env.TIDYPRESS_PROJECT_ROOT ? [tidypressPluginDev()] : []),
     ],
     build: {
       rollupOptions: {

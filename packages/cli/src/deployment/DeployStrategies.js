@@ -1,4 +1,4 @@
-import { DocsMintError } from '../errors/DocsMintError.js'
+import { TidyPressError } from '../errors/TidyPressError.js'
 import { copyDistToDestination, resolveDeployTarget } from '../application/deployment/deploy-target.js'
 
 /**
@@ -58,7 +58,7 @@ export class LocalCopyDeployStrategy {
   async execute(request) {
     const plan = resolveDeployTarget(request)
     if (plan.kind !== 'local-copy') {
-      throw new DocsMintError('Local copy deploy received unsupported target.', 'DEPLOY_INTERNAL')
+      throw new TidyPressError('Local copy deploy received unsupported target.', 'DEPLOY_INTERNAL')
     }
     await copyDistToDestination({
       distDir: request.distDir,
@@ -94,7 +94,7 @@ export class ExternalTargetDeployStrategy {
   async execute(request) {
     const plan = resolveDeployTarget(request)
     if (plan.kind !== 'external-target') {
-      throw new DocsMintError('External deploy received unsupported target.', 'DEPLOY_INTERNAL')
+      throw new TidyPressError('External deploy received unsupported target.', 'DEPLOY_INTERNAL')
     }
     this.io.info(`Build artifact ready: ${request.distDir}`)
     this.io.info(`Target specified: ${plan.target}`)

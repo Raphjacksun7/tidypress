@@ -1,5 +1,5 @@
-import type { DocsMintConfig } from '@docsmint/config'
-import { resolveCollectionIndexDisplay, resolveCollectionMetaIndexTitle } from '@docsmint/config'
+import type { TidyPressConfig } from '@tidypress/config'
+import { resolveCollectionIndexDisplay, resolveCollectionMetaIndexTitle } from '@tidypress/config'
 import { filterCollectionIndexEntries } from '@/utils/collection-meta-index-entries'
 import { loadPublishedCollectionEntries, type EngineCollectionEntry } from '@/utils/collection-entries'
 import {
@@ -32,7 +32,7 @@ export class WritingCollection implements ICollection {
   readonly presentationTarget = 'writing' as const
 
   constructor(
-    private readonly site: DocsMintConfig,
+    private readonly site: TidyPressConfig,
     private readonly dateFormatter: Intl.DateTimeFormat,
   ) {}
 

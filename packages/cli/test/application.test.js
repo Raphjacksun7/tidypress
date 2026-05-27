@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import path from 'node:path'
 
 import { Application } from '../src/application/Application.js'
-import { DocsMintError } from '../src/errors/DocsMintError.js'
+import { TidyPressError } from '../src/errors/TidyPressError.js'
 
 class FakeCommand {
   constructor() {
@@ -85,7 +85,7 @@ test('Application emits help text for --help', async () => {
 
   await app.run(['--help'])
   assert.equal(output.length, 1)
-  assert.match(output[0], /docsmint <command>/)
+  assert.match(output[0], /tidypress <command>/)
 })
 
 test('Application rejects invalid ports', async () => {
@@ -101,7 +101,7 @@ test('Application rejects invalid ports', async () => {
       await app.run(['dev', '--port', 'NaN'])
     },
     error => {
-      assert.ok(error instanceof DocsMintError)
+      assert.ok(error instanceof TidyPressError)
       assert.equal(error.code, 'INVALID_PORT')
       assert.equal(error.exitCode, 2)
       return true
@@ -122,7 +122,7 @@ test('Application sets usage exit code for unknown commands', async () => {
       await app.run(['does-not-exist'])
     },
     error => {
-      assert.ok(error instanceof DocsMintError)
+      assert.ok(error instanceof TidyPressError)
       assert.equal(error.code, 'UNKNOWN_COMMAND')
       assert.equal(error.exitCode, 2)
       return true
@@ -143,7 +143,7 @@ test('Application sets usage exit code for missing build output value', async ()
       await app.run(['build', '--output'])
     },
     error => {
-      assert.ok(error instanceof DocsMintError)
+      assert.ok(error instanceof TidyPressError)
       assert.equal(error.code, 'INVALID_OUTPUT')
       assert.equal(error.exitCode, 2)
       return true
@@ -164,7 +164,7 @@ test('Application sets usage exit code for unknown init options', async () => {
       await app.run(['init', '--unknown'])
     },
     error => {
-      assert.ok(error instanceof DocsMintError)
+      assert.ok(error instanceof TidyPressError)
       assert.equal(error.code, 'INVALID_INIT_OPTION')
       assert.equal(error.exitCode, 2)
       return true
@@ -185,7 +185,7 @@ test('Application sets usage exit code for migrate-sections options', async () =
       await app.run(['migrate-sections', '--apply'])
     },
     error => {
-      assert.ok(error instanceof DocsMintError)
+      assert.ok(error instanceof TidyPressError)
       assert.equal(error.code, 'INVALID_MIGRATE_SECTIONS_OPTION')
       assert.equal(error.exitCode, 2)
       return true
@@ -206,7 +206,7 @@ test('Application sets usage exit code for missing add-version label', async () 
       await app.run(['add-version'])
     },
     error => {
-      assert.ok(error instanceof DocsMintError)
+      assert.ok(error instanceof TidyPressError)
       assert.equal(error.code, 'INVALID_ADD_VERSION_OPTION')
       assert.equal(error.exitCode, 2)
       return true
@@ -227,7 +227,7 @@ test('Application sets usage exit code for missing domain --platform value', asy
       await app.run(['domain', 'setup', 'docs.example.com'])
     },
     error => {
-      assert.ok(error instanceof DocsMintError)
+      assert.ok(error instanceof TidyPressError)
       assert.equal(error.code, 'INVALID_DOMAIN_OPTION')
       assert.equal(error.exitCode, 2)
       return true

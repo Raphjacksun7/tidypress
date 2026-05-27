@@ -1,17 +1,17 @@
 ---
-import type { DocsMintConfig, FooterItemIcon } from '@docsmint/config'
-import { normalizeFooterItems, resolveCapabilityFlags } from '@docsmint/config'
+import type { TidyPressConfig, FooterItemIcon } from '@tidypress/config'
+import { normalizeFooterItems, resolveCapabilityFlags } from '@tidypress/config'
 import LanguageSelector from '@/components/LanguageSelector.astro'
 
 export interface Props {
-  site: DocsMintConfig
+  site: TidyPressConfig
   locales: string[]
   activeLocale?: string
   defaultLocale: string
   languageLabel: string
 }
 
-function getWritingBasePath(siteConfig: DocsMintConfig): string {
+function getWritingBasePath(siteConfig: TidyPressConfig): string {
   return siteConfig.collections?.writing?.basePath ?? '/writing'
 }
 

@@ -10,7 +10,7 @@ pnpm changeset
 
 Follow the prompts: pick affected packages, choose `patch`/`minor`/`major`, write a summary.
 
-All three npm packages (`@docsmint/config`, `@docsmint/engine`, `docsmint`) are **linked** — they always release at the same version. Selecting any one of them bumps all three.
+All three npm packages (`@tidypress/config`, `@tidypress/engine`, `tidypress`) are **linked** — they always release at the same version. Selecting any one of them bumps all three.
 
 ## Release flow
 

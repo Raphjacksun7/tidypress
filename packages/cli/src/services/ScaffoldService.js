@@ -3,7 +3,7 @@ import path from 'node:path'
 import { scaffoldDocs } from '../application/scaffolding/scaffold-docs.js'
 import { STARTER_PRESETS } from '../templates/starters.js'
 import { getDocsDir } from '../infrastructure/project/config.js'
-import { DocsMintError } from '../errors/DocsMintError.js'
+import { TidyPressError } from '../errors/TidyPressError.js'
 
 /**
  * Creates initial docs/writing scaffolding for a project.
@@ -20,10 +20,10 @@ export class ScaffoldService {
       await scaffoldDocs({ docsDir, projectName, starterPreset, withAstro })
     } catch (error) {
       if (error instanceof Error && error.message.startsWith('Unknown starter preset')) {
-        throw new DocsMintError(
+        throw new TidyPressError(
           error.message,
           'INVALID_INIT_OPTION',
-          `Use docsmint init [--preset ${Object.keys(STARTER_PRESETS).join('|')}]`,
+          `Use tidypress init [--preset ${Object.keys(STARTER_PRESETS).join('|')}]`,
           { exitCode: 2 },
         )
       }

@@ -21,7 +21,7 @@ test('parseReleaseTagVersion rejects non-release tags', () => {
 test('readPythonProjectVersion reads version field from pyproject content', () => {
   const pyproject = `
 [project]
-name = "docsmint"
+name = "tidypress"
 version = "0.1.14"
 `
   assert.equal(readPythonProjectVersion(pyproject), '0.1.14')

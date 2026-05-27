@@ -1,4 +1,4 @@
-import type { DocsMintConfig } from '../schema/index.js'
+import type { TidyPressConfig } from '../schema/index.js'
 import { resolveCapabilityFlags } from '../registry/capabilities.js'
 import { isPageCollectionKind } from '../registry/collection-kinds.js'
 import {
@@ -7,16 +7,16 @@ import {
   isStarterCollectionKey,
 } from '../registry/legacy.js'
 
-export type DocsMintListLayout = 'list' | 'card'
-export type DocsMintListGap = 'sm' | 'md' | 'lg'
+export type TidyPressListLayout = 'list' | 'card'
+export type TidyPressListGap = 'sm' | 'md' | 'lg'
 
-export const docsMintListGapRegistry = {
+export const tidyPressListGapRegistry = {
   sm: { stackClass: 'space-y-2' },
   md: { stackClass: 'space-y-3' },
   lg: { stackClass: 'space-y-6' },
-} as const satisfies Record<DocsMintListGap, { stackClass: string }>
+} as const satisfies Record<TidyPressListGap, { stackClass: string }>
 
-export const docsMintListLayoutRegistry = {
+export const tidyPressListLayoutRegistry = {
   list: {
     rowClass: 'home-list-row',
     titleClass: 'home-list-title',
@@ -33,11 +33,11 @@ export const docsMintListLayoutRegistry = {
     descriptionClass: 'entry-index-description',
   },
 } as const satisfies Record<
-  DocsMintListLayout,
+  TidyPressListLayout,
   Record<string, string>
 >
 
-export const docsMintHomePreviewPresentation = {
+export const tidyPressHomePreviewPresentation = {
   sectionClass: 'space-y-3',
   cardLinkClass: 'group home-card-row dm-link-unstyled',
   cardContentClass: 'min-w-0',
@@ -52,13 +52,13 @@ export const docsMintHomePreviewPresentation = {
   moreLinkClass: 'text-xs',
 } as const
 
-export const docsMintCollectionIndexPresentation = {
+export const tidyPressCollectionIndexPresentation = {
   listLinkClass: 'group dm-link-unstyled',
 } as const
 
-export interface DocsMintListDisplay {
-  layout?: DocsMintListLayout
-  gap?: DocsMintListGap
+export interface TidyPressListDisplay {
+  layout?: TidyPressListLayout
+  gap?: TidyPressListGap
   showDescription?: boolean
   showTags?: boolean
   /** Show the date (and author when present) on card and list entries. */
@@ -66,21 +66,21 @@ export interface DocsMintListDisplay {
   icon?: string
 }
 
-export type DocsMintHomePreset = 'lab' | 'blog' | 'docs-writing' | 'persona'
+export type TidyPressHomePreset = 'lab' | 'blog' | 'docs-writing' | 'persona'
 
-export interface DocsMintHome {
+export interface TidyPressHome {
   previewLimit?: number
-  display?: DocsMintListDisplay
-  collections?: Record<string, DocsMintListDisplay>
+  display?: TidyPressListDisplay
+  collections?: Record<string, TidyPressListDisplay>
   order?: string[]
-  preset?: DocsMintHomePreset
+  preset?: TidyPressHomePreset
 }
 
-export interface DocsMintWritingEntryDisplay {
+export interface TidyPressWritingEntryDisplay {
   showTags?: boolean
 }
 
-function isHomeCollectionEnabled(site: DocsMintConfig, key: string): boolean {
+function isHomeCollectionEnabled(site: TidyPressConfig, key: string): boolean {
   const flags = resolveCapabilityFlags(site)
   if (isStarterCollectionKey(key)) {
     return flags[key as 'docs' | 'writing' | 'pages']
@@ -88,7 +88,7 @@ function isHomeCollectionEnabled(site: DocsMintConfig, key: string): boolean {
   return site.collections?.[key]?.enabled === true
 }
 
-function isHomePreviewCollection(site: DocsMintConfig, key: string): boolean {
+function isHomePreviewCollection(site: TidyPressConfig, key: string): boolean {
   if (!isHomeCollectionEnabled(site, key)) {
     return false
   }
@@ -105,7 +105,7 @@ function isHomePreviewCollection(site: DocsMintConfig, key: string): boolean {
   return kind === 'content' || kind === 'projects'
 }
 
-export function resolveDefaultHomeSectionKeys(site: DocsMintConfig): string[] {
+export function resolveDefaultHomeSectionKeys(site: TidyPressConfig): string[] {
   const keys: string[] = []
   const seen = new Set<string>()
 
@@ -129,7 +129,7 @@ export function resolveDefaultHomeSectionKeys(site: DocsMintConfig): string[] {
   return keys
 }
 
-export const defaultListDisplay: Required<Omit<DocsMintListDisplay, 'icon'>> = {
+export const defaultListDisplay: Required<Omit<TidyPressListDisplay, 'icon'>> = {
   layout: 'list',
   gap: 'sm',
   showDescription: false,
@@ -138,9 +138,9 @@ export const defaultListDisplay: Required<Omit<DocsMintListDisplay, 'icon'>> = {
 }
 
 export function mergeListDisplay(
-  ...layers: Array<DocsMintListDisplay | undefined>
-): Required<Omit<DocsMintListDisplay, 'icon'>> & Pick<DocsMintListDisplay, 'icon'> {
-  const merged: Required<Omit<DocsMintListDisplay, 'icon'>> & Pick<DocsMintListDisplay, 'icon'> = {
+  ...layers: Array<TidyPressListDisplay | undefined>
+): Required<Omit<TidyPressListDisplay, 'icon'>> & Pick<TidyPressListDisplay, 'icon'> {
+  const merged: Required<Omit<TidyPressListDisplay, 'icon'>> & Pick<TidyPressListDisplay, 'icon'> = {
     ...defaultListDisplay,
     icon: undefined,
   }
@@ -171,9 +171,9 @@ export function mergeListDisplay(
 }
 
 export function resolveHomeCollectionDisplay(
-  home: DocsMintHome | undefined,
-  collectionDisplay: DocsMintListDisplay | undefined,
-  homeCollectionDisplay: DocsMintListDisplay | undefined,
+  home: TidyPressHome | undefined,
+  collectionDisplay: TidyPressListDisplay | undefined,
+  homeCollectionDisplay: TidyPressListDisplay | undefined,
 ): ReturnType<typeof mergeListDisplay> {
   const resolved = mergeListDisplay(home?.display, collectionDisplay, homeCollectionDisplay)
   const hasHomeDescriptionSetting =
@@ -186,23 +186,23 @@ export function resolveHomeCollectionDisplay(
 }
 
 export function resolveCollectionIndexDisplay(
-  collectionDisplay: DocsMintListDisplay | undefined,
+  collectionDisplay: TidyPressListDisplay | undefined,
 ): ReturnType<typeof mergeListDisplay> {
   return mergeListDisplay(collectionDisplay)
 }
 
 export type ResolvedListDisplay = ReturnType<typeof mergeListDisplay>
 
-export function listGapStackClass(gap: DocsMintListGap): string {
-  return docsMintListGapRegistry[gap].stackClass
+export function listGapStackClass(gap: TidyPressListGap): string {
+  return tidyPressListGapRegistry[gap].stackClass
 }
 
-export function listLayoutPresentation<T extends DocsMintListLayout>(
+export function listLayoutPresentation<T extends TidyPressListLayout>(
   layout: T,
-): (typeof docsMintListLayoutRegistry)[T] {
-  return docsMintListLayoutRegistry[layout]
+): (typeof tidyPressListLayoutRegistry)[T] {
+  return tidyPressListLayoutRegistry[layout]
 }
 
-export function isCardListLayout(layout: DocsMintListLayout): boolean {
+export function isCardListLayout(layout: TidyPressListLayout): boolean {
   return layout === 'card'
 }

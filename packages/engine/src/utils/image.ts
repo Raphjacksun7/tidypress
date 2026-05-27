@@ -1,4 +1,4 @@
-export const DOCSMINT_IMAGE_PRESENTATION = {
+export const TIDYPRESS_IMAGE_PRESENTATION = {
   figureClass: 'my-8',
   frameClass: 'dm-image-frame',
   captionClass: 'dm-image-caption',

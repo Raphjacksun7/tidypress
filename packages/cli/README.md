@@ -1,26 +1,26 @@
-# docsmint
+# tidypress
 
-Minimal markdown site for fast writing and project showcase.
+A publishing framework for Git-native authorship.
 
-`docsmint` is the CLI: init, dev, build, preview, deploy. Markdown in `docs/` becomes static HTML.
+`tidypress` is the CLI: init, dev, build, preview, deploy. Markdown in `docs/` becomes static HTML.
 
 ## Install
 
 Node.js 22.12 or newer is required.
 
 ```sh
-npm install docsmint
+npm install tidypress
 # or
-pnpm add docsmint
+pnpm add tidypress
 ```
 
 ## Quickstart
 
 ```sh
-npx docsmint init              # lab preset: writing + projects
-npx docsmint init --preset blog   # writing only
-npx docsmint init --preset persona
-npx docsmint dev
+npx tidypress init              # lab preset: writing + projects
+npx tidypress init --preset blog   # writing only
+npx tidypress init --preset persona
+npx tidypress dev
 ```
 
 Open `http://localhost:4321`.
@@ -28,8 +28,8 @@ Open `http://localhost:4321`.
 Presets: `lab` (default), `persona`, `blog`, `docs-writing`, `custom`. `default` aliases `lab`.
 
 ```sh
-npx docsmint build
-npx docsmint preview
+npx tidypress build
+npx tidypress preview
 ```
 
 Output is written to `docs/build/` (or `<docsDir>/build/` when config is at the project root).
@@ -38,25 +38,25 @@ Output is written to `docs/build/` (or `<docsDir>/build/` when config is at the 
 
 | Command | Purpose |
 |---------|---------|
-| `docsmint init [--preset <name>]` | scaffold a `docs/` folder |
-| `docsmint dev [--port <n>]` | run the local dev server |
-| `docsmint build [--output <dir>]` | build static output |
-| `docsmint preview [--port <n>]` | preview the production build |
-| `docsmint deploy [target]` | copy or hand output to a static host/tool |
-| `docsmint clean` | remove `build/` and local docsmint cache |
-| `docsmint context [output]` | write a markdown snapshot of published content |
+| `tidypress init [--preset <name>]` | scaffold a `docs/` folder |
+| `tidypress dev [--port <n>]` | run the local dev server |
+| `tidypress build [--output <dir>]` | build static output |
+| `tidypress preview [--port <n>]` | preview the production build |
+| `tidypress deploy [target]` | copy or hand output to a static host/tool |
+| `tidypress clean` | remove `build/` and local tidypress cache |
+| `tidypress context [output]` | write a markdown snapshot of published content |
 
 `--starter <name>` is accepted as an alias for `--preset <name>`.
 
 ## Minimal config
 
 ```ts
-// docs/docsmint.config.ts
-import { defineConfig } from 'docsmint/config'
+// docs/tidypress.config.ts
+import { defineConfig } from 'tidypress/config'
 
 export default defineConfig({
   name: 'my-project',
-  description: 'Minimal markdown site for fast writing and project showcase.',
+  description: 'A publishing framework for Git-native authorship.',
   nav: [
     { label: 'docs', href: '/docs' },
     { label: 'writing', href: '/writing' },
@@ -68,6 +68,6 @@ export default defineConfig({
 
 ## Links
 
-- Documentation: <https://usedocsmint.pages.dev/docs>
-- Repository: <https://github.com/Raphjacksun7/docsmint>
-- Issues: <https://github.com/Raphjacksun7/docsmint/issues>
+- Documentation: <https://tidypress.pages.dev/docs>
+- Repository: <https://github.com/Raphjacksun7/tidypress>
+- Issues: <https://github.com/Raphjacksun7/tidypress/issues>

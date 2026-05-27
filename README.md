@@ -1,32 +1,34 @@
 <h1 align="center">
   <img src="./packages/engine/public/favicon-white.svg" alt="" width="40" height="40">
-  docsmint
+  tidypress
 </h1>
 
-Minimal markdown site for fast writing and project showcase.
+A publishing framework for Git-native authorship.
 
-[Website](https://usedocsmint.pages.dev/) · [Documentation](https://usedocsmint.pages.dev/docs) · [npm](https://www.npmjs.com/package/docsmint) · [PyPI](https://pypi.org/project/docsmint/) · [Issues](https://github.com/Raphjacksun7/docsmint/issues)
+[Website](https://tidypress.pages.dev/) · [Documentation](https://tidypress.pages.dev/docs) · [npm](https://www.npmjs.com/package/tidypress) · [PyPI](https://pypi.org/project/tidypress/) · [Issues](https://github.com/Raphjacksun7/tidypress/issues)
 
-[![CI](https://github.com/Raphjacksun7/docsmint/actions/workflows/ci.yml/badge.svg)](https://github.com/Raphjacksun7/docsmint/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/docsmint.svg)](https://www.npmjs.com/package/docsmint)
+[![CI](https://github.com/Raphjacksun7/tidypress/actions/workflows/ci.yml/badge.svg)](https://github.com/Raphjacksun7/tidypress/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/tidypress.svg)](https://www.npmjs.com/package/tidypress)
 [![License: MIT](https://img.shields.io/badge/license-MIT-black.svg)](./LICENSE)
 
-Markdown in git. `docsmint init`, `dev`, `build` — static output you own. Optional docs when you need a manual.
+Markdown in git. `tidypress init`, `dev`, `build` — static output you own. Optional docs when you need a manual.
+
+TidyPress is the public interface for an engineer's repos and work: writing, ideas, projects, references, and product knowledge in one owned site.
 
 ## Install
 
 Node.js 22.12 or newer is required for rendering.
 
 ```sh
-npm install docsmint
+npm install tidypress
 # or
-pnpm add docsmint
+pnpm add tidypress
 ```
 
 Python users can also install the wrapper:
 
 ```sh
-pip install docsmint
+pip install tidypress
 ```
 
 The Python package includes Python-native helpers. Site commands still use the Node.js CLI and Astro engine.
@@ -34,8 +36,8 @@ The Python package includes Python-native helpers. Site commands still use the N
 ## Quickstart
 
 ```sh
-npx docsmint init
-npx docsmint dev
+npx tidypress init
+npx tidypress dev
 ```
 
 Open `http://localhost:4321`.
@@ -43,8 +45,8 @@ Open `http://localhost:4321`.
 Production build:
 
 ```sh
-npx docsmint build
-npx docsmint preview
+npx tidypress build
+npx tidypress preview
 ```
 
 Output:
@@ -57,7 +59,7 @@ docs/build/
 
 ```txt
 docs/
-├── docsmint.config.ts
+├── tidypress.config.ts
 ├── public/
 └── src/content/
     ├── docs/
@@ -80,12 +82,12 @@ Docs are stable instructions. Writing is dated context. Pages map to root routes
 Run examples from the repo root after `pnpm install`:
 
 ```sh
-pnpm --filter @docsmint/example-lab build
-pnpm --filter @docsmint/example-blog build
-pnpm --filter @docsmint/example-persona build
-pnpm --filter @docsmint/example-minimal build
-pnpm --filter @docsmint/example-custom-collections build
-pnpm --filter @docsmint/example-i18n-versioned build
+pnpm --filter @tidypress/example-lab build
+pnpm --filter @tidypress/example-blog build
+pnpm --filter @tidypress/example-persona build
+pnpm --filter @tidypress/example-minimal build
+pnpm --filter @tidypress/example-custom-collections build
+pnpm --filter @tidypress/example-i18n-versioned build
 ```
 
 See [`examples/`](./examples/).
@@ -94,12 +96,12 @@ See [`examples/`](./examples/).
 
 | Package | Role |
 |---------|------|
-| `docsmint` | CLI: init, dev, build, preview, deploy, context |
-| `@docsmint/engine` | Astro rendering runtime |
-| `@docsmint/config` | config schema, defaults, normalization |
+| `tidypress` | CLI: init, dev, build, preview, deploy, context |
+| `@tidypress/engine` | Astro rendering runtime |
+| `@tidypress/config` | config schema, defaults, normalization |
 | `wrappers/python` | Python entrypoint and Python-native helpers |
 
-End users install `docsmint`.
+End users install `tidypress`.
 
 ## Contributors
 

@@ -1,4 +1,4 @@
-import { DocsMintError } from '../errors/DocsMintError.js'
+import { TidyPressError } from '../errors/TidyPressError.js'
 import { findConfigFile, loadUserConfig, resolveDocsDir } from '../infrastructure/project/config.js'
 import fs from 'node:fs/promises'
 import path from 'node:path'
@@ -9,10 +9,10 @@ import {
   normalizePages,
   resolveCapabilityFlags,
   withDefaults,
-} from '@docsmint/config'
+} from '@tidypress/config'
 
 /**
- * Loads DocsMint project configuration and docs-directory context.
+ * Loads TidyPress project configuration and docs-directory context.
  */
 export class ConfigLoader {
   /**
@@ -64,9 +64,9 @@ export class ConfigLoader {
     const mode = config.navPolicy?.mode ?? 'strict'
     const message = `Unknown internal nav routes: ${unknownInternal.join(', ')}`
     if (mode === 'strict') {
-      throw new DocsMintError(message, 'CONFIG_NAV_UNKNOWN', 'Fix nav hrefs or set navPolicy.mode to "relaxed"')
+      throw new TidyPressError(message, 'CONFIG_NAV_UNKNOWN', 'Fix nav hrefs or set navPolicy.mode to "relaxed"')
     }
-    io.info(`[docsmint] ${message}`)
+    io.info(`[tidypress] ${message}`)
   }
 
   async #collectKnownRoutes(docsDir, config) {

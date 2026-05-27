@@ -1,5 +1,5 @@
 /**
- * Handles `docsmint release-check`.
+ * Handles `tidypress release-check`.
  */
 export class ReleaseCheckCommand {
   /**

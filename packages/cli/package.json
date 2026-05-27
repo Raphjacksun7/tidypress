@@ -1,20 +1,20 @@
 {
-  "name": "docsmint",
-  "version": "1.0.7",
-  "description": "Minimal markdown site for fast writing and project showcase.",
+  "name": "tidypress",
+  "version": "1.0.8",
+  "description": "A publishing framework for Git-native authorship.",
   "license": "MIT",
   "type": "module",
   "author": "Raphael Avocegamou",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Raphjacksun7/docsmint.git"
+    "url": "git+https://github.com/Raphjacksun7/tidypress.git"
   },
-  "homepage": "https://usedocsmint.pages.dev/",
+  "homepage": "https://tidypress.pages.dev/",
   "bugs": {
-    "url": "https://github.com/Raphjacksun7/docsmint/issues"
+    "url": "https://github.com/Raphjacksun7/tidypress/issues"
   },
   "bin": {
-    "docsmint": "bin/docsmint.js"
+    "tidypress": "bin/tidypress.js"
   },
   "publishConfig": {
     "access": "public"
@@ -35,14 +35,14 @@
   "scripts": {
     "test": "node --test --test-timeout=420000 test/*.test.js",
     "test:install-e2e": "node --test --test-timeout=2400000 test/install-e2e.test.js",
-    "dev": "node ./bin/docsmint.js dev",
-    "build": "node -e \"console.log('docsmint CLI package does not require a compile step')\""
+    "dev": "node ./bin/tidypress.js dev",
+    "build": "node -e \"console.log('tidypress CLI package does not require a compile step')\""
   },
   "dependencies": {
     "@astrojs/mdx": "5.0.4",
     "@astrojs/sitemap": "3.7.2",
-    "@docsmint/config": "workspace:*",
-    "@docsmint/engine": "workspace:*",
+    "@tidypress/config": "workspace:*",
+    "@tidypress/engine": "workspace:*",
     "@tailwindcss/vite": "4.2.4",
     "astro": "6.2.2",
     "jiti": "2.6.1",
@@ -56,7 +56,7 @@
     "vite": "7.3.2"
   },
   "bundleDependencies": [
-    "@docsmint/config",
-    "@docsmint/engine"
+    "@tidypress/config",
+    "@tidypress/engine"
   ]
 }

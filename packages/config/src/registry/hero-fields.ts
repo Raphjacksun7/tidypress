@@ -1,25 +1,25 @@
-import type { DocsMintHero, DocsMintHeroLink } from '../schema/types.js'
+import type { TidyPressHero, TidyPressHeroLink } from '../schema/types.js'
 import { resolveHeroLinkAttributes } from '../links/link-attributes.js'
 
 /** Scalar hero fields rendered on the home page (excluding link list). */
-export const docsMintHeroScalarFields = ['role', 'pronunciation', 'lead', 'image'] as const
+export const tidyPressHeroScalarFields = ['role', 'pronunciation', 'lead', 'image'] as const
 
-export type DocsMintHeroScalarField = (typeof docsMintHeroScalarFields)[number]
+export type TidyPressHeroScalarField = (typeof tidyPressHeroScalarFields)[number]
 
-export function heroHasRenderableScalarField(hero: DocsMintHero): boolean {
-  return docsMintHeroScalarFields.some(key => Boolean(hero[key]))
+export function heroHasRenderableScalarField(hero: TidyPressHero): boolean {
+  return tidyPressHeroScalarFields.some(key => Boolean(hero[key]))
 }
 
-export function heroHasRenderableLinks(hero: DocsMintHero): boolean {
+export function heroHasRenderableLinks(hero: TidyPressHero): boolean {
   return Boolean(hero.links?.length)
 }
 
-export function heroHasRenderableContent(hero: DocsMintHero): boolean {
+export function heroHasRenderableContent(hero: TidyPressHero): boolean {
   return heroHasRenderableScalarField(hero) || heroHasRenderableLinks(hero)
 }
 
-function mapHeroLink(link: DocsMintHeroLink) {
-  const item: DocsMintHeroLink = { label: link.label, href: link.href }
+function mapHeroLink(link: TidyPressHeroLink) {
+  const item: TidyPressHeroLink = { label: link.label, href: link.href }
   if (link.external !== undefined) {
     item.external = link.external
   }
@@ -28,10 +28,10 @@ function mapHeroLink(link: DocsMintHeroLink) {
 
 /** Build a config-ready hero object from preset or partial hero input. */
 export function pickHeroConfigFields(
-  hero: Partial<DocsMintHero> & { enabled?: boolean },
-): DocsMintHero {
-  const entry: DocsMintHero = { enabled: hero.enabled === true }
-  for (const key of docsMintHeroScalarFields) {
+  hero: Partial<TidyPressHero> & { enabled?: boolean },
+): TidyPressHero {
+  const entry: TidyPressHero = { enabled: hero.enabled === true }
+  for (const key of tidyPressHeroScalarFields) {
     const value = hero[key]
     if (value) {
       entry[key] = value

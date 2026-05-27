@@ -1,5 +1,5 @@
-import type { DocsMintConfig } from './schema/index.js'
+import type { TidyPressConfig } from './schema/index.js'
 
-export function defineConfig(config: DocsMintConfig): DocsMintConfig {
+export function defineConfig(config: TidyPressConfig): TidyPressConfig {
   return config
 }

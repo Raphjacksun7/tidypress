@@ -6,10 +6,10 @@ order: 3
 published: false
 ---
 
-Open `docs/docsmint.config.ts`:
+Open `docs/tidypress.config.ts`:
 
 ```ts
-import { defineConfig } from 'docsmint/config'
+import { defineConfig } from 'tidypress/config'
 
 export default defineConfig({
   name: 'My Project',

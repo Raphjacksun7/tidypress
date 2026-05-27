@@ -6,13 +6,13 @@ import path from 'node:path'
 
 import { AddVersionService } from '../src/services/AddVersionService.js'
 import { ConfigLoader } from '../src/services/ConfigLoader.js'
-import { DocsMintError } from '../src/errors/DocsMintError.js'
+import { TidyPressError } from '../src/errors/TidyPressError.js'
 import { DeployService } from '../src/services/DeployService.js'
 import { ImportService } from '../src/services/ImportService.js'
 import { ExperimentalFeatureService } from '../src/services/ExperimentalFeatureService.js'
 import { SectionsMigrationService } from '../src/services/SectionsMigrationService.js'
 
-test('DeployService throws DocsMintError when no strategy matches', async () => {
+test('DeployService throws TidyPressError when no strategy matches', async () => {
   const service = new DeployService({ strategies: [] })
 
   await assert.rejects(
@@ -25,20 +25,20 @@ test('DeployService throws DocsMintError when no strategy matches', async () => 
     },
     /** @param {unknown} error */
     error => {
-      assert.ok(error instanceof DocsMintError)
+      assert.ok(error instanceof TidyPressError)
       assert.equal(error.code, 'DEPLOY_NO_STRATEGY')
-      assert.match(error.formatUserMessage(), /Run docsmint deploy --help/)
+      assert.match(error.formatUserMessage(), /Run tidypress deploy --help/)
       return true
     },
   )
 })
 
 async function createVersionFixtureProject() {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-version-'))
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-version-'))
   const docsDir = path.join(root, 'docs')
   await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
   await fs.writeFile(
-    path.join(docsDir, 'docsmint.config.ts'),
+    path.join(docsDir, 'tidypress.config.ts'),
     `export default { name: 'fixture' }
 `,
     'utf8',
@@ -110,7 +110,7 @@ test('ImportService validates scheduled datetime value', async () => {
     },
     /** @param {unknown} error */
     error => {
-      assert.ok(error instanceof DocsMintError)
+      assert.ok(error instanceof TidyPressError)
       assert.equal(error.code, 'INVALID_IMPORT_OPTION')
       return true
     },
@@ -118,11 +118,11 @@ test('ImportService validates scheduled datetime value', async () => {
 })
 
 test('SectionsMigrationService writes deterministic sections migration artifact', async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-sections-migration-'))
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-sections-migration-'))
   const docsDir = path.join(root, 'docs')
   await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
   await fs.writeFile(
-    path.join(docsDir, 'docsmint.config.ts'),
+    path.join(docsDir, 'tidypress.config.ts'),
     `export default {
   name: 'fixture',
   sections: {
@@ -162,13 +162,13 @@ test('ExperimentalFeatureService requires explicit CLI opt-in', async () => {
         projectRoot: root,
         feature: 'editor',
         cliEnabled: false,
-        cliHint: 'Use docsmint editor --enable-experimental-editor',
+        cliHint: 'Use tidypress editor --enable-experimental-editor',
         configHint: 'Set experimental.editor = true',
       })
     },
     /** @param {unknown} error */
     error => {
-      assert.ok(error instanceof DocsMintError)
+      assert.ok(error instanceof TidyPressError)
       assert.equal(error.code, 'EXPERIMENTAL_FLAG_REQUIRED')
       return true
     },
@@ -185,13 +185,13 @@ test('ExperimentalFeatureService requires config opt-in', async () => {
         projectRoot: root,
         feature: 'export',
         cliEnabled: true,
-        cliHint: 'Use docsmint export <pdf|epub|archive> [source] --enable-experimental-export',
+        cliHint: 'Use tidypress export <pdf|epub|archive> [source] --enable-experimental-export',
         configHint: 'Set experimental.export = true',
       })
     },
     /** @param {unknown} error */
     error => {
-      assert.ok(error instanceof DocsMintError)
+      assert.ok(error instanceof TidyPressError)
       assert.equal(error.code, 'EXPERIMENTAL_CONFIG_DISABLED')
       return true
     },
@@ -199,11 +199,11 @@ test('ExperimentalFeatureService requires config opt-in', async () => {
 })
 
 test('ExperimentalFeatureService allows feature when both opt-ins are enabled', async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-experimental-'))
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-experimental-'))
   const docsDir = path.join(root, 'docs')
   await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
   await fs.writeFile(
-    path.join(docsDir, 'docsmint.config.ts'),
+    path.join(docsDir, 'tidypress.config.ts'),
     `export default {
   name: 'fixture',
   experimental: { ai: true }
@@ -217,17 +217,17 @@ test('ExperimentalFeatureService allows feature when both opt-ins are enabled', 
     projectRoot: root,
     feature: 'ai',
     cliEnabled: true,
-    cliHint: 'Use docsmint ai <suggest|translate|changelog> [args] --enable-experimental-ai',
+    cliHint: 'Use tidypress ai <suggest|translate|changelog> [args] --enable-experimental-ai',
     configHint: 'Set experimental.ai = true',
   })
 })
 
 test('ExperimentalFeatureService accepts capability override from config resolver', async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-experimental-capability-'))
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-experimental-capability-'))
   const docsDir = path.join(root, 'docs')
   await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
   await fs.writeFile(
-    path.join(docsDir, 'docsmint.config.ts'),
+    path.join(docsDir, 'tidypress.config.ts'),
     `export default {
   name: 'fixture',
   capabilities: { enable: ['ai'] }
@@ -241,7 +241,7 @@ test('ExperimentalFeatureService accepts capability override from config resolve
     projectRoot: root,
     feature: 'ai',
     cliEnabled: true,
-    cliHint: 'Use docsmint ai <suggest|translate|changelog> [args] --enable-experimental-ai',
+    cliHint: 'Use tidypress ai <suggest|translate|changelog> [args] --enable-experimental-ai',
     configHint: 'Set experimental.ai = true',
   })
 })

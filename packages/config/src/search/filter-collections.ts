@@ -1,16 +1,16 @@
-import type { DocsMintConfig } from '../schema/types.js'
+import type { TidyPressConfig } from '../schema/types.js'
 import { isSearchableCollectionKind } from '../registry/collection-kinds.js'
 import { isStarterCollectionKey } from '../registry/legacy.js'
 import { resolveCapabilityFlags } from '../registry/capabilities.js'
 
-export interface DocsMintSearchFilterCollection {
+export interface TidyPressSearchFilterCollection {
   key: string
   label: string
 }
 
-export function resolveSearchFilterCollections(site: DocsMintConfig): DocsMintSearchFilterCollection[] {
+export function resolveSearchFilterCollections(site: TidyPressConfig): TidyPressSearchFilterCollection[] {
   const capabilityFlags = resolveCapabilityFlags(site)
-  const collections: DocsMintSearchFilterCollection[] = []
+  const collections: TidyPressSearchFilterCollection[] = []
 
   for (const [key, collection] of Object.entries(site.collections ?? {})) {
     if (!collection) {

@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pytest
 
-from docsmint.errors import DocsMintError
-from docsmint.python_commands import (
+from tidypress.errors import TidyPressError
+from tidypress.python_commands import (
     convert_notebook,
     extract_docs,
     parse_convert_args,
@@ -102,7 +102,7 @@ def test_convert_notebook_rejects_invalid_png_output(tmp_path: Path) -> None:
     output = tmp_path / "docs" / "src" / "content" / "docs" / "broken-image.mdx"
     options = parse_convert_args([str(notebook), "--output", str(output)])
 
-    with pytest.raises(DocsMintError, match="Notebook output image is not valid base64"):
+    with pytest.raises(TidyPressError, match="Notebook output image is not valid base64"):
         convert_notebook(options)
 
 

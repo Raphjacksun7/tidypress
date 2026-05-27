@@ -1,42 +1,42 @@
-# docsmint (Python)
+# tidypress (Python)
 
-Python entrypoint for DocsMint.
+Python entrypoint for TidyPress.
 
-Minimal markdown site for fast writing and project showcase.
+A publishing framework for Git-native authorship.
 
 Rendering uses the Node.js CLI and Astro engine. Node.js 22.12 or newer is required for site commands.
 
 ## Install
 
 ```sh
-pip install docsmint
+pip install tidypress
 ```
 
 For site commands, the wrapper resolves the Node CLI in this order:
 
-1. `DOCSMINT_CLI_JS`
-2. local `node_modules/docsmint`
-3. `docsmint` on `PATH`
+1. `TIDYPRESS_CLI_JS`
+2. local `node_modules/tidypress`
+3. `tidypress` on `PATH`
 
 It does not use `npx` by default.
 
 ## Site commands
 
-These commands are delegated to the Node CLI (same as `npx docsmint`):
+These commands are delegated to the Node CLI (same as `npx tidypress`):
 
 ```sh
-docsmint init [--preset lab|blog|persona|docs-writing|custom]
-docsmint dev
-docsmint build
-docsmint preview
-docsmint clean
-docsmint deploy
-docsmint context [output.md]
-docsmint import devto <url-or-slug>   # real fetch; other providers write scaffolds
-docsmint doctor
-docsmint migrate-sections
-docsmint add-version <label>
-docsmint domain setup [domain] --platform <platform>
+tidypress init [--preset lab|blog|persona|docs-writing|custom]
+tidypress dev
+tidypress build
+tidypress preview
+tidypress clean
+tidypress deploy
+tidypress context [output.md]
+tidypress import devto <url-or-slug>   # real fetch; other providers write scaffolds
+tidypress doctor
+tidypress migrate-sections
+tidypress add-version <label>
+tidypress domain setup [domain] --platform <platform>
 ```
 
 Experimental Node commands (`editor`, `export`, `ai`) are also forwarded when enabled in config.
@@ -46,7 +46,7 @@ Experimental Node commands (`editor`, `export`, `ai`) are also forwarded when en
 `convert` turns a notebook into MDX:
 
 ```sh
-docsmint convert analysis.ipynb --output docs/src/content/docs/analysis.mdx
+tidypress convert analysis.ipynb --output docs/src/content/docs/analysis.mdx
 ```
 
 It preserves frontmatter, markdown cells, code cells, text output, and PNG image outputs.
@@ -54,19 +54,19 @@ It preserves frontmatter, markdown cells, code cells, text output, and PNG image
 `extract-docs` writes simple API notes from source comments:
 
 ```sh
-docsmint extract-docs src/ --lang py
-docsmint extract-docs src/ --lang ts
-docsmint extract-docs src/ --lang go
+tidypress extract-docs src/ --lang py
+tidypress extract-docs src/ --lang ts
+tidypress extract-docs src/ --lang go
 ```
 
 ## Help and init presets
 
 ```sh
-docsmint --help
-docsmint init --help
+tidypress --help
+tidypress init --help
 ```
 
-The Python wrapper prints init preset summaries (`lab`, `blog`, `persona`, `docs-writing`, `custom`) from the same metadata as `@docsmint/config`.
+The Python wrapper prints init preset summaries (`lab`, `blog`, `persona`, `docs-writing`, `custom`) from the same metadata as `@tidypress/config`.
 
 ## Streaming build and deploy
 
@@ -74,9 +74,9 @@ The Python wrapper prints init preset summaries (`lab`, `blog`, `persona`, `docs
 
 ## YAML bridge
 
-`docsmint.yaml` is validated against the shared JSON Schema shipped with `@docsmint/config` (bundled in this package under `docsmint/schemas/`).
+`tidypress.yaml` is validated against the shared JSON Schema shipped with `@tidypress/config` (bundled in this package under `tidypress/schemas/`).
 
-The wrapper supports reading `docsmint.yaml` / `docsmint.yml` and bridging command-scoped args from:
+The wrapper supports reading `tidypress.yaml` / `tidypress.yml` and bridging command-scoped args from:
 
 ```yaml
 python:
@@ -89,7 +89,7 @@ python:
 Use an explicit config when needed:
 
 ```sh
-docsmint convert --config ./docsmint.yaml
+tidypress convert --config ./tidypress.yaml
 ```
 
-Full docs: <https://usedocsmint.pages.dev/docs/python>
+Full docs: <https://tidypress.pages.dev/docs/python>

@@ -1,6 +1,6 @@
-import type { DocsMintCollectionKind } from '../registry/collection-kinds.js'
-import type { DocsMintHome, DocsMintListDisplay, DocsMintWritingEntryDisplay } from '../display/list-display.js'
-import type { DocsMintCollectionRender } from '../registry/collection-render.js'
+import type { TidyPressCollectionKind } from '../registry/collection-kinds.js'
+import type { TidyPressHome, TidyPressListDisplay, TidyPressWritingEntryDisplay } from '../display/list-display.js'
+import type { TidyPressCollectionRender } from '../registry/collection-render.js'
 
 export interface NavItem {
   label: string
@@ -53,40 +53,40 @@ export interface PageEntryObject {
 
 export type PageEntry = string | PageEntryObject
 
-export interface DocsMintRepository {
+export interface TidyPressRepository {
   url?: string
   editPath?: string
   branch?: string
 }
 
-export interface DocsMintSearch {
+export interface TidyPressSearch {
   exclude?: string[]
 }
 
-export interface DocsMintSection {
+export interface TidyPressSection {
   enabled?: boolean
   basePath?: string
 }
 
-export interface DocsMintSections {
-  docs?: DocsMintSection
-  writing?: DocsMintSection
+export interface TidyPressSections {
+  docs?: TidyPressSection
+  writing?: TidyPressSection
 }
 
-export interface DocsMintCollection extends DocsMintSection {
-  kind?: DocsMintCollectionKind
+export interface TidyPressCollection extends TidyPressSection {
+  kind?: TidyPressCollectionKind
   label?: string
   /** List/card layout for collection index and homepage previews. */
-  display?: DocsMintListDisplay
+  display?: TidyPressListDisplay
   /**
    * Custom collection rendering. Points at project-local presentation + view modules
    * (loaded on build/dev via the plugin manifest).
    */
-  render?: DocsMintCollectionRender
+  render?: TidyPressCollectionRender
 }
 
 /** Extension hooks declared in config for future engine releases. */
-export interface DocsMintRenderingExtensions {
+export interface TidyPressRenderingExtensions {
   /**
    * Register doc forms beyond built-in `doc` | `manual`.
    * Keys match `form` in docs collection frontmatter.
@@ -101,73 +101,73 @@ export interface DocsMintRenderingExtensions {
   >
 }
 
-export type DocsMintCollections = Record<string, DocsMintCollection>
+export type TidyPressCollections = Record<string, TidyPressCollection>
 
-export interface DocsMintWriting {
+export interface TidyPressWriting {
   description?: string
-  entry?: DocsMintWritingEntryDisplay
+  entry?: TidyPressWritingEntryDisplay
 }
 
 /** A named group of pages in the left sidebar. */
-export interface DocsMintDocsSidebarGroup {
+export interface TidyPressDocsSidebarGroup {
   /** Optional heading shown above this group of links. */
   label?: string
   /** Slugs of docs entries, relative to the collection base (e.g. `'getting-started'`). */
   items: string[]
 }
 
-export const docsMintDocsPagingMode = {
+export const tidyPressDocsPagingMode = {
   top: 'top',
   bottom: 'bottom',
   none: 'none',
 } as const
 
-export const docsMintDocsPagingModes = [
-  docsMintDocsPagingMode.top,
-  docsMintDocsPagingMode.bottom,
-  docsMintDocsPagingMode.none,
+export const tidyPressDocsPagingModes = [
+  tidyPressDocsPagingMode.top,
+  tidyPressDocsPagingMode.bottom,
+  tidyPressDocsPagingMode.none,
 ] as const
 
-export type DocsMintDocsPagingMode = (typeof docsMintDocsPagingModes)[number]
-export type DocsMintDocsPaging = boolean | DocsMintDocsPagingMode
+export type TidyPressDocsPagingMode = (typeof tidyPressDocsPagingModes)[number]
+export type TidyPressDocsPaging = boolean | TidyPressDocsPagingMode
 
 /**
  * Configuration for the docs section — sidebar layout, etc.
  * Applied to the built-in `docs` collection.
  */
-export interface DocsMintDocs {
+export interface TidyPressDocs {
   /**
    * Explicit sidebar groups. When set, the sidebar renders these groups in order
    * with optional section labels, replacing the automatic folder-based grouping.
    * Slugs are relative to the collection base, e.g. `'getting-started'`, `'v1/overview'`.
    */
-  sidebar?: DocsMintDocsSidebarGroup[]
+  sidebar?: TidyPressDocsSidebarGroup[]
   /**
    * Previous/next chapter navigation placement for docs pages.
    * Omit or set `true` to render above and below content, `false`/`'none'` to hide,
    * or `'top'`/`'bottom'` to render once.
    */
-  paging?: DocsMintDocsPaging
+  paging?: TidyPressDocsPaging
 }
 
 /** Resolved scales: 'small' | 'medium' | 'large'. 'default' and 'extra' are accepted aliases. */
-export type DocsMintTypographyScale = 'small' | 'medium' | 'large' | 'extra' | 'default'
+export type TidyPressTypographyScale = 'small' | 'medium' | 'large' | 'extra' | 'default'
 
-export interface DocsMintTypography {
-  scale?: DocsMintTypographyScale
+export interface TidyPressTypography {
+  scale?: TidyPressTypographyScale
 }
 
-export type DocsMintThemeMode = 'guardrailed' | 'custom'
-export type DocsMintThemePreset = 'baseline'
-export type DocsMintThemeTokenName = 'bg' | 'fg' | 'muted' | 'border' | 'surface' | 'codeBg' | 'codeFg'
-export type DocsMintThemeTokenSurface = Record<DocsMintThemeTokenName, string>
+export type TidyPressThemeMode = 'guardrailed' | 'custom'
+export type TidyPressThemePreset = 'baseline'
+export type TidyPressThemeTokenName = 'bg' | 'fg' | 'muted' | 'border' | 'surface' | 'codeBg' | 'codeFg'
+export type TidyPressThemeTokenSurface = Record<TidyPressThemeTokenName, string>
 
-export interface DocsMintThemeTokens {
-  light: Partial<DocsMintThemeTokenSurface>
-  dark: Partial<DocsMintThemeTokenSurface>
+export interface TidyPressThemeTokens {
+  light: Partial<TidyPressThemeTokenSurface>
+  dark: Partial<TidyPressThemeTokenSurface>
 }
 
-export const docsMintCodeThemePresets = [
+export const tidyPressCodeThemePresets = [
   'claude',
   'jetbrains',
   'github',
@@ -176,43 +176,43 @@ export const docsMintCodeThemePresets = [
   'nord',
 ] as const
 
-export type DocsMintCodeThemePreset = (typeof docsMintCodeThemePresets)[number]
+export type TidyPressCodeThemePreset = (typeof tidyPressCodeThemePresets)[number]
 
-export interface DocsMintCodeTheme {
+export interface TidyPressCodeTheme {
   /**
    * Syntax-highlighting palette preset for fenced code blocks.
    * - `claude`: opinionated balanced contrast (default)
    * - `jetbrains`: IntelliJ-like vibrant palette
    * - `github`: conservative GitHub style
    */
-  preset?: DocsMintCodeThemePreset
+  preset?: TidyPressCodeThemePreset
 }
 
-export interface DocsMintTheme {
-  mode?: DocsMintThemeMode
-  preset?: DocsMintThemePreset
-  tokens?: DocsMintThemeTokens
-  code?: DocsMintCodeTheme
+export interface TidyPressTheme {
+  mode?: TidyPressThemeMode
+  preset?: TidyPressThemePreset
+  tokens?: TidyPressThemeTokens
+  code?: TidyPressCodeTheme
 }
 
-export interface DocsMintAnalytics {
+export interface TidyPressAnalytics {
   type?: 'none' | 'plausible' | 'fathom' | 'umami'
   endpoint?: string
   siteId?: string
 }
 
-export interface DocsMintVersion {
+export interface TidyPressVersion {
   label: string
   path: string
 }
 
-export interface DocsMintI18n {
+export interface TidyPressI18n {
   defaultLocale?: string
   locales?: string[]
-  strings?: Record<string, DocsMintI18nStrings>
+  strings?: Record<string, TidyPressI18nStrings>
 }
 
-export interface DocsMintI18nStrings {
+export interface TidyPressI18nStrings {
   docsLabel?: string
   writingLabel?: string
   moreLabel?: string
@@ -238,13 +238,13 @@ export interface DocsMintI18nStrings {
   manualFormBadgeLabel?: string
 }
 
-export interface DocsMintExperimental {
+export interface TidyPressExperimental {
   editor?: boolean
   export?: boolean
   ai?: boolean
 }
 
-export type DocsMintCapabilityName =
+export type TidyPressCapabilityName =
   | 'docs'
   | 'writing'
   | 'pages'
@@ -254,12 +254,12 @@ export type DocsMintCapabilityName =
   | 'theming'
   | 'themingCustom'
 
-export interface DocsMintCapabilities {
-  enable?: DocsMintCapabilityName[]
-  disable?: DocsMintCapabilityName[]
+export interface TidyPressCapabilities {
+  enable?: TidyPressCapabilityName[]
+  disable?: TidyPressCapabilityName[]
 }
 
-export interface DocsMintBranding {
+export interface TidyPressBranding {
   /**
    * Monochrome SVG path used beside site name in UI (home title and nav brand).
    * Example: '/favicon.svg'
@@ -271,13 +271,13 @@ export interface DocsMintBranding {
   favicon?: string
 }
 
-export interface DocsMintHeroLink {
+export interface TidyPressHeroLink {
   label: string
   href: string
   external?: boolean
 }
 
-export interface DocsMintHero {
+export interface TidyPressHero {
   /** Opt-in home hero bar (role, pronunciation, lead, links). Default: false. */
   enabled?: boolean
   role?: string
@@ -285,34 +285,34 @@ export interface DocsMintHero {
   lead?: string
   /** Public image path (for example `/images/portrait.jpg`) or absolute URL. */
   image?: string
-  links?: DocsMintHeroLink[]
+  links?: TidyPressHeroLink[]
 }
 
-export interface DocsMintConfig {
+export interface TidyPressConfig {
   name: string
   description?: string
-  hero?: DocsMintHero
-  home?: DocsMintHome
-  analytics?: DocsMintAnalytics
-  versions?: DocsMintVersion[]
-  i18n?: DocsMintI18n
-  experimental?: DocsMintExperimental
-  capabilities?: DocsMintCapabilities
-  writing?: DocsMintWriting
-  docs?: DocsMintDocs
-  typography?: DocsMintTypography
-  theme?: DocsMintTheme
-  branding?: DocsMintBranding
+  hero?: TidyPressHero
+  home?: TidyPressHome
+  analytics?: TidyPressAnalytics
+  versions?: TidyPressVersion[]
+  i18n?: TidyPressI18n
+  experimental?: TidyPressExperimental
+  capabilities?: TidyPressCapabilities
+  writing?: TidyPressWriting
+  docs?: TidyPressDocs
+  typography?: TidyPressTypography
+  theme?: TidyPressTheme
+  branding?: TidyPressBranding
   pages?: PageEntry[]
   nav?: NavItem[]
   footer?: FooterItem[]
   siteUrl?: string
-  repository?: DocsMintRepository
-  search?: DocsMintSearch
-  collections?: DocsMintCollections
+  repository?: TidyPressRepository
+  search?: TidyPressSearch
+  collections?: TidyPressCollections
   /** Rendering extension registry (`docForms` loaded at build/dev). */
-  extensions?: DocsMintRenderingExtensions
-  sections?: DocsMintSections
+  extensions?: TidyPressRenderingExtensions
+  sections?: TidyPressSections
   dateFormat?: Intl.DateTimeFormatOptions
   dateLocale?: string
   navPolicy?: {

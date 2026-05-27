@@ -1,4 +1,4 @@
-import type { DocsMintConfig, DocsMintVersion } from '@docsmint/config'
+import type { TidyPressConfig, TidyPressVersion } from '@tidypress/config'
 import { resolveLocale, stripLocalePrefix, withLocalePrefix } from '@/i18n/locale'
 import { getCollectionBasePath, getCollectionEntrySlug } from '@/utils/collections'
 import {
@@ -19,7 +19,7 @@ function stripKnownLocalePrefix(slug: string, locales: string[]): string {
   return slug
 }
 
-function entrySupportsDocSlug(entry: EntryLike, slug: string, locale: string | undefined, site: DocsMintConfig): boolean {
+function entrySupportsDocSlug(entry: EntryLike, slug: string, locale: string | undefined, site: TidyPressConfig): boolean {
   const locales = site.i18n?.locales?.filter(Boolean) ?? []
   const defaultLocale = site.i18n?.defaultLocale ?? locales[0] ?? 'en'
   const entrySlug = getCollectionEntrySlug(entry.id)
@@ -31,11 +31,11 @@ function entrySupportsDocSlug(entry: EntryLike, slug: string, locale: string | u
   return entrySlug === `${locale}/${slug}` || entrySlug === slug
 }
 
-function hasDocSlug(entries: EntryLike[], slug: string, locale: string | undefined, site: DocsMintConfig): boolean {
+function hasDocSlug(entries: EntryLike[], slug: string, locale: string | undefined, site: TidyPressConfig): boolean {
   return entries.some(entry => entrySupportsDocSlug(entry, slug, locale, site))
 }
 
-export function switchLocaleTarget(pathname: string, targetLocale: string, site: DocsMintConfig): string {
+export function switchLocaleTarget(pathname: string, targetLocale: string, site: TidyPressConfig): string {
   const localeState = resolveLocale(pathname, site.i18n)
   const basePath = stripLocalePrefix(pathname, localeState.activeLocale)
   if (targetLocale === localeState.defaultLocale) {
@@ -44,7 +44,7 @@ export function switchLocaleTarget(pathname: string, targetLocale: string, site:
   return withLocalePrefix(basePath, targetLocale)
 }
 
-export function isDocsPath(pathname: string, site: DocsMintConfig): boolean {
+export function isDocsPath(pathname: string, site: TidyPressConfig): boolean {
   const localeState = resolveLocale(pathname, site.i18n)
   const docsBasePath = getCollectionBasePath(site, 'docs')
   const localizedDocsBase = withLocalePrefix(docsBasePath, localeState.activeLocale)
@@ -54,11 +54,11 @@ export function isDocsPath(pathname: string, site: DocsMintConfig): boolean {
 }
 
 export function versionSelectorState(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   pathname: string,
   entries: EntryLike[],
 ): {
-  versions: DocsMintVersion[]
+  versions: TidyPressVersion[]
   docsBasePath: string
   selectedPath?: string
   targets: Record<string, string>

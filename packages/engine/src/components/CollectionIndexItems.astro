@@ -1,12 +1,12 @@
 ---
 import {
-  docsMintCollectionIndexPresentation,
+  tidyPressCollectionIndexPresentation,
   isCardListLayout,
   listGapStackClass,
   listLayoutPresentation,
   resolveEntryLinkAttributes,
   type ResolvedListDisplay,
-} from '@docsmint/config'
+} from '@tidypress/config'
 import TagList from '@/components/TagList.astro'
 import type { IndexEntryPreview } from '@/collections/bundle'
 
@@ -19,7 +19,7 @@ const { entries, display } = Astro.props
 const stackClass = listGapStackClass(display.gap)
 const cardPresentation = listLayoutPresentation('card')
 const listPresentation = listLayoutPresentation('list')
-const indexPresentation = docsMintCollectionIndexPresentation
+const indexPresentation = tidyPressCollectionIndexPresentation
 ---
 {isCardListLayout(display.layout) ? (
   <div class:list={[cardPresentation.containerClass, stackClass]}>

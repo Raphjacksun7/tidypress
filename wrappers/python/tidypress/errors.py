@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 
-class DocsMintError(Exception):
+class TidyPressError(Exception):
     """User-facing wrapper error with optional code and hint."""
 
-    def __init__(self, message: str, code: str = "DOCSMINT_ERROR", hint: str | None = None) -> None:
+    def __init__(self, message: str, code: str = "TIDYPRESS_ERROR", hint: str | None = None) -> None:
         super().__init__(message)
         self.code = code
         self.hint = hint

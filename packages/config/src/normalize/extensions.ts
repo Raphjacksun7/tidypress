@@ -1,8 +1,8 @@
-import { formatDocsMintDocForms, isDocsMintDocForm } from '../registry/doc-forms.js'
+import { formatTidyPressDocForms, isTidyPressDocForm } from '../registry/doc-forms.js'
 import { validateCollectionRender } from '../registry/collection-render.js'
-import type { DocsMintConfig } from '../schema/index.js'
+import type { TidyPressConfig } from '../schema/index.js'
 
-export function validateRenderingExtensions(extensions: DocsMintConfig['extensions']): void {
+export function validateRenderingExtensions(extensions: TidyPressConfig['extensions']): void {
   const docForms = extensions?.docForms
   if (!docForms) {
     return
@@ -13,9 +13,9 @@ export function validateRenderingExtensions(extensions: DocsMintConfig['extensio
         `extensions.docForms keys must be lowercase identifiers (got "${formKey}").`,
       )
     }
-    if (isDocsMintDocForm(formKey)) {
+    if (isTidyPressDocForm(formKey)) {
       throw new Error(
-        `extensions.docForms.${formKey} is reserved. Built-in forms are: ${formatDocsMintDocForms()}.`,
+        `extensions.docForms.${formKey} is reserved. Built-in forms are: ${formatTidyPressDocForms()}.`,
       )
     }
     validateCollectionRender(`extensions.docForms.${formKey}`, descriptor)

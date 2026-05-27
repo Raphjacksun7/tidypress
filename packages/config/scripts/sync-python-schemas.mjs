@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const sourceDir = path.join(root, 'src', 'schemas')
-const targetDir = path.join(root, '..', '..', 'wrappers', 'python', 'docsmint', 'schemas')
+const targetDir = path.join(root, '..', '..', 'wrappers', 'python', 'tidypress', 'schemas')
 
 fs.mkdirSync(targetDir, { recursive: true })
 for (const fileName of fs.readdirSync(sourceDir)) {

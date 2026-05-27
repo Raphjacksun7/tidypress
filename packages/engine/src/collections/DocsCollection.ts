@@ -1,10 +1,10 @@
 import {
-  docsMintDocsPagingMode,
-  isDocsMintDocForm,
-  type DocsMintConfig,
-  type DocsMintDocForm,
-  type DocsMintDocsPaging,
-} from '@docsmint/config'
+  tidyPressDocsPagingMode,
+  isTidyPressDocForm,
+  type TidyPressConfig,
+  type TidyPressDocForm,
+  type TidyPressDocsPaging,
+} from '@tidypress/config'
 import { sortDocs } from '@/utils/sort'
 import {
   getCollectionBasePath,
@@ -24,23 +24,23 @@ type CollectionEntry = {
   title?: string
   form?: string
   part?: string
-  paging?: DocsMintDocsPaging
+  paging?: TidyPressDocsPaging
   search?: boolean
   description?: string
 }
 
-const MANUAL_DOC_FORM: DocsMintDocForm = 'manual'
+const MANUAL_DOC_FORM: TidyPressDocForm = 'manual'
 
-function readEntryDocForm(data: { form?: string }): DocsMintDocForm | undefined {
-  return isDocsMintDocForm(data.form) ? data.form : undefined
+function readEntryDocForm(data: { form?: string }): TidyPressDocForm | undefined {
+  return isTidyPressDocForm(data.form) ? data.form : undefined
 }
 
 function buildChapterNav(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   collectionKey: string,
   entries: EngineCollectionEntry<CollectionEntry>[],
   route: Pick<SiteRouteDefinition, 'entryId' | 'slug' | 'locale'>,
-  docForm: DocsMintDocForm | undefined,
+  docForm: TidyPressDocForm | undefined,
 ) {
   if (docForm === MANUAL_DOC_FORM) {
     return buildManualChapterNav(site, collectionKey, entries, route)
@@ -49,26 +49,26 @@ function buildChapterNav(
 }
 
 function resolveChapterNavVisibility(
-  site: DocsMintConfig,
-  entryPaging: DocsMintDocsPaging | undefined,
+  site: TidyPressConfig,
+  entryPaging: TidyPressDocsPaging | undefined,
 ): { top: boolean; bottom: boolean } {
   const value = entryPaging ?? site.docs?.paging
   if (value === undefined || value === true) {
     return { top: true, bottom: true }
   }
-  if (value === false || value === docsMintDocsPagingMode.none) {
+  if (value === false || value === tidyPressDocsPagingMode.none) {
     return { top: false, bottom: false }
   }
   return {
-    top: value === docsMintDocsPagingMode.top,
-    bottom: value === docsMintDocsPagingMode.bottom,
+    top: value === tidyPressDocsPagingMode.top,
+    bottom: value === tidyPressDocsPagingMode.bottom,
   }
 }
 
 export class DocsCollection implements ICollection {
   readonly presentationTarget = 'site-docs' as const
 
-  constructor(private readonly site: DocsMintConfig) {}
+  constructor(private readonly site: TidyPressConfig) {}
 
   async buildIndex(route: SiteRouteDefinition): Promise<RouteViewBundle> {
     const collectionKey = route.collectionKey!

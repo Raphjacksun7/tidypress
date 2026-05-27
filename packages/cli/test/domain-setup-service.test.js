@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 
-import { DocsMintError } from '../src/errors/DocsMintError.js'
+import { TidyPressError } from '../src/errors/TidyPressError.js'
 import { DomainSetupService } from '../src/services/DomainSetupService.js'
 
 function createConfigLoader(siteUrl) {
@@ -56,7 +56,7 @@ test('DomainSetupService errors when domain argument and config siteUrl are miss
       })
     },
     error => {
-      assert.ok(error instanceof DocsMintError)
+      assert.ok(error instanceof TidyPressError)
       assert.equal(error.code, 'INVALID_DOMAIN_VALUE')
       assert.equal(error.exitCode, 2)
       return true
@@ -75,7 +75,7 @@ test('DomainSetupService rejects invalid domains', async () => {
       })
     },
     error => {
-      assert.ok(error instanceof DocsMintError)
+      assert.ok(error instanceof TidyPressError)
       assert.equal(error.code, 'INVALID_DOMAIN_VALUE')
       assert.equal(error.exitCode, 2)
       return true
@@ -94,7 +94,7 @@ test('DomainSetupService rejects unsupported platforms', async () => {
       })
     },
     error => {
-      assert.ok(error instanceof DocsMintError)
+      assert.ok(error instanceof TidyPressError)
       assert.equal(error.code, 'INVALID_DOMAIN_PLATFORM')
       assert.equal(error.exitCode, 2)
       return true

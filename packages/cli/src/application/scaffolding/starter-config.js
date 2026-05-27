@@ -1,4 +1,4 @@
-import { pickHeroConfigFields } from '@docsmint/config'
+import { pickHeroConfigFields } from '@tidypress/config'
 
 const DEFAULT_HOME_PREVIEW_LIMIT = 5
 const DEFAULT_SITE_URL = 'https://example.com'

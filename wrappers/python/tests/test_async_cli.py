@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from docsmint.async_cli import run_cli_async, strip_cli_mode_flags
+from tidypress.async_cli import run_cli_async, strip_cli_mode_flags
 
 
 def test_strip_cli_mode_flags_defaults_build_to_streaming() -> None:
@@ -32,13 +32,13 @@ def test_run_cli_async_invokes_node(monkeypatch: pytest.MonkeyPatch) -> None:
         calls.append(list(cmd))
         return FakeProcess()
 
-    monkeypatch.setenv("DOCSMINT_USE_NPX", "0")
+    monkeypatch.setenv("TIDYPRESS_USE_NPX", "0")
     monkeypatch.setattr(
-        "docsmint.async_cli.resolve_runtime",
-        lambda: type("Paths", (), {"node": "node", "cli_js": Path("/tmp/docsmint.js"), "cli_exe": None})(),
+        "tidypress.async_cli.resolve_runtime",
+        lambda: type("Paths", (), {"node": "node", "cli_js": Path("/tmp/tidypress.js"), "cli_exe": None})(),
     )
-    monkeypatch.setattr("docsmint.async_cli.asyncio.create_subprocess_exec", fake_exec)
+    monkeypatch.setattr("tidypress.async_cli.asyncio.create_subprocess_exec", fake_exec)
 
     code = asyncio.run(run_cli_async(["build"]))
     assert code == 0
-    assert calls == [["node", "/tmp/docsmint.js", "build"]]
+    assert calls == [["node", "/tmp/tidypress.js", "build"]]

@@ -31,7 +31,7 @@ export interface RoutePolicy {
 }
 
 export interface CollectionRouteContext {
-  site: import('@docsmint/config').DocsMintConfig
+  site: import('@tidypress/config').TidyPressConfig
   collection: CollectionDefinition
   entries: Array<{ id: string; data: Record<string, unknown> }>
   locales: string[]

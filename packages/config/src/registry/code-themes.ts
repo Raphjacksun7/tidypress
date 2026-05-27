@@ -1,12 +1,12 @@
-import { docsMintCodeThemePresets, type DocsMintCodeThemePreset } from '../schema/index.js'
+import { tidyPressCodeThemePresets, type TidyPressCodeThemePreset } from '../schema/index.js'
 
-export interface DocsMintCodeThemeDescriptor {
-  preset: DocsMintCodeThemePreset
+export interface TidyPressCodeThemeDescriptor {
+  preset: TidyPressCodeThemePreset
   label: string
   shikiTheme: string
 }
 
-export const docsMintCodeThemeRegistry: Record<DocsMintCodeThemePreset, DocsMintCodeThemeDescriptor> = {
+export const tidyPressCodeThemeRegistry: Record<TidyPressCodeThemePreset, TidyPressCodeThemeDescriptor> = {
   claude: {
     preset: 'claude',
     label: 'Claude (balanced dark)',
@@ -39,10 +39,10 @@ export const docsMintCodeThemeRegistry: Record<DocsMintCodeThemePreset, DocsMint
   },
 }
 
-export function resolveCodeThemePreset(preset: DocsMintCodeThemePreset): DocsMintCodeThemeDescriptor {
-  return docsMintCodeThemeRegistry[preset]
+export function resolveCodeThemePreset(preset: TidyPressCodeThemePreset): TidyPressCodeThemeDescriptor {
+  return tidyPressCodeThemeRegistry[preset]
 }
 
-export function isDocsMintCodeThemePreset(value: string): value is DocsMintCodeThemePreset {
-  return docsMintCodeThemePresets.includes(value as DocsMintCodeThemePreset)
+export function isTidyPressCodeThemePreset(value: string): value is TidyPressCodeThemePreset {
+  return tidyPressCodeThemePresets.includes(value as TidyPressCodeThemePreset)
 }

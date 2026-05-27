@@ -1,4 +1,4 @@
-import type { DocsMintConfig } from '@docsmint/config'
+import type { TidyPressConfig } from '@tidypress/config'
 import { getCollectionEntrySlug, getLocalizedCollectionEntryPath } from '@/utils/collections'
 import type { DocChapterNav, DocChapterNavLink } from '@/routing/chapter-nav'
 
@@ -11,7 +11,7 @@ type WritingEntry = {
 }
 
 function entryHref(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   collectionKey: string,
   entry: WritingEntry,
   locale?: string,
@@ -32,7 +32,7 @@ function matchesEntry(
 }
 
 export function buildWritingChapterNav(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   collectionKey: string,
   entries: WritingEntry[],
   route: { entryId?: string; slug?: string; locale?: string },

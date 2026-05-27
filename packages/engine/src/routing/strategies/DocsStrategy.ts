@@ -1,4 +1,4 @@
-import { isDocsCollectionKey } from '@docsmint/config'
+import { isDocsCollectionKey } from '@tidypress/config'
 import type { ICollectionRouteStrategy, CollectionRouteContext, SiteRouteDefinition } from '@/routing/types'
 import { buildDocsRouteMatrix } from '@/routing/docs-route-matrix'
 

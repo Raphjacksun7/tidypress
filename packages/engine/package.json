@@ -1,6 +1,6 @@
 {
-  "name": "@docsmint/engine",
-  "version": "1.0.7",
+  "name": "@tidypress/engine",
+  "version": "1.0.8",
   "packageManager": "pnpm@10.4.1",
   "type": "module",
   "files": [
@@ -10,12 +10,12 @@
     "integration",
     "astro.config.mjs",
     "tsconfig.json",
-    "docsmint.config.ts"
+    "tidypress.config.ts"
   ],
   "exports": {
     "./package.json": "./package.json",
     "./plugins": "./src/plugins/contracts.ts",
-    "./integration/docsmint.mjs": "./integration/docsmint.mjs"
+    "./integration/tidypress.mjs": "./integration/tidypress.mjs"
   },
   "scripts": {
     "dev": "astro dev",
@@ -31,7 +31,7 @@
   "dependencies": {
     "@astrojs/mdx": "5.0.4",
     "@astrojs/sitemap": "3.7.2",
-    "@docsmint/config": "workspace:*",
+    "@tidypress/config": "workspace:*",
     "@tailwindcss/vite": "4.2.4",
     "astro": "6.2.2",
     "jiti": "2.6.1",

@@ -11,20 +11,20 @@ Components are available in `.mdx` files without imports.
 Notes, warnings, tips, and pull quotes.
 
 ```mdx
-<Callout>The config file lives at `docs/docsmint.config.ts`.</Callout>
+<Callout>The config file lives at `docs/tidypress.config.ts`.</Callout>
 
 <Callout type="warning">Do not commit `docs/build/` — it is generated. Deploy it, do not treat it as source.</Callout>
 
-<Callout type="tip">Run `docsmint clean` if a build looks stale after upgrading DocsMint.</Callout>
+<Callout type="tip">Run `tidypress clean` if a build looks stale after upgrading TidyPress.</Callout>
 
 <Callout type="quote">The canonical copy lives in git, not in an export workflow.</Callout>
 ```
 
-<Callout>The config file lives at `docs/docsmint.config.ts`.</Callout>
+<Callout>The config file lives at `docs/tidypress.config.ts`.</Callout>
 
 <Callout type="warning">Do not commit `docs/build/` — it is generated. Deploy it, do not treat it as source.</Callout>
 
-<Callout type="tip">Run `docsmint clean` if a build looks stale after upgrading DocsMint.</Callout>
+<Callout type="tip">Run `tidypress clean` if a build looks stale after upgrading TidyPress.</Callout>
 
 <Callout type="quote">The canonical copy lives in git, not in an export workflow.</Callout>
 
@@ -40,12 +40,12 @@ Alternate commands or examples.
 <Tabs labels={["npm", "pnpm"]}>
 <Tab>
 ```bash
-npm install -g docsmint
+npm install -g tidypress
 ```
 </Tab>
 <Tab>
 ```bash
-pnpm add -g docsmint
+pnpm add -g tidypress
 ```
 </Tab>
 </Tabs>
@@ -54,12 +54,12 @@ pnpm add -g docsmint
 <Tabs labels={["npm", "pnpm"]}>
 <Tab>
 ```bash
-npm install -g docsmint
+npm install -g tidypress
 ```
 </Tab>
 <Tab>
 ```bash
-pnpm add -g docsmint
+pnpm add -g tidypress
 ```
 </Tab>
 </Tabs>
@@ -77,7 +77,7 @@ Project structure. Folders collapse on click. Wrap important files in `**` to hi
 ```mdx
 <FileTree>
 - docs/
-  - **docsmint.config.ts**
+  - **tidypress.config.ts**
   - public/
     - images/
   - src/
@@ -91,7 +91,7 @@ Project structure. Folders collapse on click. Wrap important files in `**` to hi
 
 <FileTree>
 - docs/
-  - **docsmint.config.ts**
+  - **tidypress.config.ts**
   - public/
     - images/
   - src/
@@ -111,7 +111,7 @@ Mermaid diagrams.
 ```mdx
 <Mermaid code={`
 flowchart LR
-  Markdown[Markdown files] --> Build[docsmint build]
+  Markdown[Markdown files] --> Build[tidypress build]
   Build --> Static[Static site]
   Static --> Host[Static host]
 `} />
@@ -121,7 +121,7 @@ flowchart LR
 
 <Mermaid code={`
 flowchart LR
-  Markdown[Markdown files] --> Build[docsmint build]
+  Markdown[Markdown files] --> Build[tidypress build]
   Build --> Static[Static site]
   Static --> Host[Static host]
 `} />
@@ -162,10 +162,10 @@ Same file with markdown:
 Short inline definitions.
 
 ```mdx
-The <Tooltip tip="Static HTML and search land in docs/build/ after docsmint build.">build folder</Tooltip> is regenerated on each build.
+The <Tooltip tip="Static HTML and search land in docs/build/ after tidypress build.">build folder</Tooltip> is regenerated on each build.
 ```
 
-The <Tooltip tip="Static HTML and search land in docs/build/ after docsmint build.">build folder</Tooltip> is regenerated on each build.
+The <Tooltip tip="Static HTML and search land in docs/build/ after tidypress build.">build folder</Tooltip> is regenerated on each build.
 
 | Prop | Type | Required |
 |------|------|----------|
@@ -181,7 +181,7 @@ Numbered procedural blocks in MDX. Manual pages use the same components with man
     Add markdown under `docs/src/content/docs/`.
   </Step>
   <Step title="Preview locally">
-    Run `docsmint dev`.
+    Run `tidypress dev`.
   </Step>
 </Steps>
 ```
@@ -191,7 +191,7 @@ Numbered procedural blocks in MDX. Manual pages use the same components with man
     Add markdown under `docs/src/content/docs/`.
   </Step>
   <Step title="Preview locally">
-    Run `docsmint dev`.
+    Run `tidypress dev`.
   </Step>
 </Steps>
 

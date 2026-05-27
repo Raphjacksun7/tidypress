@@ -11,9 +11,9 @@ test('minimal example includes runnable quickstart scripts', async () => {
   const packageJsonRaw = await fs.readFile(path.join(minimalExampleRoot, 'package.json'), 'utf8')
   const packageJson = JSON.parse(packageJsonRaw)
 
-  assert.equal(packageJson.scripts?.build, 'docsmint build')
-  assert.equal(packageJson.scripts?.dev, 'docsmint dev')
-  assert.equal(packageJson.scripts?.preview, 'docsmint preview')
+  assert.equal(packageJson.scripts?.build, 'tidypress build')
+  assert.equal(packageJson.scripts?.dev, 'tidypress dev')
+  assert.equal(packageJson.scripts?.preview, 'tidypress preview')
 })
 
 test('minimal example quickstart docs mention 90-second path', async () => {
@@ -23,7 +23,7 @@ test('minimal example quickstart docs mention 90-second path', async () => {
 
 test('minimal example keeps required docs scaffold files', async () => {
   const requiredFiles = [
-    'docs/docsmint.config.ts',
+    'docs/tidypress.config.ts',
     'docs/src/content/docs/getting-started.md',
     'docs/src/content/writing/hello.md',
   ]

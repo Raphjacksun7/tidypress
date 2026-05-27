@@ -1,6 +1,6 @@
 export default {
   name: 'blog',
-  description: 'Minimal markdown site for fast writing and project showcase.',
+  description: 'A publishing framework for Git-native authorship.',
   nav: [{ label: 'writing', href: '/writing' }],
   home: {
     order: ['writing'],

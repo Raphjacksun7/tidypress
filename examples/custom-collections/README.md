@@ -9,7 +9,7 @@ Run from the repo root after `pnpm install`.
 ## Build
 
 ```sh
-pnpm --filter @docsmint/example-custom-collections build
+pnpm --filter @tidypress/example-custom-collections build
 ```
 
 Output:
@@ -24,4 +24,4 @@ Inspect:
 /playbooks
 ```
 
-Docs: <https://usedocsmint.pages.dev/docs/configuration>
+Docs: <https://tidypress.pages.dev/docs/configuration>

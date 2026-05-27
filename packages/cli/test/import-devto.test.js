@@ -38,10 +38,10 @@ test('fetchDevToArticle parses by_path response', async t => {
 })
 
 test('ImportService devto writes imported markdown file', async t => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-import-devto-'))
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-import-devto-'))
   await fs.mkdir(path.join(root, 'src/content/writing'), { recursive: true })
   await fs.writeFile(
-    path.join(root, 'docsmint.config.ts'),
+    path.join(root, 'tidypress.config.ts'),
     `export default { name: 'import-test', collections: { writing: { enabled: true, kind: 'writing' } } }`,
     'utf8',
   )

@@ -1,8 +1,8 @@
 import {
   isDocsCollectionKey,
-  isDocsMintCollectionKind,
-  type DocsMintConfig,
-} from '@docsmint/config'
+  isTidyPressCollectionKind,
+  type TidyPressConfig,
+} from '@tidypress/config'
 import type { ICollection } from '@/collections/ICollection'
 import { ContentCollection } from '@/collections/ContentCollection'
 import { DocsCollection } from '@/collections/DocsCollection'
@@ -39,7 +39,7 @@ export class BuiltinDelegateCollection implements ICollection {
 }
 
 export function createBuiltinDelegateCollection(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   collectionKey: string,
   dateFormatter: Intl.DateTimeFormat,
 ): ICollection | undefined {
@@ -47,7 +47,7 @@ export function createBuiltinDelegateCollection(
     return undefined
   }
   const kind = site.collections?.[collectionKey]?.kind
-  if (!isDocsMintCollectionKind(kind)) {
+  if (!isTidyPressCollectionKind(kind)) {
     return undefined
   }
   const inner =

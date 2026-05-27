@@ -11,7 +11,7 @@ published: false
 From your `docs/` folder:
 
 ```bash
-docsmint build
+tidypress build
 ```
 
 Output lands in `build/` under your docs directory (for example `docs/build/` or `apps/site/build/`). Every file is static — HTML, CSS, JS under `assets/`, and the Pagefind search index.
@@ -21,7 +21,7 @@ Output lands in `build/` under your docs directory (for example `docs/build/` or
 If you have stale artefacts:
 
 ```bash
-docsmint clean && docsmint build
+tidypress clean && tidypress build
 ```
 
 ## What gets built
@@ -34,7 +34,7 @@ docsmint clean && docsmint build
 ## Preview locally
 
 ```bash
-docsmint preview
+tidypress preview
 ```
 
 Serves the built output on [http://localhost:4321](http://localhost:4321) — identical to what your host will serve.

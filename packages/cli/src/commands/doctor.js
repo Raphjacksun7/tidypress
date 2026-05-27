@@ -1,5 +1,5 @@
 /**
- * Handles `docsmint doctor`.
+ * Handles `tidypress doctor`.
  */
 export class DoctorCommand {
   /**

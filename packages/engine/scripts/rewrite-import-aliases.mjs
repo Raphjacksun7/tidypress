@@ -26,7 +26,7 @@ function rewriteImportPath(filePath, specifier) {
     return specifier
   }
   const resolved = path.normalize(path.join(path.dirname(filePath), specifier))
-  const siteConfig = path.join(engineRoot, 'docsmint.config.ts')
+  const siteConfig = path.join(engineRoot, 'tidypress.config.ts')
   if (resolved === siteConfig) {
     return '@site-config'
   }

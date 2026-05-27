@@ -1,4 +1,4 @@
-import { docsMintDocFormRegistry, type DocsMintConfig } from '@docsmint/config'
+import { tidyPressDocFormRegistry, type TidyPressConfig } from '@tidypress/config'
 import {
   getCollectionBasePath,
   getCollectionEntrySlug,
@@ -26,7 +26,7 @@ type DocLikeEntry = {
 }
 
 function entryHref(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   collectionKey: string,
   entry: DocLikeEntry,
   locale?: string,
@@ -43,7 +43,7 @@ function matchesEntry(entry: DocLikeEntry, routeEntryId: string | undefined, rou
 }
 
 function resolveVersionPrefix(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   collectionKey: string,
   entrySlug: string,
 ): string | undefined {
@@ -68,7 +68,7 @@ function stripLocaleSegment(entry: DocLikeEntry, locale: string): string {
 }
 
 function entriesForRouteLocale(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   entries: DocLikeEntry[],
   locale: string | undefined,
 ): DocLikeEntry[] {
@@ -109,7 +109,7 @@ function displaySlugForSidebar(entry: DocLikeEntry, locale: string | undefined):
 }
 
 function sortChapterEntries(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   entries: DocLikeEntry[],
   locale: string | undefined,
 ): DocLikeEntry[] {
@@ -128,7 +128,7 @@ function sortChapterEntries(
 }
 
 function buildFormChapterNav(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   collectionKey: string,
   entries: DocLikeEntry[],
   route: { entryId?: string; slug?: string; locale?: string },
@@ -189,7 +189,7 @@ function buildFormChapterNav(
 }
 
 export function buildDocChapterNav(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   collectionKey: string,
   entries: DocLikeEntry[],
   route: { entryId?: string; slug?: string; locale?: string },
@@ -198,7 +198,7 @@ export function buildDocChapterNav(
 }
 
 export function buildManualChapterNav(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   collectionKey: string,
   entries: DocLikeEntry[],
   route: { entryId?: string; slug?: string; locale?: string },
@@ -206,9 +206,9 @@ export function buildManualChapterNav(
   return buildFormChapterNav(site, collectionKey, entries, route, 'manual')
 }
 
-export function docFormLabel(form: keyof typeof docsMintDocFormRegistry | undefined): string | undefined {
-  if (!form || !(form in docsMintDocFormRegistry)) {
+export function docFormLabel(form: keyof typeof tidyPressDocFormRegistry | undefined): string | undefined {
+  if (!form || !(form in tidyPressDocFormRegistry)) {
     return undefined
   }
-  return docsMintDocFormRegistry[form].label
+  return tidyPressDocFormRegistry[form].label
 }

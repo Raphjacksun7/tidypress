@@ -3,7 +3,7 @@ import { getConfig } from '@/config/getConfig'
 import { sortDocs } from '@/utils/sort'
 import { loadPublishedCollectionEntries } from '@/utils/collection-entries'
 import { localizeEntries, resolveLocale, withLocalePrefix } from '@/i18n/locale'
-import { collectionKindUsesDocsSidebar, isDocsMintCollectionKind, isDocsStarterKey } from '@docsmint/config'
+import { collectionKindUsesDocsSidebar, isTidyPressCollectionKind, isDocsStarterKey } from '@tidypress/config'
 import {
   getEnabledContentCollections,
   getLocalizedCollectionBasePath,
@@ -23,7 +23,7 @@ const docsCollections = getEnabledContentCollections(site)
   .filter(
     collection =>
       isDocsStarterKey(collection.key) ||
-      (isDocsMintCollectionKind(collection.kind) && collectionKindUsesDocsSidebar(collection.kind)),
+      (isTidyPressCollectionKind(collection.kind) && collectionKindUsesDocsSidebar(collection.kind)),
   )
   .map(collection => ({
     id: collection.key,

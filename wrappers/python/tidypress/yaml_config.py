@@ -6,15 +6,15 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
-from docsmint.errors import DocsMintError
-from docsmint.schema_validation import validate_docsmint_yaml
+from tidypress.errors import TidyPressError
+from tidypress.schema_validation import validate_tidypress_yaml
 
 try:
     import yaml
 except ModuleNotFoundError as exc:  # pragma: no cover - guarded by package dependency
-    raise RuntimeError("PyYAML is required for docsmint YAML config support.") from exc
+    raise RuntimeError("PyYAML is required for tidypress YAML config support.") from exc
 
-CONFIG_FILENAMES = ("docsmint.yaml", "docsmint.yml")
+CONFIG_FILENAMES = ("tidypress.yaml", "tidypress.yml")
 
 
 def _normalize_flag_name(name: str) -> str:
@@ -22,7 +22,7 @@ def _normalize_flag_name(name: str) -> str:
 
 
 def discover_yaml_config(start_dir: Path | None = None) -> Path | None:
-    """Find a docsmint YAML config by walking from cwd to root."""
+    """Find a tidypress YAML config by walking from cwd to root."""
     cursor = (start_dir or Path.cwd()).resolve()
     for directory in [cursor, *cursor.parents]:
         for file_name in CONFIG_FILENAMES:
@@ -38,13 +38,13 @@ def load_yaml_config(config_path: Path | str | None = None) -> tuple[Path | None
     if resolved is None:
         return None, {}
     if not resolved.is_file():
-        raise DocsMintError(f"Config file not found: {resolved}", code="CONFIG_NOT_FOUND")
+        raise TidyPressError(f"Config file not found: {resolved}", code="CONFIG_NOT_FOUND")
 
     text = resolved.read_text(encoding="utf-8")
     try:
         parsed = yaml.safe_load(text)
     except yaml.YAMLError as exc:
-        raise DocsMintError(
+        raise TidyPressError(
             f"Invalid YAML config: {resolved}",
             code="CONFIG_INVALID_YAML",
             hint=str(exc),
@@ -53,12 +53,12 @@ def load_yaml_config(config_path: Path | str | None = None) -> tuple[Path | None
     if parsed is None:
         return resolved, {}
     if not isinstance(parsed, dict):
-        raise DocsMintError(
+        raise TidyPressError(
             f"Expected YAML mapping at root: {resolved}",
             code="CONFIG_INVALID_SHAPE",
-            hint="The root of docsmint.yaml must be an object/map.",
+            hint="The root of tidypress.yaml must be an object/map.",
         )
-    validate_docsmint_yaml(parsed)
+    validate_tidypress_yaml(parsed)
     return resolved, parsed
 
 

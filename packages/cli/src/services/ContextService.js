@@ -1,6 +1,6 @@
 import path from 'node:path'
 
-import { withDefaults } from '@docsmint/config'
+import { withDefaults } from '@tidypress/config'
 import { writeContentSnapshot } from '../application/content/context-snapshot.js'
 
 /**
@@ -22,7 +22,7 @@ export class ContextService {
     const docsDir = await this.configLoader.resolveDocsDirectory({ projectRoot })
     const rawConfig = await this.configLoader.loadConfig({ docsDir })
     const config = withDefaults(rawConfig)
-    const resolvedOutput = outputPath ?? path.resolve(projectRoot, 'docsmint-context.md')
+    const resolvedOutput = outputPath ?? path.resolve(projectRoot, 'tidypress-context.md')
     const count = await writeContentSnapshot({
       docsDir,
       outputPath: resolvedOutput,

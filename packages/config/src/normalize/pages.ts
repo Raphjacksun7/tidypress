@@ -1,4 +1,4 @@
-import type { DocsMintConfig, PageEntry, PageEntryObject } from '../schema/index.js'
+import type { TidyPressConfig, PageEntry, PageEntryObject } from '../schema/index.js'
 import type { NavItem } from '../schema/index.js'
 
 const pageSlugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
@@ -9,8 +9,8 @@ export interface NormalizedPageEntry {
   navLabel?: string
 }
 
-function legacyCustomPages(config: DocsMintConfig): PageEntry[] {
-  const legacy = (config as DocsMintConfig & { extensions?: { customPages?: PageEntryObject[] } }).extensions
+function legacyCustomPages(config: TidyPressConfig): PageEntry[] {
+  const legacy = (config as TidyPressConfig & { extensions?: { customPages?: PageEntryObject[] } }).extensions
     ?.customPages
   return legacy ?? []
 }
@@ -41,7 +41,7 @@ export function normalizePages(pageEntries: PageEntry[]): NormalizedPageEntry[] 
   return normalized
 }
 
-export function collectPageEntries(config: DocsMintConfig): NormalizedPageEntry[] {
+export function collectPageEntries(config: TidyPressConfig): NormalizedPageEntry[] {
   return normalizePages([...(config.pages ?? []), ...legacyCustomPages(config)])
 }
 

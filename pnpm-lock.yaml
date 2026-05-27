@@ -14,49 +14,49 @@ importers:
 
   apps/site:
     dependencies:
-      docsmint:
+      tidypress:
         specifier: workspace:*
         version: link:../../packages/cli
 
   examples/blog:
     dependencies:
-      docsmint:
+      tidypress:
         specifier: workspace:*
         version: link:../../packages/cli
 
   examples/custom-collections:
     dependencies:
-      docsmint:
+      tidypress:
         specifier: workspace:*
         version: link:../../packages/cli
 
   examples/i18n-versioned:
     dependencies:
-      docsmint:
+      tidypress:
         specifier: workspace:*
         version: link:../../packages/cli
 
   examples/lab:
     dependencies:
-      docsmint:
+      tidypress:
         specifier: workspace:*
         version: link:../../packages/cli
 
   examples/minimal:
     dependencies:
-      docsmint:
+      tidypress:
         specifier: workspace:*
         version: link:../../packages/cli
 
   examples/persona:
     dependencies:
-      docsmint:
+      tidypress:
         specifier: workspace:*
         version: link:../../packages/cli
 
   packages/astro:
     dependencies:
-      '@docsmint/engine':
+      '@tidypress/engine':
         specifier: workspace:*
         version: link:../engine
       astro:
@@ -71,10 +71,10 @@ importers:
       '@astrojs/sitemap':
         specifier: 3.7.2
         version: 3.7.2
-      '@docsmint/config':
+      '@tidypress/config':
         specifier: workspace:*
         version: link:../config
-      '@docsmint/engine':
+      '@tidypress/engine':
         specifier: workspace:*
         version: link:../engine
       '@tailwindcss/vite':
@@ -128,7 +128,7 @@ importers:
       '@astrojs/sitemap':
         specifier: 3.7.2
         version: 3.7.2
-      '@docsmint/config':
+      '@tidypress/config':
         specifier: workspace:*
         version: link:../config
       '@tailwindcss/vite':

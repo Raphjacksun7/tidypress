@@ -11,7 +11,7 @@ Most sites do not need this page on day one. Add these settings when the default
 Configure locale-prefixed routes and UI labels:
 
 ```ts
-import { defineConfig } from 'docsmint/config'
+import { defineConfig } from 'tidypress/config'
 
 export default defineConfig({
   name: 'my-project',
@@ -43,7 +43,7 @@ docs/src/content/
     └── fr/hello.md
 ```
 
-If a non-default locale is missing a page, DocsMint falls back to the default-locale content for that route.
+If a non-default locale is missing a page, TidyPress falls back to the default-locale content for that route.
 
 ## UI strings
 
@@ -91,8 +91,8 @@ docs/src/content/docs/
 Scaffold a version:
 
 ```bash
-docsmint add-version 2.0
-docsmint add-version 2.0 --set-latest
+tidypress add-version 2.0
+tidypress add-version 2.0 --set-latest
 ```
 
 Configured versions appear in the docs right rail above the table of contents.
@@ -124,7 +124,7 @@ analytics: {
 }
 ```
 
-DocsMint renders the script tag with the configured endpoint and site id.
+TidyPress renders the script tag with the configured endpoint and site id.
 
 ## Capabilities
 
@@ -181,24 +181,24 @@ experimental: {
 ```
 
 ```bash
-docsmint ai suggest docs/draft.md --enable-experimental-ai
+tidypress ai suggest docs/draft.md --enable-experimental-ai
 ```
 
 These surfaces are guarded on purpose. They are not part of the default docs and writing workflow.
 
 ## Content snapshot
 
-`docsmint context` writes a compact markdown snapshot of published content:
+`tidypress context` writes a compact markdown snapshot of published content:
 
 ```bash
-docsmint context
-docsmint context ./docs-context.md
+tidypress context
+tidypress context ./docs-context.md
 ```
 
 Default output:
 
 ```txt
-docsmint-context.md
+tidypress-context.md
 ```
 
 The snapshot skips disabled collections, drafts, future-scheduled entries, and missing content folders. Enabled custom collections appear in the snapshot.

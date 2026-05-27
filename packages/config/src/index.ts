@@ -7,18 +7,18 @@ export { defineConfig }
 export { withDefaults }
 export { normalizeHero, heroHasRenderableContent } from './normalize/hero.js'
 export {
-  docsMintHeroScalarFields,
+  tidyPressHeroScalarFields,
   heroHasRenderableScalarField,
   heroHasRenderableLinks,
   pickHeroConfigFields,
-  type DocsMintHeroScalarField,
+  type TidyPressHeroScalarField,
 } from './registry/hero-fields.js'
 export {
-  docsMintCollectionMetaIndexSegments,
+  tidyPressCollectionMetaIndexSegments,
   collectionMetaIndexSlug,
   parseCollectionMetaIndexSlug,
   resolveCollectionMetaIndexTitle,
-  type DocsMintCollectionMetaIndexSegment,
+  type TidyPressCollectionMetaIndexSegment,
 } from './registry/collection-meta-index.js'
 export {
   PAGEFIND_COLLECTION_FILTER_KEY,
@@ -28,25 +28,25 @@ export {
 } from './search/pagefind.js'
 export {
   resolveSearchFilterCollections,
-  type DocsMintSearchFilterCollection,
+  type TidyPressSearchFilterCollection,
 } from './search/filter-collections.js'
 export {
   formatWritingImportMarkdown,
-  docsMintWritingImportFrontmatterFields,
-  type DocsMintWritingImportArticle,
+  tidyPressWritingImportFrontmatterFields,
+  type TidyPressWritingImportArticle,
 } from './content/writing-import.js'
 
 export {
-  docsMintInitPresets,
-  docsMintYamlSchema,
-  type DocsMintInitPresetDescriptor,
-  type DocsMintInitPresetsFile,
+  tidyPressInitPresets,
+  tidyPressYamlSchema,
+  type TidyPressInitPresetDescriptor,
+  type TidyPressInitPresetsFile,
 } from './yaml/schema-files.js'
 
 export {
-  validateDocsMintYaml,
-  type DocsMintYamlValidationIssue,
-  type DocsMintYamlValidationResult,
+  validateTidyPressYaml,
+  type TidyPressYamlValidationIssue,
+  type TidyPressYamlValidationResult,
 } from './yaml/validate.js'
 export { normalizeHome } from './normalize/home.js'
 export { normalizeFooterItems } from './normalize/footer.js'
@@ -64,45 +64,45 @@ export {
 export { buildNavigationModel }
 export { normalizePages, type NormalizedPageEntry }
 export {
-  docsMintCodeThemePresets,
-  docsMintDocsPagingMode,
-  docsMintDocsPagingModes,
+  tidyPressCodeThemePresets,
+  tidyPressDocsPagingMode,
+  tidyPressDocsPagingModes,
 } from './schema/index.js'
 
 export type {
-  DocsMintAnalytics,
-  DocsMintBranding,
-  DocsMintCapabilities,
-  DocsMintCapabilityName,
-  DocsMintCodeTheme,
-  DocsMintCodeThemePreset,
-  DocsMintCollectionKind,
-  DocsMintCollections,
-  DocsMintConfig,
-  DocsMintDocs,
-  DocsMintDocsPaging,
-  DocsMintDocsSidebarGroup,
-  DocsMintExperimental,
-  DocsMintHero,
-  DocsMintHeroLink,
-  DocsMintHome,
-  DocsMintI18n,
-  DocsMintI18nStrings,
-  DocsMintListDisplay,
-  DocsMintListGap,
-  DocsMintListLayout,
-  DocsMintRenderingExtensions,
-  DocsMintRepository,
-  DocsMintSearch,
-  DocsMintSections,
-  DocsMintTheme,
-  DocsMintThemeMode,
-  DocsMintThemePreset,
-  DocsMintThemeTokenName,
-  DocsMintThemeTokenSurface,
-  DocsMintTypography,
-  DocsMintVersion,
-  DocsMintWritingEntryDisplay,
+  TidyPressAnalytics,
+  TidyPressBranding,
+  TidyPressCapabilities,
+  TidyPressCapabilityName,
+  TidyPressCodeTheme,
+  TidyPressCodeThemePreset,
+  TidyPressCollectionKind,
+  TidyPressCollections,
+  TidyPressConfig,
+  TidyPressDocs,
+  TidyPressDocsPaging,
+  TidyPressDocsSidebarGroup,
+  TidyPressExperimental,
+  TidyPressHero,
+  TidyPressHeroLink,
+  TidyPressHome,
+  TidyPressI18n,
+  TidyPressI18nStrings,
+  TidyPressListDisplay,
+  TidyPressListGap,
+  TidyPressListLayout,
+  TidyPressRenderingExtensions,
+  TidyPressRepository,
+  TidyPressSearch,
+  TidyPressSections,
+  TidyPressTheme,
+  TidyPressThemeMode,
+  TidyPressThemePreset,
+  TidyPressThemeTokenName,
+  TidyPressThemeTokenSurface,
+  TidyPressTypography,
+  TidyPressVersion,
+  TidyPressWritingEntryDisplay,
   FooterItem,
   FooterItemIcon,
   NavItem,
@@ -111,10 +111,10 @@ export type {
 
 export {
   defaultListDisplay,
-  docsMintListGapRegistry,
-  docsMintCollectionIndexPresentation,
-  docsMintHomePreviewPresentation,
-  docsMintListLayoutRegistry,
+  tidyPressListGapRegistry,
+  tidyPressCollectionIndexPresentation,
+  tidyPressHomePreviewPresentation,
+  tidyPressListLayoutRegistry,
   isCardListLayout,
   listGapStackClass,
   listLayoutPresentation,
@@ -131,8 +131,8 @@ export {
   normalizeCapabilities,
   resolveCapabilities,
   resolveCapabilityFlags,
-  type DocsMintCapabilityDescriptor,
-  type DocsMintCapabilityKey,
+  type TidyPressCapabilityDescriptor,
+  type TidyPressCapabilityKey,
   type ResolveCapabilitiesOptions,
   type ResolvedCapabilityFlags,
   type ResolvedCapabilityMap,
@@ -157,10 +157,10 @@ export {
 } from './registry/legacy.js'
 
 export {
-  docsMintCollectionKindRegistry,
-  docsMintCollectionKinds,
-  isDocsMintCollectionKind,
-  formatDocsMintCollectionKinds,
+  tidyPressCollectionKindRegistry,
+  tidyPressCollectionKinds,
+  isTidyPressCollectionKind,
+  formatTidyPressCollectionKinds,
   collectionKindUsesDocsSidebar,
   collectionKindContentSchema,
   collectionKindShellLayout,
@@ -168,35 +168,35 @@ export {
   collectionKindModeRequiresRenderedEntry,
   resolveCollectionKind,
   defaultCollectionKind,
-  docsMintDocFormViewConfig,
+  tidyPressDocFormViewConfig,
   isPageCollectionKind,
   isSearchableCollectionKind,
   type CollectionRouteViewMode,
   type CollectionShellLayout,
-  type DocsMintCollectionContentSchema,
+  type TidyPressCollectionContentSchema,
 } from './registry/collection-kinds.js'
 
 export {
-  docsMintDocFormRegistry,
-  docsMintDocForms,
-  docsMintDocFormSchema,
-  defaultDocsMintDocForm,
-  isDocsMintDocForm,
-  formatDocsMintDocForms,
-  type DocsMintDocForm,
-  type DocsMintCustomDocFormDescriptor,
+  tidyPressDocFormRegistry,
+  tidyPressDocForms,
+  tidyPressDocFormSchema,
+  defaultTidyPressDocForm,
+  isTidyPressDocForm,
+  formatTidyPressDocForms,
+  type TidyPressDocForm,
+  type TidyPressCustomDocFormDescriptor,
 } from './registry/doc-forms.js'
 
 export {
-  docsMintCodeThemeRegistry,
-  isDocsMintCodeThemePreset,
+  tidyPressCodeThemeRegistry,
+  isTidyPressCodeThemePreset,
   resolveCodeThemePreset,
-  type DocsMintCodeThemeDescriptor,
+  type TidyPressCodeThemeDescriptor,
 } from './registry/code-themes.js'
 
 export {
   validateCollectionRender,
-  type DocsMintCollectionRender,
+  type TidyPressCollectionRender,
 } from './registry/collection-render.js'
 
 export {

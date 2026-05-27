@@ -1,16 +1,16 @@
 /**
  * Shared typed error for user-facing CLI failures.
  */
-export class DocsMintError extends Error {
+export class TidyPressError extends Error {
   /**
    * @param {string} message
    * @param {string} [code]
    * @param {string} [hint]
    * @param {{ cause?: unknown, exitCode?: number }} [options]
    */
-  constructor(message, code = 'DOCSMINT_ERROR', hint, options = {}) {
+  constructor(message, code = 'TIDYPRESS_ERROR', hint, options = {}) {
     super(message, options)
-    this.name = 'DocsMintError'
+    this.name = 'TidyPressError'
     this.code = code
     this.hint = hint
     this.exitCode = options.exitCode ?? 1

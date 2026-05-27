@@ -1,4 +1,4 @@
-import type { DocsMintCollections, DocsMintConfig } from '../schema/index.js'
+import type { TidyPressCollections, TidyPressConfig } from '../schema/index.js'
 import {
   getLegacySectionForCollection,
   inferStarterCollectionKind,
@@ -12,12 +12,12 @@ export interface SectionsMigrationOptions {
 
 export interface SectionsMigrationResult {
   migrated: boolean
-  config: DocsMintConfig
+  config: TidyPressConfig
   notes: string[]
 }
 
-function orderCollections(collections: DocsMintCollections): DocsMintCollections {
-  const orderedEntries: Array<[string, DocsMintCollections[string]]> = []
+function orderCollections(collections: TidyPressCollections): TidyPressCollections {
+  const orderedEntries: Array<[string, TidyPressCollections[string]]> = []
   const added = new Set<string>()
   for (const starter of starterCollectionKeys) {
     if (!collections[starter]) {
@@ -36,7 +36,7 @@ function orderCollections(collections: DocsMintCollections): DocsMintCollections
 }
 
 export function migrateSectionsToCollections(
-  config: DocsMintConfig,
+  config: TidyPressConfig,
   options: SectionsMigrationOptions = {},
 ): SectionsMigrationResult {
   const sections = config.sections
@@ -51,7 +51,7 @@ export function migrateSectionsToCollections(
 
   let touched = false
   const notes: string[] = []
-  const nextCollections: DocsMintCollections = {
+  const nextCollections: TidyPressCollections = {
     ...existingCollections,
   }
 
@@ -75,7 +75,7 @@ export function migrateSectionsToCollections(
   }
 
   const preserveSections = options.preserveSections === true
-  const nextConfig: DocsMintConfig = {
+  const nextConfig: TidyPressConfig = {
     ...config,
     collections: orderCollections(nextCollections),
     ...(preserveSections ? {} : { sections: undefined }),

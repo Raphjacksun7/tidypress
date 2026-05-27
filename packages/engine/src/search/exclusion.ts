@@ -1,4 +1,4 @@
-import type { DocsMintConfig } from '@docsmint/config'
+import type { TidyPressConfig } from '@tidypress/config'
 
 function patternToRegex(pattern: string): RegExp {
   const escaped = pattern
@@ -7,7 +7,7 @@ function patternToRegex(pattern: string): RegExp {
   return new RegExp(`^${escaped}$`)
 }
 
-export function isSearchExcluded(config: DocsMintConfig, pathValue: string): boolean {
+export function isSearchExcluded(config: TidyPressConfig, pathValue: string): boolean {
   const excludes = config.search?.exclude ?? []
   const normalizedPath = pathValue.replace(/^\/+/, '')
   return excludes.some(pattern => {

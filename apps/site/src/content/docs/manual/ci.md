@@ -4,7 +4,7 @@ description: Cache build inputs and upload only the static build/ artifact.
 order: 5
 ---
 
-DocsMint builds are deterministic static sites. In CI, cache compiler inputs and publish only `build/`.
+TidyPress builds are deterministic static sites. In CI, cache compiler inputs and publish only `build/`.
 
 ## What to upload
 
@@ -20,7 +20,7 @@ docs/build/          # or apps/site/build/ when config lives at project root
 
 Do not upload:
 
-- `~/.cache/docsmint/` (local compiler cache)
+- `~/.cache/tidypress/` (local compiler cache)
 - `node_modules/`
 
 ## GitHub Actions pattern
@@ -28,24 +28,28 @@ Do not upload:
 ```yaml
 - uses: actions/cache@v4
   with:
-    path: ~/.cache/docsmint
-    key: docsmint-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', '**/docsmint.config.ts', '**/src/content/**') }}
+    path: ~/.cache/tidypress
+    key: tidypress-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', '**/tidypress.config.ts', '**/src/content/**') }}
     restore-keys: |
-      docsmint-${{ runner.os }}-
+      tidypress-${{ runner.os }}-
 
-- run: npx docsmint build
+- run: npx tidypress build
 
-- uses: cloudflare/pages-action@v1
+- uses: cloudflare/wrangler-action@v3
   with:
-    directory: apps/site/build   # adjust to your docsDir/build
+    apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    command: pages deploy apps/site/build --project-name=tidypress --branch=main
 ```
 
-Set `CI=true` so DocsMint emits structured JSON build logs.
+Adjust `apps/site/build` to your docs output path (for example `docs/build`).
+
+Set `CI=true` so TidyPress emits structured JSON build logs.
 
 ## Environment variables
 
 | Variable | Purpose |
 |----------|---------|
 | `CI=true` | JSON structured logs from Astro |
-| `DOCSMINT_JSON_LOGS=1` | Force JSON logs locally |
-| `DOCSMINT_PROJECT_ROOT` | Set automatically by the CLI; required only when running Astro directly with `@docsmint/astro` |
+| `TIDYPRESS_JSON_LOGS=1` | Force JSON logs locally |
+| `TIDYPRESS_PROJECT_ROOT` | Set automatically by the CLI; required only when running Astro directly with `@tidypress/astro` |

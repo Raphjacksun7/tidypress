@@ -1,5 +1,5 @@
 /**
- * Handles `docsmint migrate-sections`.
+ * Handles `tidypress migrate-sections`.
  */
 export class MigrateSectionsCommand {
   /**

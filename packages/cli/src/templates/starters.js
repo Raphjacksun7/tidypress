@@ -15,7 +15,7 @@
  * }} StarterPreset
  */
 
-const SITE_DESCRIPTION = 'Minimal markdown site for fast writing and project showcase.'
+const SITE_DESCRIPTION = 'A publishing framework for Git-native authorship.'
 
 /** @type {Record<string, StarterPreset>} */
 export const STARTER_PRESETS = {
@@ -156,7 +156,7 @@ Reference material lives in the docs collection.
     hero: {
       enabled: true,
       role: 'Engineer',
-      lead: 'Short bio shown on the home page. Edit in docsmint.config.ts.',
+      lead: 'Short bio shown on the home page. Edit in tidypress.config.ts.',
       links: [
         { label: 'Email', href: 'mailto:you@example.com' },
         { label: 'GitHub', href: 'https://github.com/example', external: true },

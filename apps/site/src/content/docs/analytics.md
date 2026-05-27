@@ -56,4 +56,4 @@ analytics: {
 }
 ```
 
-DocsMint renders the script tag with the configured endpoint and site id.
+TidyPress renders the script tag with the configured endpoint and site id.

@@ -5,7 +5,7 @@ import os from 'node:os'
 import path from 'node:path'
 
 import { createProviderStrategies, createProviderStrategy } from '../src/deployment/ProviderDeployStrategies.js'
-import { DocsMintError } from '../src/errors/DocsMintError.js'
+import { TidyPressError } from '../src/errors/TidyPressError.js'
 
 const CLOUD_PROVIDER_CASES = [
   {
@@ -81,7 +81,7 @@ test('createProviderStrategies includes all cloud provider strategy ids', () => 
 })
 
 test('docker provider generates Docker deployment files in dist', async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-docker-provider-'))
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-docker-provider-'))
   const distDir = path.join(root, 'dist')
   await fs.mkdir(distDir, { recursive: true })
 
@@ -91,7 +91,7 @@ test('docker provider generates Docker deployment files in dist', async () => {
   const dockerfile = await fs.readFile(path.join(distDir, 'Dockerfile'), 'utf8')
   const compose = await fs.readFile(path.join(distDir, 'docker-compose.yml'), 'utf8')
   assert.match(dockerfile, /FROM nginx:alpine/)
-  assert.match(compose, /docsmint:/)
+  assert.match(compose, /tidypress:/)
 })
 
 test('static provider logs readiness without shell commands', async () => {
@@ -134,7 +134,7 @@ test('s3 provider requires a target when none is supplied', async () => {
       })
     },
     error => {
-      assert.ok(error instanceof DocsMintError)
+      assert.ok(error instanceof TidyPressError)
       assert.equal(error.code, 'DEPLOY_PROVIDER_TARGET_REQUIRED')
       return true
     },

@@ -1,13 +1,13 @@
-# @docsmint/config
+# @tidypress/config
 
-Internal config package for DocsMint.
+Internal config package for TidyPress.
 
-End users should install `docsmint`:
+End users should install `tidypress`:
 
 ```sh
-npm install docsmint
+npm install tidypress
 ```
 
-This package contains the typed config surface, defaults, normalization, and validation used by the CLI and engine. It is bundled into the public `docsmint` package.
+This package contains the typed config surface, defaults, normalization, and validation used by the CLI and engine. It is bundled into the public `tidypress` package.
 
-Documentation: <https://usedocsmint.pages.dev/docs/configuration>
+Documentation: <https://tidypress.pages.dev/docs/configuration>

@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import { DocsMintError } from '../errors/DocsMintError.js'
+import { TidyPressError } from '../errors/TidyPressError.js'
 
 const TEMPLATE_ENV = {
   vercel: ['VERCEL_TOKEN'],
@@ -11,8 +11,8 @@ const TEMPLATE_ENV = {
   cloudflare: ['CLOUDFLARE_API_TOKEN', 'CLOUDFLARE_ACCOUNT_ID'],
   docker: ['DOCKERHUB_USERNAME', 'DOCKERHUB_TOKEN'],
   static: [],
-  s3: ['AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'AWS_REGION', 'DOCSMINT_S3_TARGET'],
-  ssh: ['DOCSMINT_SSH_TARGET', 'SSH_PRIVATE_KEY'],
+  s3: ['AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'AWS_REGION', 'TIDYPRESS_S3_TARGET'],
+  ssh: ['TIDYPRESS_SSH_TARGET', 'SSH_PRIVATE_KEY'],
 }
 
 /**
@@ -74,7 +74,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Deploy docs
-        run: npx docsmint@latest deploy ${target}${envSection}
+        run: npx tidypress@latest deploy ${target}${envSection}
 `
 }
 
@@ -107,10 +107,10 @@ function isSshScpTarget(target) {
 }
 
 function invalidCiTargetError() {
-  return new DocsMintError(
+  return new TidyPressError(
     'deploy --with-ci requires a deploy provider target.',
     'DEPLOY_CI_TARGET_REQUIRED',
-    'Use docsmint deploy <provider> --with-ci (for example: vercel, netlify, s3, ssh)',
+    'Use tidypress deploy <provider> --with-ci (for example: vercel, netlify, s3, ssh)',
     { exitCode: 2 },
   )
 }

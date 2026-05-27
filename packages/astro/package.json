@@ -1,7 +1,7 @@
 {
-  "name": "@docsmint/astro",
+  "name": "@tidypress/astro",
   "version": "1.0.6",
-  "description": "DocsMint Astro integration for power-user projects.",
+  "description": "TidyPress Astro integration for power-user projects.",
   "type": "module",
   "license": "MIT",
   "exports": {
@@ -9,11 +9,11 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@docsmint/engine": "workspace:*"
+    "@tidypress/engine": "workspace:*"
   },
   "peerDependencies": {
     "astro": "^6.0.0"
   },
-  "keywords": ["withastro", "astro-integration", "docsmint"],
+  "keywords": ["withastro", "astro-integration", "tidypress"],
   "private": true
 }

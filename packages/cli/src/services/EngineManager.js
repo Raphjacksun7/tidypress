@@ -21,7 +21,7 @@ function resolvePagefindBin() {
     }
     dir = path.dirname(dir)
   }
-  throw new Error('Could not locate pagefind. Ensure the docsmint CLI is installed with its dependencies.')
+  throw new Error('Could not locate pagefind. Ensure the tidypress CLI is installed with its dependencies.')
 }
 
 /** @type {import('astro').DevServer | null} */

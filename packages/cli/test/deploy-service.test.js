@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { ArtifactOnlyDeployStrategy } from '../src/deployment/DeployStrategies.js'
-import { DocsMintError } from '../src/errors/DocsMintError.js'
+import { TidyPressError } from '../src/errors/TidyPressError.js'
 import { DeployService } from '../src/services/DeployService.js'
 
 test('DeployService uses artifact strategy by default', async () => {
@@ -36,7 +36,7 @@ test('DeployService sets usage exit code when target is unsupported', async () =
       })
     },
     error => {
-      assert.ok(error instanceof DocsMintError)
+      assert.ok(error instanceof TidyPressError)
       assert.equal(error.code, 'DEPLOY_NO_STRATEGY')
       assert.equal(error.exitCode, 2)
       return true

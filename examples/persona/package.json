@@ -1,14 +1,14 @@
 {
-  "name": "@docsmint/example-persona",
+  "name": "@tidypress/example-persona",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "docsmint dev",
-    "build": "docsmint build",
-    "preview": "docsmint preview",
-    "clean": "docsmint clean"
+    "dev": "tidypress dev",
+    "build": "tidypress build",
+    "preview": "tidypress preview",
+    "clean": "tidypress clean"
   },
   "dependencies": {
-    "docsmint": "workspace:*"
+    "tidypress": "workspace:*"
   }
 }

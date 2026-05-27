@@ -1,5 +1,5 @@
 /**
- * Handles `docsmint context`.
+ * Handles `tidypress context`.
  */
 export class ContextCommand {
   /**

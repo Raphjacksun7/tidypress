@@ -1,18 +1,18 @@
 import {
-  defaultDocsMintDocForm,
-  docsMintCollectionKindRegistry,
-  isDocsMintDocForm,
+  defaultTidyPressDocForm,
+  tidyPressCollectionKindRegistry,
+  isTidyPressDocForm,
   type CollectionRouteViewMode,
   type CollectionShellLayout,
-  type DocsMintCollectionKind,
-  type DocsMintDocForm,
-} from '@docsmint/config'
+  type TidyPressCollectionKind,
+  type TidyPressDocForm,
+} from '@tidypress/config'
 import type { SiteRouteMode } from '@/routing/types'
 import { getPluginRouteViewDescriptors } from '@/plugins/manifest'
 
 // ─── Collection Kind Targets ────────────────────────────────────────────────
 
-export type CollectionPresentationTarget = DocsMintCollectionKind | 'site-docs'
+export type CollectionPresentationTarget = TidyPressCollectionKind | 'site-docs'
 
 export type { CollectionRouteViewMode, CollectionShellLayout }
 
@@ -35,10 +35,10 @@ type CollectionViewConfig = {
 }
 
 function collectionViewConfig(
-  kind: DocsMintCollectionKind,
+  kind: TidyPressCollectionKind,
   prefix: string,
 ): CollectionViewConfig {
-  const entry = docsMintCollectionKindRegistry[kind]
+  const entry = tidyPressCollectionKindRegistry[kind]
   return {
     prefix,
     shellLayout: entry.shellLayout,
@@ -121,7 +121,7 @@ export const docFormEntryViewRegistry = {
     },
   },
 } as const satisfies Record<
-  DocsMintDocForm,
+  TidyPressDocForm,
   {
     readonly prefix: string
     readonly shellLayout: CollectionShellLayout
@@ -162,7 +162,7 @@ export function resolveDocFormViewKey(
   if (route.mode === 'collection-index') {
     return buildCollectionRouteViewKey('site-docs', route)
   }
-  const entryForm = isDocsMintDocForm(form) ? form : defaultDocsMintDocForm
+  const entryForm = isTidyPressDocForm(form) ? form : defaultTidyPressDocForm
   const config = docFormEntryViewRegistry[entryForm]
   return `${config.prefix}:${route.mode}`
 }
@@ -213,7 +213,7 @@ function clearPluginRouteDescriptors(): void {
 }
 
 export async function ensurePluginRouteViewRegistry(): Promise<void> {
-  const epoch = import.meta.env.DEV ? (globalThis.__DOCSMINT_MANIFEST_EPOCH ?? 0) : 0
+  const epoch = import.meta.env.DEV ? (globalThis.__TIDYPRESS_MANIFEST_EPOCH ?? 0) : 0
   if (pluginRegistryLoaded && pluginRegistryEpoch === epoch) {
     return
   }
@@ -233,7 +233,7 @@ export function getRouteViewDescriptor(viewKey: string): RouteViewDescriptor | u
 export function assertRegisteredViewKey(viewKey: string): asserts viewKey is RouteViewKey {
   if (!registryByKey.has(viewKey)) {
     throw new Error(
-      `Unknown route view "${viewKey}". Register it in docsmint.config (render / extensions.docForms) and rebuild.`,
+      `Unknown route view "${viewKey}". Register it in tidypress.config (render / extensions.docForms) and rebuild.`,
     )
   }
 }

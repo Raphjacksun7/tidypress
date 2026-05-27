@@ -7,10 +7,10 @@ import path from 'node:path'
 import { BuildService } from '../src/services/BuildService.js'
 
 test('BuildService copies build output to --output destination when provided', async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-build-service-'))
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-build-service-'))
   const docsDir = path.join(root, 'docs')
   const buildDir = path.join(docsDir, 'build')
-  const cacheDir = path.join(os.tmpdir(), 'docsmint-cache-test')
+  const cacheDir = path.join(os.tmpdir(), 'tidypress-cache-test')
   const outputPath = path.join(root, 'artifact')
   await fs.mkdir(buildDir, { recursive: true })
   await fs.writeFile(path.join(buildDir, 'index.html'), '<html>ok</html>', 'utf8')
@@ -39,7 +39,7 @@ test('BuildService copies build output to --output destination when provided', a
     buildDir,
     cacheDir,
     publicDir: path.join(cacheDir, 'public'),
-    manifestPath: path.join(cacheDir, 'codegen', 'docsmint-plugins.mjs'),
+    manifestPath: path.join(cacheDir, 'codegen', 'tidypress-plugins.mjs'),
   }
   const engineManager = {
     async prepare(payload) {

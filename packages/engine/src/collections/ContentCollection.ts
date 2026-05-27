@@ -1,4 +1,4 @@
-import type { DocsMintConfig } from '@docsmint/config'
+import type { TidyPressConfig } from '@tidypress/config'
 import { sortDocs } from '@/utils/sort'
 import { loadPublishedCollectionEntries } from '@/utils/collection-entries'
 import {
@@ -22,7 +22,7 @@ type CollectionEntry = {
 export class ContentCollection implements ICollection {
   readonly presentationTarget = 'content' as const
 
-  constructor(private readonly site: DocsMintConfig) {}
+  constructor(private readonly site: TidyPressConfig) {}
 
   async buildIndex(route: SiteRouteDefinition): Promise<RouteViewBundle> {
     const collectionKey = route.collectionKey!

@@ -1,4 +1,4 @@
-import { collectionMetaIndexSlug } from '@docsmint/config'
+import { collectionMetaIndexSlug } from '@tidypress/config'
 import type { ICollectionRouteStrategy, CollectionRouteContext, SiteRouteDefinition } from '@/routing/types'
 import { RoutePath } from '@/routing/RoutePath'
 import {

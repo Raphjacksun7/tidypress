@@ -30,7 +30,7 @@ jobs:
         run: pnpm -r test
 
       - name: Build workspace
-        run: pnpm -r build
+        run: pnpm -r --workspace-concurrency=1 build
 
   install-e2e:
     name: Real install e2e (npm pack)
@@ -52,24 +52,24 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build @docsmint/config
-        run: pnpm --filter @docsmint/config build
+      - name: Build @tidypress/config
+        run: pnpm --filter @tidypress/config build
 
       - name: Real install e2e (npm pack → clean install → init → build)
-        run: pnpm --filter docsmint test:install-e2e
+        run: pnpm --filter tidypress test:install-e2e
         timeout-minutes: 40
 
       - name: Build moat examples
         run: |
-          pnpm --filter @docsmint/example-lab build
-          pnpm --filter @docsmint/example-blog build
-          pnpm --filter @docsmint/example-persona build
+          pnpm --filter @tidypress/example-lab build
+          pnpm --filter @tidypress/example-blog build
+          pnpm --filter @tidypress/example-persona build
 
       - name: Generate marketing site context snapshot
-        run: pnpm --filter @docsmint/site context
+        run: pnpm --filter @tidypress/site context
 
       - name: Verify site context snapshot is committed
-        run: git diff --exit-code apps/site/docsmint-context.md
+        run: git diff --exit-code apps/site/tidypress-context.md
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -117,13 +117,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Cache docsmint build inputs
+      - name: Cache tidypress build inputs
         uses: actions/cache@v4
         with:
-          path: ~/.cache/docsmint
-          key: docsmint-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'packages/engine/**', 'apps/site/**') }}
+          path: ~/.cache/tidypress
+          key: tidypress-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'packages/engine/**', 'apps/site/**') }}
           restore-keys: |
-            docsmint-${{ runner.os }}-
+            tidypress-${{ runner.os }}-
 
       - name: Clean previous build artifacts
         run: |
@@ -131,17 +131,22 @@ jobs:
           rm -rf packages/engine/dist
 
       - name: Build config package
-        run: pnpm --filter @docsmint/config build
+        run: pnpm --filter @tidypress/config build
 
       - name: Build site
-        run: pnpm --filter @docsmint/site build
+        run: pnpm --filter @tidypress/site build
 
-      - name: Publish to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+      - name: Ensure Cloudflare Pages project exists
+        uses: cloudflare/wrangler-action@v3
+        continue-on-error: true
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: usedocsmint
-          directory: apps/site/build
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
+          command: pages project create tidypress --production-branch main
+
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy apps/site/build --project-name=tidypress --branch=main --commit-hash=${{ github.sha }}

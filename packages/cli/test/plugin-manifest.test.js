@@ -4,7 +4,7 @@ import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 
-import { withDefaults } from '@docsmint/config'
+import { withDefaults } from '@tidypress/config'
 import { collectPluginManifest, writePluginManifest } from '../src/infrastructure/engine/plugin-manifest.js'
 
 test('collectPluginManifest registers custom collection view keys', () => {
@@ -38,8 +38,8 @@ test('collectPluginManifest registers custom collection view keys', () => {
 })
 
 test('writePluginManifest emits generated module in cache codegen path', async () => {
-  const docsDir = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-plugin-manifest-'))
-  const manifestPath = path.join(docsDir, 'codegen', 'docsmint-plugins.mjs')
+  const docsDir = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-plugin-manifest-'))
+  const manifestPath = path.join(docsDir, 'codegen', 'tidypress-plugins.mjs')
   await fs.mkdir(path.join(docsDir, 'site/renderers'), { recursive: true })
   await fs.writeFile(
     path.join(docsDir, 'site/renderers/api-presentation.ts'),
@@ -69,8 +69,8 @@ test('writePluginManifest emits generated module in cache codegen path', async (
 })
 
 test('writePluginManifest rejects presentation modules without createPresentation', async () => {
-  const docsDir = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-plugin-invalid-'))
-  const manifestPath = path.join(docsDir, 'codegen', 'docsmint-plugins.mjs')
+  const docsDir = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-plugin-invalid-'))
+  const manifestPath = path.join(docsDir, 'codegen', 'tidypress-plugins.mjs')
   await fs.mkdir(path.join(docsDir, 'site/renderers'), { recursive: true })
   await fs.writeFile(path.join(docsDir, 'site/renderers/broken.ts'), 'export const nope = 1\n', 'utf8')
 
@@ -96,7 +96,7 @@ test('writePluginManifest rejects presentation modules without createPresentatio
 })
 
 test('collectPluginManifest omits astro imports when view files are missing', async () => {
-  const docsDir = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-plugin-astro-'))
+  const docsDir = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-plugin-astro-'))
   await fs.mkdir(path.join(docsDir, 'site/views/api'), { recursive: true })
   await fs.writeFile(path.join(docsDir, 'site/views/api/collection-entry.astro'), '---\n---\n', 'utf8')
 

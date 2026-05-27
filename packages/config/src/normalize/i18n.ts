@@ -1,12 +1,12 @@
 import { defaultConfig } from '../defaults.js'
 import type {
-  DocsMintCapabilityName,
-  DocsMintConfig,
-  DocsMintI18n,
-  DocsMintI18nStrings,
+  TidyPressCapabilityName,
+  TidyPressConfig,
+  TidyPressI18n,
+  TidyPressI18nStrings,
 } from '../schema/index.js'
 
-export function normalizeI18n(config: DocsMintConfig): DocsMintI18n | undefined {
+export function normalizeI18n(config: TidyPressConfig): TidyPressI18n | undefined {
   if (!config.i18n) {
     return undefined
   }
@@ -22,7 +22,7 @@ export function normalizeI18n(config: DocsMintConfig): DocsMintI18n | undefined 
   }
 
   const normalizedLocales = locales.length > 0 ? locales : [defaultLocale]
-  const strings = Object.entries(config.i18n.strings ?? {}).reduce<Record<string, DocsMintI18nStrings>>(
+  const strings = Object.entries(config.i18n.strings ?? {}).reduce<Record<string, TidyPressI18nStrings>>(
     (acc, [locale, value]) => {
       if (!value) {
         return acc

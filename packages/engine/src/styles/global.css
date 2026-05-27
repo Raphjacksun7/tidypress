@@ -108,8 +108,8 @@
   .prose[data-doc-form="manual"] {
     counter-reset: manual-step;
   }
-  .prose ol.docsmint-steps,
-  .docsmint-steps {
+  .prose ol.tidypress-steps,
+  .tidypress-steps {
     list-style: none;
     padding: 0;
     margin: 1.5rem 0 2rem;
@@ -118,8 +118,8 @@
     gap: 1.25rem;
     counter-reset: mdx-step;
   }
-  .docsmint-steps > :global(li),
-  .docsmint-steps > :global(p) {
+  .tidypress-steps > :global(li),
+  .tidypress-steps > :global(p) {
     counter-increment: mdx-step;
     margin: 0;
     padding-left: 2rem;
@@ -127,8 +127,8 @@
     font-size: 0.919rem;
     line-height: 1.75;
   }
-  .docsmint-steps > :global(li)::before,
-  .docsmint-steps > :global(p)::before {
+  .tidypress-steps > :global(li)::before,
+  .tidypress-steps > :global(p)::before {
     content: counter(mdx-step);
     position: absolute;
     left: 0;
@@ -144,7 +144,7 @@
     font-weight: 700;
     color: var(--muted);
   }
-  .docsmint-step__title {
+  .tidypress-step__title {
     display: block;
     font-weight: 700;
     font-size: 0.919rem;

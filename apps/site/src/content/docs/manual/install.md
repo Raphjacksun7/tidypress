@@ -1,6 +1,6 @@
 ---
 title: Installation
-description: Install DocsMint and scaffold a new docs folder.
+description: Install TidyPress and scaffold a new docs folder.
 form: manual
 order: 2
 published: false
@@ -9,13 +9,13 @@ published: false
 ## Install
 
 ```bash
-npm install -g docsmint
+npm install -g tidypress
 ```
 
 Or use it without installing:
 
 ```bash
-npm exec docsmint@latest init
+npm exec tidypress@latest init
 ```
 
 ## Scaffold
@@ -23,14 +23,14 @@ npm exec docsmint@latest init
 Run inside your project root:
 
 ```bash
-docsmint init
+tidypress init
 ```
 
 This creates a `docs/` folder:
 
 ```
 docs/
-  docsmint.config.ts
+  tidypress.config.ts
   src/
     content/
       docs/
@@ -43,7 +43,7 @@ docs/
 
 ```bash
 cd docs
-docsmint dev
+tidypress dev
 ```
 
 Open [http://localhost:4321](http://localhost:4321). You should see the default home page.

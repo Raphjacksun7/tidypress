@@ -10,7 +10,7 @@ Feature gates for collections, theming, and experimental commands.
 ## Registry
 
 ```ts
-type DocsMintCapabilityName =
+type TidyPressCapabilityName =
   | 'docs'
   | 'writing'
   | 'pages'
@@ -106,7 +106,7 @@ experimental: {
 ```
 
 ```bash
-docsmint ai suggest docs/draft.md --enable-experimental-ai
+tidypress ai suggest docs/draft.md --enable-experimental-ai
 ```
 
 - `editor`

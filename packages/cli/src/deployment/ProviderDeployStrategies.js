@@ -2,7 +2,7 @@ import { spawn } from 'node:child_process'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import { DocsMintError } from '../errors/DocsMintError.js'
+import { TidyPressError } from '../errors/TidyPressError.js'
 import { resolveDeployTarget } from '../application/deployment/deploy-target.js'
 
 /**
@@ -32,7 +32,7 @@ export function createProviderStrategy({ provider, io = console, runCommand = ru
     async execute(request) {
       const plan = resolveDeployTarget(request)
       if (plan.kind !== 'provider' || plan.provider !== provider) {
-        throw new DocsMintError('Provider deploy received unsupported target.', 'DEPLOY_PROVIDER_INTERNAL')
+        throw new TidyPressError('Provider deploy received unsupported target.', 'DEPLOY_PROVIDER_INTERNAL')
       }
       await executeProvider({ provider, request, io, extra: plan.extra, runCommand })
     },
@@ -88,12 +88,12 @@ async function executeProvider({ provider, request, io, extra, runCommand }) {
   }
 
   if (provider === 's3') {
-    const target = extra || process.env.DOCSMINT_S3_TARGET
+    const target = extra || process.env.TIDYPRESS_S3_TARGET
     if (!target) {
-      throw new DocsMintError(
+      throw new TidyPressError(
         'Missing S3 deploy target.',
         'DEPLOY_PROVIDER_TARGET_REQUIRED',
-        'Use s3://bucket/path or set DOCSMINT_S3_TARGET',
+        'Use s3://bucket/path or set TIDYPRESS_S3_TARGET',
       )
     }
     await runCommand('aws', ['s3', 'sync', `${request.distDir}/`, target, '--delete'])
@@ -102,12 +102,12 @@ async function executeProvider({ provider, request, io, extra, runCommand }) {
   }
 
   if (provider === 'ssh') {
-    const target = extra || process.env.DOCSMINT_SSH_TARGET
+    const target = extra || process.env.TIDYPRESS_SSH_TARGET
     if (!target) {
-      throw new DocsMintError(
+      throw new TidyPressError(
         'Missing SSH deploy target.',
         'DEPLOY_PROVIDER_TARGET_REQUIRED',
-        'Use ssh://user@host/path or set DOCSMINT_SSH_TARGET=user@host:/path',
+        'Use ssh://user@host/path or set TIDYPRESS_SSH_TARGET=user@host:/path',
       )
     }
     await runCommand('rsync', ['-az', '--delete', `${request.distDir}/`, target])
@@ -126,7 +126,7 @@ function runShellCommand(command, args) {
     child.on('error', error => {
       if (error && error.code === 'ENOENT') {
         reject(
-          new DocsMintError(
+          new TidyPressError(
             `Missing required command: ${command}`,
             'DEPLOY_PROVIDER_COMMAND_MISSING',
             `Install ${command} or choose another deploy target`,
@@ -143,7 +143,7 @@ function runShellCommand(command, args) {
         return
       }
       reject(
-        new DocsMintError(
+        new TidyPressError(
           `Deploy command failed: ${command} ${args.join(' ')}`,
           'DEPLOY_PROVIDER_COMMAND_FAILED',
           'Check command output above and retry',
@@ -162,7 +162,7 @@ EXPOSE 80
 
 function dockerComposeTemplate() {
   return `services:
-  docsmint:
+  tidypress:
     build: .
     ports:
       - "8080:80"

@@ -3,9 +3,9 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "docsmint"
-version = "1.0.7"
-description = "Python interface for the DocsMint Node.js CLI."
+name = "tidypress"
+version = "1.0.8"
+description = "Python interface for the TidyPress Node.js CLI."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
@@ -15,21 +15,21 @@ authors = [
 dependencies = ["PyYAML>=6.0", "jsonschema>=4.23"]
 
 [project.urls]
-Homepage = "https://usedocsmint.pages.dev/"
-Repository = "https://github.com/Raphjacksun7/docsmint"
-Issues = "https://github.com/Raphjacksun7/docsmint/issues"
+Homepage = "https://tidypress.pages.dev/"
+Repository = "https://github.com/Raphjacksun7/tidypress"
+Issues = "https://github.com/Raphjacksun7/tidypress/issues"
 
 [project.scripts]
-docsmint = "docsmint.cli:main"
+tidypress = "tidypress.cli:main"
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
 
 [tool.setuptools.packages.find]
-include = ["docsmint*"]
+include = ["tidypress*"]
 
 [tool.setuptools.package-data]
-docsmint = ["schemas/*.json"]
+tidypress = ["schemas/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

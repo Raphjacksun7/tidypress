@@ -1,4 +1,4 @@
-# DocsMint Context Snapshot
+# TidyPress Context Snapshot
 
 - [docs] Getting started
   - path: `src/content/docs/getting-started.md`

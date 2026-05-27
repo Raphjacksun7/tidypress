@@ -1,4 +1,4 @@
-"""Python CLI help text (init preset hints shared with @docsmint/config)."""
+"""Python CLI help text (init preset hints shared with @tidypress/config)."""
 
 from __future__ import annotations
 
@@ -16,12 +16,12 @@ def _load_init_presets() -> dict:
     cursor = Path.cwd().resolve()
     for directory in [cursor, *cursor.parents]:
         for parts in (
-            ("node_modules", "@docsmint", "config", "src", "schemas", _INIT_PRESETS_FILE),
+            ("node_modules", "@tidypress", "config", "src", "schemas", _INIT_PRESETS_FILE),
             (
                 "node_modules",
-                "docsmint",
+                "tidypress",
                 "node_modules",
-                "@docsmint",
+                "@tidypress",
                 "config",
                 "src",
                 "schemas",
@@ -57,16 +57,16 @@ def format_init_help() -> str:
     preset_lines = format_init_preset_lines()
     return "\n".join(
         [
-            "docsmint init [--preset <name>]",
+            "tidypress init [--preset <name>]",
             "",
             "Scaffold docs/ in the current directory.",
             "",
             *preset_lines,
             "",
             "Examples:",
-            "  docsmint init",
-            "  docsmint init --preset blog",
-            "  docsmint init --preset persona",
+            "  tidypress init",
+            "  tidypress init --preset blog",
+            "  tidypress init --preset persona",
             "",
             "Site commands run through the Node.js CLI (Node 22.12+ required).",
         ],
@@ -77,7 +77,7 @@ def format_root_help() -> str:
     preset_lines = format_init_preset_lines()
     return "\n".join(
         [
-            "docsmint <command> [options]  (Python wrapper)",
+            "tidypress <command> [options]  (Python wrapper)",
             "",
             "Node-backed commands:",
             "  init, dev, build, preview, clean, deploy, context, import,",
@@ -93,9 +93,9 @@ def format_root_help() -> str:
             "  build and deploy stream output live (async subprocess).",
             "  Pass --sync to wait without streaming (same as legacy behavior).",
             "",
-            "YAML bridge: docsmint.yaml / docsmint.yml (see docsmint convert --help)",
+            "YAML bridge: tidypress.yaml / tidypress.yml (see tidypress convert --help)",
             "",
-            "Run docsmint init --help for init-only details.",
+            "Run tidypress init --help for init-only details.",
         ],
     )
 

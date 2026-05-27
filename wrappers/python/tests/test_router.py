@@ -1,7 +1,7 @@
 import pytest
 
-from docsmint.errors import DocsMintError
-from docsmint.router import is_node_command, run_python_stub
+from tidypress.errors import TidyPressError
+from tidypress.router import is_node_command, run_python_stub
 
 
 def test_is_node_command_for_core_cli() -> None:
@@ -22,21 +22,21 @@ def test_is_node_command_defaults_true_for_empty_args() -> None:
 
 
 def test_python_stub_for_unimplemented_command() -> None:
-    with pytest.raises(DocsMintError, match="Missing notebook input path"):
+    with pytest.raises(TidyPressError, match="Missing notebook input path"):
         run_python_stub(["convert"])
 
 
 def test_python_stub_raises_when_config_flag_missing_value() -> None:
-    with pytest.raises(DocsMintError, match="Missing value for --config"):
+    with pytest.raises(TidyPressError, match="Missing value for --config"):
         run_python_stub(["convert", "--config"])
 
 
 def test_python_stub_merges_yaml_bridged_args(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
     monkeypatch.setattr(
-        "docsmint.router.load_yaml_config",
+        "tidypress.router.load_yaml_config",
         lambda config_path=None: (None, {"python": {"convert": {"input": "notes.ipynb", "watch": True}}}),
     )
-    monkeypatch.setattr("docsmint.router.convert_notebook", lambda _options: "docs/post.mdx")
+    monkeypatch.setattr("tidypress.router.convert_notebook", lambda _options: "docs/post.mdx")
     code = run_python_stub(["convert", "--output", "docs/post.mdx"])
     stdout = capsys.readouterr().out
     assert code == 0

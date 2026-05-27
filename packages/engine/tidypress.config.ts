@@ -1,8 +1,8 @@
-import type { DocsMintConfig } from '@docsmint/config'
+import type { TidyPressConfig } from '@tidypress/config'
 
-const config: DocsMintConfig = {
-  name: 'docsmint',
-  description: 'Minimal markdown site for fast writing and project showcase.',
+const config: TidyPressConfig = {
+  name: 'tidypress',
+  description: 'A publishing framework for Git-native authorship.',
   nav: [
     { label: 'docs', href: '/docs' },
     { label: 'writing', href: '/writing' },

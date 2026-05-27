@@ -1,7 +1,7 @@
 import { defaultConfig } from '../defaults.js'
 import { ensureBlankTargetRel, isExternalHref } from '../links/link-attributes.js'
 import { isPageCollectionKind } from '../registry/collection-kinds.js'
-import type { DocsMintCollections, DocsMintConfig, NavItem } from '../schema/index.js'
+import type { TidyPressCollections, TidyPressConfig, NavItem } from '../schema/index.js'
 
 function normalizeRel(rel: string | undefined): string | undefined {
   if (!rel) {
@@ -32,7 +32,7 @@ export function normalizeNavItems(nav: NavItem[] | undefined): NavItem[] | undef
   })
 }
 
-export function validateNavPolicy(config: DocsMintConfig): DocsMintConfig['navPolicy'] {
+export function validateNavPolicy(config: TidyPressConfig): TidyPressConfig['navPolicy'] {
   const policy = {
     ...defaultConfig.navPolicy,
     ...config.navPolicy,
@@ -51,7 +51,7 @@ export function validateNavPolicy(config: DocsMintConfig): DocsMintConfig['navPo
   return policy
 }
 
-export function buildSectionDefaultNav(collections: DocsMintCollections): NavItem[] {
+export function buildSectionDefaultNav(collections: TidyPressCollections): NavItem[] {
   return Object.entries(collections)
     .filter(
       ([, collection]) =>
@@ -65,7 +65,7 @@ export function buildSectionDefaultNav(collections: DocsMintCollections): NavIte
 
 export function filterDisabledSectionNav(
   nav: NavItem[] | undefined,
-  collections: DocsMintCollections,
+  collections: TidyPressCollections,
 ): NavItem[] | undefined {
   if (!nav) {
     return nav
@@ -80,7 +80,7 @@ export function filterDisabledSectionNav(
 
 export function validateCoreItemBudget(
   nav: NavItem[] | undefined,
-  navPolicy: DocsMintConfig['navPolicy'],
+  navPolicy: TidyPressConfig['navPolicy'],
 ): void {
   if (!nav || !navPolicy || navPolicy.mode !== 'strict') {
     return

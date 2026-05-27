@@ -6,9 +6,9 @@ import {
   collectPluginPathsToMount,
   formatPluginManifestModule,
   withDefaults,
-} from '@docsmint/config'
+} from '@tidypress/config'
 
-import { DocsMintError } from '../../errors/DocsMintError.js'
+import { TidyPressError } from '../../errors/TidyPressError.js'
 
 /**
  * @param {string} docsDir
@@ -23,7 +23,7 @@ export async function validatePresentationModules(docsDir, presentationModules) 
       loaded = await jiti.import(absolute)
     } catch (cause) {
       const message = cause instanceof Error ? cause.message : String(cause)
-      throw new DocsMintError(
+      throw new TidyPressError(
         `Failed to load presentation module for "${scope}" at ${modulePath}: ${message}`,
         'PLUGIN_PRESENTATION_LOAD_FAILED',
         'Export createPresentation(site, context) or a default factory from that file.',
@@ -31,7 +31,7 @@ export async function validatePresentationModules(docsDir, presentationModules) 
     }
     const factory = loaded?.createPresentation ?? loaded?.default
     if (typeof factory !== 'function') {
-      throw new DocsMintError(
+      throw new TidyPressError(
         `Presentation module "${modulePath}" (${scope}) must export createPresentation(site, context) or a default factory function.`,
         'PLUGIN_PRESENTATION_INVALID',
         'See Rendering extensibility in the docs.',
@@ -43,7 +43,7 @@ export async function validatePresentationModules(docsDir, presentationModules) 
 export { collectPluginManifest }
 
 /**
- * @param {{ docsDir: string, config: import('@docsmint/config').DocsMintConfig, manifestPath: string }} options
+ * @param {{ docsDir: string, config: import('@tidypress/config').TidyPressConfig, manifestPath: string }} options
  */
 export async function writePluginManifest({ docsDir, config, manifestPath }) {
   const site = withDefaults(config)

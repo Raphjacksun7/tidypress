@@ -15,12 +15,12 @@ test('getBuildDir resolves build/ under docs directory', () => {
 })
 
 test('scaffoldDocs creates docs and writing content structure', async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-scaffold-'))
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-scaffold-'))
   const docsDir = path.join(root, 'docs')
 
   await scaffoldDocs({ docsDir, projectName: 'example-project', starterPreset: 'docs-writing' })
 
-  const config = await fs.readFile(path.join(docsDir, 'docsmint.config.ts'), 'utf8')
+  const config = await fs.readFile(path.join(docsDir, 'tidypress.config.ts'), 'utf8')
   const docsPage = await fs.readFile(
     path.join(docsDir, 'src/content/docs/getting-started.md'),
     'utf8',
@@ -38,12 +38,12 @@ test('scaffoldDocs creates docs and writing content structure', async () => {
 })
 
 test('scaffoldDocs blog preset creates writing only and disables docs', async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-scaffold-blog-'))
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-scaffold-blog-'))
   const docsDir = path.join(root, 'docs')
 
   await scaffoldDocs({ docsDir, projectName: 'blog-site', starterPreset: 'blog' })
 
-  const config = await fs.readFile(path.join(docsDir, 'docsmint.config.ts'), 'utf8')
+  const config = await fs.readFile(path.join(docsDir, 'tidypress.config.ts'), 'utf8')
   assert.match(config, /"disable": \[\s*"docs",\s*"pages"\s*\]/)
   assert.match(config, /"pages":\s*\{[^}]*"enabled": false/)
   assert.doesNotMatch(config, /"kind": "projects"/)
@@ -52,24 +52,24 @@ test('scaffoldDocs blog preset creates writing only and disables docs', async ()
 })
 
 test('scaffoldDocs lab preset creates writing and projects', async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-scaffold-lab-'))
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-scaffold-lab-'))
   const docsDir = path.join(root, 'docs')
 
   await scaffoldDocs({ docsDir, projectName: 'lab-site', starterPreset: 'lab' })
 
-  const config = await fs.readFile(path.join(docsDir, 'docsmint.config.ts'), 'utf8')
+  const config = await fs.readFile(path.join(docsDir, 'tidypress.config.ts'), 'utf8')
   assert.match(config, /"kind": "projects"/)
   assert.match(config, /"disable": \[\s*"docs",\s*"pages"\s*\]/)
   await fs.access(path.join(docsDir, 'src/content/projects/sample-project.md'))
 })
 
 test('scaffoldDocs custom preset creates a custom content collection example', async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-scaffold-custom-'))
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-scaffold-custom-'))
   const docsDir = path.join(root, 'docs')
 
   await scaffoldDocs({ docsDir, projectName: 'example-project', starterPreset: 'custom' })
 
-  const config = await fs.readFile(path.join(docsDir, 'docsmint.config.ts'), 'utf8')
+  const config = await fs.readFile(path.join(docsDir, 'tidypress.config.ts'), 'utf8')
   const playbook = await fs.readFile(path.join(docsDir, 'src/content/playbooks/on-call.md'), 'utf8')
 
   assert.match(config, /playbooks/)
@@ -78,7 +78,7 @@ test('scaffoldDocs custom preset creates a custom content collection example', a
 })
 
 test('scaffoldDocs rejects unknown starter presets', async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-scaffold-preset-'))
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-scaffold-preset-'))
   const docsDir = path.join(root, 'docs')
 
   await assert.rejects(async () => {
@@ -87,7 +87,7 @@ test('scaffoldDocs rejects unknown starter presets', async () => {
 })
 
 test('createContentSnapshot returns docs, writing, and pages collection entries', async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-context-'))
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-context-'))
   const docsDir = path.join(root, 'docs')
   await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
   await fs.mkdir(path.join(docsDir, 'src/content/writing'), { recursive: true })
@@ -136,7 +136,7 @@ About custom page content.
 })
 
 test('createContentSnapshot excludes draft entries (published: false)', async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-context-drafts-'))
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-context-drafts-'))
   const docsDir = path.join(root, 'docs')
   await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
 
@@ -166,7 +166,7 @@ Hidden content.
 })
 
 test('createContentSnapshot excludes entries scheduled in the future', async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-context-scheduled-'))
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-context-scheduled-'))
   const docsDir = path.join(root, 'docs')
   await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
 
@@ -197,7 +197,7 @@ Not visible yet.
 })
 
 test('createContentSnapshot honors configured collection registry', async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-context-collections-'))
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-context-collections-'))
   const docsDir = path.join(root, 'docs')
   await fs.mkdir(path.join(docsDir, 'src/content/playbooks'), { recursive: true })
   await fs.writeFile(
@@ -223,7 +223,7 @@ Guide content.
 })
 
 test('createContentSnapshot honors capabilities enable/disable for starter collections', async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-context-capabilities-'))
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-context-capabilities-'))
   const docsDir = path.join(root, 'docs')
   await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
   await fs.mkdir(path.join(docsDir, 'src/content/writing'), { recursive: true })
@@ -263,9 +263,9 @@ writing content
 })
 
 test('writeContentSnapshot matches golden output', async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-context-golden-'))
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-context-golden-'))
   const docsDir = path.join(root, 'docs')
-  const outputPath = path.join(root, 'docsmint-context.md')
+  const outputPath = path.join(root, 'tidypress-context.md')
 
   await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
   await fs.mkdir(path.join(docsDir, 'src/content/writing'), { recursive: true })
@@ -394,7 +394,7 @@ test('resolveDeployTarget keeps generic external URI targets', () => {
 })
 
 test('copyDistToDestination copies built artifact to destination path', async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docsmint-deploy-'))
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-deploy-'))
   const distDir = path.join(root, 'dist')
   const destinationDir = path.join(root, 'output')
 

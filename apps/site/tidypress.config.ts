@@ -1,8 +1,8 @@
-import { defineConfig } from 'docsmint/config'
+import { defineConfig } from 'tidypress/config'
 
 export default defineConfig({
-  name: 'docsmint',
-  description: 'Minimal markdown site for fast writing and project showcase.',
+  name: 'tidypress',
+  description: 'A publishing framework for Git-native authorship.',
   branding: {
     icon: '/favicon.svg',
     favicon: '/favicon-white.svg',
@@ -12,7 +12,7 @@ export default defineConfig({
     { label: 'writing', href: '/writing' },
   ],
   footer: [
-    { label: 'GitHub', href: 'https://github.com/Raphjacksun7/docsmint', icon: 'github' },
+    { label: 'GitHub', href: 'https://github.com/Raphjacksun7/tidypress', icon: 'github' },
   ],
   pages: [],
 
@@ -21,7 +21,7 @@ export default defineConfig({
     sidebar: [
       {
         label: 'Start',
-        items: ['why-docsmint', 'getting-started', 'examples'],
+        items: ['why-tidypress', 'getting-started', 'examples'],
       },
       {
         label: 'Write',

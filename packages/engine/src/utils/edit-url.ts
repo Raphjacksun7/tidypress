@@ -1,4 +1,4 @@
-import type { DocsMintRepository } from '@docsmint/config'
+import type { TidyPressRepository } from '@tidypress/config'
 
 const defaultEditBranch = 'main'
 
@@ -7,7 +7,7 @@ function trimSlashes(value: string): string {
 }
 
 export function resolveEditUrl(
-  repository: DocsMintRepository | undefined,
+  repository: TidyPressRepository | undefined,
   editPath: string | undefined,
 ): string | undefined {
   if (!repository?.url || !repository.editPath || !editPath) {

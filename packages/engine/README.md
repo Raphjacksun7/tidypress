@@ -1,13 +1,13 @@
-# @docsmint/engine
+# @tidypress/engine
 
-Internal rendering package for DocsMint.
+Internal rendering package for TidyPress.
 
-End users should install `docsmint`:
+End users should install `tidypress`:
 
 ```sh
-npm install docsmint
+npm install tidypress
 ```
 
-This package contains the Astro runtime, layouts, routing, components, and search UI used by the CLI. It is bundled into the public `docsmint` package.
+This package contains the Astro runtime, layouts, routing, components, and search UI used by the CLI. It is bundled into the public `tidypress` package.
 
-Documentation: <https://usedocsmint.pages.dev/docs>
+Documentation: <https://tidypress.pages.dev/docs>

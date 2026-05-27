@@ -1,8 +1,8 @@
 import path from 'node:path'
 
-import { DocsMintError } from '../errors/DocsMintError.js'
+import { TidyPressError } from '../errors/TidyPressError.js'
 
-const HELP_TEXT = `docsmint <command> [options]
+const HELP_TEXT = `tidypress <command> [options]
 
 Commands:
   init       Scaffold docs/ in current directory (--preset <name>)
@@ -10,7 +10,7 @@ Commands:
   dev        Start dev server
   build      Build production site (--output <dir>)
   preview    Preview production build
-  clean      Remove docs/build/ and local docsmint cache
+  clean      Remove docs/build/ and local tidypress cache
   deploy     Deploy using registered strategy plugins
   domain     Print custom domain setup plan
   context    Emit an LLM-friendly docs snapshot
@@ -69,7 +69,7 @@ export class Application {
 
     const handler = this.commands[command]
     if (!handler) {
-      throw new DocsMintError(`Unknown command: ${command}`, 'UNKNOWN_COMMAND', 'Run docsmint --help', { exitCode: 2 })
+      throw new TidyPressError(`Unknown command: ${command}`, 'UNKNOWN_COMMAND', 'Run tidypress --help', { exitCode: 2 })
     }
 
     await handler.execute(this.#buildRequest(command, rest))
@@ -160,10 +160,10 @@ export class Application {
       if (arg === '--preset' || arg === '--starter') {
         const value = args[index + 1]
         if (!value || value.startsWith('-')) {
-          throw new DocsMintError(
+          throw new TidyPressError(
             `Missing value for ${arg}.`,
             'INVALID_INIT_OPTION',
-            'Use docsmint init [--preset <name>]',
+            'Use tidypress init [--preset <name>]',
             { exitCode: 2 },
           )
         }
@@ -174,20 +174,20 @@ export class Application {
       if (arg.startsWith('--preset=') || arg.startsWith('--starter=')) {
         const value = arg.slice(arg.indexOf('=') + 1)
         if (!value) {
-          throw new DocsMintError(
+          throw new TidyPressError(
             `Missing value for ${arg.split('=')[0]}.`,
             'INVALID_INIT_OPTION',
-            'Use docsmint init [--preset <name>]',
+            'Use tidypress init [--preset <name>]',
             { exitCode: 2 },
           )
         }
         starterPreset = value
         continue
       }
-      throw new DocsMintError(
+      throw new TidyPressError(
         `Unknown init option: ${arg}`,
         'INVALID_INIT_OPTION',
-        'Use docsmint init [--preset <name>]',
+        'Use tidypress init [--preset <name>]',
         { exitCode: 2 },
       )
     }
@@ -204,10 +204,10 @@ export class Application {
    */
   #parseMigrateSectionsRequest(args) {
     if (args.length > 0) {
-      throw new DocsMintError(
+      throw new TidyPressError(
         `Unknown migrate-sections option: ${args[0]}`,
         'INVALID_MIGRATE_SECTIONS_OPTION',
-        'Use docsmint migrate-sections',
+        'Use tidypress migrate-sections',
         { exitCode: 2 },
       )
     }
@@ -229,7 +229,7 @@ export class Application {
     const raw = args[portIndex + 1]
     const value = Number(raw)
     if (!Number.isFinite(value) || value <= 0) {
-      throw new DocsMintError('Invalid --port value.', 'INVALID_PORT', 'Use a positive number, e.g. --port 4321', {
+      throw new TidyPressError('Invalid --port value.', 'INVALID_PORT', 'Use a positive number, e.g. --port 4321', {
         exitCode: 2,
       })
     }
@@ -247,7 +247,7 @@ export class Application {
     }
     const value = args[index + 1]
     if (!value) {
-      throw new DocsMintError('Missing value for --output.', 'INVALID_OUTPUT', 'Pass a directory, e.g. --output ./dist', {
+      throw new TidyPressError('Missing value for --output.', 'INVALID_OUTPUT', 'Pass a directory, e.g. --output ./dist', {
         exitCode: 2,
       })
     }
@@ -268,18 +268,18 @@ export class Application {
         continue
       }
       if (arg.startsWith('-')) {
-        throw new DocsMintError(
+        throw new TidyPressError(
           `Unknown deploy option: ${arg}`,
           'INVALID_DEPLOY_OPTION',
-          'Use docsmint deploy [target] [--with-ci]',
+          'Use tidypress deploy [target] [--with-ci]',
           { exitCode: 2 },
         )
       }
       if (target) {
-        throw new DocsMintError(
+        throw new TidyPressError(
           `Unexpected deploy argument: ${arg}`,
           'INVALID_DEPLOY_OPTION',
-          'Use docsmint deploy [target] [--with-ci]',
+          'Use tidypress deploy [target] [--with-ci]',
           { exitCode: 2 },
         )
       }
@@ -299,18 +299,18 @@ export class Application {
   #parseDomainRequest(args) {
     const [action, ...rest] = args
     if (!action) {
-      throw new DocsMintError(
+      throw new TidyPressError(
         'Missing domain subcommand.',
         'INVALID_DOMAIN_OPTION',
-        'Use docsmint domain setup [domain] --platform <platform>',
+        'Use tidypress domain setup [domain] --platform <platform>',
         { exitCode: 2 },
       )
     }
     if (action !== 'setup') {
-      throw new DocsMintError(
+      throw new TidyPressError(
         `Unknown domain subcommand: ${action}`,
         'INVALID_DOMAIN_OPTION',
-        'Use docsmint domain setup [domain] --platform <platform>',
+        'Use tidypress domain setup [domain] --platform <platform>',
         { exitCode: 2 },
       )
     }
@@ -324,10 +324,10 @@ export class Application {
       if (arg === '--platform') {
         platform = rest[index + 1]
         if (!platform || platform.startsWith('-')) {
-          throw new DocsMintError(
+          throw new TidyPressError(
             'Missing value for --platform.',
             'INVALID_DOMAIN_OPTION',
-            'Use docsmint domain setup [domain] --platform <platform>',
+            'Use tidypress domain setup [domain] --platform <platform>',
             { exitCode: 2 },
           )
         }
@@ -337,38 +337,38 @@ export class Application {
       if (arg.startsWith('--platform=')) {
         platform = arg.slice('--platform='.length)
         if (!platform) {
-          throw new DocsMintError(
+          throw new TidyPressError(
             'Missing value for --platform.',
             'INVALID_DOMAIN_OPTION',
-            'Use docsmint domain setup [domain] --platform <platform>',
+            'Use tidypress domain setup [domain] --platform <platform>',
             { exitCode: 2 },
           )
         }
         continue
       }
       if (arg.startsWith('-')) {
-        throw new DocsMintError(
+        throw new TidyPressError(
           `Unknown domain option: ${arg}`,
           'INVALID_DOMAIN_OPTION',
-          'Use docsmint domain setup [domain] --platform <platform>',
+          'Use tidypress domain setup [domain] --platform <platform>',
           { exitCode: 2 },
         )
       }
       if (domain) {
-        throw new DocsMintError(
+        throw new TidyPressError(
           `Unexpected domain argument: ${arg}`,
           'INVALID_DOMAIN_OPTION',
-          'Use docsmint domain setup [domain] --platform <platform>',
+          'Use tidypress domain setup [domain] --platform <platform>',
           { exitCode: 2 },
         )
       }
       domain = arg
     }
     if (!platform) {
-      throw new DocsMintError(
+      throw new TidyPressError(
         'Missing required --platform option.',
         'INVALID_DOMAIN_OPTION',
-        'Use docsmint domain setup [domain] --platform <platform>',
+        'Use tidypress domain setup [domain] --platform <platform>',
         { exitCode: 2 },
       )
     }
@@ -395,18 +395,18 @@ export class Application {
         continue
       }
       if (arg.startsWith('-')) {
-        throw new DocsMintError(
+        throw new TidyPressError(
           `Unknown add-version option: ${arg}`,
           'INVALID_ADD_VERSION_OPTION',
-          'Use docsmint add-version <label> [--set-latest]',
+          'Use tidypress add-version <label> [--set-latest]',
           { exitCode: 2 },
         )
       }
       if (versionLabel) {
-        throw new DocsMintError(
+        throw new TidyPressError(
           `Unexpected add-version argument: ${arg}`,
           'INVALID_ADD_VERSION_OPTION',
-          'Use docsmint add-version <label> [--set-latest]',
+          'Use tidypress add-version <label> [--set-latest]',
           { exitCode: 2 },
         )
       }
@@ -414,10 +414,10 @@ export class Application {
     }
 
     if (!versionLabel) {
-      throw new DocsMintError(
+      throw new TidyPressError(
         'Missing version label for add-version.',
         'INVALID_ADD_VERSION_OPTION',
-        'Use docsmint add-version <label> [--set-latest]',
+        'Use tidypress add-version <label> [--set-latest]',
         { exitCode: 2 },
       )
     }
@@ -449,10 +449,10 @@ export class Application {
       const arg = args[index]
       if (arg === 'medium' || arg === 'devto' || arg === 'substack' || arg === 'ghost') {
         if (provider) {
-          throw new DocsMintError(
+          throw new TidyPressError(
             `Unexpected import provider: ${arg}`,
             'INVALID_IMPORT_OPTION',
-            'Use docsmint import <medium|devto|substack|ghost> [provider options]',
+            'Use tidypress import <medium|devto|substack|ghost> [provider options]',
             { exitCode: 2 },
           )
         }
@@ -463,10 +463,10 @@ export class Application {
       if (arg === '--url' || arg === '--username' || arg === '--export' || arg === '--scheduled') {
         const value = args[index + 1]
         if (!value || value.startsWith('-')) {
-          throw new DocsMintError(
+          throw new TidyPressError(
             `Missing value for ${arg}.`,
             'INVALID_IMPORT_OPTION',
-            'Use docsmint import <provider> with provider-specific options',
+            'Use tidypress import <provider> with provider-specific options',
             { exitCode: 2 },
           )
         }
@@ -483,19 +483,19 @@ export class Application {
         continue
       }
 
-      throw new DocsMintError(
+      throw new TidyPressError(
         `Unknown import option: ${arg}`,
         'INVALID_IMPORT_OPTION',
-        'Use docsmint import <medium|devto|substack|ghost> [provider options]',
+        'Use tidypress import <medium|devto|substack|ghost> [provider options]',
         { exitCode: 2 },
       )
     }
 
     if (!provider) {
-      throw new DocsMintError(
+      throw new TidyPressError(
         'Missing import provider.',
         'INVALID_IMPORT_OPTION',
-        'Use docsmint import <medium|devto|substack|ghost> [provider options]',
+        'Use tidypress import <medium|devto|substack|ghost> [provider options]',
         { exitCode: 2 },
       )
     }
@@ -516,10 +516,10 @@ export class Application {
           : provider === 'devto'
             ? '--username'
             : '--export'
-      throw new DocsMintError(
+      throw new TidyPressError(
         `Missing required ${providerHint} for ${provider} import.`,
         'INVALID_IMPORT_OPTION',
-        `Use docsmint import ${provider} ${providerHint} <value>`,
+        `Use tidypress import ${provider} ${providerHint} <value>`,
         { exitCode: 2 },
       )
     }
@@ -542,10 +542,10 @@ export class Application {
       if (arg === flag) {
         continue
       }
-      throw new DocsMintError(
+      throw new TidyPressError(
         `Unknown editor option: ${arg}`,
         'INVALID_EDITOR_OPTION',
-        `Use docsmint editor ${flag}`,
+        `Use tidypress editor ${flag}`,
         { exitCode: 2 },
       )
     }
@@ -565,18 +565,18 @@ export class Application {
     const [format, source, extra] = positional
     const allowedFormats = new Set(['pdf', 'epub', 'archive'])
     if (!format || !allowedFormats.has(format)) {
-      throw new DocsMintError(
+      throw new TidyPressError(
         `Unknown export format: ${format ?? '(missing)'}`,
         'INVALID_EXPORT_OPTION',
-        `Use docsmint export <pdf|epub|archive> [source] ${flag}`,
+        `Use tidypress export <pdf|epub|archive> [source] ${flag}`,
         { exitCode: 2 },
       )
     }
     if (extra) {
-      throw new DocsMintError(
+      throw new TidyPressError(
         `Unexpected export argument: ${extra}`,
         'INVALID_EXPORT_OPTION',
-        `Use docsmint export <pdf|epub|archive> [source] ${flag}`,
+        `Use tidypress export <pdf|epub|archive> [source] ${flag}`,
         { exitCode: 2 },
       )
     }
@@ -598,10 +598,10 @@ export class Application {
     const [action, ...actionArgs] = positional
     const allowedActions = new Set(['suggest', 'translate', 'changelog'])
     if (!action || !allowedActions.has(action)) {
-      throw new DocsMintError(
+      throw new TidyPressError(
         `Unknown ai action: ${action ?? '(missing)'}`,
         'INVALID_AI_OPTION',
-        `Use docsmint ai <suggest|translate|changelog> [args] ${flag}`,
+        `Use tidypress ai <suggest|translate|changelog> [args] ${flag}`,
         { exitCode: 2 },
       )
     }

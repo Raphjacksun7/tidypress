@@ -1,5 +1,5 @@
 /**
- * Handles `docsmint init`.
+ * Handles `tidypress init`.
  */
 export class InitCommand {
   /**
@@ -16,6 +16,6 @@ export class InitCommand {
    */
   async execute(request) {
     const { docsDir, starterPreset } = await this.scaffoldService.scaffold(request)
-    this.io.info(`Initialized DocsMint in ${docsDir} (starter: ${starterPreset})`)
+    this.io.info(`Initialized TidyPress in ${docsDir} (starter: ${starterPreset})`)
   }
 }

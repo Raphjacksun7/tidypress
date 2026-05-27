@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { isStarterCollectionKey, resolveCapabilityFlags } from '@docsmint/config'
+import { isStarterCollectionKey, resolveCapabilityFlags } from '@tidypress/config'
 /**
  * @typedef {{
  *   collections?: Record<string, { enabled?: boolean, kind?: 'content' | 'writing' | 'page' }>
@@ -63,7 +63,7 @@ async function walkMarkdownFiles(rootDir) {
  */
 export async function createContentSnapshot(docsDir, config) {
   const capabilityFlags = resolveCapabilityFlags(
-    /** @type {import('@docsmint/config').DocsMintConfig} */ (
+    /** @type {import('@tidypress/config').TidyPressConfig} */ (
       {
         name: 'snapshot',
         ...(config ?? {}),
@@ -112,7 +112,7 @@ export async function writeContentSnapshot({ docsDir, outputPath, config }) {
   const snapshot = await createContentSnapshot(docsDir, config)
   const rel = target => path.relative(docsDir, target).replaceAll(path.sep, '/')
 
-  const lines = ['# DocsMint Context Snapshot', '']
+  const lines = ['# TidyPress Context Snapshot', '']
   for (const item of snapshot) {
     lines.push(`- [${item.collection}] ${item.title}`)
     lines.push(`  - path: \`${rel(item.filePath)}\``)

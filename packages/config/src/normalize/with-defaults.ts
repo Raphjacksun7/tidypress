@@ -1,6 +1,6 @@
 import { defaultConfig } from '../defaults.js'
 import { normalizeCapabilities, resolveCapabilityFlags } from '../registry/capabilities.js'
-import type { DocsMintConfig } from '../schema/index.js'
+import type { TidyPressConfig } from '../schema/index.js'
 import {
   applyStarterCapabilityOverrides,
   deriveSectionsFromCollections,
@@ -24,7 +24,7 @@ import { normalizeHero } from './hero.js'
 import { normalizeHome } from './home.js'
 import { normalizeVersions } from './versions.js'
 
-export function withDefaults(config: DocsMintConfig): DocsMintConfig {
+export function withDefaults(config: TidyPressConfig): TidyPressConfig {
   const pages = collectPageEntries(config)
   const normalizedCapabilities = normalizeCapabilities(config)
   const baseCollections = normalizeCollections(config)

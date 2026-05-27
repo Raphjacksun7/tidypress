@@ -13,7 +13,7 @@ from pathlib import Path
 import re
 from typing import Any
 
-from docsmint.errors import DocsMintError
+from tidypress.errors import TidyPressError
 
 
 @dataclass(frozen=True)
@@ -36,30 +36,30 @@ def _docs_root(cwd: Path) -> Path:
 
 
 def parse_convert_args(args: list[str], cwd: Path | None = None) -> ConvertOptions:
-    parser = argparse.ArgumentParser(add_help=False, prog="docsmint convert")
+    parser = argparse.ArgumentParser(add_help=False, prog="tidypress convert")
     parser.add_argument("input_path", nargs="?")
     parser.add_argument("--input", "--input-path", dest="input_flag")
     parser.add_argument("--output", "--output-path", dest="output_path")
     parser.add_argument("--watch", action="store_true")
     namespace, unknown = parser.parse_known_args(args)
     if unknown:
-        raise DocsMintError(
+        raise TidyPressError(
             f"Unknown convert options: {' '.join(unknown)}",
             code="CONVERT_ARGS",
-            hint="Use docsmint convert <file.ipynb> [--output <file.mdx>]",
+            hint="Use tidypress convert <file.ipynb> [--output <file.mdx>]",
         )
 
     raw_input = namespace.input_path or namespace.input_flag
     if not raw_input:
-        raise DocsMintError(
+        raise TidyPressError(
             "Missing notebook input path.",
             code="CONVERT_ARGS",
-            hint="Use docsmint convert <file.ipynb>.",
+            hint="Use tidypress convert <file.ipynb>.",
         )
 
     source = Path(raw_input).expanduser().resolve()
     if source.suffix.lower() != ".ipynb":
-        raise DocsMintError(
+        raise TidyPressError(
             f"Expected .ipynb notebook input, got: {source}",
             code="CONVERT_ARGS",
         )
@@ -71,30 +71,30 @@ def parse_convert_args(args: list[str], cwd: Path | None = None) -> ConvertOptio
 
 
 def parse_extract_args(args: list[str], cwd: Path | None = None) -> ExtractOptions:
-    parser = argparse.ArgumentParser(add_help=False, prog="docsmint extract-docs")
+    parser = argparse.ArgumentParser(add_help=False, prog="tidypress extract-docs")
     parser.add_argument("source", nargs="?")
     parser.add_argument("--source", dest="source_flag")
     parser.add_argument("--lang", default="py")
     parser.add_argument("--output")
     namespace, unknown = parser.parse_known_args(args)
     if unknown:
-        raise DocsMintError(
+        raise TidyPressError(
             f"Unknown extract-docs options: {' '.join(unknown)}",
             code="EXTRACT_ARGS",
-            hint="Use docsmint extract-docs <path> [--lang py|ts|go]",
+            hint="Use tidypress extract-docs <path> [--lang py|ts|go]",
         )
 
     raw_source = namespace.source or namespace.source_flag
     if not raw_source:
-        raise DocsMintError(
+        raise TidyPressError(
             "Missing source directory for extract-docs.",
             code="EXTRACT_ARGS",
-            hint="Use docsmint extract-docs src/",
+            hint="Use tidypress extract-docs src/",
         )
     source = Path(raw_source).expanduser().resolve()
     language = str(namespace.lang).strip().lower()
     if language not in {"py", "ts", "go"}:
-        raise DocsMintError("Unsupported language for extract-docs.", code="EXTRACT_ARGS", hint="Use --lang py, ts, or go.")
+        raise TidyPressError("Unsupported language for extract-docs.", code="EXTRACT_ARGS", hint="Use --lang py, ts, or go.")
     working_dir = (cwd or Path.cwd()).resolve()
     default_output = _docs_root(working_dir) / "src" / "content" / "docs" / "api" / f"{language}.md"
     output = Path(namespace.output).expanduser().resolve() if namespace.output else default_output
@@ -103,12 +103,12 @@ def parse_extract_args(args: list[str], cwd: Path | None = None) -> ExtractOptio
 
 def convert_notebook(options: ConvertOptions) -> Path:
     if not options.input_path.is_file():
-        raise DocsMintError(f"Notebook not found: {options.input_path}", code="CONVERT_INPUT_MISSING")
+        raise TidyPressError(f"Notebook not found: {options.input_path}", code="CONVERT_INPUT_MISSING")
 
     try:
         notebook = json.loads(options.input_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
-        raise DocsMintError(
+        raise TidyPressError(
             f"Notebook is not valid JSON: {options.input_path}",
             code="CONVERT_INPUT_INVALID",
             hint=str(exc),
@@ -191,7 +191,7 @@ def _render_code_output(
             try:
                 image_path.write_bytes(base64.b64decode(image_data, validate=True))
             except (ValueError, binascii.Error) as exc:
-                raise DocsMintError(
+                raise TidyPressError(
                     f"Notebook output image is not valid base64 in cell {cell_index + 1}.",
                     code="CONVERT_OUTPUT_INVALID",
                     hint=str(exc),
@@ -208,7 +208,7 @@ def _render_code_output(
 
 def extract_docs(options: ExtractOptions) -> Path:
     if not options.source_path.exists():
-        raise DocsMintError(f"Source path not found: {options.source_path}", code="EXTRACT_SOURCE_MISSING")
+        raise TidyPressError(f"Source path not found: {options.source_path}", code="EXTRACT_SOURCE_MISSING")
 
     if options.language == "py":
         docs = _extract_python_docs(options.source_path)

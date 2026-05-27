@@ -6,7 +6,7 @@
 //   ![alt text](/public-image.png)      ← served from public/, no processing
 import { Image as AstroImage } from 'astro:assets'
 import {
-  DOCSMINT_IMAGE_PRESENTATION,
+  TIDYPRESS_IMAGE_PRESENTATION,
   isRemoteOrPublicImageSrc,
 } from '@/utils/image'
 
@@ -21,16 +21,16 @@ export interface Props {
 const { src, alt, width, height, caption } = Astro.props
 const isRemoteOrPublic = isRemoteOrPublicImageSrc(src)
 ---
-<figure class={DOCSMINT_IMAGE_PRESENTATION.figureClass}>
+<figure class={TIDYPRESS_IMAGE_PRESENTATION.figureClass}>
   {isRemoteOrPublic
     ? <img src={src as string} alt={alt} width={width} height={height}
-           class={DOCSMINT_IMAGE_PRESENTATION.frameClass} loading="lazy" />
+           class={TIDYPRESS_IMAGE_PRESENTATION.frameClass} loading="lazy" />
     : <AstroImage src={src as ImageMetadata} alt={alt}
-           width={width ?? DOCSMINT_IMAGE_PRESENTATION.optimizedWidth}
-           height={height ?? DOCSMINT_IMAGE_PRESENTATION.optimizedHeight}
-           class={DOCSMINT_IMAGE_PRESENTATION.frameClass} />
+           width={width ?? TIDYPRESS_IMAGE_PRESENTATION.optimizedWidth}
+           height={height ?? TIDYPRESS_IMAGE_PRESENTATION.optimizedHeight}
+           class={TIDYPRESS_IMAGE_PRESENTATION.frameClass} />
   }
   {caption && (
-    <figcaption class={DOCSMINT_IMAGE_PRESENTATION.captionClass}>{caption}</figcaption>
+    <figcaption class={TIDYPRESS_IMAGE_PRESENTATION.captionClass}>{caption}</figcaption>
   )}
 </figure>

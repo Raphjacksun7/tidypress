@@ -2,19 +2,19 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 
 import {
-  defaultDocsMintDocForm,
-  docsMintDocForms,
-  formatDocsMintDocForms,
-  isDocsMintDocForm,
+  defaultTidyPressDocForm,
+  tidyPressDocForms,
+  formatTidyPressDocForms,
+  isTidyPressDocForm,
   withDefaults,
 } from '../dist/index.js'
 
-test('docsMintDocForms registry lists documentation models for the docs collection', () => {
-  assert.deepEqual(docsMintDocForms.sort(), ['doc', 'manual'])
-  assert.equal(defaultDocsMintDocForm, 'doc')
-  assert.equal(isDocsMintDocForm('manual'), true)
-  assert.equal(isDocsMintDocForm('playbook'), false)
-  assert.match(formatDocsMintDocForms(), /"doc"/)
+test('tidyPressDocForms registry lists documentation models for the docs collection', () => {
+  assert.deepEqual(tidyPressDocForms.sort(), ['doc', 'manual'])
+  assert.equal(defaultTidyPressDocForm, 'doc')
+  assert.equal(isTidyPressDocForm('manual'), true)
+  assert.equal(isTidyPressDocForm('playbook'), false)
+  assert.match(formatTidyPressDocForms(), /"doc"/)
 })
 
 test('withDefaults accepts reserved collection render paths', () => {

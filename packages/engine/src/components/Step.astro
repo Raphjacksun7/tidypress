@@ -6,7 +6,7 @@
  * Usage in MDX:
  *   <Steps>
  *     <Step title="Install">Run `npm install`</Step>
- *     <Step title="Configure">Edit `docsmint.config.ts`</Step>
+ *     <Step title="Configure">Edit `tidypress.config.ts`</Step>
  *   </Steps>
  */
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
 }
 const { title } = Astro.props
 ---
-<li class="docsmint-step">
-  {title && <span class="docsmint-step__title">{title}</span>}
+<li class="tidypress-step">
+  {title && <span class="tidypress-step__title">{title}</span>}
   <slot />
 </li>

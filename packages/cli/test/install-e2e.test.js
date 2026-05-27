@@ -1,5 +1,5 @@
 /**
- * Real install e2e: npm pack docsmint → npm install tarball in clean dir → CLI subprocess init/build.
+ * Real install e2e: npm pack tidypress → npm install tarball in clean dir → CLI subprocess init/build.
  * Not workspace-linked BuildService shortcuts.
  */
 import test from 'node:test'
@@ -8,17 +8,17 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 
 import {
-  installDocsmintTarball,
-  packDocsmintTarball,
+  installTidyPressTarball,
+  packTidyPressTarball,
   runInstalledCli,
   scaffoldInstalledPresetSite,
 } from './support/install-e2e-helpers.js'
 
-const tarballPromise = packDocsmintTarball()
+const tarballPromise = packTidyPressTarball()
 
-test('packed docsmint installs and prints version', { timeout: 600_000 }, async () => {
+test('packed tidypress installs and prints version', { timeout: 600_000 }, async () => {
   const tarball = await tarballPromise
-  const { installRoot, cliPath } = await installDocsmintTarball(tarball)
+  const { installRoot, cliPath } = await installTidyPressTarball(tarball)
   const { stdout } = await runInstalledCli(cliPath, ['--version'], installRoot)
   assert.match(stdout.trim(), /^\d+\.\d+\.\d+/)
 })
@@ -27,7 +27,7 @@ test('installed lab: init + build + writing/projects/rss/pagefind', { timeout: 9
   const tarball = await tarballPromise
   const { siteRoot, docsDir, buildDir, cliPath } = await scaffoldInstalledPresetSite(tarball, 'lab')
 
-  const config = await fs.readFile(path.join(docsDir, 'docsmint.config.ts'), 'utf8')
+  const config = await fs.readFile(path.join(docsDir, 'tidypress.config.ts'), 'utf8')
   assert.match(config, /"kind": "projects"/)
   assert.doesNotMatch(config, /"enabled": true,\s*"basePath": "\/docs"/)
 
@@ -73,7 +73,7 @@ test('installed persona: hero + about + projects', { timeout: 900_000 }, async (
   const tarball = await tarballPromise
   const { docsDir, buildDir } = await scaffoldInstalledPresetSite(tarball, 'persona')
 
-  const config = await fs.readFile(path.join(docsDir, 'docsmint.config.ts'), 'utf8')
+  const config = await fs.readFile(path.join(docsDir, 'tidypress.config.ts'), 'utf8')
   assert.match(config, /"enabled": true/)
   assert.match(config, /"role":/)
 

@@ -1,14 +1,14 @@
 ---
 import {
-  docsMintHeroScalarFields,
+  tidyPressHeroScalarFields,
   heroHasRenderableContent,
   resolveHeroLinkAttributes,
-  type DocsMintHero,
-} from '@docsmint/config'
+  type TidyPressHero,
+} from '@tidypress/config'
 import { isRemoteOrPublicImageSrc } from '@/utils/image'
 
 interface Props {
-  hero: DocsMintHero
+  hero: TidyPressHero
   imageBaseUrl?: string
 }
 
@@ -29,7 +29,7 @@ function resolveHeroImageSrc(imagePath: string | undefined, baseUrl: string | un
 }
 
 const heroImageSrc = resolveHeroImageSrc(hero.image, imageBaseUrl)
-const heroTextScalars = docsMintHeroScalarFields.filter(key => key !== 'image')
+const heroTextScalars = tidyPressHeroScalarFields.filter(key => key !== 'image')
 ---
 {hasContent && (
   <div class="dm-hero">

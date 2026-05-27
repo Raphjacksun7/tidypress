@@ -1,5 +1,5 @@
 ---
-title: Extending DocsMint
+title: Extending TidyPress
 description: Advanced rendering hooks for custom collections and custom docs forms.
 order: 11
 ---
@@ -8,7 +8,7 @@ Project-local presentation hooks for custom sections and docs forms.
 
 ## Two axes
 
-DocsMint separates content location from page model:
+TidyPress separates content location from page model:
 
 | Axis | Declared in | Use for |
 |------|-------------|---------|
@@ -81,10 +81,10 @@ collections: {
 }
 ```
 
-On `docsmint dev` and `docsmint build`:
+On `tidypress dev` and `tidypress build`:
 
 1. The config is validated.
-2. DocsMint writes a plugin manifest into the local cache (`~/.cache/docsmint/.../codegen/`).
+2. TidyPress writes a plugin manifest into the local cache (`~/.cache/tidypress/.../codegen/`).
 3. Custom Astro views resolve from your project via the `@project` alias.
 4. The engine imports the presentation module.
 5. `RouteViewShell` uses your view when a matching key exists.
@@ -98,13 +98,13 @@ Paths must be project-local `./` paths. Parent directory traversal is rejected.
 Export `createPresentation(site, context)`:
 
 ```ts
-import type { DocsMintConfig } from '@docsmint/config'
-import type { DocsMintPluginPresentation } from '@docsmint/engine/plugins'
+import type { TidyPressConfig } from '@tidypress/config'
+import type { TidyPressPluginPresentation } from '@tidypress/engine/plugins'
 
 export function createPresentation(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   context: { collectionKey: string },
-): DocsMintPluginPresentation {
+): TidyPressPluginPresentation {
   return {
     async buildIndex(route) {
       return {
@@ -134,7 +134,7 @@ Prefix view keys with the collection key.
 
 ## Optional Astro views
 
-If `render.views` points to `./site/views/api/`, DocsMint looks for:
+If `render.views` points to `./site/views/api/`, TidyPress looks for:
 
 ```txt
 collection-index.astro
@@ -173,6 +173,6 @@ Built-in form names cannot be overridden.
 
 ## Development reload
 
-During `docsmint dev`, changes to config, presentation modules, and optional views regenerate the plugin manifest and reload the browser.
+During `tidypress dev`, changes to config, presentation modules, and optional views regenerate the plugin manifest and reload the browser.
 
-If a plugin path or export is invalid, DocsMint fails before the server starts. Fix the config path or module export and run again.
+If a plugin path or export is invalid, TidyPress fails before the server starts. Fix the config path or module export and run again.

@@ -1,10 +1,10 @@
 ---
-title: How DocsMint works
+title: How TidyPress works
 description: How the CLI, config package, Astro engine, build output, and cache fit together.
 order: 3
 ---
 
-DocsMint is split into three packages and one optional Python wrapper.
+TidyPress is split into three packages and one optional Python wrapper.
 
 ```txt
 packages/
@@ -18,27 +18,27 @@ wrappers/
 
 ## Build flow
 
-When you run `docsmint dev` or `docsmint build`, the CLI resolves your docs directory and runs the pinned `@docsmint/engine` package. Your markdown stays in place; only a static artifact and a local cache are created.
+When you run `tidypress dev` or `tidypress build`, the CLI resolves your docs directory and runs the pinned `@tidypress/engine` package. Your markdown stays in place; only a static artifact and a local cache are created.
 
 ```txt
 docs/                          # or project root when config lives there
-├── docsmint.config.ts
+├── tidypress.config.ts
 ├── src/content/
 ├── public/
 └── build/                     # gitignored — upload this folder
 
-~/.cache/docsmint/<key>/       # compiler cache (not deployed)
+~/.cache/tidypress/<key>/       # compiler cache (not deployed)
 ```
 
 Steps:
 
 1. The CLI resolves the docs directory and validates config.
 2. Plugin manifest codegen writes to the cache directory.
-3. Astro runs from `node_modules/@docsmint/engine` with `DOCSMINT_PROJECT_ROOT` pointing at your project.
+3. Astro runs from `node_modules/@tidypress/engine` with `TIDYPRESS_PROJECT_ROOT` pointing at your project.
 4. Static HTML is written to `build/`.
 5. Pagefind indexes `build/`.
 
-Power users can add `@docsmint/astro` and an `astro.config.mjs` in the docs directory (`docsmint init --with-astro`).
+Power users can add `@tidypress/astro` and an `astro.config.mjs` in the docs directory (`tidypress init --with-astro`).
 
 ## CLI package
 
@@ -109,13 +109,13 @@ Writing posts live in:
 docs/src/content/writing/
 ```
 
-Custom collections live beside those folders and are configured in `docsmint.config.ts`.
+Custom collections live beside those folders and are configured in `tidypress.config.ts`.
 
 ## Search
 
 Search is powered by [Pagefind](https://pagefind.app/).
 
-`docsmint build` renders HTML, then builds the Pagefind index inside `build/`.
+`tidypress build` renders HTML, then builds the Pagefind index inside `build/`.
 
 ## Python wrapper
 
@@ -129,6 +129,6 @@ Advanced projects can extend rendering with:
 - `extensions.docForms`
 - project-local presentation modules
 - optional Astro view files (resolved via `@project/`)
-- `@docsmint/astro` integration for explicit Astro projects
+- `@tidypress/astro` integration for explicit Astro projects
 
 See [CI and deployment](/docs/manual/ci) for caching and upload guidance.

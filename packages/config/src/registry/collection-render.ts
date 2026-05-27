@@ -2,7 +2,7 @@
  * Reserved collection-level rendering hooks (custom presentation + views).
  * Loaded at build time via generated manifest + dynamic import from the project root.
  */
-export interface DocsMintCollectionRender {
+export interface TidyPressCollectionRender {
   /** Project-relative path to a presentation module, e.g. `./site/renderers/api-presentation.ts` */
   presentation?: string
   /** Project-relative directory of Astro route views, e.g. `./site/views/api/` */
@@ -11,7 +11,7 @@ export interface DocsMintCollectionRender {
 
 const projectRelativePathPattern = /^\.\//
 
-export function validateCollectionRender(collectionKey: string, render?: DocsMintCollectionRender): void {
+export function validateCollectionRender(collectionKey: string, render?: TidyPressCollectionRender): void {
   if (!render) {
     return
   }

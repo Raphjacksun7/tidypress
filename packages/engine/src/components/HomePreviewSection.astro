@@ -1,12 +1,12 @@
 ---
 import {
-  docsMintHomePreviewPresentation,
+  tidyPressHomePreviewPresentation,
   isCardListLayout,
   listGapStackClass,
   listLayoutPresentation,
   resolveEntryLinkAttributes,
   type ResolvedListDisplay,
-} from '@docsmint/config'
+} from '@tidypress/config'
 import EntryIcon from '@/components/EntryIcon.astro'
 import TagList from '@/components/TagList.astro'
 import type { HomePreviewItem } from '@/utils/home-preview'
@@ -25,7 +25,7 @@ const { title, items, display, showDateInList, showDescriptionInList, moreHref, 
 const stackClass = listGapStackClass(display.gap)
 const cardPresentation = listLayoutPresentation('card')
 const listPresentation = listLayoutPresentation('list')
-const previewPresentation = docsMintHomePreviewPresentation
+const previewPresentation = tidyPressHomePreviewPresentation
 const shouldRenderCardRows = isCardListLayout(display.layout) && display.showDescription
 ---
 {items.length > 0 && (

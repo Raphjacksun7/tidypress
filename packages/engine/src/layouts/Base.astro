@@ -4,7 +4,7 @@ import Nav from '@/components/Nav.astro'
 import Footer from '@/components/Footer.astro'
 import { getConfig } from '@/config/getConfig'
 import { getUiStrings, resolveLocale } from '@/i18n/locale'
-import { resolveCapabilityFlags } from '@docsmint/config'
+import { resolveCapabilityFlags } from '@tidypress/config'
 
 export interface Props {
   title: string
@@ -101,7 +101,7 @@ const ogImageHref = resolveOgImageHref(ogImage, siteBaseUrl)
   <meta name="twitter:description" content={metaDescription} />
   {ogImageHref && <meta name="twitter:image" content={ogImageHref} />}
   {faviconHref && (
-    <link id="docsmint-favicon" rel="icon" type={faviconIsSvg ? 'image/svg+xml' : undefined} href={faviconHref} />
+    <link id="tidypress-favicon" rel="icon" type={faviconIsSvg ? 'image/svg+xml' : undefined} href={faviconHref} />
   )}
   <style is:inline>{themeCssVariables}</style>
   {site.analytics?.type === 'plausible' && site.analytics.endpoint && site.analytics.siteId && (

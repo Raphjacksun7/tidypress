@@ -1,5 +1,5 @@
-import { isCapabilityEnabled, withDefaults } from '@docsmint/config'
-import { DocsMintError } from '../errors/DocsMintError.js'
+import { isCapabilityEnabled, withDefaults } from '@tidypress/config'
+import { TidyPressError } from '../errors/TidyPressError.js'
 
 /**
  * Explicit guardrail for risky stretch features.
@@ -25,7 +25,7 @@ export class ExperimentalFeatureService {
    */
   async assertEnabled({ projectRoot, feature, cliEnabled, cliHint, configHint }) {
     if (!cliEnabled) {
-      throw new DocsMintError(
+      throw new TidyPressError(
         `Experimental ${feature} is disabled. Pass the explicit CLI flag to continue.`,
         'EXPERIMENTAL_FLAG_REQUIRED',
         cliHint,
@@ -39,7 +39,7 @@ export class ExperimentalFeatureService {
     const config = withDefaults(rawConfig)
     const enabled = isCapabilityEnabled(config, feature)
     if (!enabled) {
-      throw new DocsMintError(
+      throw new TidyPressError(
         `Experimental ${feature} is disabled in docs config.`,
         'EXPERIMENTAL_CONFIG_DISABLED',
         configHint,

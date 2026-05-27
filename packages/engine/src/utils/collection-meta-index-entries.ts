@@ -1,4 +1,4 @@
-import { parseCollectionMetaIndexSlug } from '@docsmint/config'
+import { parseCollectionMetaIndexSlug } from '@tidypress/config'
 
 type TaggedEntry = { data: { tags?: string[] } }
 type DatedEntry = { data: { date?: string | Date } }

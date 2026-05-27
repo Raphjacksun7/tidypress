@@ -1,1 +1,1 @@
-export { default } from '@docsmint/engine/integration/docsmint.mjs'
+export { default } from '@tidypress/engine/integration/tidypress.mjs'

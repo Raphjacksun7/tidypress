@@ -1,8 +1,8 @@
-import type { DocsMintCollectionKind } from '@docsmint/config'
+import type { TidyPressCollectionKind } from '@tidypress/config'
 import type { SiteRouteDefinition } from '@/routing/types'
 import type { RouteViewBundle } from '@/collections/bundle'
 
-export type CollectionPresentationTarget = DocsMintCollectionKind | 'site-docs'
+export type CollectionPresentationTarget = TidyPressCollectionKind | 'site-docs'
 
 export interface ICollection {
   readonly presentationTarget: CollectionPresentationTarget

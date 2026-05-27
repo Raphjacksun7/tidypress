@@ -1,13 +1,13 @@
-import { docsMintYamlSchema } from './schema-files.js'
+import { tidyPressYamlSchema } from './schema-files.js'
 
-export interface DocsMintYamlValidationIssue {
+export interface TidyPressYamlValidationIssue {
   path: string
   message: string
 }
 
-export interface DocsMintYamlValidationResult {
+export interface TidyPressYamlValidationResult {
   ok: boolean
-  issues: DocsMintYamlValidationIssue[]
+  issues: TidyPressYamlValidationIssue[]
 }
 
 function typeName(value: unknown): string {
@@ -24,7 +24,7 @@ function validateNode(
   schema: Record<string, unknown>,
   value: unknown,
   path: string,
-  issues: DocsMintYamlValidationIssue[],
+  issues: TidyPressYamlValidationIssue[],
 ): void {
   const expectedType = schema.type
   if (typeof expectedType === 'string') {
@@ -75,9 +75,9 @@ function validateNode(
   }
 }
 
-/** Validate a parsed docsmint.yaml document against the shared JSON Schema. */
-export function validateDocsMintYaml(value: unknown): DocsMintYamlValidationResult {
-  const issues: DocsMintYamlValidationIssue[] = []
-  validateNode(docsMintYamlSchema, value, '', issues)
+/** Validate a parsed tidypress.yaml document against the shared JSON Schema. */
+export function validateTidyPressYaml(value: unknown): TidyPressYamlValidationResult {
+  const issues: TidyPressYamlValidationIssue[] = []
+  validateNode(tidyPressYamlSchema, value, '', issues)
   return { ok: issues.length === 0, issues }
 }

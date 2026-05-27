@@ -3,7 +3,7 @@ import path from 'node:path'
 
 import { fetchDevToArticle } from '../application/import/devto.js'
 import { formatWritingImportMarkdown } from '../application/import/format-writing-import.js'
-import { DocsMintError } from '../errors/DocsMintError.js'
+import { TidyPressError } from '../errors/TidyPressError.js'
 
 /**
  * Creates import-ready writing drafts from external provider references.
@@ -47,7 +47,7 @@ export class ImportService {
         return { outputPath: filePath, imported: true }
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error)
-        throw new DocsMintError(
+        throw new TidyPressError(
           `Dev.to import failed: ${message}`,
           'IMPORT_FAILED',
           'Use a public dev.to article URL or username/slug path.',
@@ -80,7 +80,7 @@ export class ImportService {
     }
     const parsed = new Date(scheduled)
     if (Number.isNaN(parsed.getTime())) {
-      throw new DocsMintError(
+      throw new TidyPressError(
         `Invalid scheduled value "${scheduled}".`,
         'INVALID_IMPORT_OPTION',
         'Use an ISO datetime like 2026-05-20T09:00:00Z',

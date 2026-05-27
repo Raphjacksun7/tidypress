@@ -1,4 +1,4 @@
-import { DocsMintError } from '../errors/DocsMintError.js'
+import { TidyPressError } from '../errors/TidyPressError.js'
 import { assertDeploymentStrategy } from './DeploymentStrategy.js'
 
 /**
@@ -23,7 +23,7 @@ export class DeploymentStrategyRegistry {
     assertDeploymentStrategy(strategy)
 
     if (this.strategies.some(candidate => candidate.id === strategy.id)) {
-      throw new DocsMintError(
+      throw new TidyPressError(
         `Duplicate deployment strategy id: ${strategy.id}`,
         'DEPLOY_STRATEGY_DUPLICATE',
         'Use unique strategy ids when registering deploy plugins',

@@ -1,9 +1,9 @@
-import type { DocsMintCapabilities, DocsMintCapabilityName, DocsMintConfig } from '../schema/index.js'
+import type { TidyPressCapabilities, TidyPressCapabilityName, TidyPressConfig } from '../schema/index.js'
 import { isStarterCollectionKey } from './legacy.js'
 
-export type DocsMintCapabilityLifecycle = 'stable' | 'experimental'
-export type DocsMintCapabilityScope = 'collection' | 'feature'
-export type DocsMintCapabilitySource =
+export type TidyPressCapabilityLifecycle = 'stable' | 'experimental'
+export type TidyPressCapabilityScope = 'collection' | 'feature'
+export type TidyPressCapabilitySource =
   | 'default'
   | 'config'
   | 'config-capability-disable'
@@ -11,10 +11,10 @@ export type DocsMintCapabilitySource =
   | 'override-disable'
   | 'override-enable'
 
-export interface DocsMintCapabilityDescriptor {
-  key: DocsMintCapabilityName
-  scope: DocsMintCapabilityScope
-  lifecycle: DocsMintCapabilityLifecycle
+export interface TidyPressCapabilityDescriptor {
+  key: TidyPressCapabilityName
+  scope: TidyPressCapabilityScope
+  lifecycle: TidyPressCapabilityLifecycle
   defaultEnabled: boolean
 }
 
@@ -27,24 +27,24 @@ export const capabilityRegistry = [
   { key: 'ai', scope: 'feature', lifecycle: 'experimental', defaultEnabled: false },
   { key: 'theming', scope: 'feature', lifecycle: 'stable', defaultEnabled: true },
   { key: 'themingCustom', scope: 'feature', lifecycle: 'stable', defaultEnabled: false },
-] as const satisfies readonly DocsMintCapabilityDescriptor[]
+] as const satisfies readonly TidyPressCapabilityDescriptor[]
 
-export type DocsMintCapabilityKey = (typeof capabilityRegistry)[number]['key']
+export type TidyPressCapabilityKey = (typeof capabilityRegistry)[number]['key']
 
 export interface ResolvedCapabilityState {
   enabled: boolean
-  source: DocsMintCapabilitySource
+  source: TidyPressCapabilitySource
 }
 
-export type ResolvedCapabilityMap = Record<DocsMintCapabilityKey, ResolvedCapabilityState>
-export type ResolvedCapabilityFlags = Record<DocsMintCapabilityKey, boolean>
+export type ResolvedCapabilityMap = Record<TidyPressCapabilityKey, ResolvedCapabilityState>
+export type ResolvedCapabilityFlags = Record<TidyPressCapabilityKey, boolean>
 
 export interface ResolveCapabilitiesOptions {
   enable?: string[]
   disable?: string[]
 }
 
-function knownCapabilityKeys(): DocsMintCapabilityKey[] {
+function knownCapabilityKeys(): TidyPressCapabilityKey[] {
   return capabilityRegistry.map(descriptor => descriptor.key)
 }
 
@@ -63,7 +63,7 @@ function normalizeCapabilityList(value: string[] | undefined): string[] {
 
 function assertKnownCapabilities(entries: string[], field: 'enable' | 'disable'): void {
   const known = new Set(knownCapabilityKeys())
-  const unknown = entries.filter(entry => !known.has(entry as DocsMintCapabilityKey))
+  const unknown = entries.filter(entry => !known.has(entry as TidyPressCapabilityKey))
   if (unknown.length === 0) {
     return
   }
@@ -73,7 +73,7 @@ function assertKnownCapabilities(entries: string[], field: 'enable' | 'disable')
   )
 }
 
-export function normalizeCapabilities(config: DocsMintConfig): DocsMintCapabilities {
+export function normalizeCapabilities(config: TidyPressConfig): TidyPressCapabilities {
   const enable = normalizeCapabilityList(config.capabilities?.enable)
   const disable = normalizeCapabilityList(config.capabilities?.disable)
 
@@ -86,12 +86,12 @@ export function normalizeCapabilities(config: DocsMintConfig): DocsMintCapabilit
   }
 
   return {
-    enable: enable.length > 0 ? (enable as DocsMintCapabilityKey[]) : undefined,
-    disable: disable.length > 0 ? (disable as DocsMintCapabilityKey[]) : undefined,
+    enable: enable.length > 0 ? (enable as TidyPressCapabilityKey[]) : undefined,
+    disable: disable.length > 0 ? (disable as TidyPressCapabilityKey[]) : undefined,
   }
 }
 
-function getConfigCapabilityValue(config: DocsMintConfig, key: DocsMintCapabilityKey): boolean | undefined {
+function getConfigCapabilityValue(config: TidyPressConfig, key: TidyPressCapabilityKey): boolean | undefined {
   if (isStarterCollectionKey(key)) {
     return config.collections?.[key]?.enabled
   }
@@ -102,7 +102,7 @@ function getConfigCapabilityValue(config: DocsMintConfig, key: DocsMintCapabilit
 }
 
 export function resolveCapabilities(
-  config: DocsMintConfig,
+  config: TidyPressConfig,
   options: ResolveCapabilitiesOptions = {},
 ): ResolvedCapabilityMap {
   const state = Object.create(null) as ResolvedCapabilityMap
@@ -139,12 +139,12 @@ export function resolveCapabilities(
   }
 
   for (const key of overrideDisable) {
-    const capabilityKey = key as DocsMintCapabilityKey
+    const capabilityKey = key as TidyPressCapabilityKey
     state[capabilityKey].enabled = false
     state[capabilityKey].source = 'override-disable'
   }
   for (const key of overrideEnable) {
-    const capabilityKey = key as DocsMintCapabilityKey
+    const capabilityKey = key as TidyPressCapabilityKey
     state[capabilityKey].enabled = true
     state[capabilityKey].source = 'override-enable'
   }
@@ -153,7 +153,7 @@ export function resolveCapabilities(
 }
 
 export function resolveCapabilityFlags(
-  config: DocsMintConfig,
+  config: TidyPressConfig,
   options: ResolveCapabilitiesOptions = {},
 ): ResolvedCapabilityFlags {
   const resolved = resolveCapabilities(config, options)
@@ -163,8 +163,8 @@ export function resolveCapabilityFlags(
 }
 
 export function isCapabilityEnabled(
-  config: DocsMintConfig,
-  key: DocsMintCapabilityKey,
+  config: TidyPressConfig,
+  key: TidyPressCapabilityKey,
   options: ResolveCapabilitiesOptions = {},
 ): boolean {
   return resolveCapabilityFlags(config, options)[key]

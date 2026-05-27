@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { withDefaults } from '@docsmint/config'
+import { withDefaults } from '@tidypress/config'
 import { loadEngineModule } from '../test-support/engine-jiti.js'
 
 const {

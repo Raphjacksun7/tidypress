@@ -1,6 +1,6 @@
 import { formatFrontmatterBlock, type FrontmatterFieldDefinition } from './frontmatter-format.js'
 
-export interface DocsMintWritingImportArticle {
+export interface TidyPressWritingImportArticle {
   title: string
   description?: string
   date: string
@@ -11,7 +11,7 @@ export interface DocsMintWritingImportArticle {
   source: string
 }
 
-export const docsMintWritingImportFrontmatterFields = [
+export const tidyPressWritingImportFrontmatterFields = [
   { key: 'title', format: 'scalar' },
   { key: 'description', format: 'scalar', optional: true },
   { key: 'date', format: 'scalar' },
@@ -20,8 +20,8 @@ export const docsMintWritingImportFrontmatterFields = [
   { key: 'scheduled', format: 'iso-date', optional: true },
 ] as const satisfies readonly FrontmatterFieldDefinition[]
 
-export function formatWritingImportMarkdown(article: DocsMintWritingImportArticle): string {
-  const frontmatter = formatFrontmatterBlock(docsMintWritingImportFrontmatterFields, {
+export function formatWritingImportMarkdown(article: TidyPressWritingImportArticle): string {
+  const frontmatter = formatFrontmatterBlock(tidyPressWritingImportFrontmatterFields, {
     title: article.title,
     description: article.description,
     date: article.date,

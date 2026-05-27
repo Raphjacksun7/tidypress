@@ -1,4 +1,4 @@
-import type { DocsMintConfig } from '@docsmint/config'
+import type { TidyPressConfig } from '@tidypress/config'
 import { getCollectionBasePath, getCollectionEntryPath, getCollectionEntrySlug } from '@/utils/collections'
 
 type EntryData = {
@@ -8,7 +8,7 @@ type EntryData = {
 }
 
 export function resolveEntryHrefFromData(
-  site: DocsMintConfig,
+  site: TidyPressConfig,
   collectionKey: string,
   entryId: string,
   data: EntryData,

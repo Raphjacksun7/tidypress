@@ -9,7 +9,7 @@ Run from the repo root after `pnpm install`.
 ## Build
 
 ```sh
-pnpm --filter @docsmint/example-i18n-versioned build
+pnpm --filter @tidypress/example-i18n-versioned build
 ```
 
 Output:
@@ -26,4 +26,4 @@ Inspect:
 /docs/v1
 ```
 
-Docs: <https://usedocsmint.pages.dev/docs/advanced-configuration>
+Docs: <https://tidypress.pages.dev/docs/advanced-configuration>

@@ -1,6 +1,6 @@
 export default {
   name: 'Alex Example',
-  description: 'Minimal markdown site for fast writing and project showcase.',
+  description: 'A publishing framework for Git-native authorship.',
   hero: {
     enabled: true,
     role: 'Systems engineer',

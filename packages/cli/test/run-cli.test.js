@@ -1,14 +1,14 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 
-import { DocsMintError } from '../src/errors/DocsMintError.js'
+import { TidyPressError } from '../src/errors/TidyPressError.js'
 import { handleCliError, runCli, runCliMain } from '../src/runCli.js'
 
-test('handleCliError returns custom DocsMintError exit code', () => {
+test('handleCliError returns custom TidyPressError exit code', () => {
   /** @type {string[]} */
   const errors = []
   const code = handleCliError(
-    new DocsMintError('Invalid config', 'CONFIG_INVALID', 'Fix docs/docsmint.config.ts', { exitCode: 2 }),
+    new TidyPressError('Invalid config', 'CONFIG_INVALID', 'Fix docs/tidypress.config.ts', { exitCode: 2 }),
     {
       io: {
         error(message) {
@@ -22,13 +22,13 @@ test('handleCliError returns custom DocsMintError exit code', () => {
   assert.equal(code, 2)
   assert.equal(errors.length, 1)
   assert.match(errors[0], /Invalid config/)
-  assert.match(errors[0], /Hint: Fix docs\/docsmint.config.ts/)
+  assert.match(errors[0], /Hint: Fix docs\/tidypress.config.ts/)
 })
 
-test('handleCliError prints DocsMintError stack in verbose mode', () => {
+test('handleCliError prints TidyPressError stack in verbose mode', () => {
   /** @type {string[]} */
   const errors = []
-  const code = handleCliError(new DocsMintError('Verbose failure'), {
+  const code = handleCliError(new TidyPressError('Verbose failure'), {
     io: {
       error(message) {
         errors.push(message)
@@ -39,7 +39,7 @@ test('handleCliError prints DocsMintError stack in verbose mode', () => {
 
   assert.equal(code, 1)
   assert.equal(errors.length, 2)
-  assert.match(errors[1], /DocsMintError: Verbose failure/)
+  assert.match(errors[1], /TidyPressError: Verbose failure/)
 })
 
 test('handleCliError reports unexpected error with stack', () => {
@@ -77,7 +77,7 @@ test('runCli returns usage exit code for unknown command', async () => {
   assert.match(errors[0], /Unknown command: does-not-exist/)
 })
 
-test('runCli plumbs --verbose flag to DocsMintError stack output', async () => {
+test('runCli plumbs --verbose flag to TidyPressError stack output', async () => {
   /** @type {string[]} */
   const errors = []
   const code = await runCli(['--verbose', 'does-not-exist'], {
@@ -92,7 +92,7 @@ test('runCli plumbs --verbose flag to DocsMintError stack output', async () => {
   assert.equal(code, 2)
   assert.equal(errors.length, 2)
   assert.match(errors[0], /Unknown command: does-not-exist/)
-  assert.match(errors[1], /DocsMintError: Unknown command: does-not-exist/)
+  assert.match(errors[1], /TidyPressError: Unknown command: does-not-exist/)
 })
 
 test('runCliMain sets process exitCode from run result', async () => {

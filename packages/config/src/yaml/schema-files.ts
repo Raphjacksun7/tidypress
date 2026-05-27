@@ -1,17 +1,17 @@
 import initPresetsJson from '../schemas/init-presets.json' with { type: 'json' }
-import yamlSchemaJson from '../schemas/docsmint-yaml.schema.json' with { type: 'json' }
+import yamlSchemaJson from '../schemas/tidypress-yaml.schema.json' with { type: 'json' }
 
-export interface DocsMintInitPresetDescriptor {
+export interface TidyPressInitPresetDescriptor {
   name: string
   summary: string
 }
 
-export interface DocsMintInitPresetsFile {
+export interface TidyPressInitPresetsFile {
   defaultPreset: string
   aliases: Record<string, string>
-  presets: DocsMintInitPresetDescriptor[]
+  presets: TidyPressInitPresetDescriptor[]
 }
 
-export const docsMintInitPresets = initPresetsJson as DocsMintInitPresetsFile
+export const tidyPressInitPresets = initPresetsJson as TidyPressInitPresetsFile
 
-export const docsMintYamlSchema = yamlSchemaJson as Record<string, unknown>
+export const tidyPressYamlSchema = yamlSchemaJson as Record<string, unknown>

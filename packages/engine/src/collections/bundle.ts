@@ -1,8 +1,8 @@
 import type {
-  DocsMintConfig,
-  DocsMintDocForm,
+  TidyPressConfig,
+  TidyPressDocForm,
   ResolvedListDisplay,
-} from '@docsmint/config'
+} from '@tidypress/config'
 import type { SiteRouteDefinition } from '@/routing/types'
 import type { DocChapterNav } from '@/routing/chapter-nav'
 
@@ -22,7 +22,7 @@ export interface IndexEntryPreview {
 
 export interface RouteViewBundle {
   viewKey: string
-  site: DocsMintConfig
+  site: TidyPressConfig
   route: SiteRouteDefinition
   title: string
   description?: string
@@ -61,7 +61,7 @@ export interface RouteViewBundle {
     tags?: string[]
     readingTimeLabel?: string
     ogImage?: string
-    docForm?: DocsMintDocForm
+    docForm?: TidyPressDocForm
     formLabel?: string
     part?: string
     chapterNav?: DocChapterNav

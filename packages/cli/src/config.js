@@ -1,1 +1,1 @@
-export { defineConfig, withDefaults } from '@docsmint/config'
+export { defineConfig, withDefaults } from '@tidypress/config'
