@@ -115,14 +115,19 @@ match the git tag.
 
 ## What the publish workflow does after tagging
 
-1. Reads all four package versions and asserts they match the tag.
-2. Runs the full test suite and builds.
-3. Builds `@tidypress/config` TypeScript → `dist/`.
-4. Publishes `tidypress` to npm via `pnpm publish`; bundled internal packages are included in
-   the tarball.
-5. Runs a real smoke test: `npm install tidypress@<version>` in a clean dir, then
-   `node ./node_modules/tidypress/bin/tidypress.js --version`.
+Tests run in the **CI** workflow on `main` (and PRs). The publish workflow does **not**
+re-run the full test suite — it verifies that CI already passed on the tagged commit, then
+ships artifacts.
+
+1. Requires green `validate` and `install-e2e` checks on the tagged commit.
+2. Asserts all four package versions match the tag.
+3. Builds `@tidypress/config` TypeScript → `dist/` and the Python sdist/wheel.
+4. Publishes `tidypress` to npm via `pnpm publish` (bundled internal packages included).
+5. Runs a lightweight smoke test: `npm install tidypress@<version>` and `--version`.
 6. Publishes `wrappers/python` to PyPI via Trusted Publishing.
+
+Site deploy (Cloudflare Pages) runs in **CI** after `validate` only — build + `wrangler deploy`,
+without waiting for `install-e2e`.
 
 ## Explicit backlog (not regressions)
 

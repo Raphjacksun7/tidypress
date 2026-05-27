@@ -2,8 +2,10 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 
-const METADATA_DIR = path.join(os.homedir(), '.tidypress')
-const METADATA_FILE = path.join(METADATA_DIR, 'agents-skills-install.json')
+function metadataPaths() {
+  const dir = path.join(os.homedir(), '.tidypress')
+  return { dir, file: path.join(dir, 'agents-skills-install.json') }
+}
 
 /**
  * @typedef {{
@@ -20,7 +22,8 @@ const METADATA_FILE = path.join(METADATA_DIR, 'agents-skills-install.json')
  */
 export async function readSkillsInstallMetadata() {
   try {
-    const raw = await readFile(METADATA_FILE, 'utf8')
+    const { file } = metadataPaths()
+    const raw = await readFile(file, 'utf8')
     return /** @type {SkillsInstallMetadata} */ (JSON.parse(raw))
   } catch {
     return undefined
@@ -31,6 +34,7 @@ export async function readSkillsInstallMetadata() {
  * @param {SkillsInstallMetadata} metadata
  */
 export async function writeSkillsInstallMetadata(metadata) {
-  await mkdir(METADATA_DIR, { recursive: true })
-  await writeFile(METADATA_FILE, `${JSON.stringify(metadata, null, 2)}\n`, 'utf8')
+  const { dir, file } = metadataPaths()
+  await mkdir(dir, { recursive: true })
+  await writeFile(file, `${JSON.stringify(metadata, null, 2)}\n`, 'utf8')
 }

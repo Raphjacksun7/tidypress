@@ -54,6 +54,12 @@ test('metadata round-trip in temp home', async () => {
 test('maybeInstall skips when already prompted', async () => {
   const tempHome = await mkdtemp(path.join(os.tmpdir(), 'tidypress-skills-skip-'))
   const originalHome = process.env.HOME
+  const ciEnv = ['CI', 'CONTINUOUS_INTEGRATION', 'GITHUB_ACTIONS', 'GITLAB_CI'] as const
+  const savedCi: Record<string, string | undefined> = {}
+  for (const key of ciEnv) {
+    savedCi[key] = process.env[key]
+    delete process.env[key]
+  }
   process.env.HOME = tempHome
   const io = { info() {}, warn() {} }
   try {
@@ -70,6 +76,13 @@ test('maybeInstall skips when already prompted', async () => {
       delete process.env.HOME
     } else {
       process.env.HOME = originalHome
+    }
+    for (const key of ciEnv) {
+      if (savedCi[key] === undefined) {
+        delete process.env[key]
+      } else {
+        process.env[key] = savedCi[key]
+      }
     }
     await rm(tempHome, { recursive: true, force: true })
   }

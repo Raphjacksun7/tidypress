@@ -39,7 +39,6 @@ jobs:
         run: pnpm -r --workspace-concurrency=1 build
 
   install-e2e:
-    name: Real install e2e (npm pack)
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -100,8 +99,8 @@ jobs:
   deploy-site:
     name: Deploy docs site to Cloudflare Pages
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    needs: [validate, install-e2e]
+    timeout-minutes: 15
+    needs: [validate]
     environment: prod
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
