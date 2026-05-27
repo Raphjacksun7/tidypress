@@ -1,0 +1,30 @@
+---
+import type { TidyPressFooterMainSlot } from '@tidypress/config'
+
+export interface Props {
+  slot: TidyPressFooterMainSlot
+}
+
+const { slot } = Astro.props
+---
+{
+  typeof slot === 'string' ? (
+    <p class="tidy-footer-main__text">{slot}</p>
+  ) : (
+    <p class="tidy-footer-main__text">
+      {slot.map((link, index) => (
+        <>
+          {index > 0 && <span class="tidy-footer-main__sep" aria-hidden="true"> · </span>}
+          <a
+            href={link.href}
+            class="tidy-footer-main__link"
+            target={link.target}
+            rel={link.rel}
+          >
+            {link.label}
+          </a>
+        </>
+      ))}
+    </p>
+  )
+}

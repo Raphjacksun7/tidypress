@@ -1,8 +1,13 @@
 import { defineConfig } from 'tidypress/config'
 
+/** https://github.com/Raphjacksun7/tidypress */
+const GITHUB_REPO = 'https://github.com/Raphjacksun7/tidypress'
+const GITHUB_FEATURE = `${GITHUB_REPO}/issues/new?template=feature_request.yml`
+
 export default defineConfig({
   name: 'tidypress',
   description: 'A publishing framework for Git-native authorship.',
+  siteUrl: 'https://tidypress.pages.dev',
   branding: {
     icon: '/favicon.svg',
     favicon: '/favicon-white.svg',
@@ -11,12 +16,24 @@ export default defineConfig({
     { label: 'docs', href: '/docs' },
     { label: 'writing', href: '/writing' },
   ],
-  footer: [
-    { label: 'GitHub', href: 'https://github.com/Raphjacksun7/tidypress', icon: 'github' },
-  ],
+  repository: {
+    url: GITHUB_REPO,
+    branch: 'main',
+    editPath: 'apps/site/src/content',
+  },
+  footer: {
+    // Site name is already in the product credit — avoid "© 2026 tidypress, Made with tidypress".
+    copyright: '© {year}',
+    main: {
+      start: [
+        { label: 'Improve these docs', href: `${GITHUB_REPO}/blob/main/CONTRIBUTING.md` },
+        { label: 'Share a feature idea', href: GITHUB_FEATURE },
+      ],
+    },
+    links: [{ label: 'GitHub', href: GITHUB_REPO, icon: 'github' }],
+  },
   pages: [],
 
-  // Docs sidebar: one reader path first; advanced details stay at the end.
   docs: {
     sidebar: [
       {
@@ -41,5 +58,4 @@ export default defineConfig({
       },
     ],
   },
-
 })

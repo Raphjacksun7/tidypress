@@ -1,0 +1,28 @@
+name: Welcome
+
+on:
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: [
+                'Thanks for your first pull request to TidyPress!',
+                '',
+                'Please make sure CI is green and the [PR checklist](https://github.com/Raphjacksun7/tidypress/blob/main/.github/PULL_REQUEST_TEMPLATE.md) is filled out.',
+                'See [CONTRIBUTING.md](https://github.com/Raphjacksun7/tidypress/blob/main/CONTRIBUTING.md) for setup and review expectations.',
+              ].join('\n'),
+            })

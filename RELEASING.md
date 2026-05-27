@@ -171,7 +171,7 @@ This section tracks engineering work that affects release sequencing and risk.
 3. **Editor app Phase 1** — separate Medium-style app → `writing/*.md`; for non-dev writers.
 4. **Editor app Phase 2** — projects form → `projects/*.md`.
 
-See `agent-os/CONSTITUTION.md` (product layers) and `agent-os/TASKS/19-v4-stretch.md`.
+Longer-term product layers and stretch items are tracked outside this file (maintainer notes, not part of the public contribution path).
 
 ### Next release targets
 

@@ -1,5 +1,7 @@
 # build output
 dist/
+dist-test/
+*.tsbuildinfo
 # generated types
 .astro/
 

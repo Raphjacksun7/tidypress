@@ -4,6 +4,7 @@ import { buildNavigationModel } from './navigation/model.js'
 import { normalizePages, type NormalizedPageEntry } from './normalize/pages.js'
 
 export { defineConfig }
+export { defaultGithubFooterItem } from './defaults.js'
 export { withDefaults }
 export { normalizeHero, heroHasRenderableContent } from './normalize/hero.js'
 export {
@@ -49,7 +50,13 @@ export {
   type TidyPressYamlValidationResult,
 } from './yaml/validate.js'
 export { normalizeHome } from './normalize/home.js'
-export { normalizeFooterItems } from './normalize/footer.js'
+export {
+  formatFooterCopyright,
+  normalizeFooterItems,
+  resolveSiteFooter,
+} from './normalize/footer.js'
+export { defaultFooterCredit } from './registry/footer-defaults.js'
+export { footerIconPaths, getFooterIconPath } from './registry/footer-icons.js'
 export {
   LINK_NEW_TAB_ATTRIBUTES,
   LINK_REL_BLANK,

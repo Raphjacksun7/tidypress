@@ -19,7 +19,7 @@ import { applyPagesNav, collectPageEntries } from './pages.js'
 import { normalizeSearch } from './search.js'
 import { normalizeTheme } from './theme.js'
 import { normalizeTypography } from './typography.js'
-import { normalizeFooterItems } from './footer.js'
+import { resolveSiteFooter } from './footer.js'
 import { normalizeHero } from './hero.js'
 import { normalizeHome } from './home.js'
 import { normalizeVersions } from './versions.js'
@@ -73,7 +73,7 @@ export function withDefaults(config: TidyPressConfig): TidyPressConfig {
       ...config.writing,
     },
     nav,
-    footer: normalizeFooterItems(config.footer ?? defaultConfig.footer),
+    footer: resolveSiteFooter(config),
     repository: {
       ...defaultConfig.repository,
       ...config.repository,

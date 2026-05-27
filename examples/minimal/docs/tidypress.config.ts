@@ -9,6 +9,6 @@ export default {
   writing: {
     description: 'Notes, updates, and longer writing.',
   },
-  footer: [],
+  footer: [{ label: 'GitHub', href: 'https://github.com/you', icon: 'github', external: true }],
   siteUrl: 'https://example.com',
 }

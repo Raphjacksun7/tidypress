@@ -17,6 +17,6 @@ export default {
     writing: { enabled: true, kind: 'writing', basePath: '/writing', label: 'writing' },
     pages: { enabled: false, kind: 'page' },
   },
-  footer: [],
+  footer: [{ label: 'GitHub', href: 'https://github.com/you', icon: 'github', external: true }],
   siteUrl: 'https://example.com',
 }

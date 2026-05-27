@@ -46,6 +46,75 @@ export interface FooterItem {
   rel?: string
 }
 
+/** Inline link in a footer main-band text slot. */
+export interface TidyPressFooterMainLink {
+  label: string
+  href: string
+  external?: boolean
+  /** Set by config normalization; do not set in user config. */
+  target?: string
+  /** Set by config normalization; do not set in user config. */
+  rel?: string
+}
+
+/** Plain text or a list of inline links (rendered with · separators). */
+export type TidyPressFooterMainSlot = string | TidyPressFooterMainLink[]
+
+/**
+ * Top footer band — text slots today (plain text or inline links).
+ * Reserved for richer blocks later (menus, grids, newsletter, banners, etc.).
+ */
+export interface TidyPressFooterMain {
+  /** Start (left) slot. */
+  start?: TidyPressFooterMainSlot
+  /** End (right) slot. Language switcher renders here when i18n is enabled. */
+  end?: TidyPressFooterMainSlot
+}
+
+/** Product credit segment on the sub-footer attribution line. */
+export interface TidyPressFooterCredit {
+  /** Plain text before the credit link (for example `, Made with `). */
+  prefix?: string
+  /** Credit link label. */
+  label: string
+  /** Credit link URL. */
+  href: string
+}
+
+/** Footer settings in `tidypress.config` (object form). */
+export interface TidyPressFooterSettings {
+  /** Top band text slots (`start` / `end`). */
+  main?: TidyPressFooterMain
+  /**
+   * @deprecated Use `main.end`. Kept for backward compatibility.
+   */
+  aside?: string
+  /**
+   * Copyright on the sub-footer attribution line. Omit for `© {year} {name}`.
+   * Supports `{year}` and `{name}` tokens.
+   */
+  copyright?: string
+  /** Append product credit on the attribution line. Default: true. */
+  showCredit?: boolean
+  /** Credit link copy when `showCredit` is true. Omitted fields use package defaults. */
+  credit?: Partial<TidyPressFooterCredit>
+  /** Icon/text links in the sub-footer (left). Default includes GitHub when empty. */
+  links?: FooterItem[]
+}
+
+/** Config input: link array (shorthand) or settings object. */
+export type TidyPressFooterInput = FooterItem[] | TidyPressFooterSettings
+
+/** Normalized footer model passed to the engine after `withDefaults`. */
+export interface TidyPressFooter {
+  main: TidyPressFooterMain
+  copyright?: string
+  showCredit: boolean
+  /** Resolved credit segment; set when `showCredit` is true. */
+  credit?: TidyPressFooterCredit
+  links: FooterItem[]
+}
+
 export interface PageEntryObject {
   slug: string
   navLabel?: string
@@ -305,7 +374,7 @@ export interface TidyPressConfig {
   branding?: TidyPressBranding
   pages?: PageEntry[]
   nav?: NavItem[]
-  footer?: FooterItem[]
+  footer?: TidyPressFooterInput
   siteUrl?: string
   repository?: TidyPressRepository
   search?: TidyPressSearch

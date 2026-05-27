@@ -1,5 +1,11 @@
-blank_issues_enabled: true
+blank_issues_enabled: false
 contact_links:
+  - name: Contributing guide
+    url: https://github.com/Raphjacksun7/tidypress/blob/main/CONTRIBUTING.md
+    about: Setup, pull requests, and using AI tools
+  - name: Report a security issue
+    url: https://github.com/Raphjacksun7/tidypress/security/advisories/new
+    about: Private vulnerability reports (not public issues)
   - name: Documentation
-    url: https://tidypress.pages.dev/docs/why-tidypress
-    about: Product scope and positioning
+    url: https://tidypress.pages.dev/docs
+    about: Product documentation

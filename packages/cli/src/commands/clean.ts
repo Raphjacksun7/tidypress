@@ -1,0 +1,25 @@
+/**
+ * Handles `tidypress clean`.
+ */
+export class CleanCommand {
+  cleanService: any
+  io: any
+
+
+  /**
+   * @param {{ cleanService: import('../services/CleanService.js').CleanService, io: { info: (message: string) => void } }} dependencies
+   */
+  constructor({ cleanService, io }) {
+    this.cleanService = cleanService
+    this.io = io
+  }
+
+  /**
+   * @param {{ projectRoot: string }} request
+   * @returns {Promise<void>}
+   */
+  async execute({ projectRoot }) {
+    const { buildDir, cacheDir } = await this.cleanService.clean({ projectRoot })
+    this.io.info(`Cleaned ${buildDir} and ${cacheDir}`)
+  }
+}

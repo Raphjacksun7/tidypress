@@ -35,6 +35,6 @@ export default {
     pages: { enabled: true, kind: 'page' },
   },
   pages: [{ slug: 'about', navLabel: 'about' }],
-  footer: [],
+  footer: [{ label: 'GitHub', href: 'https://github.com/you', icon: 'github', external: true }],
   siteUrl: 'https://example.com',
 }

@@ -1,7 +1,7 @@
-name: Task
-description: Tracked engineering task
+name: Maintainer task
+description: Internal roadmap task (maintainers — prefer Bug report or Feature request for community issues)
 title: "[Task NN] "
-labels: []
+labels: ["maintainer"]
 body:
   - type: input
     id: task_id

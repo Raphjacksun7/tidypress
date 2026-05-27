@@ -78,7 +78,7 @@ interface TidyPressConfig {
   hero?: TidyPressHero
   home?: TidyPressHome // order, previewLimit, collections display, preset: lab | blog | docs-writing | persona
   nav?: NavItem[]
-  footer?: FooterItem[]
+  footer?: FooterItem[] | TidyPressFooterSettings
   pages?: PageEntry[]
   collections?: TidyPressCollections
   siteUrl?: string
@@ -103,6 +103,41 @@ interface TidyPressConfig {
 ```
 
 Only `name` is required.
+
+### Footer
+
+`footer` is a link array or a settings object. See [Configuration → Footer](./configuration#footer) for layout, defaults, icons, RSS, i18n, and examples.
+
+```ts
+type TidyPressFooterInput = FooterItem[] | TidyPressFooterSettings
+
+interface TidyPressFooterSettings {
+  main?: { start?: string | FooterMainLink[]; end?: string | FooterMainLink[] }
+  aside?: string // alias for main.end
+  copyright?: string // tokens: {year}, {name}
+  showCredit?: boolean // default true
+  credit?: { prefix?: string; label?: string; href?: string }
+  links?: FooterItem[]
+}
+
+interface FooterMainLink {
+  label: string
+  href: string
+  external?: boolean
+}
+
+interface FooterItem {
+  label: string
+  href: string
+  icon?: FooterItemIcon
+  external?: boolean
+}
+
+type FooterItemIcon =
+  | 'github' | 'x' | 'linkedin' | 'discord' | 'youtube' | 'instagram'
+  | 'bluesky' | 'facebook' | 'reddit' | 'twitch' | 'mastodon' | 'slack'
+  | 'telegram' | 'tiktok' | 'npm' | 'rss' | 'email'
+```
 
 ## Typography scale
 

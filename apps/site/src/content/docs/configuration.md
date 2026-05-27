@@ -42,42 +42,193 @@ siteUrl: 'https://example.com',
 
 ## Navigation
 
-Use `nav` for header links and `footer` for lower-page links.
+Use `nav` for header links.
 
 ```ts
 nav: [
   { label: 'docs', href: '/docs' },
   { label: 'writing', href: '/writing' },
-  { label: 'GitHub', href: 'https://github.com/you/project', target: '_blank' },
-],
-footer: [
   { label: 'GitHub', href: 'https://github.com/you/project' },
-  { label: 'RSS', href: '/writing/rss.xml', icon: 'rss', external: false },
 ],
 ```
-
-RSS is generated at `<writing basePath>/rss.xml` (for example `/writing/rss.xml`). The footer can link to it explicitly, or omit the link and rely on the default RSS icon when writing is enabled.
 
 Navigation is strict by default. Internal `href` values are validated against built routes.
 
-Footer links render as text by default. Set `icon` to render an icon link instead:
-
-```ts
-footer: [
-  { label: 'GitHub', href: 'https://github.com/you/project', icon: 'github' },
-  { label: 'X', href: 'https://x.com/you', icon: 'x' },
-  { label: 'Privacy', href: '/privacy', external: false },
-]
-```
-
-Supported footer icons: `github`, `x`, `linkedin`, `discord`, `youtube`, `instagram`, `bluesky`, `facebook`, `reddit`, `twitch`, `mastodon`, `slack`, `telegram`, `tiktok`, `npm`, `rss`, and `email`.
-
-Internal links are strict by default. If a site has links that are generated outside TidyPress, use relaxed mode:
+If a site has links that are generated outside TidyPress, use relaxed mode:
 
 ```ts
 navPolicy: {
   mode: 'relaxed',
 }
+```
+
+## Footer
+
+Community links for the docs site live in [`CONTRIBUTING.md`](https://github.com/Raphjacksun7/tidypress/blob/main/CONTRIBUTING.md) on GitHub (bug reports, feature requests, security). The product site footer can point to those URLs via `footer.main` link slots.
+
+The page footer has two bands:
+
+| Band | Position | Purpose |
+|------|----------|---------|
+| **Main** (`main`) | Top | Two plain-text slots (`start` / `end`). Hidden when both are empty and the site has only one locale. |
+| **Sub** | Bottom | Icon/text links on the left; attribution on the right. |
+
+The main band is the future extension point for richer blocks (menus, grids, newsletter, banners, and so on). Today it is text only. Markup uses `data-footer-zone` and `data-footer-slot` attributes so later releases can hang structured blocks off the same layout.
+
+### Config shapes
+
+`footer` accepts either:
+
+1. **Link array** — shorthand for sub-footer links only (same as before).
+2. **Object** — full control over main band, links, copyright, and product credit.
+
+```ts
+footer: [
+  { label: 'GitHub', href: 'https://github.com/you/project', icon: 'github' },
+],
+```
+
+```ts
+footer: {
+  main: {
+    start: 'Acme Labs',
+    end: 'Questions? hello@example.com',
+  },
+  copyright: '© {year} {name}',
+  links: [
+    { label: 'GitHub', href: 'https://github.com/you/project', icon: 'github' },
+    { label: 'RSS', href: '/writing/rss.xml', icon: 'rss', external: false },
+  ],
+},
+```
+
+`aside` is accepted as an alias for `main.end`.
+
+### Defaults (no config required)
+
+Unless you override them:
+
+| Field | Default |
+|-------|---------|
+| `copyright` | `© {year} {name}` (`{year}` = build year, `{name}` = `name`) |
+| `showCredit` | `true` — appends a product credit link on the attribution line |
+| `credit` | `prefix: ', Made with '`, `label: 'tidypress'`, `href: 'https://tidypress.pages.dev/'` |
+| `links` | If you omit GitHub, one is added using `repository.url` when set, otherwise `https://github.com/you` |
+| `main` | Empty — main band hidden until you set `start` / `end` or enable multi-locale i18n |
+
+You do **not** need `showCredit: true` in config; it is already on. Set `showCredit: false` only when you want to hide the product credit segment.
+
+Attribution renders as one line, for example: `© 2026 my-project, Made with tidypress`.
+
+### Field reference
+
+**`main`** — top band text slots. Each slot is plain `string` text or an array of inline links (shown with ` · ` separators).
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `start` | `string` \| `FooterMainLink[]` | Left slot. |
+| `end` | `string` \| `FooterMainLink[]` | Right slot. Language switcher renders here when `i18n.locales` has more than one entry. |
+
+`FooterMainLink` fields: `label`, `href`, optional `external: false` for same-tab internal paths.
+
+```ts
+main: {
+  start: [
+    { label: 'Improve these docs', href: 'https://github.com/you/project/tree/main/apps/site/src/content/docs' },
+    { label: 'Share a feature idea', href: 'https://github.com/you/project/issues/new' },
+  ],
+  end: 'Questions? hello@example.com',
+},
+```
+
+**`copyright`** — `string` on the sub-footer attribution line. Supports `{year}` and `{name}` tokens.
+
+**`showCredit`** — `boolean`. Default `true`. Set `false` to omit the product credit segment (copyright still shows).
+
+**`credit`** — partial override of the product credit segment (only used when `showCredit` is true).
+
+| Key | Type | Default |
+|-----|------|---------|
+| `prefix` | `string` | `', Made with '` |
+| `label` | `string` | `tidypress` |
+| `href` | `string` | `https://tidypress.pages.dev/` |
+
+**`links`** — `FooterItem[]` in the sub-footer (left). Each item:
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `label` | `string` | Required. Visible text for text links; screen-reader label for icon links. |
+| `href` | `string` | Required. |
+| `icon` | `FooterItemIcon` | When set, renders a built-in SVG icon instead of text. |
+| `external` | `boolean` | `false` keeps same-tab navigation for internal paths. Icon links default to external/new tab unless `external: false`. |
+
+### Built-in footer icons
+
+Set `icon` to one of:
+
+`github`, `x`, `linkedin`, `discord`, `youtube`, `instagram`, `bluesky`, `facebook`, `reddit`, `twitch`, `mastodon`, `slack`, `telegram`, `tiktok`, `npm`, `rss`, `email`
+
+Text links (no `icon`) render as plain text in the sub-footer.
+
+### Repository URL
+
+`repository.url` feeds the default GitHub footer link when `links` does not already include a `github` icon:
+
+```ts
+repository: {
+  url: 'https://github.com/you/project',
+  branch: 'main',
+  editPath: 'docs/src/content',
+},
+```
+
+See [Repository links](#repository-links) for edit links on docs pages.
+
+### Writing and RSS
+
+When the writing collection is enabled, TidyPress generates a feed at `<writing basePath>/rss.xml` (for example `/writing/rss.xml`). Add a footer link when you want the RSS icon in the sub-footer:
+
+```ts
+{ label: 'RSS', href: '/writing/rss.xml', icon: 'rss', external: false },
+```
+
+### i18n
+
+With multiple locales, a language switcher appears in `main.end` (footer main band). Customize its accessible name via `i18n.strings.<locale>.languageLabel`. See [i18n](./i18n).
+
+### Examples
+
+**Hide product credit** (copyright only):
+
+```ts
+footer: {
+  showCredit: false,
+  links: [{ label: 'GitHub', href: 'https://github.com/you/project', icon: 'github' }],
+},
+```
+
+**Custom product credit**:
+
+```ts
+footer: {
+  credit: {
+    prefix: ' · Built with ',
+    label: 'TidyPress',
+    href: 'https://tidypress.pages.dev/',
+  },
+},
+```
+
+**Icon and text links**:
+
+```ts
+footer: {
+  links: [
+    { label: 'GitHub', href: 'https://github.com/you/project', icon: 'github' },
+    { label: 'X', href: 'https://x.com/you', icon: 'x' },
+    { label: 'Privacy', href: '/privacy', external: false },
+  ],
+},
 ```
 
 ## Collections

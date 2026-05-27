@@ -1,0 +1,11 @@
+# Default reviewer for the monorepo (pull requests request review automatically).
+* @Raphjacksun7
+
+/packages/cli/ @Raphjacksun7
+/packages/engine/ @Raphjacksun7
+/packages/config/ @Raphjacksun7
+/packages/astro/ @Raphjacksun7
+/apps/site/ @Raphjacksun7
+/wrappers/python/ @Raphjacksun7
+/examples/ @Raphjacksun7
+/.github/ @Raphjacksun7

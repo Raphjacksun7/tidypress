@@ -11,9 +11,10 @@ const { activeLocale, defaultLocale, label, site } = Astro.props as {
 const locales: string[] = Array.isArray(Astro.props.locales) ? Astro.props.locales : []
 const pathname = Astro.url.pathname
 const currentLocale = (activeLocale ?? defaultLocale).toLowerCase()
+const showLangSelector = locales.length > 1
 ---
 {
-  locales.length > 1 && (
+  showLangSelector && (
     <details class="tidy-lang-select" data-lang-select>
       <summary class="tidy-lang-trigger" aria-label={label}>
         <span class="tidy-lang-trigger__value">{currentLocale.toUpperCase()}</span>
@@ -48,7 +49,9 @@ const currentLocale = (activeLocale ?? defaultLocale).toLowerCase()
   )
 }
 
-<script>
+{
+  showLangSelector && (
+    <script>
   function updateLangDropdownPlacement(details: HTMLElement) {
     if (!details.hasAttribute('open')) return
     const trigger = details.querySelector<HTMLElement>('.tidy-lang-trigger')
@@ -82,4 +85,6 @@ const currentLocale = (activeLocale ?? defaultLocale).toLowerCase()
 
   document.addEventListener('astro:page-load', initLangSelectors)
   initLangSelectors()
-</script>
+    </script>
+  )
+}

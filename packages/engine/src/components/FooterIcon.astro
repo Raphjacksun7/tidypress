@@ -1,0 +1,19 @@
+---
+import { getFooterIconPath, type FooterItemIcon } from '@tidypress/config'
+
+export interface Props {
+  icon: FooterItemIcon
+}
+
+const { icon } = Astro.props
+---
+<svg
+  class="footer-icon-svg"
+  viewBox="0 0 24 24"
+  fill="currentColor"
+  width="18"
+  height="18"
+  aria-hidden="true"
+>
+  <path d={getFooterIconPath(icon)} />
+</svg>

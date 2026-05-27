@@ -72,8 +72,10 @@ export default defineConfig({
 From the monorepo root:
 
 ```sh
-pnpm --filter tidypress typecheck   # strict checkJs on src/, test/, bin/
-pnpm --filter tidypress test
+pnpm --filter tidypress build      # tsc → dist/ (published entrypoints)
+pnpm --filter tidypress typecheck  # same as build, no emit
+pnpm --filter tidypress dev        # tsx ./src/runCli.ts (no build step)
+pnpm --filter tidypress test       # build + tsx --test
 ```
 
 ## Links

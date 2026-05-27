@@ -29,22 +29,31 @@
     "deploy"
   ],
   "exports": {
-    ".": "./src/index.js",
-    "./config": "./src/config.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./config": {
+      "types": "./dist/config.d.ts",
+      "import": "./dist/config.js",
+      "default": "./dist/config.js"
+    }
   },
   "files": [
     "bin",
-    "src",
-    "skills"
+    "dist",
+    "skills",
+    "scripts/postinstall-skills.mjs"
   ],
   "scripts": {
-    "prepack": "node ./scripts/sync-skills.mjs",
+    "prepack": "node ./scripts/sync-skills.mjs && pnpm run build",
     "postinstall": "node ./scripts/postinstall-skills.mjs",
-    "test": "node --test --test-timeout=420000 test/*.test.js",
-    "test:install-e2e": "node --test --test-timeout=2400000 test/install-e2e.test.js",
-    "dev": "node ./bin/tidypress.js dev",
-    "build": "node -e \"console.log('tidypress CLI package does not require a compile step')\"",
-    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.tests.json"
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "dev": "tsx ./src/runCli.ts",
+    "test": "pnpm run build && tsx --test --test-timeout=420000 test/*.test.ts",
+    "test:install-e2e": "pnpm run build && tsx --test --test-timeout=2400000 test/install-e2e.test.ts"
   },
   "dependencies": {
     "@astrojs/mdx": "5.0.4",
@@ -69,6 +78,7 @@
   ],
   "devDependencies": {
     "@types/node": "^22.15.29",
+    "tsx": "^4.20.3",
     "typescript": "^5.9.2"
   }
 }

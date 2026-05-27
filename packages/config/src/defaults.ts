@@ -1,4 +1,12 @@
-import type { TidyPressConfig } from './schema/index.js'
+import type { FooterItem, TidyPressConfig } from './schema/index.js'
+
+/** Default footer icon link for new sites (init presets and examples). */
+export const defaultGithubFooterItem: FooterItem = {
+  label: 'GitHub',
+  href: 'https://github.com/you',
+  icon: 'github',
+  external: true,
+}
 
 export const defaultConfig: Partial<TidyPressConfig> = {
   description: '',
@@ -47,7 +55,7 @@ export const defaultConfig: Partial<TidyPressConfig> = {
     { label: 'docs', href: '/docs' },
     { label: 'writing', href: '/writing' },
   ],
-  footer: [],
+  footer: [defaultGithubFooterItem],
   repository: {
     branch: 'main',
   },

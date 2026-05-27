@@ -1,0 +1,59 @@
+name: Bug report
+description: Something is broken or incorrect
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Search [existing issues](https://github.com/Raphjacksun7/tidypress/issues) first.
+
+        For small documentation fixes, you can open a pull request directly—see [CONTRIBUTING.md](https://github.com/Raphjacksun7/tidypress/blob/main/CONTRIBUTING.md).
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: What did you expect instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Commands, config snippets, or URLs that show the problem.
+      placeholder: |
+        1. tidypress version / commit
+        2. ...
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: TidyPress version (if known)
+      placeholder: e.g. 1.0.9 or main @ abc1234
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - CLI
+        - Engine / site rendering
+        - Config schema
+        - Documentation site
+        - Python wrapper
+        - Examples
+        - Other
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and pull requests
+          required: true

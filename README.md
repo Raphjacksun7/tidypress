@@ -103,15 +103,27 @@ See [`examples/`](./examples/).
 
 End users install `tidypress`.
 
+## Agent skills (Cursor, Claude Code, Codex)
+
+TidyPress ships [Agent Skills](https://cursor.com/docs/context/skills) so coding agents know the CLI, config, and monorepo conventions.
+
+```sh
+npx tidypress skills install
+```
+
+After `pnpm add tidypress` (or the first CLI command) in an interactive terminal, you may be prompted to install skills into Cursor, Claude Code, or Codex — same pattern as Cloudflare Wrangler. Force install: `npx tidypress --install-skills`.
+
+See [`skills/README.md`](./skills/README.md).
+
 ## Contributors
+
+See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for setup, pull requests, and optional AI-assisted workflow. [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md) · [`SECURITY.md`](./SECURITY.md)
 
 ```sh
 pnpm install
 pnpm test
 pnpm build
 ```
-
-Before review, run `pnpm test` and `pnpm build`.
 
 Release notes live in [`RELEASING.md`](./RELEASING.md).
 

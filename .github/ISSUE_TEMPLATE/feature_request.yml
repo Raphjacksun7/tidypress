@@ -1,0 +1,43 @@
+name: Feature request
+description: Suggest an improvement or new capability
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Share a focused idea for TidyPress. For large changes, describe the problem first—maintainers may ask for a smaller first step.
+
+        See [CONTRIBUTING.md](https://github.com/Raphjacksun7/tidypress/blob/main/CONTRIBUTING.md) before opening a pull request.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What pain are you solving? Who is affected?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How would you like this to work? Alternatives you considered?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Screenshots, links, or example sites (optional).
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I am willing to help with a pull request if the approach is agreed
+          required: false
+        - label: I searched existing issues and pull requests
+          required: true

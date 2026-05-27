@@ -69,13 +69,16 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build CLI (release alignment imports dist)
+        run: pnpm --filter tidypress build
+
       - name: Verify tag matches all package versions
         env:
           TAG_NAME: ${{ github.ref_name }}
         run: |
           node --input-type=module <<'EOF'
           import fs from 'node:fs/promises'
-          import { assertReleaseVersionAlignment, readPythonProjectVersion } from './packages/cli/src/utils/release.js'
+          import { assertReleaseVersionAlignment, readPythonProjectVersion } from './packages/cli/dist/application/release/version-alignment.js'
 
           const [cliRaw, configRaw, engineRaw, pyprojectRaw] = await Promise.all([
             fs.readFile('./packages/cli/package.json', 'utf8'),
