@@ -1,14 +1,18 @@
 name: Maintainer task
 description: Internal roadmap task (maintainers — prefer Bug report or Feature request for community issues)
-title: "[Task NN] "
+title: "[Task 20] "
 labels: ["maintainer"]
 body:
   - type: input
     id: task_id
     attributes:
-      label: Task number (01-20)
+      label: Task number
+      description: Roadmap task ID (digits only — e.g. 20, 22, 101).
+      placeholder: "20"
     validations:
       required: true
+      regex: '^[0-9]{1,4}$'
+      regex_error: Use 1–4 digits only (e.g. 20 or 101).
   - type: textarea
     id: acceptance
     attributes:
