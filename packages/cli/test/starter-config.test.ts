@@ -45,4 +45,5 @@ test('blog preset enables writing only', () => {
   assert.equal(config.collections?.writing?.enabled, true)
   assert.equal(config.collections?.projects, undefined)
   assert.equal(config.hero, undefined)
+  assert.match(JSON.stringify(config.footer), /\/writing\/rss\.xml/)
 })
