@@ -69,6 +69,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build @tidypress/config
+        run: pnpm --filter @tidypress/config build
+
       - name: Build CLI (release alignment imports dist)
         run: pnpm --filter tidypress build
 
