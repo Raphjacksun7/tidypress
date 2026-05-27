@@ -130,12 +130,13 @@ jobs:
           python -m pip install --upgrade build
           python -m build
 
-  # ── npm ──────────────────────────────────────────────────────────────────────
+  # ── npm (OIDC trusted publishing — no NPM_TOKEN) ───────────────────────────
   publish-npm:
     name: Publish to npm
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: validate-release
+    if: startsWith(github.ref, 'refs/tags/v')
     permissions:
       contents: read
       id-token: write
@@ -160,11 +161,12 @@ jobs:
       - name: Build @tidypress/config
         run: pnpm --filter @tidypress/config build
 
-      - name: Publish tidypress
+      - name: Build CLI
+        run: pnpm --filter tidypress build
+
+      - name: Publish tidypress (OIDC trusted publishing)
         working-directory: packages/cli
-        run: pnpm publish --access public --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm publish --access public --no-git-checks --provenance
 
       - name: Smoke test — install published package and run CLI
         env:
@@ -177,12 +179,13 @@ jobs:
           node ./node_modules/tidypress/bin/tidypress.js --version
           echo "smoke test OK: tidypress@${VERSION}"
 
-  # ── PyPI ─────────────────────────────────────────────────────────────────────
+  # ── PyPI (OIDC trusted publishing — no PyPI API token) ───────────────────────
   publish-pypi:
     name: Publish to PyPI
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: validate-release
+    if: startsWith(github.ref, 'refs/tags/v')
     permissions:
       contents: read
       id-token: write

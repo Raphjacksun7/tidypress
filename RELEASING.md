@@ -6,8 +6,7 @@ Release publishing is handled by GitHub Actions with Trusted Publishing for npm 
 
 - Do not add personal accounts or maintainer names to this file.
 - Publish access is controlled in GitHub, npm, and PyPI settings.
-- Use Trusted Publishing (OIDC) instead of long-lived registry tokens for PyPI.
-- npm publishing uses `NPM_TOKEN` stored as a GitHub Actions secret.
+- Use Trusted Publishing (OIDC) for npm and PyPI — no long-lived registry tokens in GitHub Secrets.
 
 ## Release flow (Changesets)
 
@@ -78,18 +77,23 @@ The TidyPress rename is a clean break in this repository. Before publishing a re
 - Rename the GitHub repository or update repository URLs if the canonical repo moves.
 - Deprecate the old npm/PyPI package names with a pointer to TidyPress after the new release is live.
 
-## Required GitHub secrets / publisher setup
+## Registry trusted publishing (one-time)
 
-CI publishing and deployment need these external settings:
+The `Publish` workflow uses **OIDC** for npm and PyPI. Configure each registry once (no `NPM_TOKEN` or PyPI API token in GitHub).
 
-- `NPM_TOKEN` — GitHub Actions secret with publish access to the `tidypress` npm package.
-- `CLOUDFLARE_API_TOKEN` — GitHub Actions secret with Cloudflare Pages edit/deploy access.
-- `CLOUDFLARE_ACCOUNT_ID` — GitHub Actions secret for the Cloudflare account that owns the `tidypress` Pages project.
-- PyPI Trusted Publisher for `tidypress`:
-  - Owner: `Raphjacksun7`
-  - Repository: current GitHub repository name
-  - Workflow: `publish.yml`
-  - Environment: leave blank unless the workflow adds a PyPI environment.
+Run `./scripts/setup-registry-publishers.sh` for copy-paste values, or set manually:
+
+| Registry | Package | Trusted publisher |
+|----------|---------|-------------------|
+| **npm** | `tidypress` | [npm → Package → Settings → Trusted publishing](https://www.npmjs.com/package/tidypress/access) — Provider: GitHub Actions · Repository: `Raphjacksun7/tidypress` · Workflow: `publish.yml` · Environment: *(empty)* |
+| **PyPI** | `tidypress` | [PyPI → Publishing → Add trusted publisher](https://pypi.org/manage/project/tidypress/settings/publishing/) — Owner: `Raphjacksun7` · Repository: `tidypress` · Workflow: `publish.yml` · Environment: *(empty)* |
+
+After both are saved, push a version tag; `publish-npm` and `publish-pypi` authenticate via short-lived OIDC tokens only.
+
+## GitHub secrets (deploy only)
+
+- `CLOUDFLARE_API_TOKEN` — Cloudflare Pages deploy (CI `deploy-site` job).
+- `CLOUDFLARE_ACCOUNT_ID` — Cloudflare account that owns the `tidypress` Pages project.
 
 Local Pages deploy:
 
