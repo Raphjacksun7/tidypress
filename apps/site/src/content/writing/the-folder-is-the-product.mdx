@@ -1,47 +1,64 @@
 ---
 title: The folder is the product
 date: "2026-04-24"
-description: A quiet preference for owning the tree you publish from.
+description: Git-native authorship — own the tree, ship the build, keep the reading column quiet.
+author: Raph
 tags:
   - writing
   - markdown
   - static
+  - tidypress
 ---
 
-I like publishing when it stays close to the file system: markdown on disk, a small config, a build step, something you can host without drama. Not because platforms are bad — many teams need workflows I do not — but because **my** work is mostly writing and projects, and I want the tree to stay the source of truth.
+TidyPress starts from a boring premise that still needs saying in 2026: **the product is the tree you publish from.** Markdown on disk. A small `tidypress.config.ts`. A build step that turns intent into bytes. A home page that foregrounds *your* writing and *your* projects — not a generic docs portal that accidentally becomes the whole company.
 
-## A line worth keeping
+I am an engineer. My public work is repos, shipped tools, essays, and reference pages. I want one owned URL that LinkedIn, GitHub, and the next model citation can point to — current, legible, and under my control.
 
-[Simon Willison](https://simonwillison.net/) has been spelling it out in public while the models arrived: keep what you can diff in git, publish pages with real URLs, and let the LLM propose edits — not custody of the canonical draft. That is the same discipline older builders named in plainer words — [Knuth](https://www-cs-faculty.stanford.edu/~knuth/) on source, [Berners-Lee](https://www.w3.org/People/Berners-Lee/) on documents and links — before “agent” was everyday vocabulary.
+## Voices I steal from (with links)
 
-I share that bias. A personal site should feel like that stack in miniature: files you keep, output you can ship.
+[Simon Willison](https://simonwillison.net/) has been saying the quiet part out loud as models arrived: keep what you can diff in git, publish pages with real URLs, let the LLM propose edits — **not** custody of the canonical draft. That is the same discipline older builders named in plainer words — [Knuth](https://www-cs-faculty.stanford.edu/~knuth/) on literate source, [Berners-Lee](https://www.w3.org/People/Berners-Lee/) on documents and links — before “agent” was everyday vocabulary.
+
+[Git’s snapshot model](https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F#_snapshots_not_differences) and [review on pull requests](https://docs.github.com/en/get-started/using-github/github-flow) already treat text like code when teams care. I want the same habit for a personal site: prose in the PR, HTML in `build/`.
 
 <Image src="/images/writing/manuscript-typewriter.gif" alt="Typewriter striking paper, line by line" caption="Source before presentation — the line on the page outlives the machine that set it." />
 
-TidyPress is built lightly in that spirit. You keep markdown, `tidypress.config.ts`, and a `build/` folder you upload. The home page foregrounds writing and projects; a manual in the sidebar is there when you need it, not the whole personality of the site.
+## The layout TidyPress assumes
+
+Not every site needs the same shape. The defaults bias toward **engineer authorship**: ideas and work on the home page; dated writing in `writing/`; optional `docs/` when something actually needs a manual.
 
 <FileTree>
 - docs/
   - **tidypress.config.ts**
+  - tidypress-context.md
   - src/
     - content/
       - writing/
       - projects/
       - docs/
   - build/
+    - index.html
+    - pagefind/
 </FileTree>
 
-`writing/`, `projects/`, optional `docs/`, assets beside them — a plain layout so future-you, and any agent with read access to the repo, can find things without a map drawn in a separate product.
+`tidypress context` exports a markdown snapshot of titles and paths — useful memory for you *and* for an agent with repo access, without handing either one a hosted draft database.
+
+<Image src="/images/writing/drake-git-cms.jpg" alt="Drakeposting meme: prefer markdown in git over a CMS dashboard" caption="The presentation layer can be pretty. The canonical draft should still live where `git log` can see it." />
 
 ## Build as receipt
 
-The build step matters to me the way a compiler output matters: intent becomes an artifact you can point at. `tidypress build` gives you HTML and a search index; you put them on any static host. The pull request is where I read prose; production is the bytes in `build/`.
+The build step matters the way compiler output matters: intent becomes an artifact you can point at. `tidypress build` gives you HTML and a [Pagefind](https://pagefind.app/docs/) index at build time — what search indexes is what you built, not a parallel copy maintained elsewhere.
 
 <Mermaid align="center" code={`
 flowchart LR
-  Files[Markdown in git] --> Build[tidypress build]
+  subgraph repo [Git repo]
+    W[writing/]
+    P[projects/]
+    D[docs/]
+  end
+  repo --> Config[tidypress.config.ts]
+  Config --> Build[tidypress build]
   Build --> Out[build/]
-  Out --> Host[Static host]
+  Out --> Host[Your static host]
 `} />
 
 ```bash
@@ -52,11 +69,11 @@ tidypress build
 
 <Image src="/images/writing/print-output.gif" alt="Sheets feeding through a printer" caption="A build is a print run: fixed pages you can ship, not a live feed to babysit." />
 
-That rhythm — pre-render once, serve files — is old and still good for text-heavy sites. [Jamstack](https://jamstack.org/) names the pattern; the [Web Almanac](https://almanac.httparchive.org/en/2022/jamstack) still describes it as fast pages delivered by pre-rendering and caching. I want that predictability: what search indexes is what you built, not a parallel copy maintained elsewhere ([Pagefind](https://pagefind.app/docs/) runs at build time for that reason).
+That rhythm — pre-render once, serve files — is what [Jamstack](https://jamstack.org/) names; the [Web Almanac](https://almanac.httparchive.org/en/2022/jamstack) still describes it as fast pages from pre-rendering and caching. I want that predictability for text-heavy, engineer-owned sites.
 
-### A small gimmick that is also true
+### Embed your own ship artifact
 
-Static output is just HTML on disk — which means you can **iframe your own ship artifact** inside a post, a readme, or a demo page. No app server required; same host, same bytes users get in production. (Third-party sites often block embedding; your `build/` folder does not.)
+Static output is HTML on disk. You can **iframe your own `build/` demo** inside a post or readme — same host, same bytes users get in production. (Third-party sites often block embedding; a file under `docs/public/` does not.)
 
 <div class="not-prose tidy-embed-frame">
   <iframe
@@ -67,17 +84,19 @@ Static output is just HTML on disk — which means you can **iframe your own shi
 </div>
 
 <Callout type="tip">
-MDX accepts raw `<iframe>`. The trick is to point at something you control — a file under `docs/public/` — so the frame always loads.
+MDX accepts raw `<iframe>`. Point at something you control under `docs/public/` so the frame always loads.
 </Callout>
 
-## Docs without becoming a different company
+## Docs without becoming a docs company
 
-People sometimes ask if this is a documentation product. It can hold docs. I use it when the site is **mostly** essays and work on the home page, with reference pages tucked into `docs/` when a tool or library actually needs them. You should not have to dress as a wiki to get a calm reading column.
+People sometimes ask if TidyPress is “a documentation product.” It can hold docs. I use it when the site is **mostly** essays and work on the home page, with reference pages in `docs/` when a library or tool needs them. You should not have to dress as a wiki to get a calm reading column.
 
 <Callout type="quote">
 Own the tree. Let the build prove what shipped. Keep the reading experience quiet enough to finish a post.
 </Callout>
 
-[Git’s snapshot model](https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F#_snapshots_not_differences) and [review on pull requests](https://docs.github.com/en/get-started/using-github/github-flow) already treat text like code when teams care — I want the same habit for a personal site.
+<Image src="/images/writing/this-is-fine.jpg" alt="This is fine meme — dog in burning room" caption="The moment your canonical draft lives only inside a vendor dashboard — and the export button is ‘contact sales.’" />
 
-So yes: for me, the folder is the product. Editors, agents, and CI stay upstream. What remains after save — and what `build/` contains — is the site.
+## So yes
+
+For me, the folder is the product. Editors, agents, and CI stay upstream. What remains after save — and what `build/` contains — is the site. TidyPress is the thin layer that makes that habit feel obvious instead of heroic.
