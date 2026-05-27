@@ -1,6 +1,6 @@
 {
   "name": "@tidypress/engine",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "packageManager": "pnpm@10.4.1",
   "type": "module",
   "files": [

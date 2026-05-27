@@ -151,7 +151,6 @@ If checks fail to match, open a recent PR on GitHub → Checks and use the exact
 
 - Core pitch: *A publishing framework for Git-native authorship.*
 - Do not add docs-SaaS marketing stacks or competitor site names in user-facing docs.
-- Rendering stays Node.js + Astro; Python is a wrapper, not a second site renderer.
 
 ## License
 
