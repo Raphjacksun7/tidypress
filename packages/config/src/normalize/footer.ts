@@ -185,7 +185,7 @@ export function formatFooterCopyright(
 ): string {
   const template = copyright?.trim()
   if (!template) {
-    return `© ${context.year}${context.name}`
+    return `© ${context.year} ${context.name}`
   }
   return template.replaceAll('{year}', String(context.year)).replaceAll('{name}', context.name)
 }
