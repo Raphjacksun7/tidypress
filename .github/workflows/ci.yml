@@ -136,17 +136,17 @@ jobs:
       - name: Build site
         run: pnpm --filter @tidypress/site build
 
+      # wrangler is a root devDependency; pnpm exec avoids wrangler-action trying
+      # to pnpm-add wrangler into the private workspace during the job.
       - name: Ensure Cloudflare Pages project exists
-        uses: cloudflare/wrangler-action@v3
         continue-on-error: true
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages project create tidypress --production-branch main
+        run: pnpm exec wrangler pages project create tidypress --production-branch main
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Publish to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy apps/site/build --project-name=tidypress --branch=main --commit-hash=${{ github.sha }}
+        run: pnpm exec wrangler pages deploy apps/site/build --project-name=tidypress --branch=main --commit-hash=${{ github.sha }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

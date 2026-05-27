@@ -11,13 +11,14 @@
     "build": "pnpm -r --workspace-concurrency=1 build",
     "dev": "pnpm --filter @tidypress/engine dev",
     "test": "pnpm -r test",
-    "deploy:site": "pnpm --filter @tidypress/site build && npm exec --yes wrangler -- pages deploy apps/site/build --project-name=tidypress --branch=main",
+    "deploy:site": "pnpm --filter @tidypress/site build && pnpm exec wrangler pages deploy apps/site/build --project-name=tidypress --branch=main",
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "pnpm -r --workspace-concurrency=1 build && pnpm --filter tidypress publish --access public --no-git-checks"
   },
   "packageManager": "pnpm@10.4.1+sha512.c753b6c3ad7afa13af388fa6d808035a008e30ea9993f58c6663e2bc5ff21679aa834db094987129aa4d488b86df57f7b634981b2f827cdcacc698cc0cfb88af",
   "devDependencies": {
-    "@changesets/cli": "^2.31.0"
+    "@changesets/cli": "^2.31.0",
+    "wrangler": "^4.22.0"
   }
 }

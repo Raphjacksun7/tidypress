@@ -33,13 +33,23 @@ Do not upload:
     restore-keys: |
       tidypress-${{ runner.os }}-
 
-- run: npx tidypress build
+- run: pnpm exec tidypress build
 
-- uses: cloudflare/wrangler-action@v3
-  with:
-    apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-    accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-    command: pages deploy apps/site/build --project-name=tidypress --branch=main
+- run: pnpm exec wrangler pages deploy apps/site/build --project-name=tidypress --branch=main
+  env:
+    CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+```
+
+Add `wrangler` as a devDependency in the repo that runs CI, then use `pnpm exec wrangler` — `wrangler-action` may try to install Wrangler during the job and fail on a private pnpm workspace root.
+
+```yaml
+# optional: create project once
+- run: pnpm exec wrangler pages project create tidypress --production-branch main
+  continue-on-error: true
+  env:
+    CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 ```
 
 Adjust `apps/site/build` to your docs output path (for example `docs/build`).

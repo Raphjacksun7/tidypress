@@ -94,8 +94,8 @@ CI publishing and deployment need these external settings:
 Local Pages deploy:
 
 ```bash
-npm exec --yes wrangler -- login
-npm exec --yes wrangler -- pages project create tidypress --production-branch main
+pnpm exec wrangler login
+pnpm exec wrangler pages project create tidypress --production-branch main
 pnpm deploy:site
 ```
 
