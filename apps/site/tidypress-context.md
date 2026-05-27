@@ -66,13 +66,13 @@
   - excerpt: Content lives under `docs/src/content/`. Markdown is the default. MDX adds components. ## Collections ```txt docs/src/content/ ├── docs/ # documentation pages ├── writing/ 
 - [writing] Agents and markdown
   - path: `src/content/writing/agents-and-markdown.mdx`
-  - description: Git-native authorship when the second author types at token speed.
-  - excerpt: The interesting shift with coding agents is not that publishing got easier. It is that **authorship got cheaper.** You still need a point of view, a public URL, and a build step yo
+  - description: If the site lives in git, an agent is just another author.
+  - excerpt: The interesting shift with coding agents is not that publishing got easier. It is that **authorship** got cheaper. You still need a point of view, a place on the web, and a build s
 - [writing] Hello, world
   - path: `src/content/writing/hello-world.md`
-  - description: A public surface for work I actually own — not another feed.
-  - excerpt: I ship a lot of small things: repos, experiments, notes that should have been posts, reference pages that never quite fit a README. For years the “public face” of that work was sca
+  - description: Starting a small site I actually own.
+  - excerpt: I wanted a public place that does not run on someone else's feed. Not a newsletter platform, not a docs portal that slowly becomes the whole company — just a site: something to rea
 - [writing] The folder is the product
   - path: `src/content/writing/the-folder-is-the-product.mdx`
-  - description: Git-native authorship — own the tree, ship the build, keep the reading column quiet.
-  - excerpt: TidyPress starts from a boring premise that still needs saying in 2026: **the product is the tree you publish from.** Markdown on disk. A small `tidypress.config.ts`. A build step 
+  - description: A quiet preference for owning the tree you publish from.
+  - excerpt: I like publishing when it stays close to the file system: markdown on disk, a small config, a build step, something you can host without drama. Not because platforms are bad — many
