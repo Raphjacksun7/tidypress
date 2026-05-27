@@ -62,6 +62,8 @@ npx skills add https://github.com/Raphjacksun7/tidypress --skill tidypress
 
 (Project path may vary once the skills layout is published on the default branch.)
 
-## Project skills
+## Personal AI workspace
 
-This repository also ships project-scoped skills under `.cursor/skills/` for contributors cloning the monorepo.
+Contributors may use any AI tool. Optional global install (`tidypress skills install`) loads `tidypress-contributor`, which points at [`CONTRIBUTING.md`](../../CONTRIBUTING.md))—not a maintainer-private workflow.
+
+If you keep local AI notes or rules, store them in a **gitignored** folder on your machine and never include them in pull requests. See CONTRIBUTING.md → *Personal notes and AI config*.

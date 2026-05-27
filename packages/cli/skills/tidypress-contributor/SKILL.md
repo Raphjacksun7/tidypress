@@ -70,7 +70,7 @@ pnpm --filter @tidypress/site context
 
 ## Using AI to contribute
 
-Any AI assistant is fine. Follow [`CONTRIBUTING.md`](../../../CONTRIBUTING.md#using-ai-tools-optional).
+Any AI assistant is fine. Follow [`CONTRIBUTING.md`](../../CONTRIBUTING.md#using-ai-tools-optional).
 
 1. **Install skills (optional)** — `npx tidypress skills install` adds `tidypress` and `tidypress-contributor` to Cursor, Claude Code, or Codex.
 2. **Load repo context** — `CONTRIBUTING.md`, package README, tests for files you touch.
