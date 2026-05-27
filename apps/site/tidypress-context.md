@@ -70,7 +70,7 @@
   - excerpt: The interesting shift with coding agents is not that publishing got easier. It is that **authorship got cheaper.** You still need a point of view, a public URL, and a build step yo
 - [writing] Hello, world
   - path: `src/content/writing/hello-world.md`
-  - description: A public interface for work I actually own — not another feed.
+  - description: A public surface for work I actually own — not another feed.
   - excerpt: I ship a lot of small things: repos, experiments, notes that should have been posts, reference pages that never quite fit a README. For years the “public face” of that work was sca
 - [writing] The folder is the product
   - path: `src/content/writing/the-folder-is-the-product.mdx`

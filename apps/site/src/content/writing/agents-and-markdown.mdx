@@ -15,7 +15,7 @@ TidyPress is built for that world — but it is not built *for* agents. There is
 
 ## The public interface stays human-readable
 
-Engineers now maintain dozens or hundreds of repos. Followers, hiring managers, and future collaborators do not need another dashboard — they need a **stable presentation layer**: writing that ages, projects that showcase work, docs when a tool needs a manual. Agents can help fill the tree; TidyPress turns the tree into HTML you own.
+Followers, hiring managers, and future collaborators do not need another dashboard — they need a **stable presentation layer**: writing that ages, projects that showcase work, docs when a tool needs a manual. Agents can help fill the tree; TidyPress turns the tree into HTML you own.
 
 [Simon Willison](https://simonwillison.net/) documents the engineering side in [Using Git with coding agents](https://simonwillison.net/guides/agentic-engineering-patterns/using-git-with-coding-agents/): agents fluent in commits, branches, and PRs; you keep version control as the record. That maps onto a TidyPress site when **markdown in git** is canonical after merge — same shape as [Brandur Leach’s write → publish pipeline](https://brandur.org/fragments/write-publish-pipeline), but with `tidypress build` as the receipt.
 
@@ -23,7 +23,7 @@ Willison draws a harder line for **opinionated prose**: “I” stays human-writ
 
 ## The tree both of you edit
 
-I like that boundary. Platforms that own your drafts eventually own your audience. A folder of markdown plus a static `build/` output is boring on purpose. Boring survives model upgrades, editor churn, and the next hot publishing startup.
+Platforms that own your drafts eventually own your audience. A folder of markdown plus a static `build/` output is boring on purpose. Boring survives model upgrades, editor churn, and the next hot publishing startup.
 
 <FileTree>
 - docs/
@@ -88,20 +88,16 @@ The part worth teaching models is **structure**, not syntax. After that, the pul
 
 I do not think “human writer” and “agent writer” are different products. They are different speeds on the same git history.
 
-<Image src="/images/writing/honest-work.jpg" alt="It's not much but it's honest work meme" caption="No agent API. No draft database. Files in, `build/` out." />
+```bash
+tidypress context tidypress-context.md   # map for the agent
+# … edit writing/*.mdx in a PR …
+tidypress build                          # receipt in docs/build/
+```
 
-<Image src="/images/writing/this-is-fine.jpg" alt="This is fine meme" caption="Alternate workflow: the draft only exists in a chat tab. The site never updates. Also fine, if you do not need a public interface." />
+Chat-only drafts are fine if you do not need a public URL. Once you do, the merge and the build are the contract — same for you and for the model.
 
-What I want from a tool here is narrow scope: stay out of the way once the markdown is saved. No second database. No publish button that only works inside a vendor dashboard. If your agent can respect a folder layout, TidyPress will build it the same way it builds yours.
+What I want from a tool here is narrow scope: stay out of the way once the markdown is saved. If your agent can respect a folder layout, TidyPress will build it the same way it builds yours.
 
-## What we are not building
+## Boundary
 
-To be explicit — matching [why TidyPress](/docs/why-tidypress):
-
-- Not an API-docs SaaS leaderboard play
-- Not a hosted blogging network that owns your RSS audience
-- Not a newsletter platform or team wiki
-
-We are building **git-native authorship**: the interface between your repos and the open web. Agents belong upstream of the commit. Everything else — including intelligence — stays there.
-
-That is the whole bet. Files in, site out. Your name on the byline. Your host on the deploy.
+Scope and anti-goals are spelled out in [why TidyPress](/docs/why-tidypress). The short version: agents belong upstream of the commit; the site is files in, HTML out, your host on the deploy.

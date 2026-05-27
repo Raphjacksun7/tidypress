@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>git log</title>
+    <style>
+      :root {
+        --fg: #0a0a0a;
+        --muted: #71717a;
+        --accent: #2563eb;
+        --border: #e4e4e7;
+        --surface: #fafafa;
+        --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --fg: #fafafa;
+          --muted: #a1a1aa;
+          --accent: #60a5fa;
+          --border: #27272a;
+          --surface: #18181b;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 1rem 1.25rem;
+        font-family: var(--mono);
+        font-size: 12px;
+        line-height: 1.65;
+        color: var(--fg);
+        background: var(--surface);
+      }
+      .prompt {
+        color: var(--muted);
+        margin: 0 0 0.75rem;
+      }
+      .row {
+        padding: 0.12rem 0;
+      }
+      .hash {
+        color: var(--accent);
+      }
+      .msg {
+        color: var(--fg);
+      }
+      .foot {
+        margin: 1rem 0 0;
+        padding-top: 0.75rem;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 11px;
+      }
+    </style>
+  </head>
+  <body>
+    <p class="prompt">$ git log --oneline -- docs/src/content/writing/</p>
+    <div class="row"><span class="hash">6284a4a</span> <span class="msg">writing — tighten author citations</span></div>
+    <div class="row"><span class="hash">e8fa08d</span> <span class="msg">writing — align essays with vision</span></div>
+    <div class="row"><span class="hash">a1b2c3d</span> <span class="msg">the-folder-is-the-product — first draft</span></div>
+    <p class="foot">canonical draft · not a CMS revision table</p>
+  </body>
+</html>

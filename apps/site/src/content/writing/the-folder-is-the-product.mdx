@@ -12,7 +12,7 @@ tags:
 
 TidyPress starts from a boring premise that still needs saying in 2026: **the product is the tree you publish from.** Markdown on disk. A small `tidypress.config.ts`. A build step that turns intent into bytes. A home page that foregrounds *your* writing and *your* projects — not a generic docs portal that accidentally becomes the whole company.
 
-I am an engineer. My public work is repos, shipped tools, essays, and reference pages. I want one owned URL that LinkedIn, GitHub, and the next model citation can point to — current, legible, and under my control.
+My public work is repos, shipped tools, essays, and reference pages. I want one owned URL that LinkedIn, GitHub, and the next model citation can point to — current, legible, and under my control.
 
 ## Voices worth stealing (with links)
 
@@ -48,7 +48,13 @@ Not every site needs the same shape. The defaults bias toward **engineer authors
 
 `tidypress context` exports a markdown snapshot of titles and paths — useful memory for you *and* for an agent with repo access, without handing either one a hosted draft database.
 
-<Image src="/images/writing/drake-git-cms.jpg" alt="Drakeposting meme: prefer markdown in git over a CMS dashboard" caption="The presentation layer can be pretty. The canonical draft should still live where `git log` can see it." />
+<div class="not-prose tidy-embed-frame">
+  <iframe
+    title="git history for writing/"
+    src="/embeds/git-prose-history.html"
+    loading="lazy"
+  />
+</div>
 
 ## Build as receipt
 
@@ -75,7 +81,7 @@ tidypress build
 
 <Image src="/images/writing/print-output.gif" alt="Sheets feeding through a printer" caption="A build is a print run: fixed pages you can ship, not a live feed to babysit." />
 
-That rhythm — pre-render once, serve files — is what [Jamstack](https://jamstack.org/) names; the [Web Almanac](https://almanac.httparchive.org/en/2022/jamstack) still describes it as fast pages from pre-rendering and caching. I want that predictability for text-heavy, engineer-owned sites.
+On this site, push to `main` runs `tidypress build` in CI and deploys `docs/build/` to Cloudflare Pages — the same bytes you get locally after `tidypress build`, not a separate “published” copy maintained in a dashboard.
 
 ### Embed your own ship artifact
 
