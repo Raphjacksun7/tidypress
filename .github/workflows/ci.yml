@@ -138,6 +138,9 @@ jobs:
       - name: Build config package
         run: pnpm --filter @tidypress/config build
 
+      - name: Build CLI
+        run: pnpm --filter tidypress build
+
       - name: Build site
         run: pnpm --filter @tidypress/site build
 
