@@ -17,7 +17,9 @@ TidyPress is built for that world — but it is not built *for* agents. There is
 
 Engineers now maintain dozens or hundreds of repos. Followers, hiring managers, and future collaborators do not need another dashboard — they need a **stable presentation layer**: writing that ages, projects that showcase work, docs when a tool needs a manual. Agents can help fill the tree; TidyPress turns the tree into HTML you own.
 
-[Simon Willison](https://simonwillison.net/)’s pattern — LLM proposes, git records, you publish — maps cleanly onto `tidypress build`. The model’s memory is the diff and the folder layout, not a proprietary draft store.
+[Simon Willison](https://simonwillison.net/) documents the engineering side in [Using Git with coding agents](https://simonwillison.net/guides/agentic-engineering-patterns/using-git-with-coding-agents/): agents fluent in commits, branches, and PRs; you keep version control as the record. That maps onto a TidyPress site when **markdown in git** is canonical after merge — same shape as [Brandur Leach’s write → publish pipeline](https://brandur.org/fragments/write-publish-pipeline), but with `tidypress build` as the receipt.
+
+Willison draws a harder line for **opinionated prose**: “I” stays human-written ([his policy](https://simonwillison.net/2026/Mar/1/ai-writing/)). TidyPress does not pick that fight — you decide what lands in `writing/` — but the tool assumes the draft is always a file in the repo, never a hosted editor’s database. `tidypress context` gives an agent the map of the tree; it does not get custody.
 
 ## The tree both of you edit
 

@@ -14,9 +14,15 @@ TidyPress starts from a boring premise that still needs saying in 2026: **the pr
 
 I am an engineer. My public work is repos, shipped tools, essays, and reference pages. I want one owned URL that LinkedIn, GitHub, and the next model citation can point to — current, legible, and under my control.
 
-## Voices I steal from (with links)
+## Voices worth stealing (with links)
 
-[Simon Willison](https://simonwillison.net/) has been saying the quiet part out loud as models arrived: keep what you can diff in git, publish pages with real URLs, let the LLM propose edits — **not** custody of the canonical draft. That is the same discipline older builders named in plainer words — [Knuth](https://www-cs-faculty.stanford.edu/~knuth/) on literate source, [Berners-Lee](https://www.w3.org/People/Berners-Lee/) on documents and links — before “agent” was everyday vocabulary.
+[Tim Berners-Lee](https://www.w3.org/History/1989/proposal.html) framed the web as a **web of documents and links** with real URLs — still the right ancestor for a public engineer surface.
+
+[Tom Preston-Werner](https://tom.preston-werner.com/2008/11/17/blogging-like-a-hacker) named the workflow TidyPress extends: **writing in git**, static output, publish from the repo (the post that launched Jekyll).
+
+[Brandur Leach](https://brandur.org/fragments/graceful-degradation-time) practices it today: **Markdown + Git**, public source on GitHub, [publish on push](https://brandur.org/fragments/write-publish-pipeline), fixes via pull request — a blog built to outlive any CMS.
+
+[Donald Knuth](https://www-cs-faculty.stanford.edu/~knuth/lp.html) called the deeper habit **literate programming**: treat the human-readable source as the artifact; the rendered page is downstream.
 
 [Git’s snapshot model](https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F#_snapshots_not_differences) and [review on pull requests](https://docs.github.com/en/get-started/using-github/github-flow) already treat text like code when teams care. I want the same habit for a personal site: prose in the PR, HTML in `build/`.
 
