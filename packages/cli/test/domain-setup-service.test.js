@@ -4,16 +4,19 @@ import assert from 'node:assert/strict'
 import { TidyPressError } from '../src/errors/TidyPressError.js'
 import { DomainSetupService } from '../src/services/DomainSetupService.js'
 
+/**
+ * @param {string | undefined} [siteUrl]
+ */
 function createConfigLoader(siteUrl) {
   const resolvedSiteUrl = arguments.length === 0 ? 'https://old.example.com' : siteUrl
-  return {
+  return /** @type {import('../src/services/ConfigLoader.js').ConfigLoader} */ (/** @type {any} */ ({
     async resolveDocsDirectory() {
       return '/workspace/docs'
     },
     async loadConfig() {
-      return { siteUrl: resolvedSiteUrl }
+      return { name: 'test', siteUrl: resolvedSiteUrl }
     },
-  }
+  }))
 }
 
 test('DomainSetupService returns platform instructions and suggested siteUrl', async () => {

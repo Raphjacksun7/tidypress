@@ -58,6 +58,7 @@ export function getCacheHome() {
   return path.join(os.homedir(), '.cache', 'tidypress')
 }
 
+/** @param {string} targetPath */
 async function exists(targetPath) {
   try {
     await fs.lstat(targetPath)
@@ -232,8 +233,14 @@ export function buildSessionEnv(session) {
   }
 }
 
-/** @deprecated Use prepareBuildSession */
+/**
+ * @param {{ docsDir: string, mode?: 'dev' | 'build' | 'preview' }} options
+ * @deprecated Use prepareBuildSession
+ */
 export async function prepareWorkdir(options) {
-  const session = await prepareBuildSession(options)
+  const session = await prepareBuildSession({
+    docsDir: options.docsDir,
+    mode: options.mode ?? 'build',
+  })
   return session.engineRoot
 }

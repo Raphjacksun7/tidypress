@@ -1,6 +1,7 @@
 import process from 'node:process'
 import { createRequire } from 'node:module'
 
+import { maybeInstallTidyPressSkillsGlobally } from './agents-skills/install.js'
 import { createApplication } from './bootstrap/createApplication.js'
 import { TidyPressError } from './errors/TidyPressError.js'
 
@@ -9,15 +10,20 @@ const { version } = require('../package.json')
 
 /**
  * @param {string[]} argv
- * @returns {{ argv: string[], verboseErrors: boolean }}
+ * @returns {{ argv: string[], verboseErrors: boolean, installSkills: boolean }}
  */
 function parseCliFlags(argv) {
   /** @type {string[]} */
   const filtered = []
   let verboseErrors = false
+  let installSkills = false
   for (const arg of argv) {
     if (arg === '--verbose') {
       verboseErrors = true
+      continue
+    }
+    if (arg === '--install-skills' || arg === '--x-install-skills') {
+      installSkills = true
       continue
     }
     filtered.push(arg)
@@ -25,6 +31,7 @@ function parseCliFlags(argv) {
   return {
     argv: filtered,
     verboseErrors,
+    installSkills,
   }
 }
 
@@ -71,6 +78,7 @@ export async function runCli(argv, { projectRoot = process.cwd(), io = console }
   const app = createApplication({ projectRoot, version, io })
   try {
     await app.run(parsed.argv)
+    await maybeInstallTidyPressSkillsGlobally({ force: parsed.installSkills, io })
     return 0
   } catch (error) {
     return handleCliError(error, { io, verboseErrors: parsed.verboseErrors })

@@ -32,11 +32,19 @@
     ".": "./src/index.js",
     "./config": "./src/config.js"
   },
+  "files": [
+    "bin",
+    "src",
+    "skills"
+  ],
   "scripts": {
+    "prepack": "node ./scripts/sync-skills.mjs",
+    "postinstall": "node ./scripts/postinstall-skills.mjs",
     "test": "node --test --test-timeout=420000 test/*.test.js",
     "test:install-e2e": "node --test --test-timeout=2400000 test/install-e2e.test.js",
     "dev": "node ./bin/tidypress.js dev",
-    "build": "node -e \"console.log('tidypress CLI package does not require a compile step')\""
+    "build": "node -e \"console.log('tidypress CLI package does not require a compile step')\"",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.tests.json"
   },
   "dependencies": {
     "@astrojs/mdx": "5.0.4",
@@ -58,5 +66,9 @@
   "bundleDependencies": [
     "@tidypress/config",
     "@tidypress/engine"
-  ]
+  ],
+  "devDependencies": {
+    "@types/node": "^22.15.29",
+    "typescript": "^5.9.2"
+  }
 }

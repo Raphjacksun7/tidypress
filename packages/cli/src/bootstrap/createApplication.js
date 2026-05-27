@@ -14,6 +14,7 @@ import { InitCommand } from '../commands/init.js'
 import { MigrateSectionsCommand } from '../commands/migrate-sections.js'
 import { PreviewCommand } from '../commands/preview.js'
 import { ReleaseCheckCommand } from '../commands/release-check.js'
+import { SkillsCommand } from '../commands/skills.js'
 import { AiCommand } from '../commands/ai.js'
 import {
   ArtifactOnlyDeployStrategy,
@@ -40,10 +41,10 @@ import { SectionsMigrationService } from '../services/SectionsMigrationService.j
 /**
  * Creates the fully wired application with explicit service boundaries.
  *
- * @param {{ projectRoot: string, version: string, io?: { info: (message: string) => void, error: (message: string) => void } }} options
+ * @param {{ projectRoot: string, version: string, io?: import('../types.js').CliIo }} options
  * @returns {Application}
  */
-export function createApplication({ projectRoot, version, io = console }) {
+export function createApplication({ projectRoot, version, io = /** @type {import('../types.js').CliIo} */ (console) }) {
   const configLoader = new ConfigLoader()
   const engineManager = new EngineManager()
   const scaffoldService = new ScaffoldService()
@@ -82,6 +83,7 @@ export function createApplication({ projectRoot, version, io = console }) {
       preview: new PreviewCommand({ configLoader, engineManager }),
       clean: new CleanCommand({ cleanService, io }),
       context: new ContextCommand({ contextService, io }),
+      skills: new SkillsCommand({ io }),
       deploy: new DeployCommand({ buildService, deployService, io }),
       domain: new DomainCommand({ domainSetupService, io }),
       doctor: new DoctorCommand({ doctorService, io }),

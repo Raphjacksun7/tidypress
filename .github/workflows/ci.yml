@@ -26,6 +26,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Typecheck CLI (checkJs)
+        run: pnpm --filter tidypress typecheck
+
       - name: Run tests
         run: pnpm -r test
 

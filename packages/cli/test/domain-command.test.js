@@ -7,9 +7,10 @@ test('DomainCommand prints actionable setup guidance', async () => {
   /** @type {string[]} */
   const infoMessages = []
   const command = new DomainCommand({
-    domainSetupService: {
+    domainSetupService: /** @type {import('../src/services/DomainSetupService.js').DomainSetupService} */ (/** @type {any} */ ({
       async setup() {
         return {
+          docsDir: '/workspace/docs',
           resolvedDomain: 'docs.example.com',
           domainSource: 'argument',
           suggestedSiteUrl: 'https://docs.example.com',
@@ -18,7 +19,7 @@ test('DomainCommand prints actionable setup guidance', async () => {
           instructions: ['Add domain in dashboard.', 'Apply requested DNS record.'],
         }
       },
-    },
+    })),
     io: {
       info(message) {
         infoMessages.push(message)
@@ -42,9 +43,10 @@ test('DomainCommand reports when domain is detected from config', async () => {
   /** @type {string[]} */
   const infoMessages = []
   const command = new DomainCommand({
-    domainSetupService: {
+    domainSetupService: /** @type {import('../src/services/DomainSetupService.js').DomainSetupService} */ (/** @type {any} */ ({
       async setup() {
         return {
+          docsDir: '/workspace/docs',
           resolvedDomain: 'myblog.example.com',
           domainSource: 'config',
           suggestedSiteUrl: 'https://myblog.example.com',
@@ -53,7 +55,7 @@ test('DomainCommand reports when domain is detected from config', async () => {
           instructions: ['Add domain in dashboard.'],
         }
       },
-    },
+    })),
     io: {
       info(message) {
         infoMessages.push(message)

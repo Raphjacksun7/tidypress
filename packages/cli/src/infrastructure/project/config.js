@@ -63,6 +63,10 @@ export async function resolveDocsDir(projectRoot) {
 export async function loadUserConfig(docsDir) {
   const configPath = await findConfigFile(docsDir)
   const jiti = jitiFactory(import.meta.url, { interopDefault: true })
-  const config = await jiti.import(configPath)
-  return config?.default ?? config
+  const loaded = await jiti.import(configPath)
+  const config = /** @type {{ default?: unknown } | unknown} */ (loaded)
+  if (config && typeof config === 'object' && 'default' in config) {
+    return /** @type {import('@tidypress/config').TidyPressConfig} */ (config.default)
+  }
+  return /** @type {import('@tidypress/config').TidyPressConfig} */ (config)
 }

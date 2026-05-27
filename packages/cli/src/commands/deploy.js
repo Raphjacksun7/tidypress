@@ -30,7 +30,7 @@ export class DeployCommand {
       return
     }
     const { buildDir } = await this.buildService.build({ projectRoot })
-    await this.deployService.deploy({ projectRoot, distDir: buildDir, target, io: this.io })
+    await this.deployService.deploy({ projectRoot, distDir: buildDir, target })
 
     if (target) {
       this.io.info(`Deploy flow completed for target: ${target}`)

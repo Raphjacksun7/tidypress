@@ -21,7 +21,10 @@ export function assertDeploymentStrategy(strategy) {
     )
   }
 
-  if (typeof strategy.id !== 'string' || strategy.id.length === 0) {
+  const plugin = /** @type {Record<string, unknown>} */ (strategy)
+  const id = plugin.id
+
+  if (typeof id !== 'string' || id.length === 0) {
     throw new TidyPressError(
       'Deployment strategy plugin is missing a valid id.',
       'DEPLOY_STRATEGY_INVALID',
@@ -29,9 +32,9 @@ export function assertDeploymentStrategy(strategy) {
     )
   }
 
-  if (typeof strategy.supports !== 'function' || typeof strategy.execute !== 'function') {
+  if (typeof plugin.supports !== 'function' || typeof plugin.execute !== 'function') {
     throw new TidyPressError(
-      `Deployment strategy "${strategy.id}" has an invalid interface.`,
+      `Deployment strategy "${id}" has an invalid interface.`,
       'DEPLOY_STRATEGY_INVALID',
       'Implement supports(request) and execute(request) methods',
     )

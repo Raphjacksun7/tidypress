@@ -2,10 +2,12 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+/** @param {string} target */
 function hasUriScheme(target) {
   return /^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(target)
 }
 
+/** @param {string} target */
 function isSshScpTarget(target) {
   return /^[^/\s:@]+@[^/\s:]+:.+/.test(target)
 }

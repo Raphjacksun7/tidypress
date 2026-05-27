@@ -33,7 +33,7 @@ export class ConfigLoader {
 
   /**
    * @param {{ docsDir: string }} options
-   * @returns {Promise<unknown>}
+   * @returns {Promise<import('@tidypress/config').TidyPressConfig>}
    */
   async loadConfig({ docsDir }) {
     return loadUserConfig(docsDir)
@@ -69,6 +69,10 @@ export class ConfigLoader {
     io.info(`[tidypress] ${message}`)
   }
 
+  /**
+   * @param {string} docsDir
+   * @param {import('@tidypress/config').TidyPressConfig} config
+   */
   async #collectKnownRoutes(docsDir, config) {
     const routes = new Set(['/'])
     const capabilityFlags = resolveCapabilityFlags(config)
@@ -81,7 +85,7 @@ export class ConfigLoader {
       })
       .map(([key, collection]) => ({
         key,
-        kind: isDocsCollectionKey(key) ? 'content' : collection.kind,
+        kind: isDocsCollectionKey(key) ? 'content' : (collection.kind ?? 'content'),
         basePath: collection.basePath ?? `/${key}`,
       }))
 
@@ -114,6 +118,9 @@ export class ConfigLoader {
     return routes
   }
 
+  /**
+   * @param {string} rootDir
+   */
   async #walkMarkdown(rootDir) {
     /** @type {string[]} */
     const files = []

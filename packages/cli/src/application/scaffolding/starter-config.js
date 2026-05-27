@@ -7,6 +7,7 @@ const DEFAULT_SITE_URL = 'https://example.com'
  * @param {import('../../templates/starters.js').StarterCollection} collection
  */
 function collectionEntry(collection) {
+  /** @type {{ enabled: boolean, basePath?: string, kind?: string, label?: string }} */
   const entry = { enabled: collection.enabled }
   if (collection.basePath !== undefined) {
     entry.basePath = collection.basePath
@@ -23,6 +24,7 @@ function collectionEntry(collection) {
 /**
  * @param {string} projectName
  * @param {import('../../templates/starters.js').StarterPreset} preset
+ * @returns {import('@tidypress/config').TidyPressConfig}
  */
 export function buildStarterConfig(projectName, preset) {
   /** @type {Record<string, unknown>} */
@@ -54,11 +56,11 @@ export function buildStarterConfig(projectName, preset) {
     config.pages = preset.pages.map(page => ({ ...page }))
   }
 
-  return config
+  return /** @type {import('@tidypress/config').TidyPressConfig} */ (/** @type {unknown} */ (config))
 }
 
 /**
- * @param {Record<string, unknown>} config
+ * @param {import('@tidypress/config').TidyPressConfig} config
  */
 export function formatConfigModule(config) {
   return `export default ${JSON.stringify(config, null, 2)}\n`

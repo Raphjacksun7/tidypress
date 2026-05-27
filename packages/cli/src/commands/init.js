@@ -11,7 +11,7 @@ export class InitCommand {
   }
 
   /**
-   * @param {{ projectRoot: string, starterPreset?: string }} request
+   * @param {{ projectRoot: string, starterPreset?: string, withAstro?: boolean }} request
    * @returns {Promise<void>}
    */
   async execute(request) {

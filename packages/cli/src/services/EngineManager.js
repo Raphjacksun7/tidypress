@@ -24,10 +24,10 @@ function resolvePagefindBin() {
   throw new Error('Could not locate pagefind. Ensure the tidypress CLI is installed with its dependencies.')
 }
 
-/** @type {import('astro').DevServer | null} */
+/** @type {Awaited<ReturnType<typeof dev>> | null} */
 let activeDevServer = null
 
-/** @type {import('astro').PreviewServer | null} */
+/** @type {Awaited<ReturnType<typeof preview>> | null} */
 let activePreviewServer = null
 
 /**
@@ -53,6 +53,9 @@ async function withSessionEnv(env, run) {
   }
 }
 
+/**
+ * @param {{ stop: () => Promise<void> }} server
+ */
 function registerShutdown(server) {
   const stop = async () => {
     await server.stop()
@@ -82,12 +85,18 @@ export class EngineManager {
     return getBuildDir(docsDir)
   }
 
-  /** @deprecated Use getBuildDirectory */
-  getWorkdir({ docsDir }) {
+  /**
+   * @param {{ docsDir: string }} _options
+   * @deprecated Use getBuildDirectory
+   */
+  getWorkdir({ docsDir: _docsDir }) {
     return getEnginePath()
   }
 
-  /** @deprecated Use getBuildDirectory */
+  /**
+   * @param {{ docsDir: string }} options
+   * @deprecated Use getBuildDirectory
+   */
   getDistDirectory({ docsDir }) {
     return getBuildDir(docsDir)
   }

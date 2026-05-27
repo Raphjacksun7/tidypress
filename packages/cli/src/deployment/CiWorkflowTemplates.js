@@ -41,9 +41,10 @@ export async function writeDeployWorkflowTemplate(request) {
  * @returns {string}
  */
 export function renderDeployWorkflow({ target, provider }) {
-  const env = TEMPLATE_ENV[provider] ?? []
+  const env =
+    TEMPLATE_ENV[/** @type {keyof typeof TEMPLATE_ENV} */ (provider)] ?? []
   const envBlock = env
-    .map(name => `          ${name}: \${{ secrets.${name} }}`)
+    .map((/** @type {string} */ name) => `          ${name}: \${{ secrets.${name} }}`)
     .join('\n')
   const envSection = envBlock ? `\n        env:\n${envBlock}` : ''
 

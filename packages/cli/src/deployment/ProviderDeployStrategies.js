@@ -12,11 +12,15 @@ import { resolveDeployTarget } from '../application/deployment/deploy-target.js'
 /**
  * @param {{
  *   provider: string
- *   io?: { info: (message: string) => void }
+ *   io?: import('../types.js').CliIo
  *   runCommand?: (command: string, args: string[]) => Promise<void>
  * }} options
  */
-export function createProviderStrategy({ provider, io = console, runCommand = runShellCommand }) {
+export function createProviderStrategy({
+  provider,
+  io = /** @type {import('../types.js').CliIo} */ (console),
+  runCommand = runShellCommand,
+}) {
   return {
     id: `provider:${provider}`,
     /**
@@ -39,11 +43,23 @@ export function createProviderStrategy({ provider, io = console, runCommand = ru
   }
 }
 
-export function createProviderStrategies({ io = console, runCommand = runShellCommand } = {}) {
+export function createProviderStrategies({
+  io = /** @type {import('../types.js').CliIo} */ (console),
+  runCommand = runShellCommand,
+} = {}) {
   const providers = ['vercel', 'netlify', 'surge', 'github-pages', 'cloudflare', 'docker', 'static', 's3', 'ssh']
   return providers.map(provider => createProviderStrategy({ provider, io, runCommand }))
 }
 
+/**
+ * @param {{
+ *   provider: string,
+ *   request: DeployRequest,
+ *   io: import('../types.js').CliIo,
+ *   extra?: string,
+ *   runCommand: (command: string, args: string[]) => Promise<void>,
+ * }} params
+ */
 async function executeProvider({ provider, request, io, extra, runCommand }) {
   if (provider === 'vercel') {
     await runCommand('vercel', ['deploy', '--prod', request.distDir])
@@ -119,12 +135,16 @@ async function executeProvider({ provider, request, io, extra, runCommand }) {
   io.info(`Built files ready at ${request.distDir}`)
 }
 
+/**
+ * @param {string} command
+ * @param {string[]} args
+ */
 function runShellCommand(command, args) {
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, { stdio: 'inherit' })
 
     child.on('error', error => {
-      if (error && error.code === 'ENOENT') {
+      if (error && 'code' in error && error.code === 'ENOENT') {
         reject(
           new TidyPressError(
             `Missing required command: ${command}`,
@@ -139,7 +159,7 @@ function runShellCommand(command, args) {
 
     child.on('close', code => {
       if (code === 0) {
-        resolve()
+        resolve(undefined)
         return
       }
       reject(

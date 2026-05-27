@@ -14,6 +14,7 @@ Commands:
   deploy     Deploy using registered strategy plugins
   domain     Print custom domain setup plan
   context    Emit an LLM-friendly docs snapshot
+  skills     Install TidyPress agent skills (skills install)
   import     Create content scaffolds from supported source providers
   doctor     Verify baseline docs setup
   release-check  Verify package release metadata
@@ -24,11 +25,10 @@ Commands:
 `
 
 /**
- * @typedef {{ info: (message: string) => void, error: (message: string) => void }} ApplicationIO
- */
-
-/**
- * @typedef {{ execute: (request: Record<string, unknown>) => Promise<void> }} CommandHandler
+ * @typedef {import('../types.js').CliIo} ApplicationIO
+ * @typedef {import('../types.js').CommandHandler} CommandHandler
+ * @typedef {import('../types.js').CommandMap} CommandMap
+ * @typedef {import('../types.js').CliCommandName} CliCommandName
  */
 
 /**
@@ -39,7 +39,7 @@ export class Application {
    * @param {{
    *   version: string
    *   projectRoot: string
-   *   commands: Partial<Record<'init' | 'migrate-sections' | 'dev' | 'build' | 'preview' | 'clean' | 'deploy' | 'context' | 'import' | 'doctor' | 'release-check' | 'add-version' | 'editor' | 'export' | 'ai', CommandHandler>>
+   *   commands: CommandMap
    *   io: ApplicationIO
    * }} options
    */
@@ -67,16 +67,17 @@ export class Application {
       return
     }
 
-    const handler = this.commands[command]
+    const commandName = /** @type {CliCommandName} */ (command)
+    const handler = this.commands[commandName]
     if (!handler) {
       throw new TidyPressError(`Unknown command: ${command}`, 'UNKNOWN_COMMAND', 'Run tidypress --help', { exitCode: 2 })
     }
 
-    await handler.execute(this.#buildRequest(command, rest))
+    await handler.execute(this.#buildRequest(commandName, rest))
   }
 
   /**
-   * @param {'init' | 'migrate-sections' | 'dev' | 'build' | 'preview' | 'clean' | 'deploy' | 'context' | 'import' | 'doctor' | 'release-check' | 'add-version' | 'editor' | 'export' | 'ai'} command
+   * @param {CliCommandName} command
    * @param {string[]} args
    * @returns {Record<string, unknown>}
    */
@@ -118,6 +119,10 @@ export class Application {
       }
     }
 
+    if (command === 'skills') {
+      return this.#parseSkillsRequest(args)
+    }
+
     if (command === 'add-version') {
       return this.#parseAddVersionRequest(args)
     }
@@ -145,7 +150,7 @@ export class Application {
 
   /**
    * @param {string[]} args
-   * @returns {{ projectRoot: string, starterPreset?: string }}
+   * @returns {{ projectRoot: string, starterPreset?: string, withAstro: boolean }}
    */
   #parseInitRequest(args) {
     /** @type {string | undefined} */
@@ -196,6 +201,41 @@ export class Application {
       starterPreset,
       withAstro,
     }
+  }
+
+  /**
+   * @param {string[]} args
+   * @returns {{ subcommand: string, force: boolean }}
+   */
+  #parseSkillsRequest(args) {
+    let subcommand = 'install'
+    let force = false
+
+    for (const arg of args) {
+      if (arg === '--force') {
+        force = true
+        continue
+      }
+      if (arg.startsWith('-')) {
+        throw new TidyPressError(
+          `Unknown skills option: ${arg}`,
+          'INVALID_SKILLS_OPTION',
+          'Use tidypress skills install [--force]',
+          { exitCode: 2 },
+        )
+      }
+      if (subcommand !== 'install') {
+        throw new TidyPressError(
+          `Unexpected skills argument: ${arg}`,
+          'INVALID_SKILLS_OPTION',
+          'Use tidypress skills install [--force]',
+          { exitCode: 2 },
+        )
+      }
+      subcommand = arg
+    }
+
+    return { subcommand, force }
   }
 
   /**
@@ -583,7 +623,7 @@ export class Application {
     return {
       projectRoot: this.projectRoot,
       enableExperimentalExport: args.includes(flag),
-      format,
+      format: /** @type {'pdf' | 'epub' | 'archive'} */ (format),
       source,
     }
   }
@@ -609,7 +649,7 @@ export class Application {
     return {
       projectRoot: this.projectRoot,
       enableExperimentalAi: args.includes(flag),
-      action,
+      action: /** @type {'suggest' | 'translate' | 'changelog'} */ (action),
       args: actionArgs,
     }
   }

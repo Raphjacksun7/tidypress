@@ -45,6 +45,7 @@ Output is written to `docs/build/` (or `<docsDir>/build/` when config is at the 
 | `tidypress deploy [target]` | copy or hand output to a static host/tool |
 | `tidypress clean` | remove `build/` and local tidypress cache |
 | `tidypress context [output]` | write a markdown snapshot of published content |
+| `tidypress skills install` | install TidyPress skills into Cursor, Claude Code, or Codex |
 
 `--starter <name>` is accepted as an alias for `--preset <name>`.
 
@@ -64,6 +65,15 @@ export default defineConfig({
   footer: [],
   siteUrl: 'https://example.com',
 })
+```
+
+## Development
+
+From the monorepo root:
+
+```sh
+pnpm --filter tidypress typecheck   # strict checkJs on src/, test/, bin/
+pnpm --filter tidypress test
 ```
 
 ## Links

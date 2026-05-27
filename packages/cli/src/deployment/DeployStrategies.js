@@ -10,9 +10,9 @@ import { copyDistToDestination, resolveDeployTarget } from '../application/deplo
  */
 export class ArtifactOnlyDeployStrategy {
   /**
-   * @param {{ io?: { info: (message: string) => void } }} [dependencies]
+   * @param {{ io?: import('../types.js').CliIo }} [dependencies]
    */
-  constructor({ io = console } = {}) {
+  constructor({ io = /** @type {import('../types.js').CliIo} */ (console) } = {}) {
     this.id = 'artifact-only'
     this.io = io
   }
@@ -72,9 +72,9 @@ export class LocalCopyDeployStrategy {
  */
 export class ExternalTargetDeployStrategy {
   /**
-   * @param {{ io?: { info: (message: string) => void } }} [dependencies]
+   * @param {{ io?: import('../types.js').CliIo }} [dependencies]
    */
-  constructor({ io = console } = {}) {
+  constructor({ io = /** @type {import('../types.js').CliIo} */ (console) } = {}) {
     this.id = 'external-target'
     this.io = io
   }

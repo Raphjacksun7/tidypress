@@ -29,7 +29,8 @@ export async function validatePresentationModules(docsDir, presentationModules) 
         'Export createPresentation(site, context) or a default factory from that file.',
       )
     }
-    const factory = loaded?.createPresentation ?? loaded?.default
+    const moduleExports = /** @type {{ createPresentation?: unknown, default?: unknown }} */ (loaded)
+    const factory = moduleExports.createPresentation ?? moduleExports.default
     if (typeof factory !== 'function') {
       throw new TidyPressError(
         `Presentation module "${modulePath}" (${scope}) must export createPresentation(site, context) or a default factory function.`,

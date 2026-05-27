@@ -14,9 +14,9 @@ test('fetchDevToArticle parses by_path response', async t => {
     globalThis.fetch = originalFetch
   })
 
-  globalThis.fetch = async url => {
+  globalThis.fetch = /** @type {typeof fetch} */ (async url => {
     assert.match(String(url), /dev\.to\/api\/articles\/by_path/)
-    return {
+    return /** @type {Response} */ ({
       ok: true,
       async json() {
         return {
@@ -27,8 +27,8 @@ test('fetchDevToArticle parses by_path response', async t => {
           tag_list: ['docs'],
         }
       },
-    }
-  }
+    })
+  })
 
   const article = await fetchDevToArticle('https://dev.to/author/hello-world')
   assert.equal(article.title, 'Hello Dev.to')
@@ -51,18 +51,19 @@ test('ImportService devto writes imported markdown file', async t => {
     globalThis.fetch = originalFetch
   })
 
-  globalThis.fetch = async () => ({
-    ok: true,
-    async json() {
-      return {
-        title: 'Imported',
-        description: 'Desc',
-        body_markdown: 'Content here.',
-        published_at: '2026-05-02T00:00:00Z',
-        tag_list: [],
-      }
-    },
-  })
+  globalThis.fetch = /** @type {typeof fetch} */ (async () =>
+    /** @type {Response} */ ({
+      ok: true,
+      async json() {
+        return {
+          title: 'Imported',
+          description: 'Desc',
+          body_markdown: 'Content here.',
+          published_at: '2026-05-02T00:00:00Z',
+          tag_list: [],
+        }
+      },
+    }))
 
   const service = new ImportService({
     configLoader: new ConfigLoader(),

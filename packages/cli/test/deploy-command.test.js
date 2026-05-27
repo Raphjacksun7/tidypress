@@ -11,16 +11,16 @@ test('DeployCommand writes deploy workflow when --with-ci is enabled', async () 
   const messages = []
 
   const command = new DeployCommand({
-    buildService: {
+    buildService: /** @type {import('../src/services/BuildService.js').BuildService} */ (/** @type {any} */ ({
       async build() {
         throw new Error('build should not run when withCi=true')
       },
-    },
-    deployService: {
+    })),
+    deployService: /** @type {import('../src/services/DeployService.js').DeployService} */ (/** @type {any} */ ({
       async deploy() {
         throw new Error('deploy should not run when withCi=true')
       },
-    },
+    })),
     io: {
       info(message) {
         messages.push(message)
@@ -45,17 +45,17 @@ test('DeployCommand builds and deploys when --with-ci is disabled', async () => 
   const messages = []
 
   const command = new DeployCommand({
-    buildService: {
+    buildService: /** @type {import('../src/services/BuildService.js').BuildService} */ (/** @type {any} */ ({
       async build(request) {
         assert.deepEqual(request, { projectRoot: '/workspace' })
         return { buildDir: '/workspace/docs/build', docsDir: '/workspace/docs', cacheDir: '/tmp/cache' }
       },
-    },
-    deployService: {
+    })),
+    deployService: /** @type {import('../src/services/DeployService.js').DeployService} */ (/** @type {any} */ ({
       async deploy(request) {
         deployRequests.push(request)
       },
-    },
+    })),
     io: {
       info(message) {
         messages.push(message)
@@ -69,7 +69,5 @@ test('DeployCommand builds and deploys when --with-ci is disabled', async () => 
   assert.equal(deployRequests[0].projectRoot, '/workspace')
   assert.equal(deployRequests[0].distDir, '/workspace/docs/build')
   assert.equal(deployRequests[0].target, 'netlify')
-  assert.equal(typeof deployRequests[0].io, 'object')
-  assert.equal(typeof /** @type {{ info?: unknown }} */ (deployRequests[0].io).info, 'function')
   assert.deepEqual(messages, ['Deploy flow completed for target: netlify'])
 })

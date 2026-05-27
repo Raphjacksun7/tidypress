@@ -10,7 +10,7 @@ export class BuildCommand {
   }
 
   /**
-   * @param {{ projectRoot: string }} request
+   * @param {{ projectRoot: string, outputPath?: string }} request
    * @returns {Promise<void>}
    */
   async execute({ projectRoot, outputPath }) {

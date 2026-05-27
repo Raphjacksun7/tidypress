@@ -1,13 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { isStarterCollectionKey, resolveCapabilityFlags } from '@tidypress/config'
-/**
- * @typedef {{
- *   collections?: Record<string, { enabled?: boolean, kind?: 'content' | 'writing' | 'page' }>
- *   capabilities?: { enable?: string[], disable?: string[] }
- *   experimental?: { editor?: boolean, export?: boolean, ai?: boolean }
- * }} SnapshotConfig
- */
+/** @typedef {import('../../types.js').SnapshotConfig} SnapshotConfig */
 
 /**
  * @param {string} filePath
@@ -38,6 +32,9 @@ async function parseMarkdownMeta(filePath) {
   }
 }
 
+/**
+ * @param {string} rootDir
+ */
 async function walkMarkdownFiles(rootDir) {
   /** @type {string[]} */
   const files = []
@@ -59,9 +56,9 @@ async function walkMarkdownFiles(rootDir) {
 
 /**
  * @param {string} docsDir
- * @param {SnapshotConfig | undefined} config
+ * @param {SnapshotConfig} [config]
  */
-export async function createContentSnapshot(docsDir, config) {
+export async function createContentSnapshot(docsDir, config = undefined) {
   const capabilityFlags = resolveCapabilityFlags(
     /** @type {import('@tidypress/config').TidyPressConfig} */ (
       {
@@ -110,6 +107,7 @@ export async function createContentSnapshot(docsDir, config) {
  */
 export async function writeContentSnapshot({ docsDir, outputPath, config }) {
   const snapshot = await createContentSnapshot(docsDir, config)
+  /** @param {string} target */
   const rel = target => path.relative(docsDir, target).replaceAll(path.sep, '/')
 
   const lines = ['# TidyPress Context Snapshot', '']

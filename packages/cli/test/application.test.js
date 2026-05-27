@@ -33,6 +33,20 @@ test('Application dispatches dev command with parsed port', async () => {
   assert.deepEqual(dev.calls[0], { projectRoot: '/workspace', port: 4567 })
 })
 
+test('Application dispatches skills install with force flag', async () => {
+  const skills = new FakeCommand()
+  const app = new Application({
+    version: '0.1.0',
+    projectRoot: '/workspace',
+    commands: { skills },
+    io: { info() {}, error() {} },
+  })
+
+  await app.run(['skills', 'install', '--force'])
+  assert.equal(skills.calls.length, 1)
+  assert.deepEqual(skills.calls[0], { subcommand: 'install', force: true })
+})
+
 test('Application dispatches context command with resolved output path', async () => {
   const context = new FakeCommand()
   const app = new Application({

@@ -55,7 +55,10 @@ test('BuildService copies build output to --output destination when provided', a
     },
   }
 
-  const service = new BuildService({ configLoader, engineManager })
+  const service = new BuildService({
+    configLoader: /** @type {import('../src/services/ConfigLoader.js').ConfigLoader} */ (/** @type {any} */ (configLoader)),
+    engineManager: /** @type {import('../src/services/EngineManager.js').EngineManager} */ (/** @type {any} */ (engineManager)),
+  })
   const result = await service.build({ projectRoot: root, outputPath })
 
   assert.equal(result.docsDir, docsDir)

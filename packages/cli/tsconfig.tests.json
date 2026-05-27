@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "strict": false,
+    "noImplicitAny": false
+  },
+  "include": ["test/**/*.js", "test-support/**/*.js"],
+  "exclude": ["node_modules"]
+}

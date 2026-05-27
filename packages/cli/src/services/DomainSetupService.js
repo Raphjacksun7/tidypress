@@ -46,7 +46,8 @@ export class DomainSetupService {
    */
   async setup({ projectRoot, domain, platform }) {
     const normalizedPlatform = this.#normalizePlatform(platform)
-    const instructions = PLATFORM_INSTRUCTIONS[normalizedPlatform]
+    const instructions =
+      PLATFORM_INSTRUCTIONS[/** @type {keyof typeof PLATFORM_INSTRUCTIONS} */ (normalizedPlatform)]
     if (!instructions) {
       throw new TidyPressError(
         `Unsupported platform: ${platform}`,
