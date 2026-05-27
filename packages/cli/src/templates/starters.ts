@@ -12,6 +12,7 @@
  *   capabilitiesDisable?: string[]
  *   pages?: Array<{ slug: string, navLabel?: string }>
  *   hero?: { enabled?: boolean, role?: string, pronunciation?: string, lead?: string, image?: string, links?: Array<{ label: string, href: string, external?: boolean }> }
+ *   footerLinks?: Array<{ label: string, href: string, icon?: string, external?: boolean }>
  * }} StarterPreset
  */
 
@@ -83,6 +84,7 @@ featured: true
     nav: [{ label: 'writing', href: '/writing' }],
     homeOrder: ['writing'],
     capabilitiesDisable: ['docs', 'pages'],
+    footerLinks: [{ label: 'RSS', href: '/writing/rss.xml', icon: 'rss', external: false }],
     collections: [
       { key: 'docs', enabled: false, basePath: '/docs', label: 'docs' },
       { key: 'writing', kind: 'writing', enabled: true, basePath: '/writing', label: 'writing' },

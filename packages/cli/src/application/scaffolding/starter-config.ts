@@ -35,7 +35,10 @@ export function buildStarterConfig(projectName, preset) {
     collections: Object.fromEntries(
       preset.collections.map(collection => [collection.key, collectionEntry(collection)]),
     ),
-    footer: [{ ...defaultGithubFooterItem }],
+    footer: [
+      { ...defaultGithubFooterItem },
+      ...(preset.footerLinks ?? []).map(link => ({ ...link })),
+    ],
     siteUrl: DEFAULT_SITE_URL,
   }
 
