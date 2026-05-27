@@ -28,13 +28,13 @@ const strings = getUiStrings(
 >
   <div class="max-w-3xl mx-auto px-8 py-16">
     <div class="mb-10">
-      <div class="dm-writing-entry-meta">
+      <div class="tidy-writing-entry-meta">
         {bundle.entryMeta?.dateLabel && <span>{bundle.entryMeta.dateLabel}</span>}
         {bundle.entryMeta?.readingTimeLabel && <span>{bundle.entryMeta.readingTimeLabel}</span>}
         {bundle.entryMeta?.author && <span>— {bundle.entryMeta.author}</span>}
       </div>
       <h1 class="text-2xl font-bold tracking-tight">{bundle.title}</h1>
-      {bundle.description && <p class="dm-writing-entry-description">{bundle.description}</p>}
+      {bundle.description && <p class="tidy-writing-entry-description">{bundle.description}</p>}
       {showTags && entryTags.length > 0 && (
         <div class="pt-3">
           <TagList tags={entryTags} />

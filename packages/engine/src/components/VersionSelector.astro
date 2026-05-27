@@ -14,11 +14,11 @@ const normalizedVersions = versions.filter(
 ---
 {
   normalizedVersions.length > 0 && (
-    <label class="hidden sm:inline-flex items-center relative dm-version-selector">
+    <label class="hidden sm:inline-flex items-center relative tidy-version-selector">
       <span class="sr-only">Select version</span>
       <select
         aria-label="Select version"
-        class="dm-nav-select"
+        class="tidy-nav-select"
         onchange="if (this.value) window.location.assign(this.value)"
       >
         {normalizedVersions.map((version) => (
@@ -30,7 +30,7 @@ const normalizedVersions = versions.filter(
           </option>
         ))}
       </select>
-      <span class="dm-nav-select__chevron" aria-hidden="true">▾</span>
+      <span class="tidy-nav-select__chevron" aria-hidden="true">▾</span>
     </label>
   )
 }

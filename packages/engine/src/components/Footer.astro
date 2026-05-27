@@ -72,9 +72,9 @@ const icons: Record<FooterItemIcon, string> = {
 }
 ---
 <footer class="max-w-3xl mx-auto px-8 py-6 mt-4">
-  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 dm-footer pt-6">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 tidy-footer pt-6">
     <div class="flex items-center gap-3">
-      <p class="dm-footer-copyright">&copy; {new Date().getFullYear()} {site.name}</p>
+      <p class="tidy-footer-copyright">&copy; {new Date().getFullYear()} {site.name}</p>
       <LanguageSelector
         locales={locales}
         activeLocale={activeLocale}
@@ -109,7 +109,7 @@ const icons: Record<FooterItemIcon, string> = {
         {textItems.map(item => (
           <a
             href={item.href}
-            class="dm-footer-copyright footer-text-link"
+            class="tidy-footer-copyright footer-text-link"
             target={item.target}
             rel={item.rel}
           >

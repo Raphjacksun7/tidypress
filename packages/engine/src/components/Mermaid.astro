@@ -13,7 +13,7 @@ const alignClass =
       : 'mermaid-wrapper--left'
 ---
 <div class:list={['mermaid-wrapper', alignClass]} data-mermaid={code}>
-  <p class="mermaid-source dm-mermaid-loading" aria-hidden="true">Loading diagram…</p>
+  <p class="mermaid-source tidy-mermaid-loading" aria-hidden="true">Loading diagram…</p>
 </div>
 
 <script>
@@ -99,7 +99,7 @@ async function renderAll() {
       el.replaceChildren()
       continue
     }
-    const id = 'dm-mermaid-' + String(Math.random()).replace(/^0\./, '')
+    const id = 'tidy-mermaid-' + String(Math.random()).replace(/^0\./, '')
     try {
       const { svg, bindFunctions } = await mermaid.render(id, code)
       el.innerHTML = svg

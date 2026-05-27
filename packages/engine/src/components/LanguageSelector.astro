@@ -14,14 +14,14 @@ const currentLocale = (activeLocale ?? defaultLocale).toLowerCase()
 ---
 {
   locales.length > 1 && (
-    <details class="dm-lang-select" data-lang-select>
-      <summary class="dm-lang-trigger" aria-label={label}>
-        <span class="dm-lang-trigger__value">{currentLocale.toUpperCase()}</span>
-        <svg class="dm-lang-trigger__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="10" height="10" aria-hidden="true">
+    <details class="tidy-lang-select" data-lang-select>
+      <summary class="tidy-lang-trigger" aria-label={label}>
+        <span class="tidy-lang-trigger__value">{currentLocale.toUpperCase()}</span>
+        <svg class="tidy-lang-trigger__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="10" height="10" aria-hidden="true">
           <path d="m6 9 6 6 6-6" />
         </svg>
       </summary>
-      <div class="dm-lang-content" role="listbox" aria-label={label}>
+      <div class="tidy-lang-content" role="listbox" aria-label={label}>
         {locales.map((locale) => {
           const normalizedLocale = locale.toLowerCase()
           const target = switchLocaleTarget(pathname, locale, site)
@@ -29,14 +29,14 @@ const currentLocale = (activeLocale ?? defaultLocale).toLowerCase()
           return (
             <a
               href={target}
-              class="dm-lang-option"
+              class="tidy-lang-option"
               role="option"
               aria-selected={isActive ? 'true' : 'false'}
               data-active={isActive ? '' : undefined}
             >
-              <span class="dm-lang-option__label">{normalizedLocale.toUpperCase()}</span>
+              <span class="tidy-lang-option__label">{normalizedLocale.toUpperCase()}</span>
               {isActive && (
-                <svg class="dm-lang-option__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" aria-hidden="true">
+                <svg class="tidy-lang-option__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" aria-hidden="true">
                   <path d="M20 6 9 17l-5-5" />
                 </svg>
               )}
@@ -51,8 +51,8 @@ const currentLocale = (activeLocale ?? defaultLocale).toLowerCase()
 <script>
   function updateLangDropdownPlacement(details: HTMLElement) {
     if (!details.hasAttribute('open')) return
-    const trigger = details.querySelector<HTMLElement>('.dm-lang-trigger')
-    const content = details.querySelector<HTMLElement>('.dm-lang-content')
+    const trigger = details.querySelector<HTMLElement>('.tidy-lang-trigger')
+    const content = details.querySelector<HTMLElement>('.tidy-lang-content')
     if (!trigger || !content) return
 
     details.removeAttribute('data-drop-up')

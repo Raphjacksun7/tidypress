@@ -1,7 +1,7 @@
 export const TIDYPRESS_IMAGE_PRESENTATION = {
   figureClass: 'my-8',
-  frameClass: 'dm-image-frame',
-  captionClass: 'dm-image-caption',
+  frameClass: 'tidy-image-frame',
+  captionClass: 'tidy-image-caption',
   optimizedWidth: 800,
   optimizedHeight: 450,
 } as const

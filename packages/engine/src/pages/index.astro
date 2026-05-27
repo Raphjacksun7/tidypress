@@ -48,7 +48,7 @@ for (const collectionKey of getHomeSectionKeys(site)) {
         {site.branding?.icon && <BrandIcon src={site.branding.icon} sizeClass="size-[1.08em]" />}
         {site.name}
       </h1>
-      <p class="dm-site-description">{site.description}</p>
+      <p class="tidy-site-description">{site.description}</p>
       {site.hero && <HeroBlock hero={site.hero} imageBaseUrl={siteBaseUrl} />}
     </section>
 

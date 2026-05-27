@@ -32,8 +32,8 @@ test('installed lab: init + build + writing/projects/rss/pagefind', { timeout: 9
   assert.doesNotMatch(config, /"enabled": true,\s*"basePath": "\/docs"/)
 
   const homeHtml = await fs.readFile(path.join(buildDir, 'index.html'), 'utf8')
-  assert.match(homeHtml, /dm-home-section-title">writing/)
-  assert.match(homeHtml, /dm-home-section-title">projects/)
+  assert.match(homeHtml, /tidy-home-section-title">writing/)
+  assert.match(homeHtml, /tidy-home-section-title">projects/)
   assert.match(homeHtml, /search-filters/)
   assert.match(homeHtml, /data-search-filter="writing"/)
   assert.match(homeHtml, /data-search-filter="projects"/)
@@ -61,9 +61,9 @@ test('installed blog: writing-only site', { timeout: 900_000 }, async () => {
   const { buildDir } = await scaffoldInstalledPresetSite(tarball, 'blog')
 
   const homeHtml = await fs.readFile(path.join(buildDir, 'index.html'), 'utf8')
-  assert.match(homeHtml, /dm-home-section-title">writing/)
+  assert.match(homeHtml, /tidy-home-section-title">writing/)
   assert.doesNotMatch(homeHtml, /href="\/projects/)
-  assert.doesNotMatch(homeHtml, /dm-hero/)
+  assert.doesNotMatch(homeHtml, /tidy-hero/)
 
   await fs.access(path.join(buildDir, 'writing/rss.xml'))
   await assert.rejects(() => fs.access(path.join(buildDir, 'projects/index.html')))
@@ -78,8 +78,8 @@ test('installed persona: hero + about + projects', { timeout: 900_000 }, async (
   assert.match(config, /"role":/)
 
   const homeHtml = await fs.readFile(path.join(buildDir, 'index.html'), 'utf8')
-  assert.match(homeHtml, /dm-hero/)
-  assert.match(homeHtml, /dm-home-section-title">projects/)
+  assert.match(homeHtml, /tidy-hero/)
+  assert.match(homeHtml, /tidy-home-section-title">projects/)
 
   await fs.access(path.join(buildDir, 'about/index.html'))
   await fs.access(path.join(buildDir, 'projects/highlight/index.html'))

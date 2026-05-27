@@ -17,7 +17,7 @@ const pathname = Astro.url.pathname
       <span class="sr-only">{label}</span>
       <select
         aria-label={label}
-        class="dm-nav-select"
+        class="tidy-nav-select"
         onchange="if (this.value) window.location.assign(this.value)"
       >
         {locales.map((locale) => (
@@ -29,7 +29,7 @@ const pathname = Astro.url.pathname
           </option>
         ))}
       </select>
-      <span class="dm-nav-select__chevron" aria-hidden="true">▾</span>
+      <span class="tidy-nav-select__chevron" aria-hidden="true">▾</span>
     </label>
   )
 }

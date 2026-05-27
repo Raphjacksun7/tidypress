@@ -30,7 +30,7 @@ const shouldRenderCardRows = isCardListLayout(display.layout) && display.showDes
 ---
 {items.length > 0 && (
   <section class={previewPresentation.sectionClass}>
-    <p class="dm-home-section-title">{title}</p>
+    <p class="tidy-home-section-title">{title}</p>
     {shouldRenderCardRows ? (
       <ul class:list={[cardPresentation.containerClass, stackClass]}>
         {items.map(item => {

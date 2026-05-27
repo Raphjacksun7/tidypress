@@ -22,7 +22,7 @@ const home = bundle.localeHome!
         {bundle.site.branding?.icon && <BrandIcon src={bundle.site.branding.icon} sizeClass="size-[1.08em]" />}
         {bundle.site.name}
       </h1>
-      <p class="dm-site-description">{bundle.site.description}</p>
+      <p class="tidy-site-description">{bundle.site.description}</p>
       {bundle.site.hero && <HeroBlock hero={bundle.site.hero} />}
     </section>
     {home.sections.map(section => (

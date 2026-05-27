@@ -32,21 +32,21 @@ const heroImageSrc = resolveHeroImageSrc(hero.image, imageBaseUrl)
 const heroTextScalars = tidyPressHeroScalarFields.filter(key => key !== 'image')
 ---
 {hasContent && (
-  <div class="dm-hero">
+  <div class="tidy-hero">
     {heroImageSrc && (
-      <img class="dm-hero__image" src={heroImageSrc} alt="" width="96" height="96" loading="lazy" decoding="async" />
+      <img class="tidy-hero__image" src={heroImageSrc} alt="" width="96" height="96" loading="lazy" decoding="async" />
     )}
     {heroTextScalars.map(key => {
       const value = hero[key]
       if (!value) {
         return null
       }
-      return <p class={`dm-hero__${key}`}>{value}</p>
+      return <p class={`tidy-hero__${key}`}>{value}</p>
     })}
     {hero.links && hero.links.length > 0 && (
-      <p class="dm-hero__links">
+      <p class="tidy-hero__links">
         {hero.links.map(link => (
-          <a href={link.href} class="dm-hero__link" {...resolveHeroLinkAttributes(link)}>
+          <a href={link.href} class="tidy-hero__link" {...resolveHeroLinkAttributes(link)}>
             {link.label}
           </a>
         ))}

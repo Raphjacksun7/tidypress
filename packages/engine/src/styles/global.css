@@ -108,8 +108,8 @@
   .prose[data-doc-form="manual"] {
     counter-reset: manual-step;
   }
-  .prose ol.tidypress-steps,
-  .tidypress-steps {
+  .prose ol.tidy-steps,
+  .tidy-steps {
     list-style: none;
     padding: 0;
     margin: 1.5rem 0 2rem;
@@ -118,8 +118,8 @@
     gap: 1.25rem;
     counter-reset: mdx-step;
   }
-  .tidypress-steps > :global(li),
-  .tidypress-steps > :global(p) {
+  .tidy-steps > :global(li),
+  .tidy-steps > :global(p) {
     counter-increment: mdx-step;
     margin: 0;
     padding-left: 2rem;
@@ -127,8 +127,8 @@
     font-size: 0.919rem;
     line-height: 1.75;
   }
-  .tidypress-steps > :global(li)::before,
-  .tidypress-steps > :global(p)::before {
+  .tidy-steps > :global(li)::before,
+  .tidy-steps > :global(p)::before {
     content: counter(mdx-step);
     position: absolute;
     left: 0;
@@ -144,7 +144,7 @@
     font-weight: 700;
     color: var(--muted);
   }
-  .tidypress-step__title {
+  .tidy-step__title {
     display: block;
     font-weight: 700;
     font-size: 0.919rem;
@@ -357,14 +357,14 @@
 }
 
 /* Embedded same-origin pages in MDX (e.g. build receipt demo) */
-.dm-embed-frame {
+.tidy-embed-frame {
   margin: 1.5rem 0;
   border: 1px solid var(--border);
   border-radius: 0.375rem;
   overflow: hidden;
   background: var(--surface);
 }
-.dm-embed-frame iframe {
+.tidy-embed-frame iframe {
   display: block;
   width: 100%;
   height: 11rem;
@@ -662,13 +662,13 @@ a[data-search-result]:hover {
 }
 
 @layer components {
-  .dm-link-unstyled {
+  .tidy-link-unstyled {
     text-decoration: none;
     color: inherit;
     background: none;
   }
 
-  .dm-link-unstyled:hover {
+  .tidy-link-unstyled:hover {
     text-decoration: none;
     color: inherit;
     background: none;
@@ -780,7 +780,7 @@ a[data-search-result]:hover {
     background-color: transparent;
   }
 
-  .dm-nav-select {
+  .tidy-nav-select {
     appearance: none;
     min-height: 2rem;
     border-radius: 2px;
@@ -793,19 +793,19 @@ a[data-search-result]:hover {
     transition: border-color 0.15s, color 0.15s, background-color 0.15s, box-shadow 0.15s;
   }
 
-  .dm-nav-select:hover {
+  .tidy-nav-select:hover {
     border-color: color-mix(in oklab, var(--muted) 52%, var(--border));
     color: color-mix(in oklab, var(--fg) 76%, var(--muted));
   }
 
-  .dm-nav-select:focus-visible {
+  .tidy-nav-select:focus-visible {
     outline: none;
     border-color: color-mix(in oklab, var(--fg) 40%, var(--border));
     box-shadow: 0 0 0 2px color-mix(in oklab, var(--fg) 12%, transparent);
     color: var(--fg);
   }
 
-  .dm-nav-select__chevron {
+  .tidy-nav-select__chevron {
     pointer-events: none;
     position: absolute;
     right: 0.55rem;
@@ -839,33 +839,33 @@ a[data-search-result]:hover {
     text-decoration: none;
   }
 
-  .dm-version-selector {
+  .tidy-version-selector {
     width: 100%;
   }
 
-  .dm-version-selector .dm-nav-select {
+  .tidy-version-selector .tidy-nav-select {
     width: 100%;
   }
 
   /* ── Language selector (shadcn-quality trigger) ── */
 
-  .dm-lang-select {
+  .tidy-lang-select {
     position: relative;
   }
 
-  .dm-lang-select[open] {
+  .tidy-lang-select[open] {
     z-index: 50;
   }
 
   /* hide browser default marker on all engines */
-  .dm-lang-trigger {
+  .tidy-lang-trigger {
     list-style: none;
   }
-  .dm-lang-trigger::-webkit-details-marker {
+  .tidy-lang-trigger::-webkit-details-marker {
     display: none;
   }
 
-  .dm-lang-trigger {
+  .tidy-lang-trigger {
     cursor: pointer;
     user-select: none;
     display: inline-flex;
@@ -883,38 +883,38 @@ a[data-search-result]:hover {
     transition: color 0.15s;
   }
 
-  .dm-lang-trigger:hover {
+  .tidy-lang-trigger:hover {
     color: var(--fg);
   }
 
-  .dm-lang-trigger:focus-visible {
+  .tidy-lang-trigger:focus-visible {
     outline: 2px solid color-mix(in oklab, var(--fg) 30%, transparent);
     outline-offset: 2px;
     border-radius: 2px;
   }
 
-  .dm-lang-select[open] .dm-lang-trigger {
+  .tidy-lang-select[open] .tidy-lang-trigger {
     color: var(--fg);
   }
 
-  .dm-lang-trigger__value {
+  .tidy-lang-trigger__value {
     font-size: 0.75rem;
     letter-spacing: 0.04em;
   }
 
-  .dm-lang-trigger__chevron {
+  .tidy-lang-trigger__chevron {
     flex-shrink: 0;
     opacity: 0.6;
     transition: transform 0.15s ease, opacity 0.15s;
   }
 
-  .dm-lang-select[open] .dm-lang-trigger__chevron {
+  .tidy-lang-select[open] .tidy-lang-trigger__chevron {
     transform: rotate(180deg);
     opacity: 1;
   }
 
   /* dropdown panel */
-  .dm-lang-content {
+  .tidy-lang-content {
     position: absolute;
     right: 0;
     top: calc(100% + 0.3rem);
@@ -930,13 +930,13 @@ a[data-search-result]:hover {
     overflow: auto;
   }
 
-  .dm-lang-select[data-drop-up] .dm-lang-content {
+  .tidy-lang-select[data-drop-up] .tidy-lang-content {
     top: auto;
     bottom: calc(100% + 0.3rem);
   }
 
   /* option rows */
-  .dm-lang-option {
+  .tidy-lang-option {
     text-decoration: none;
     display: flex;
     align-items: center;
@@ -952,22 +952,22 @@ a[data-search-result]:hover {
     transition: background-color 0.1s;
   }
 
-  .dm-lang-option:hover {
+  .tidy-lang-option:hover {
     background: color-mix(in oklab, var(--surface) 80%, var(--bg));
     color: var(--fg);
     text-decoration: none;
   }
 
-  .dm-lang-option[data-active] {
+  .tidy-lang-option[data-active] {
     background: color-mix(in oklab, var(--surface) 90%, var(--bg));
   }
 
-  .dm-lang-option__label {
+  .tidy-lang-option__label {
     font-size: 0.75rem;
     letter-spacing: 0.04em;
   }
 
-  .dm-lang-option__check {
+  .tidy-lang-option__check {
     flex-shrink: 0;
     color: var(--fg);
   }
@@ -1303,24 +1303,24 @@ html[data-text-scale="large"] [data-toc-link] {
   margin-bottom: 0.25rem;
 }
 
-.dm-site-description {
+.tidy-site-description {
   font-size: 0.875rem;
   color: var(--muted);
   line-height: 1.625;
 }
 
-.dm-index-description {
+.tidy-index-description {
   font-size: 0.875rem;
   color: var(--muted);
 }
 
-.dm-home-section-title {
+.tidy-home-section-title {
   font-size: 0.875rem;
   font-weight: 700;
   color: var(--muted);
 }
 
-.dm-writing-entry-meta {
+.tidy-writing-entry-meta {
   display: flex;
   align-items: baseline;
   gap: 1rem;
@@ -1329,20 +1329,20 @@ html[data-text-scale="large"] [data-toc-link] {
   margin-bottom: 0.75rem;
 }
 
-.dm-writing-entry-description {
+.tidy-writing-entry-description {
   font-size: 0.875rem;
   color: var(--muted);
   margin-top: 0.5rem;
 }
 
-.dm-hero {
+.tidy-hero {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 0.25rem;
 }
 
-.dm-hero__image {
+.tidy-hero__image {
   width: 6rem;
   height: 6rem;
   object-fit: cover;
@@ -1350,84 +1350,84 @@ html[data-text-scale="large"] [data-toc-link] {
   border: 1px solid var(--border);
 }
 
-.dm-hero__role,
-.dm-hero__lead,
-.dm-hero__links {
+.tidy-hero__role,
+.tidy-hero__lead,
+.tidy-hero__links {
   font-size: 0.875rem;
   color: var(--muted);
 }
 
-.dm-hero__lead {
+.tidy-hero__lead {
   line-height: 1.625;
 }
 
-.dm-hero__pronunciation {
+.tidy-hero__pronunciation {
   font-size: 0.75rem;
   color: var(--muted);
   font-family: var(--font-mono);
 }
 
-.dm-hero__links {
+.tidy-hero__links {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem 0.75rem;
 }
 
-.dm-hero__link {
+.tidy-hero__link {
   text-decoration: underline;
   text-underline-offset: 4px;
   text-decoration-color: color-mix(in oklab, var(--muted) 55%, var(--border));
 }
 
-.dm-hero__link:hover {
+.tidy-hero__link:hover {
   text-decoration-color: var(--muted);
 }
 
-.dm-footer {
+.tidy-footer {
   border-top: 1px solid var(--border);
 }
 
-.dm-footer-copyright {
+.tidy-footer-copyright {
   font-size: 0.75rem;
   color: var(--muted);
 }
 
-.dm-edit-link {
+.tidy-edit-link {
   color: var(--muted);
 }
 
-.dm-image-frame {
+.tidy-image-frame {
   max-width: 100%;
   border-radius: 4px;
   border: 1px solid var(--border);
 }
 
-.dm-image-caption {
+.tidy-image-caption {
   font-size: 0.75rem;
   color: var(--muted);
   margin-top: 0.5rem;
   text-align: center;
 }
 
-.dm-mermaid-loading {
+.tidy-mermaid-loading {
   margin: 0;
   font-size: 0.75rem;
   color: var(--muted);
 }
 
-.dm-theme-toggle {
+.tidy-theme-toggle {
   font-size: 0.875rem;
   color: var(--muted);
   cursor: pointer;
 }
 
-.dm-not-found-link {
+.tidy-not-found-link {
   text-decoration: underline;
   text-underline-offset: 4px;
   transition: color 0.15s;
 }
 
-.dm-not-found-link:hover {
+.tidy-not-found-link:hover {
   text-decoration: none;
   color: var(--muted);
 }

@@ -304,13 +304,13 @@ test('blog preset build produces writing-only routes and homepage', async () => 
   const { buildDir } = await service.build({ projectRoot: root })
 
   const homeHtml = await fs.readFile(path.join(buildDir, 'index.html'), 'utf8')
-  assert.match(homeHtml, /dm-home-section-title">writing/)
+  assert.match(homeHtml, /tidy-home-section-title">writing/)
   assert.match(homeHtml, /href="\/writing\/hello"/)
   assert.match(homeHtml, /placeholder="Search writing\.\.\."/)
   assert.match(homeHtml, /href="\/writing\/rss\.xml"/)
   assert.doesNotMatch(homeHtml, /href="\/docs/)
   assert.doesNotMatch(homeHtml, /href="\/projects/)
-  assert.doesNotMatch(homeHtml, /dm-hero/)
+  assert.doesNotMatch(homeHtml, /tidy-hero/)
 
   await fs.access(path.join(buildDir, 'writing/hello/index.html'))
   await fs.access(path.join(buildDir, 'writing/index.html'))
@@ -348,12 +348,12 @@ On-site project page.
   const { buildDir } = await service.build({ projectRoot: root })
 
   const homeHtml = await fs.readFile(path.join(buildDir, 'index.html'), 'utf8')
-  assert.match(homeHtml, /dm-home-section-title">writing/)
-  assert.match(homeHtml, /dm-home-section-title">projects/)
+  assert.match(homeHtml, /tidy-home-section-title">writing/)
+  assert.match(homeHtml, /tidy-home-section-title">projects/)
   assert.match(homeHtml, /search-filters/)
   assert.match(homeHtml, /data-search-filter="writing"/)
   assert.match(homeHtml, /data-search-filter="projects"/)
-  assert.doesNotMatch(homeHtml, /dm-hero/)
+  assert.doesNotMatch(homeHtml, /tidy-hero/)
   assert.doesNotMatch(homeHtml, /href="\/docs\//)
 
   const writingHtml = await fs.readFile(path.join(buildDir, 'writing/hello/index.html'), 'utf8')
@@ -377,9 +377,9 @@ test('persona preset build renders hero and about page', { timeout: 900_000 }, a
   const { buildDir } = await service.build({ projectRoot: root })
 
   const homeHtml = await fs.readFile(path.join(buildDir, 'index.html'), 'utf8')
-  assert.match(homeHtml, /dm-hero/)
-  assert.match(homeHtml, /dm-hero__role/)
-  assert.match(homeHtml, /dm-home-section-title">projects/)
+  assert.match(homeHtml, /tidy-hero/)
+  assert.match(homeHtml, /tidy-hero__role/)
+  assert.match(homeHtml, /tidy-home-section-title">projects/)
 
   await fs.access(path.join(buildDir, 'about/index.html'))
   await fs.access(path.join(buildDir, 'projects/highlight/index.html'))

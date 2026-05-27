@@ -39,12 +39,12 @@ export const tidyPressListLayoutRegistry = {
 
 export const tidyPressHomePreviewPresentation = {
   sectionClass: 'space-y-3',
-  cardLinkClass: 'group home-card-row dm-link-unstyled',
+  cardLinkClass: 'group home-card-row tidy-link-unstyled',
   cardContentClass: 'min-w-0',
   cardTitleClass: 'home-card-title',
   cardDescriptionClass: 'home-card-description',
   cardMetaClass: 'home-card-meta',
-  listLinkClass: 'group dm-link-unstyled',
+  listLinkClass: 'group tidy-link-unstyled',
   listTitleDataAttr: 'data-writing-title',
   /** Responsive visibility lives in engine global.css (`.home-list-description`). */
   listDescriptionClass: 'home-list-description',
@@ -53,7 +53,7 @@ export const tidyPressHomePreviewPresentation = {
 } as const
 
 export const tidyPressCollectionIndexPresentation = {
-  listLinkClass: 'group dm-link-unstyled',
+  listLinkClass: 'group tidy-link-unstyled',
 } as const
 
 export interface TidyPressListDisplay {
