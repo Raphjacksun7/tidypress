@@ -166,7 +166,15 @@ jobs:
 
       - name: Publish tidypress (OIDC trusted publishing)
         working-directory: packages/cli
-        run: pnpm publish --access public --no-git-checks --provenance
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: |
+          PKG_VERSION="${VERSION#v}"
+          if npm view "tidypress@${PKG_VERSION}" version &>/dev/null; then
+            echo "tidypress@${PKG_VERSION} already published — skipping."
+          else
+            pnpm publish --access public --no-git-checks --provenance
+          fi
 
       - name: Smoke test — install published package and run CLI
         env:
@@ -209,3 +217,4 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: wrappers/python/dist/
+          skip_existing: true
