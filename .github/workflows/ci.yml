@@ -64,6 +64,10 @@ jobs:
         run: pnpm --filter tidypress test:install-e2e
         timeout-minutes: 40
 
+      - name: Registry e2e (npm, pnpm, pip from public registries)
+        run: pnpm --filter tidypress test:registry-e2e
+        timeout-minutes: 60
+
       - name: Build moat examples
         run: |
           pnpm --filter @tidypress/example-lab build
