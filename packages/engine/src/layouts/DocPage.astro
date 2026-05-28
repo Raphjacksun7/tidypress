@@ -63,8 +63,10 @@ const versionSelector = versionSelectorState(site, Astro.url.pathname, docsEntri
   </div>
 
   <div class="max-w-screen-xl mx-auto px-8 py-12 flex gap-16">
-    <aside class="w-52 shrink-0 hidden md:block">
-      <Sidebar />
+    <aside class="doc-sidebar w-52 shrink-0 hidden md:block">
+      <div class="doc-sidebar__scroll">
+        <Sidebar />
+      </div>
     </aside>
 
     <main class="min-w-0 flex-1 max-w-2xl">
