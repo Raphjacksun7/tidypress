@@ -35,6 +35,7 @@ wrappers/python/dist/
 wrappers/python/.pytest_cache/
 
 agent-os/
+launch/
 AGENTS.md
 .worktrees/
 .cursor/
