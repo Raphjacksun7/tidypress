@@ -180,9 +180,25 @@ jobs:
         env:
           CLI_VERSION: ${{ github.ref_name }}
         run: |
+          set -euo pipefail
           VERSION="${CLI_VERSION#v}"
           SMOKE_DIR=$(mktemp -d)
           cd "$SMOKE_DIR"
+
+          # npm registry propagation can lag behind a successful publish.
+          echo "Waiting for tidypress@${VERSION} on npm registry..."
+          for attempt in $(seq 1 24); do
+            if npm view "tidypress@${VERSION}" version &>/dev/null; then
+              break
+            fi
+            if [ "$attempt" -eq 24 ]; then
+              echo "tidypress@${VERSION} not visible on npm after 120s" >&2
+              exit 1
+            fi
+            echo "Attempt ${attempt}/24 — retrying in 5s..."
+            sleep 5
+          done
+
           npm install "tidypress@${VERSION}"
           node ./node_modules/tidypress/bin/tidypress.js --version
           echo "smoke test OK: tidypress@${VERSION}"
