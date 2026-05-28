@@ -1,3 +1,4 @@
+// Example fixture URL — replace before deploy (see examples/README.md).
 export default {
   name: 'Alex Example',
   description: 'A publishing framework for Git-native authorship.',

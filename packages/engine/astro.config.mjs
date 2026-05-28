@@ -16,10 +16,9 @@ const siteConfig = loadConfig(siteConfigFile)
 
 import tailwindcss from '@tailwindcss/vite'
 import mdx from '@astrojs/mdx'
-import sitemap from '@astrojs/sitemap'
 import rehypePrettyCode from 'rehype-pretty-code'
 import rehypeExternalLinks from 'rehype-external-links'
-import { resolveCodeThemePreset, withDefaults } from '@tidypress/config'
+import { resolveCodeThemePreset, resolveProductionSiteUrl, withDefaults } from '@tidypress/config'
 import { cleanInlineCodeIntegration } from './plugins/clean-inline-code.mjs'
 import { tidypressPluginDev } from './plugins/tidypress-plugin-dev.mjs'
 import { rehypeResolveDocLinks } from './plugins/rehype-resolve-doc-links.mjs'
@@ -51,8 +50,10 @@ const rehypePlugins = /** @type {any} */ ([
 const useJsonLogs =
   process.env.CI === 'true' || process.env.TIDYPRESS_JSON_LOGS === '1'
 
+const productionSite = resolveProductionSiteUrl(normalizedSiteConfig)
+
 export default defineConfig({
-  site: 'https://docs.example.com',
+  ...(productionSite ? { site: productionSite } : {}),
   build: {
     assets: 'assets',
   },
@@ -67,7 +68,6 @@ export default defineConfig({
   integrations: [
     tidypressIntegration(),
     mdx({ rehypePlugins }),
-    sitemap(),
     cleanInlineCodeIntegration(),
   ],
   markdown: {

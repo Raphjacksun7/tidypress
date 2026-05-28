@@ -7,6 +7,8 @@ published: false
 
 `tidypress context` writes a compact markdown snapshot of the site.
 
+Every `tidypress build` also writes `build/llms.txt` at the site root of the static output — a short index of published pages (title, URL, description) for agents and tools.
+
 ## Run it
 
 ```bash

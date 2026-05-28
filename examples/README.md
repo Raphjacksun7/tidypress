@@ -4,6 +4,16 @@ Focused examples live here. Keep each example small and centered on one product 
 
 Run from the repo root after `pnpm install`.
 
+## `siteUrl` in examples
+
+Example configs use `https://example.com` on purpose: CI builds fixtures without claiming a live domain. Sitemap and absolute canonical/OG URLs are omitted until you set a real `siteUrl` (see [Conventions](https://tidypress.pages.dev/docs/conventions) on the product site).
+
+Before deploying an example as your own site:
+
+```ts
+siteUrl: 'https://yoursite.example',
+```
+
 ## Examples
 
 | Example | Shows | Command |

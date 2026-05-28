@@ -26,7 +26,7 @@ async function createEngineFixtureProject() {
     `export default {
   name: 'Engine e2e fixture',
   description: 'Integration fixture for build coverage.',
-  siteUrl: 'https://example.com',
+  siteUrl: 'https://engine-e2e.test',
   nav: [
     { label: 'docs', href: '/docs' },
     { label: 'writing', href: '/writing' },
@@ -229,8 +229,9 @@ test('BuildService renders MDX and emits pagefind artifacts', { timeout: 900_000
   assert.match(docsHtml, /role="dialog" aria-modal="true"/)
   assert.match(docsHtml, /aria-label="(language|langue)"/)
   assert.ok(Buffer.byteLength(docsHtml, 'utf8') < 220_000, 'docs page should stay under lightweight HTML budget')
-  assert.match(docsHtml, /<meta property="og:image" content="https:\/\/example\.com\/og\.svg">/)
-  assert.match(docsHtml, /<meta name="twitter:image" content="https:\/\/example\.com\/og\.svg">/)
+  assert.match(docsHtml, /<meta property="og:image" content="https:\/\/engine-e2e\.test\/og\.svg">/)
+  assert.match(docsHtml, /<meta name="twitter:image" content="https:\/\/engine-e2e\.test\/og\.svg">/)
+  assert.match(docsHtml, /<link rel="canonical" href="https:\/\/engine-e2e\.test\//)
 
   const privateHtml = await readFirstExisting(distDir, [
     'docs/private/index.html',
@@ -285,6 +286,9 @@ test('BuildService renders MDX and emits pagefind artifacts', { timeout: 900_000
 
   await fs.access(path.join(distDir, 'pagefind/pagefind.js'))
   await fs.access(path.join(distDir, 'pagefind/pagefind-entry.json'))
+  await fs.access(path.join(distDir, 'llms.txt'))
+  const sitemapIndex = await fs.readFile(path.join(distDir, 'sitemap-index.xml'), 'utf8')
+  assert.match(sitemapIndex, /engine-e2e\.test/)
   await fs.access(path.join(distDir, 'og.svg'))
 
   const configSidecar = await fs.readFile(path.join(cacheDir, 'config.json'), 'utf8')

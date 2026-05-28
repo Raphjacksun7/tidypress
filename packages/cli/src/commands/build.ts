@@ -3,13 +3,15 @@
  */
 export class BuildCommand {
   buildService: any
+  io: any
 
 
   /**
-   * @param {{ buildService: import('../services/BuildService.js').BuildService }} dependencies
+   * @param {{ buildService: import('../services/BuildService.js').BuildService, io?: { info: (message: string) => void } }} dependencies
    */
-  constructor({ buildService }) {
+  constructor({ buildService, io }) {
     this.buildService = buildService
+    this.io = io
   }
 
   /**

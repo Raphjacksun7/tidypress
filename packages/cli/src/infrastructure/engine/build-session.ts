@@ -4,7 +4,13 @@ import os from 'node:os'
 import path from 'node:path'
 import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import sitemap from '@astrojs/sitemap'
 import { mergeConfig, logHandlers } from 'astro/config'
+import {
+  resolveProductionSiteUrl,
+  withDefaults,
+  type TidyPressConfig,
+} from '@tidypress/config'
 import { loadUserConfig } from '../project/config.js'
 import { mountProjectPaths, writePluginManifest } from './plugin-manifest.js'
 
@@ -181,6 +187,8 @@ export async function resolveAstroInlineConfig({
   const siteConfigPath = path.resolve(docsDir, 'tidypress.config.ts')
   const srcDir = path.join(engineRoot, 'src')
   const engineGenerated = path.join(engineRoot, 'src', 'generated', 'tidypress-plugins.mjs')
+  const rawConfig = await loadUserConfig(docsDir)
+  const productionSite = resolveProductionSiteUrl(withDefaults(rawConfig as TidyPressConfig))
 
   const configUrl = pathToFileURL(path.join(engineRoot, 'astro.config.mjs')).href
   const { default: baseConfig } = await import(configUrl)
@@ -200,6 +208,12 @@ export async function resolveAstroInlineConfig({
   }
 
   return mergeConfig(typeof baseConfig === 'function' ? baseConfig({}) : baseConfig, {
+    ...(productionSite
+      ? {
+          site: productionSite,
+          integrations: [sitemap()],
+        }
+      : {}),
     root: engineRoot,
     publicDir,
     outDir: buildDir,

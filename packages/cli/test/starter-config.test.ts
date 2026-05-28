@@ -23,8 +23,9 @@ test('formatConfigModule emits parseable export default', () => {
   const config = buildStarterConfig('lab-site', resolveStarterPreset('lab'))
   const source = formatConfigModule(config)
 
-  assert.match(source, /^export default \{/)
-  const value = JSON.parse(source.replace(/^export default\s*/, '').trim())
+  assert.match(source, /Set siteUrl in tidypress\.config\.ts/)
+  const jsonBody = source.replace(/^\/\/[^\n]*\n/, '').replace(/^export default\s*/, '').trim()
+  const value = JSON.parse(jsonBody)
   assert.equal(value.name, 'lab-site')
   assert.deepEqual(value.capabilities.disable, ['docs', 'pages'])
 })

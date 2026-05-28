@@ -35,7 +35,7 @@ Build output: `docs/build/` (override with `tidypress build --output`).
 
 | Command | Purpose |
 |---------|---------|
-| `tidypress init` | Scaffold `docs/` (`--preset lab\|blog\|persona\|docs-writing\|custom`) |
+| `tidypress init` | Scaffold `docs/` (`--preset …` `--site-url <url>`) |
 | `tidypress dev` | Dev server (default port 4321) |
 | `tidypress build` | Production static build + Pagefind index |
 | `tidypress preview` | Preview production build |
@@ -55,6 +55,8 @@ Node **22.12+** required. Default command if omitted: `dev`.
 | `lab` (default) | writing + projects; docs/pages off |
 | `blog` | writing only |
 | `persona` | hero, projects, writing, about page |
+| `body-of-work` | works, projects, writing; reference/process in footer; docs off |
+| `body-of-work-docs` | body-of-work + enabled `docs` |
 | `docs-writing` | docs + writing |
 | `custom` | docs + writing + sample custom collection |
 
@@ -70,7 +72,7 @@ import { defineConfig } from 'tidypress/config'
 export default defineConfig({
   name: 'my-site',
   description: 'A publishing framework for Git-native authorship.',
-  siteUrl: 'https://example.com',
+  siteUrl: 'https://yoursite.example', // required for sitemap + absolute canonical/OG
   nav: [
     { label: 'writing', href: '/writing' },
     { label: 'projects', href: '/projects' },
@@ -89,6 +91,10 @@ export default defineConfig({
 - **Nav policy** `strict` (default) validates internal links; use `relaxed` for external-generated routes.
 
 Full config patterns: [reference.md](reference.md).
+
+## Conventions (product)
+
+Opinionated presets + kinds; flexible markdown. `siteUrl` must be production (not `example.com`) for sitemap and absolute canonical/OG. Product docs: `docs` collection or `body-of-work-docs` preset — not mixed into default `body-of-work` header nav.
 
 ## Content conventions
 

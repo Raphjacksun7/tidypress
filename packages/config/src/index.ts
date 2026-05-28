@@ -164,6 +164,33 @@ export {
 } from './registry/legacy.js'
 
 export {
+  publicationSurfaceKeys,
+  publicationSurfaceDefinitions,
+  publicationSurfaceHomeOrder,
+  publicationSurfaceHomeCollections,
+  publicationSurfacePrimaryNavDefinitions,
+  publicationSurfaceFooterNavItems,
+  publicationSurfaceNavHref,
+  publicationSurfaceNavLabel,
+  publicationSurfaceUsesProjectsKind,
+  collectionBasePath,
+  isPublicationSurfaceKey,
+  resolveSurfaceCollectionKind,
+  type PublicationSurfaceKey,
+  type PublicationSurfaceDefinition,
+  type PublicationSurfaceKind,
+} from './registry/publication-surfaces.js'
+
+export {
+  PLACEHOLDER_SITE_URL,
+  isPlaceholderSiteUrl,
+  siteUrlSetupHint,
+  resolveProductionSiteUrl,
+  getEffectiveSiteUrl,
+  collectSiteUrlWarnings,
+} from './registry/site-url.js'
+
+export {
   tidyPressCollectionKindRegistry,
   tidyPressCollectionKinds,
   isTidyPressCollectionKind,

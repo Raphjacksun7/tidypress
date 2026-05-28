@@ -79,6 +79,7 @@ test('Application dispatches init command with preset option', async () => {
     projectRoot: '/workspace',
     starterPreset: 'default',
     withAstro: false,
+    siteUrl: undefined,
   })
 })
 

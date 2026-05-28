@@ -1,7 +1,12 @@
-import { defaultGithubFooterItem, pickHeroConfigFields } from '@tidypress/config'
+import {
+  defaultGithubFooterItem,
+  isPlaceholderSiteUrl,
+  pickHeroConfigFields,
+  PLACEHOLDER_SITE_URL,
+  siteUrlSetupHint,
+} from '@tidypress/config'
 
 const DEFAULT_HOME_PREVIEW_LIMIT = 5
-const DEFAULT_SITE_URL = 'https://example.com'
 
 /**
  * @param {import('../../templates/starters.js').StarterCollection} collection
@@ -24,9 +29,15 @@ function collectionEntry(collection) {
 /**
  * @param {string} projectName
  * @param {import('../../templates/starters.js').StarterPreset} preset
+ * @param {{ siteUrl?: string }} [options]
  * @returns {import('@tidypress/config').TidyPressConfig}
  */
-export function buildStarterConfig(projectName, preset) {
+export function buildStarterConfig(projectName, preset, options?) {
+  const siteUrlOption = options && typeof options === 'object' && 'siteUrl' in options ? options.siteUrl : undefined
+  const siteUrl =
+    siteUrlOption && !isPlaceholderSiteUrl(siteUrlOption)
+      ? siteUrlOption.replace(/\/$/, '')
+      : PLACEHOLDER_SITE_URL
   const config: Record<string, unknown> = {
     name: projectName,
     description: preset.description,
@@ -39,16 +50,17 @@ export function buildStarterConfig(projectName, preset) {
       { ...defaultGithubFooterItem },
       ...(preset.footerLinks ?? []).map(link => ({ ...link })),
     ],
-    siteUrl: DEFAULT_SITE_URL,
+    siteUrl,
   }
 
   if (preset.hero) {
     config.hero = pickHeroConfigFields(preset.hero)
   }
-  if (preset.homeOrder?.length) {
+  if (preset.homeOrder?.length || preset.homeCollections) {
     config.home = {
-      order: [...preset.homeOrder],
+      ...(preset.homeOrder?.length ? { order: [...preset.homeOrder] } : {}),
       previewLimit: DEFAULT_HOME_PREVIEW_LIMIT,
+      ...(preset.homeCollections ? { collections: { ...preset.homeCollections } } : {}),
     }
   }
   if (preset.capabilitiesDisable?.length) {
@@ -65,5 +77,10 @@ export function buildStarterConfig(projectName, preset) {
  * @param {import('@tidypress/config').TidyPressConfig} config
  */
 export function formatConfigModule(config) {
-  return `export default ${JSON.stringify(config, null, 2)}\n`
+  const header = isPlaceholderSiteUrl(
+    typeof config.siteUrl === 'string' ? config.siteUrl : undefined,
+  )
+    ? `// ${siteUrlSetupHint()}\n`
+    : ''
+  return `${header}export default ${JSON.stringify(config, null, 2)}\n`
 }

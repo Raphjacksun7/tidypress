@@ -1,3 +1,11 @@
+import {
+  buildBodyOfWorkPreset,
+  starterCollection,
+  starterNavItem,
+  starterNavLink,
+} from './preset-helpers.js'
+import { bodyOfWorkSeedBodies } from './presets/body-of-work-seeds.js'
+
 /**
  * @typedef {{ key: string, kind?: 'content' | 'writing' | 'page' | 'projects', enabled: boolean, basePath?: string, label?: string }} StarterCollection
  * @typedef {{ collection: string, filePath: string, content: string }} StarterSeedEntry
@@ -9,6 +17,7 @@
  *   collections: StarterCollection[]
  *   entries: StarterSeedEntry[]
  *   homeOrder?: string[]
+ *   homeCollections?: Record<string, { layout?: 'list' | 'card', showDescription?: boolean, showDate?: boolean }>
  *   capabilitiesDisable?: string[]
  *   pages?: Array<{ slug: string, navLabel?: string }>
  *   hero?: { enabled?: boolean, role?: string, pronunciation?: string, lead?: string, image?: string, links?: Array<{ label: string, href: string, external?: boolean }> }
@@ -31,10 +40,10 @@ export const STARTER_PRESETS = {
     homeOrder: ['writing', 'projects'],
     capabilitiesDisable: ['docs', 'pages'],
     collections: [
-      { key: 'docs', enabled: false, basePath: '/docs', label: 'docs' },
-      { key: 'writing', kind: 'writing', enabled: true, basePath: '/writing', label: 'writing' },
-      { key: 'projects', kind: 'projects', enabled: true, basePath: '/projects', label: 'projects' },
-      { key: 'pages', kind: 'page', enabled: false, label: 'pages' },
+      starterCollection('docs', { enabled: false }),
+      starterCollection('writing', { kind: 'writing', enabled: true }),
+      starterCollection('projects', { kind: 'projects', enabled: true }),
+      starterCollection('pages', { kind: 'page', enabled: false }),
     ],
     entries: [
       {
@@ -81,14 +90,14 @@ featured: true
     key: 'blog',
     description: SITE_DESCRIPTION,
     writingDescription: 'Writing.',
-    nav: [{ label: 'writing', href: '/writing' }],
+    nav: [starterNavItem('writing')],
     homeOrder: ['writing'],
     capabilitiesDisable: ['docs', 'pages'],
     footerLinks: [{ label: 'RSS', href: '/writing/rss.xml', icon: 'rss', external: false }],
     collections: [
-      { key: 'docs', enabled: false, basePath: '/docs', label: 'docs' },
-      { key: 'writing', kind: 'writing', enabled: true, basePath: '/writing', label: 'writing' },
-      { key: 'pages', kind: 'page', enabled: false, label: 'pages' },
+      starterCollection('docs', { enabled: false }),
+      starterCollection('writing', { kind: 'writing', enabled: true }),
+      starterCollection('pages', { kind: 'page', enabled: false }),
     ],
     entries: [
       {
@@ -109,15 +118,12 @@ A writing-only site. Add posts under \`docs/src/content/writing/\`.
     key: 'docs-writing',
     description: SITE_DESCRIPTION,
     writingDescription: 'Notes and updates.',
-    nav: [
-      { label: 'writing', href: '/writing' },
-      { label: 'docs', href: '/docs' },
-    ],
+    nav: [starterNavItem('writing'), starterNavItem('docs')],
     homeOrder: ['writing', 'docs'],
     collections: [
-      { key: 'docs', enabled: true, basePath: '/docs', label: 'docs' },
-      { key: 'writing', kind: 'writing', enabled: true, basePath: '/writing', label: 'writing' },
-      { key: 'pages', kind: 'page', enabled: true, label: 'pages' },
+      starterCollection('docs', { enabled: true }),
+      starterCollection('writing', { kind: 'writing', enabled: true }),
+      starterCollection('pages', { kind: 'page', enabled: true }),
     ],
     entries: [
       {
@@ -148,11 +154,7 @@ Reference material lives in the docs collection.
     key: 'persona',
     description: SITE_DESCRIPTION,
     writingDescription: 'Selected writing.',
-    nav: [
-      { label: 'projects', href: '/projects' },
-      { label: 'writing', href: '/writing' },
-      { label: 'about', href: '/about' },
-    ],
+    nav: [starterNavItem('projects'), starterNavItem('writing'), starterNavLink('about', '/about')],
     homeOrder: ['projects', 'writing'],
     pages: [{ slug: 'about', navLabel: 'about' }],
     hero: {
@@ -165,10 +167,10 @@ Reference material lives in the docs collection.
       ],
     },
     collections: [
-      { key: 'docs', enabled: false, basePath: '/docs', label: 'docs' },
-      { key: 'writing', kind: 'writing', enabled: true, basePath: '/writing', label: 'writing' },
-      { key: 'projects', kind: 'projects', enabled: true, basePath: '/projects', label: 'projects' },
-      { key: 'pages', kind: 'page', enabled: true, label: 'pages' },
+      starterCollection('docs', { enabled: false }),
+      starterCollection('writing', { kind: 'writing', enabled: true }),
+      starterCollection('projects', { kind: 'projects', enabled: true }),
+      starterCollection('pages', { kind: 'page', enabled: true }),
     ],
     entries: [
       {
@@ -207,21 +209,30 @@ Long-form background, experience, and skills live here.
       },
     ],
   },
+  'body-of-work': buildBodyOfWorkPreset(
+    'body-of-work',
+    SITE_DESCRIPTION,
+    'Essays, notes, and technical writing.',
+    bodyOfWorkSeedBodies,
+  ),
+  'body-of-work-docs': buildBodyOfWorkPreset(
+    'body-of-work-docs',
+    SITE_DESCRIPTION,
+    'Essays, notes, and technical writing.',
+    bodyOfWorkSeedBodies,
+    { includeDocs: true },
+  ),
   custom: {
     key: 'custom',
     description: SITE_DESCRIPTION,
     writingDescription: 'Notes, updates, and longer writing.',
-    nav: [
-      { label: 'writing', href: '/writing' },
-      { label: 'docs', href: '/docs' },
-      { label: 'playbooks', href: '/playbooks' },
-    ],
+    nav: [starterNavItem('writing'), starterNavItem('docs'), starterNavItem('playbooks')],
     homeOrder: ['writing', 'playbooks', 'docs'],
     collections: [
-      { key: 'docs', enabled: true, basePath: '/docs', label: 'docs' },
-      { key: 'writing', kind: 'writing', enabled: true, basePath: '/writing', label: 'writing' },
-      { key: 'playbooks', kind: 'content', enabled: true, basePath: '/playbooks', label: 'playbooks' },
-      { key: 'pages', kind: 'page', enabled: true, label: 'pages' },
+      starterCollection('docs', { enabled: true }),
+      starterCollection('writing', { kind: 'writing', enabled: true }),
+      starterCollection('playbooks', { kind: 'content', enabled: true }),
+      starterCollection('pages', { kind: 'page', enabled: true }),
     ],
     entries: [
       {
@@ -257,6 +268,15 @@ order: 1
 
 export const DEFAULT_STARTER_PRESET = 'lab'
 
+export const STARTER_PRESET_KEYS = Object.freeze(Object.keys(STARTER_PRESETS))
+
+/**
+ * @param {string} [separator]
+ */
+export function formatStarterPresetList(separator = ', ') {
+  return STARTER_PRESET_KEYS.join(separator)
+}
+
 /**
  * @param {string | undefined} requestedPreset
  * @returns {StarterPreset}
@@ -265,7 +285,7 @@ export function resolveStarterPreset(requestedPreset) {
   const normalized = requestedPreset === 'default' ? 'lab' : (requestedPreset ?? DEFAULT_STARTER_PRESET)
   const match = STARTER_PRESETS[normalized]
   if (!match) {
-    const supported = Object.keys(STARTER_PRESETS).join(', ')
+    const supported = formatStarterPresetList()
     throw new Error(`Unknown starter preset "${requestedPreset}". Supported presets: ${supported}, default (alias for lab).`)
   }
   return match

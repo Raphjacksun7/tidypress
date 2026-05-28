@@ -1,3 +1,4 @@
+// Example fixture URL — replace before deploy (see examples/README.md).
 export default {
   name: 'minimal',
   description: 'Minimal markdown docs and writing.',

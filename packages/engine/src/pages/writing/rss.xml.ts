@@ -1,3 +1,4 @@
+import { getEffectiveSiteUrl } from '@tidypress/config'
 import { getConfig } from '@/config/getConfig'
 import { getCollectionBasePath, getCollectionEntryPath } from '@/utils/collections'
 import { loadPublishedCollectionEntries } from '@/utils/collection-entries'
@@ -16,7 +17,7 @@ function escapeXml(value: string): string {
 
 export async function GET() {
   const site = getConfig(rawSiteConfig)
-  const baseUrl = site.siteUrl?.replace(/\/$/, '') ?? ''
+  const baseUrl = getEffectiveSiteUrl(site) ?? ''
   const writingPath = getCollectionBasePath(site, 'writing')
   const posts = (await loadPublishedCollectionEntries<{ date?: string | Date; title?: string; description?: string }>(
     'writing',

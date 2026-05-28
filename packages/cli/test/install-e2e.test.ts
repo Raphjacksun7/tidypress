@@ -44,6 +44,7 @@ test('installed lab: init + build + writing/projects/rss/pagefind', { timeout: 9
   await fs.access(path.join(buildDir, 'writing/rss.xml'))
   await fs.access(path.join(buildDir, 'projects/index.html'))
   await fs.access(path.join(buildDir, 'pagefind/pagefind.js'))
+  await fs.access(path.join(buildDir, 'llms.txt'))
 
   await assert.rejects(() => fs.access(path.join(buildDir, 'docs/index.html')))
 

@@ -12,9 +12,15 @@ export default defineConfig({
 `
 
 /**
- * @param {{ docsDir: string, projectName: string, starterPreset?: string, withAstro?: boolean }} options
+ * @param {{ docsDir: string, projectName: string, starterPreset?: string, withAstro?: boolean, siteUrl?: string }} options
  */
-export async function scaffoldDocs({ docsDir, projectName, starterPreset, withAstro = false }) {
+export async function scaffoldDocs({
+  docsDir,
+  projectName,
+  starterPreset,
+  withAstro = false,
+  siteUrl,
+}) {
   const preset = resolveStarterPreset(starterPreset)
   const collectionDirectories = preset.collections.map(collection =>
     path.resolve(docsDir, `src/content/${collection.key}`),
@@ -34,7 +40,7 @@ export async function scaffoldDocs({ docsDir, projectName, starterPreset, withAs
   await fs
     .writeFile(
       configPath,
-      formatConfigModule(buildStarterConfig(projectName, preset)),
+      formatConfigModule(buildStarterConfig(projectName, preset, { siteUrl })),
       { flag: 'wx' },
     )
     .catch(() => {})

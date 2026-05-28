@@ -46,6 +46,14 @@ function isWritingLikeCollection(site: TidyPressConfig, collectionKey: string): 
   return site.collections?.[collectionKey]?.kind === 'writing'
 }
 
+function isProjectsLikeCollection(site: TidyPressConfig, collectionKey: string): boolean {
+  return site.collections?.[collectionKey]?.kind === 'projects'
+}
+
+function featuredRank(data: Record<string, unknown>): number {
+  return (data as { featured?: boolean }).featured === true ? 1 : 0
+}
+
 function sortCollectionEntries<T extends HomePreviewEntry>(
   site: TidyPressConfig,
   collectionKey: string,
@@ -84,8 +92,8 @@ export async function buildHomePreviewItems(
   const mapped = localized.map(item => ({ ...item.entry, id: item.slug }))
   const sorted = isWritingLikeCollection(site, collectionKey)
     ? [...mapped].sort((a, b) => {
-        const aFeatured = (a.data as { featured?: boolean }).featured === true ? 1 : 0
-        const bFeatured = (b.data as { featured?: boolean }).featured === true ? 1 : 0
+        const aFeatured = featuredRank(a.data)
+        const bFeatured = featuredRank(b.data)
         if (aFeatured !== bFeatured) {
           return bFeatured - aFeatured
         }
@@ -94,7 +102,18 @@ export async function buildHomePreviewItems(
           new Date((a.data as { date?: string | Date }).date ?? 0).getTime()
         )
       })
-    : sortCollectionEntries(site, collectionKey, mapped)
+    : isProjectsLikeCollection(site, collectionKey)
+      ? [...mapped].sort((a, b) => {
+          const aFeatured = featuredRank(a.data)
+          const bFeatured = featuredRank(b.data)
+          if (aFeatured !== bFeatured) {
+            return bFeatured - aFeatured
+          }
+          const aTitle = (a.data as { title?: string }).title ?? a.id
+          const bTitle = (b.data as { title?: string }).title ?? b.id
+          return aTitle.localeCompare(bTitle)
+        })
+      : sortCollectionEntries(site, collectionKey, mapped)
 
   const basePath = getCollectionBasePath(site, collectionKey)
   const localePrefix = options.locale ? `/${options.locale}` : ''

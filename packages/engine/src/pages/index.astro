@@ -13,10 +13,11 @@ import {
   homePreviewListFlags,
   resolveHomeDisplayForCollection,
 } from '@/utils/home-preview'
+import { getEffectiveSiteUrl } from '@tidypress/config'
 
 const rawSite = (await import('@site-config')).default
 const site = getConfig(rawSite)
-const siteBaseUrl = site.siteUrl ? site.siteUrl.replace(/\/$/, '') : undefined
+const siteBaseUrl = getEffectiveSiteUrl(site)
 const strings = getUiStrings(site, resolveLocale(Astro.url.pathname, site.i18n))
 const dateFormatter = new Intl.DateTimeFormat(
   site.dateLocale ?? 'en-US',

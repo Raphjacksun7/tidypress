@@ -1,3 +1,4 @@
+// Example fixture URL — replace before deploy (see examples/README.md).
 export default {
   name: 'i18n-versioned-example',
   description: 'TidyPress i18n and versioning example.',

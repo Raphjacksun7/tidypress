@@ -68,10 +68,10 @@ test('BuildService copies build output to --output destination when provided', a
     'resolveDocsDirectory',
     'ensureConfigFile',
     'validateNavigation',
+    'loadConfig',
     'prepare',
     'runBuild',
     'getBuildDirectory',
-    'loadConfig',
   ])
 
   const copied = await fs.readFile(path.join(outputPath, 'index.html'), 'utf8')

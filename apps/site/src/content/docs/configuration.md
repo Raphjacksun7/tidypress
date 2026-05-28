@@ -38,7 +38,15 @@ description: 'A publishing framework for Git-native authorship.',
 siteUrl: 'https://example.com',
 ```
 
-`name` appears in titles and the header. `description` is used for metadata and homepage copy. `siteUrl` is used for canonical URLs, sitemap output, and social metadata.
+`name` appears in titles and the header. `description` is used for metadata and homepage copy. `siteUrl` is used for canonical URLs, sitemap output, RSS, and social metadata.
+
+Pass it at init when you know the domain:
+
+```bash
+npx tidypress init --site-url https://yoursite.example
+```
+
+`tidypress doctor` and `tidypress build` warn when `siteUrl` is still the `https://example.com` placeholder. Until it is set, builds omit absolute canonical/OG URLs and the Astro sitemap (no fake `example.com` hosts). See [Conventions](./conventions).
 
 ## Navigation
 
@@ -327,6 +335,7 @@ Place markdown in `docs/src/content/works/`. Match `nav` `href` values to each c
 | `lab` | writing + projects, docs off |
 | `blog` | writing only, docs and pages off |
 | `persona` | hero, projects, writing, about page |
+| `body-of-work` | works, projects, writing, reference, process, pages (docs off; use `docs-writing` for docs) |
 | `docs-writing` | docs + writing |
 | `custom` | docs + writing + a `playbooks` content collection |
 

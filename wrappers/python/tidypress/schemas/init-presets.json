@@ -21,6 +21,14 @@
       "summary": "Docs manual plus writing; writing appears before docs on the home page."
     },
     {
+      "name": "body-of-work",
+      "summary": "Works, projects, writing on the home page; reference and process in the footer; docs off."
+    },
+    {
+      "name": "body-of-work-docs",
+      "summary": "Same as body-of-work with product docs enabled and seeded."
+    },
+    {
       "name": "custom",
       "summary": "Docs, writing, and a sample playbooks content collection."
     }

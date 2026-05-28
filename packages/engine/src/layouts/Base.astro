@@ -4,7 +4,7 @@ import Nav from '@/components/Nav.astro'
 import Footer from '@/components/Footer.astro'
 import { getConfig } from '@/config/getConfig'
 import { getUiStrings, resolveLocale } from '@/i18n/locale'
-import { resolveCapabilityFlags } from '@tidypress/config'
+import { getEffectiveSiteUrl, resolveCapabilityFlags } from '@tidypress/config'
 
 export interface Props {
   title: string
@@ -53,7 +53,7 @@ const themeCssVariables = `
 const pageTitle = title === site.name ? site.name : `${title} — ${site.name}`
 const metaDescription = description || site.description || ''
 
-const siteBaseUrl = site.siteUrl ? site.siteUrl.replace(/\/$/, '') : undefined
+const siteBaseUrl = getEffectiveSiteUrl(site)
 const canonicalHref = siteBaseUrl ? `${siteBaseUrl}${Astro.url.pathname}` : undefined
 function resolveOgImageHref(imagePath: string | undefined, baseUrl: string | undefined): string | undefined {
   if (!imagePath) {

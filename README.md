@@ -33,10 +33,16 @@ pip install tidypress
 
 The Python package includes Python-native helpers. Site commands still use the Node.js CLI and Astro engine.
 
+### Install size
+
+`tidypress` ships Astro, Vite, Pagefind, and related tooling in one package so `init` and `build` work without assembling a stack. The install is larger than a markdown linter; that is the tradeoff for a single-command publishing path.
+
+A thinner install (peer dependencies, split CLI vs engine packages) is possible later and would trade first-run simplicity for a smaller download. The current core optimizes DX over tarball size.
+
 ## Quickstart
 
 ```sh
-npx tidypress init
+npx tidypress init --site-url https://yoursite.example
 npx tidypress dev
 ```
 

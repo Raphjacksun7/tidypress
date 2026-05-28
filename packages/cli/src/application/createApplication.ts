@@ -55,7 +55,7 @@ export function createApplication({
   const engineManager = new EngineManager()
   const scaffoldService = new ScaffoldService()
   const addVersionService = new AddVersionService({ configLoader })
-  const buildService = new BuildService({ configLoader, engineManager })
+  const buildService = new BuildService({ configLoader, engineManager, io })
   const contextService = new ContextService({ configLoader })
   const cleanService = new CleanService({ configLoader, engineManager })
   const doctorService = new DoctorService({ configLoader })
@@ -85,7 +85,7 @@ export function createApplication({
       'migrate-sections': new MigrateSectionsCommand({ sectionsMigrationService, io }),
       'add-version': new AddVersionCommand({ addVersionService, io }),
       dev: new DevCommand({ configLoader, engineManager }),
-      build: new BuildCommand({ buildService }),
+      build: new BuildCommand({ buildService, io }),
       preview: new PreviewCommand({ configLoader, engineManager }),
       clean: new CleanCommand({ cleanService, io }),
       context: new ContextCommand({ contextService, io }),

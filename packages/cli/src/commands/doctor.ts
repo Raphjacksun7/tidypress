@@ -21,5 +21,8 @@ export class DoctorCommand {
   async execute({ projectRoot }) {
     const result = await this.doctorService.run({ projectRoot })
     this.io.info(`Doctor OK: found docs config at ${result.docsDir}`)
+    for (const warning of result.warnings) {
+      this.io.info(`[tidypress] ${warning}`)
+    }
   }
 }

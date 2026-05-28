@@ -5,7 +5,7 @@ import { TidyPressError } from '../errors/TidyPressError.js'
 const HELP_TEXT = `tidypress <command> [options]
 
 Commands:
-  init       Scaffold docs/ in current directory (--preset <name>)
+  init       Scaffold docs/ in current directory (--preset <name> [--site-url <url>])
   migrate-sections  Generate sections->collections migration output
   dev        Start dev server
   build      Build production site (--output <dir>)
@@ -156,16 +156,45 @@ export class Application {
 
   /**
    * @param {string[]} args
-   * @returns {{ projectRoot: string, starterPreset?: string, withAstro: boolean }}
+   * @returns {{ projectRoot: string, starterPreset?: string, withAstro: boolean, siteUrl?: string }}
    */
   #parseInitRequest(args) {
     /** @type {string | undefined} */
     let starterPreset
+    /** @type {string | undefined} */
+    let siteUrl
     let withAstro = false
     for (let index = 0; index < args.length; index += 1) {
       const arg = args[index]
       if (arg === '--with-astro') {
         withAstro = true
+        continue
+      }
+      if (arg === '--site-url') {
+        const value = args[index + 1]
+        if (!value || value.startsWith('-')) {
+          throw new TidyPressError(
+            'Missing value for --site-url.',
+            'INVALID_INIT_OPTION',
+            'Use tidypress init --site-url https://yoursite.example',
+            { exitCode: 2 },
+          )
+        }
+        siteUrl = value
+        index += 1
+        continue
+      }
+      if (arg.startsWith('--site-url=')) {
+        const value = arg.slice('--site-url='.length)
+        if (!value) {
+          throw new TidyPressError(
+            'Missing value for --site-url.',
+            'INVALID_INIT_OPTION',
+            'Use tidypress init --site-url https://yoursite.example',
+            { exitCode: 2 },
+          )
+        }
+        siteUrl = value
         continue
       }
       if (arg === '--preset' || arg === '--starter') {
@@ -206,6 +235,7 @@ export class Application {
       projectRoot: this.projectRoot,
       starterPreset,
       withAstro,
+      siteUrl,
     }
   }
 

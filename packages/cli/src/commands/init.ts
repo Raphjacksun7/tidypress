@@ -15,11 +15,16 @@ export class InitCommand {
   }
 
   /**
-   * @param {{ projectRoot: string, starterPreset?: string, withAstro?: boolean }} request
+   * @param {{ projectRoot: string, starterPreset?: string, withAstro?: boolean, siteUrl?: string }} request
    * @returns {Promise<void>}
    */
   async execute(request) {
     const { docsDir, starterPreset } = await this.scaffoldService.scaffold(request)
     this.io.info(`Initialized TidyPress in ${docsDir} (starter: ${starterPreset})`)
+    if (starterPreset === 'body-of-work') {
+      this.io.info(
+        'Product docs: --preset body-of-work-docs or docs-writing (see site docs / conventions).',
+      )
+    }
   }
 }

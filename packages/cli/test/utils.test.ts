@@ -4,8 +4,10 @@ import os from 'node:os'
 import path from 'node:path'
 import fs from 'node:fs/promises'
 
+import { publicationSurfaceKeys } from '@tidypress/config'
 import { scaffoldDocs } from '../src/application/scaffolding/scaffold-docs.js'
 import { createContentSnapshot, writeContentSnapshot } from '../src/application/content/context-snapshot.js'
+import { writeLlmsTxt } from '../src/application/content/llms-txt.js'
 import { copyDistToDestination, resolveDeployTarget } from '../src/application/deployment/deploy-target.js'
 import { getBuildDir } from '../src/infrastructure/engine/build-session.js'
 
@@ -61,6 +63,60 @@ test('scaffoldDocs lab preset creates writing and projects', async () => {
   assert.match(config, /"kind": "projects"/)
   assert.match(config, /"disable": \[\s*"docs",\s*"pages"\s*\]/)
   await fs.access(path.join(docsDir, 'src/content/projects/sample-project.md'))
+})
+
+test('scaffoldDocs body-of-work preset seeds works, reference, and process', async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-scaffold-body-'))
+  const docsDir = path.join(root, 'docs')
+
+  await scaffoldDocs({ docsDir, projectName: 'work-site', starterPreset: 'body-of-work' })
+
+  const config = await fs.readFile(path.join(docsDir, 'tidypress.config.ts'), 'utf8')
+  for (const key of publicationSurfaceKeys) {
+    assert.match(config, new RegExp(`"${key}"`))
+  }
+  await fs.access(path.join(docsDir, 'src/content/works/sample-work.md'))
+  await fs.access(path.join(docsDir, 'src/content/reference/cli.md'))
+  await fs.access(path.join(docsDir, 'src/content/process/0001-sample-decision.md'))
+  await fs.access(path.join(docsDir, 'src/content/pages/about.md'))
+  assert.match(config, /"layout": "card"/)
+  assert.match(config, /"disable": \[\s*"docs"\s*\]/)
+  assert.match(config, /"label": "works"/)
+  assert.match(config, /"label": "reference"/)
+  const navBlock = config.match(/"nav":\s*(\[[\s\S]*?\]),/)?.[1] ?? ''
+  assert.doesNotMatch(navBlock, /"href": "\/reference"/)
+  assert.match(config, /Set siteUrl in tidypress\.config\.ts/)
+  assert.match(config, /"href": "\/reference"/)
+  assert.match(config, /"href": "\/process"/)
+  await assert.rejects(fs.access(path.join(docsDir, 'src/content/docs/getting-started.md')))
+})
+
+test('scaffoldDocs body-of-work-docs preset enables docs collection', async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-scaffold-body-docs-'))
+  const docsDir = path.join(root, 'docs')
+
+  await scaffoldDocs({ docsDir, projectName: 'work-site', starterPreset: 'body-of-work-docs' })
+
+  const config = await fs.readFile(path.join(docsDir, 'tidypress.config.ts'), 'utf8')
+  assert.match(config, /"docs":\s*\{[^}]*"enabled": true/)
+  assert.match(config, /"href": "\/docs"/)
+  await fs.access(path.join(docsDir, 'src/content/docs/getting-started.md'))
+})
+
+test('scaffoldDocs init siteUrl is written when provided', async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-scaffold-siteurl-'))
+  const docsDir = path.join(root, 'docs')
+
+  await scaffoldDocs({
+    docsDir,
+    projectName: 'my-site',
+    starterPreset: 'lab',
+    siteUrl: 'https://publish.example',
+  })
+
+  const config = await fs.readFile(path.join(docsDir, 'tidypress.config.ts'), 'utf8')
+  assert.match(config, /"siteUrl": "https:\/\/publish\.example"/)
+  assert.doesNotMatch(config, /Set siteUrl in tidypress/)
 })
 
 test('scaffoldDocs custom preset creates a custom content collection example', async () => {
@@ -133,6 +189,75 @@ About custom page content.
     snapshot.map(item => item.collection).sort(),
     ['docs', 'pages', 'writing'],
   )
+})
+
+test('writeLlmsTxt writes grouped public links', async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-llms-'))
+  const docsDir = path.join(root, 'docs')
+  await fs.mkdir(path.join(docsDir, 'src/content/writing'), { recursive: true })
+  await fs.writeFile(
+    path.join(docsDir, 'src/content/writing/hello.md'),
+    `---
+title: Hello
+description: First post
+date: 2026-05-01
+---
+
+Body.
+`,
+    'utf8',
+  )
+
+  const outputPath = path.join(root, 'build', 'llms.txt')
+  await writeLlmsTxt({
+    docsDir,
+    outputPath,
+    config: {
+      name: 'Demo',
+      description: 'A demo site.',
+      siteUrl: 'https://publish.example',
+      collections: {
+        writing: { enabled: true, kind: 'writing', basePath: '/writing', label: 'writing' },
+      },
+    },
+  })
+
+  const text = await fs.readFile(outputPath, 'utf8')
+  assert.match(text, /^# Demo/m)
+  assert.match(text, /> A demo site\./)
+  assert.match(text, /\[Hello\]\(https:\/\/publish\.example\/writing\/hello\): First post/)
+})
+
+test('writeLlmsTxt uses relative links when siteUrl is placeholder', async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-llms-placeholder-'))
+  const docsDir = path.join(root, 'docs')
+  await fs.mkdir(path.join(docsDir, 'src/content/writing'), { recursive: true })
+  await fs.writeFile(
+    path.join(docsDir, 'src/content/writing/hello.md'),
+    `---
+title: Hello
+date: 2026-05-01
+---
+`,
+    'utf8',
+  )
+
+  const outputPath = path.join(root, 'build', 'llms.txt')
+  await writeLlmsTxt({
+    docsDir,
+    outputPath,
+    config: {
+      name: 'Demo',
+      siteUrl: 'https://example.com',
+      collections: {
+        writing: { enabled: true, kind: 'writing', basePath: '/writing', label: 'writing' },
+      },
+    },
+  })
+
+  const text = await fs.readFile(outputPath, 'utf8')
+  assert.doesNotMatch(text, /https:\/\/example\.com/)
+  assert.match(text, /\[Hello\]\(\/writing\/hello\)/)
 })
 
 test('createContentSnapshot excludes draft entries (published: false)', async () => {

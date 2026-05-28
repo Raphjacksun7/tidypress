@@ -10,14 +10,14 @@ import { TidyPressError } from '../errors/TidyPressError.js'
  */
 export class ScaffoldService {
   /**
-   * @param {{ projectRoot: string, starterPreset?: string, withAstro?: boolean }} request
+   * @param {{ projectRoot: string, starterPreset?: string, withAstro?: boolean, siteUrl?: string }} request
    * @returns {Promise<{ docsDir: string, starterPreset: string }>}
    */
-  async scaffold({ projectRoot, starterPreset, withAstro }) {
+  async scaffold({ projectRoot, starterPreset, withAstro, siteUrl }) {
     const docsDir = getDocsDir(projectRoot)
     const projectName = path.basename(projectRoot)
     try {
-      await scaffoldDocs({ docsDir, projectName, starterPreset, withAstro })
+      await scaffoldDocs({ docsDir, projectName, starterPreset, withAstro, siteUrl })
     } catch (error) {
       if (error instanceof Error && error.message.startsWith('Unknown starter preset')) {
         throw new TidyPressError(

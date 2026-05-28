@@ -50,6 +50,14 @@ pnpm --filter @tidypress/example-persona build
 
 `examples/persona` matches `tidypress init --preset persona`: opt-in hero, projects, writing, and an about page.
 
+## Body of work
+
+```bash
+npx tidypress init --preset body-of-work
+```
+
+Seeds works, projects, writing, reference, and process collections. See [Body of work](./body-of-work).
+
 ## i18n and versions
 
 ```bash

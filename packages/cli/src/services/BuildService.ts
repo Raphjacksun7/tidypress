@@ -2,6 +2,8 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 
 import { withDefaults } from '@tidypress/config'
+import { collectSiteUrlWarnings } from '@tidypress/config'
+import { writeLlmsTxt } from '../application/content/llms-txt.js'
 import { getCacheDir } from '../infrastructure/engine/build-session.js'
 
 /**
@@ -10,14 +12,16 @@ import { getCacheDir } from '../infrastructure/engine/build-session.js'
 export class BuildService {
   configLoader: any
   engineManager: any
+  io: { info: (message: string) => void } | undefined
 
 
   /**
-   * @param {{ configLoader: import('./ConfigLoader.js').ConfigLoader, engineManager: import('./EngineManager.js').EngineManager }} dependencies
+   * @param {{ configLoader: import('./ConfigLoader.js').ConfigLoader, engineManager: import('./EngineManager.js').EngineManager, io?: { info: (message: string) => void } }} dependencies
    */
-  constructor({ configLoader, engineManager }) {
+  constructor({ configLoader, engineManager, io }) {
     this.configLoader = configLoader
     this.engineManager = engineManager
+    this.io = io
   }
 
   /**
@@ -28,11 +32,21 @@ export class BuildService {
     const docsDir = await this.configLoader.resolveDocsDirectory({ projectRoot })
     await this.configLoader.ensureConfigFile({ docsDir })
     await this.configLoader.validateNavigation({ docsDir })
+    const rawConfig = await this.configLoader.loadConfig({ docsDir })
+    for (const warning of collectSiteUrlWarnings(rawConfig)) {
+      this.io?.info(`[tidypress] ${warning}`)
+    }
+    const config = withDefaults(rawConfig)
     const session = await this.engineManager.prepare({ docsDir, mode: 'build' })
     await this.engineManager.runBuild({ session })
 
     const buildDir = this.engineManager.getBuildDirectory({ docsDir })
-    await this.#exportConfigSidecar({ docsDir, cacheDir: session.cacheDir })
+    await writeLlmsTxt({
+      docsDir,
+      outputPath: path.join(buildDir, 'llms.txt'),
+      config,
+    })
+    await this.#exportConfigSidecar({ docsDir, cacheDir: session.cacheDir, config })
 
     if (outputPath) {
       const { copyDistToDestination } = await import('../application/deployment/deploy-target.js')
@@ -52,9 +66,7 @@ export class BuildService {
   /**
    * @param {{ docsDir: string, cacheDir: string }} options
    */
-  async #exportConfigSidecar({ docsDir, cacheDir }) {
-    const raw = await this.configLoader.loadConfig({ docsDir })
-    const config = withDefaults(raw)
+  async #exportConfigSidecar({ docsDir, cacheDir, config }) {
     await fs.mkdir(cacheDir, { recursive: true })
     await fs.writeFile(
       path.join(cacheDir, 'config.json'),
