@@ -25,7 +25,7 @@ def test_convert_notebook_writes_mdx(tmp_path: Path) -> None:
 """.strip(),
         encoding="utf-8",
     )
-    output = tmp_path / "docs" / "src" / "content" / "docs" / "analysis.mdx"
+    output = tmp_path / "site" / "src" / "content" / "docs" / "analysis.mdx"
     options = parse_convert_args([str(notebook), "--output", str(output)])
     convert_notebook(options)
     rendered = output.read_text(encoding="utf-8")
@@ -56,7 +56,7 @@ def test_convert_notebook_supports_png_outputs(tmp_path: Path) -> None:
 """.strip(),
         encoding="utf-8",
     )
-    output = tmp_path / "docs" / "src" / "content" / "docs" / "plot.mdx"
+    output = tmp_path / "site" / "src" / "content" / "docs" / "plot.mdx"
     convert_notebook(parse_convert_args([str(notebook), "--output", str(output)]))
 
     rendered = output.read_text(encoding="utf-8")
@@ -99,7 +99,7 @@ def test_convert_notebook_rejects_invalid_png_output(tmp_path: Path) -> None:
 """.strip(),
         encoding="utf-8",
     )
-    output = tmp_path / "docs" / "src" / "content" / "docs" / "broken-image.mdx"
+    output = tmp_path / "site" / "src" / "content" / "docs" / "broken-image.mdx"
     options = parse_convert_args([str(notebook), "--output", str(output)])
 
     with pytest.raises(TidyPressError, match="Notebook output image is not valid base64"):
@@ -117,7 +117,7 @@ def meaning():
 '''.strip(),
         encoding="utf-8",
     )
-    output = tmp_path / "docs" / "src" / "content" / "docs" / "api" / "py.md"
+    output = tmp_path / "site" / "src" / "content" / "docs" / "api" / "py.md"
     options = parse_extract_args([str(source), "--lang", "py", "--output", str(output)])
     extract_docs(options)
     rendered = output.read_text(encoding="utf-8")
@@ -139,7 +139,7 @@ export function greet(name: string) {
 """.strip(),
         encoding="utf-8",
     )
-    output = tmp_path / "docs" / "src" / "content" / "docs" / "api" / "ts.md"
+    output = tmp_path / "site" / "src" / "content" / "docs" / "api" / "ts.md"
     options = parse_extract_args([str(source), "--lang", "ts", "--output", str(output)])
     extract_docs(options)
     rendered = output.read_text(encoding="utf-8")
@@ -163,7 +163,7 @@ func Sum(a int, b int) int {
 """.strip(),
         encoding="utf-8",
     )
-    output = tmp_path / "docs" / "src" / "content" / "docs" / "api" / "go.md"
+    output = tmp_path / "site" / "src" / "content" / "docs" / "api" / "go.md"
     options = parse_extract_args([str(source), "--lang", "go", "--output", str(output)])
     extract_docs(options)
     rendered = output.read_text(encoding="utf-8")

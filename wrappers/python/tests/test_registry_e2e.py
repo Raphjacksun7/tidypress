@@ -7,6 +7,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from tidypress.publish_root import resolve_publish_root
+
 REPO_ROOT = Path(__file__).resolve().parents[3]
 CACHE_ROOT = REPO_ROOT / ".cache" / "registry-e2e"
 
@@ -79,7 +81,9 @@ def test_pypi_registry_install_init_build_lab() -> None:
     )
     _run([str(tidypress_bin), "build"], cwd=site, env=cli_env)
 
-    build = site / "docs" / "build"
+    publish = resolve_publish_root(site)
+    assert (publish / "tidypress.config.ts").is_file()
+    build = publish / "build"
     assert (build / "index.html").is_file()
     assert (build / "llms.txt").is_file()
     assert (build / "sitemap-index.xml").is_file()

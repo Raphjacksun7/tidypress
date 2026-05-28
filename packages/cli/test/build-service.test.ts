@@ -8,7 +8,7 @@ import { BuildService } from '../src/services/BuildService.js'
 
 test('BuildService copies build output to --output destination when provided', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-build-service-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
   const buildDir = path.join(docsDir, 'build')
   const cacheDir = path.join(os.tmpdir(), 'tidypress-cache-test')
   const outputPath = path.join(root, 'artifact')

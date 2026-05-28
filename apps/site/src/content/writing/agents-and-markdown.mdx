@@ -7,38 +7,33 @@ tags:
   - agents
 ---
 
-The interesting shift with coding agents is not that publishing got easier. It is that **authorship** got cheaper. You still need a point of view, a place on the web, and a build step you trust. The agent did not remove those. It removed the friction between “I should write this down” and a file diff.
+Coding agents changed the cost of authorship. The friction between “I should write this down” and a file diff collapsed. You still need a point of view, a URL, and a build step you trust — TidyPress assumes all three and stays out of the way.
 
-TidyPress is built for that world, but it is not built *for* agents. There is no chat surface, no draft host, no sync API. The site is whatever is in the tree after you merge. That is the same contract vim users had twenty years ago, and it is the right contract for agents too: they propose edits; you keep the repo.
+The site is whatever is in the tree after you merge. Agents propose edits; git keeps history; `tidypress build` turns the merged tree into HTML. Same contract as editing by hand — different speed on the keyboard.
 
 ## The tree both of you edit
 
-I like that boundary. Platforms that own your drafts eventually own your audience. A folder of markdown plus a static `build/` output is boring on purpose. Boring survives acquihires, model upgrades, and the next hot editor.
+Markdown on disk, a config file, static output. Presets give the tree a public shape from day one: writing on the feed, work on the home page, guides in the `docs` collection when you enable it (per preset or config).
 
 <FileTree>
-- docs/
+- site/
   - **tidypress.config.ts**
-  - build/
-    - llms.txt
   - src/
     - content/
       - writing/
-        - agents-and-markdown.mdx
-        - hello-world.md
       - projects/
-        - highlight.md
       - docs/
-        - getting-started.mdx
   - build/
     - index.html
+    - llms.txt
     - pagefind/
 </FileTree>
 
-Presets exist so the tree already looks like a public site — writing on the feed, work on the home page — instead of a generic `content/` dump. After `tidypress build`, `build/llms.txt` gives the model the full published corpus **without** giving it custody of a separate snapshot file in the repo.
+After `tidypress build`, `build/llms.txt` lists the full published corpus — URLs and markdown bodies — so models can read what shipped without a second snapshot format in the repo.
 
 ## Same pipeline, different keyboard
 
-So what changes when Claude or Cursor writes half the posts? Almost nothing operationally. A new essay is still a dated file under `writing/`. A project card is still frontmatter and a link. Reference pages land in `docs/` when the site actually needs a manual — not because every tool secretly wants to be a wiki. You run `tidypress dev`, then `tidypress build`, then you ship `build/` the way you always would. The agent does not get a special lane.
+When an agent writes half the posts, the operational steps barely change. A new essay is a dated file under `writing/`. A project card is frontmatter and a link. Guides live under `src/content/docs/` when the site needs them. `tidypress dev`, then `tidypress build`, then ship `build/`.
 
 <Mermaid align="center" code={`
 flowchart TB
@@ -54,16 +49,14 @@ flowchart TB
   Artifacts --> Host[Static host]
 `} />
 
-The part worth teaching models is structure, not syntax. After that, the pull request is the editorial layer. Yours.
+Teach models the folder layout and collection kinds. The pull request remains the editorial layer.
 
-<Image src="/images/writing/agent-pr-review.jpg" alt="Meme: one button labeled merge agent PR at 2am" caption="New school: the essay arrived fully formed. Old school: you still click merge (and maybe fix one heading)." />
+<Image src="/images/writing/agent-pr-review.jpg" alt="Meme: one button labeled merge agent PR at 2am" caption="The essay arrived fully formed at 2 a.m. You still click merge — and maybe fix one heading." />
 
 ## Human speed, agent speed, same history
 
-I do not think “human writer” and “agent writer” are different products. They are different speeds on the same git history. Old school is typing the file yourself. New school is reviewing a diff that arrived fully formed at 2 a.m. Both end as HTML you can host on nginx, S3, or a cardboard box under your desk. The web does not care who held the keyboard.
+“Human writer” and “agent writer” are different speeds on the same git history. Both end as HTML on any static host. The web does not care who held the keyboard.
 
-<Image src="/images/writing/honest-work.jpg" alt="It's not much but it's honest work meme" caption="No agent API. No draft database. Just files in, `build/` out." />
+<Image src="/images/writing/honest-work.jpg" alt="It's not much but it's honest work meme" caption="Files in, `build/` out." />
 
-What I want from a tool here is narrow scope: stay out of the way once the markdown is saved. No second database. No publish button that only works inside a dashboard. If your agent can respect a folder layout, TidyPress will build it the same way it builds yours.
-
-That is the whole bet. Files in, site out. Everything else — including intelligence — stays upstream of the commit.
+If your agent can respect a folder layout, TidyPress builds its output the same way it builds yours. Intelligence stays upstream of the commit; the artifact downstream is always the same folder.

@@ -22,7 +22,7 @@ It does not use `npx` by default.
 
 ## Site commands
 
-These commands are delegated to the Node CLI (same as `npx tidypress`):
+These commands are delegated to the Node CLI — same surface as `npx tidypress`:
 
 ```sh
 tidypress init [--preset lab|blog|persona|docs-writing|custom]
@@ -31,13 +31,14 @@ tidypress build
 tidypress preview
 tidypress clean
 tidypress deploy
-# llms.txt is written on every build (build/llms.txt)
 tidypress import devto <url-or-slug>   # real fetch; other providers write scaffolds
 tidypress doctor
 tidypress migrate-sections
 tidypress add-version <label>
 tidypress domain setup [domain] --platform <platform>
 ```
+
+Every `tidypress build` writes `build/llms.txt`.
 
 Experimental Node commands (`editor`, `export`, `ai`) are also forwarded when enabled in config.
 

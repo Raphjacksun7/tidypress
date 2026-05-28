@@ -15,7 +15,7 @@ pnpm --filter @tidypress/example-custom-collections build
 Output:
 
 ```txt
-examples/custom-collections/docs/build/
+examples/custom-collections/site/build/
 ```
 
 Inspect:

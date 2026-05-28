@@ -20,15 +20,15 @@ cd "$DEMO_DIR"
 
 echo "→ init (lab preset + siteUrl)"
 $CLI init --preset lab --site-url https://tidypress-demo.example
-test -f "$DEMO_DIR/docs/tidypress.config.ts" || {
-  echo "init failed: docs/tidypress.config.ts missing" >&2
+test -f "$DEMO_DIR/site/tidypress.config.ts" || {
+  echo "init failed: site/tidypress.config.ts missing" >&2
   exit 1
 }
 
 echo "→ build"
 $CLI build
 
-BUILD_DIR="$DEMO_DIR/docs/build"
+BUILD_DIR="$DEMO_DIR/site/build"
 test -f "$BUILD_DIR/index.html"
 test -f "$BUILD_DIR/pagefind/pagefind.js"
 test -f "$BUILD_DIR/llms.txt"

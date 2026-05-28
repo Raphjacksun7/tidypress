@@ -3,7 +3,7 @@ name: tidypress
 description: >-
   TidyPress publishing framework for Git-native sites — init, dev, build, deploy,
   collections, presets, Pagefind search, and build/llms.txt. Use when
-  editing docs/tidypress.config.ts, markdown in docs/src/content, static site output,
+  editing site/tidypress.config.ts, markdown in site/src/content, static site output,
   or when the user mentions tidypress, TidyPress, lab/blog/persona presets, or
   engineer-owned publishing in git.
 ---
@@ -18,24 +18,26 @@ Rendering is **Node.js + Astro 6** only. Python (`pip install tidypress`) wraps 
 
 ## Project layout
 
+`site/` is the default publish root from `init`. Config can live in any folder with `tidypress.config.ts`.
+
 ```txt
-docs/
+site/
 ├── tidypress.config.ts
 ├── public/
 └── src/content/
-    ├── docs/       # stable manuals (optional)
+    ├── docs/       # docs collection — sidebar-ordered guides at /docs/…
     ├── writing/    # dated posts (RSS, tags, archive)
     ├── pages/      # root routes (e.g. /about)
     └── projects/   # cards + optional pages (lab preset)
 ```
 
-Build output: `docs/build/` (override with `tidypress build --output`).
+Build output: `site/build/` (override with `tidypress build --output`).
 
-## CLI (load before suggesting commands)
+## CLI
 
 | Command | Purpose |
 |---------|---------|
-| `tidypress init` | Scaffold `docs/` (`--preset …` `--site-url <url>`) |
+| `tidypress init` | Scaffold `site/` (`--preset …` `--site-url <url>`) |
 | `tidypress dev` | Dev server (default port 4321) |
 | `tidypress build` | Production static build + Pagefind index |
 | `tidypress preview` | Preview production build |
@@ -63,7 +65,7 @@ Node **22.12+** required. Default command if omitted: `dev`.
 
 ## Config essentials
 
-File: `docs/tidypress.config.ts`
+File: `site/tidypress.config.ts` by default — any publish root works.
 
 ```ts
 import { defineConfig } from 'tidypress/config'
@@ -84,16 +86,18 @@ export default defineConfig({
 })
 ```
 
-- **Collections** map folders → route families (`kind`: `writing`, `page`, `projects`, or default content).
+- **Publish root** — folder with `tidypress.config.ts`. `init` defaults to `site/`. Not the same as the **`docs` collection** (`src/content/docs/` → `/docs/…`).
+- **Collections** map folders under `src/content/` → route families (`kind`: `writing`, `page`, `projects`, or default content).
 - **Capabilities** (`capabilities.enable` / `disable`) toggle starter features (docs, pages, RSS, search, …).
 - **Home** (`home.order`, sections) controls homepage sections.
 - **Nav policy** `strict` (default) validates internal links; use `relaxed` for external-generated routes.
+- **Discovery** — CLI checks cwd, then `site/`, then sibling folders. Set `TIDYPRESS_PUBLISH_ROOT` when ambiguous.
 
 Full config patterns: [reference.md](reference.md).
 
 ## Conventions (product)
 
-Opinionated presets + kinds; flexible markdown. `siteUrl` must be production (not `example.com`) for sitemap and absolute canonical/OG. Product docs: `docs` collection or `body-of-work-docs` preset — not mixed into default `body-of-work` header nav.
+Opinionated presets + kinds; flexible markdown. `siteUrl` must be production (not `example.com`) for sitemap and absolute canonical/OG. The `docs` collection is first-class; `body-of-work` disables it in favor of reference/process—use `body-of-work-docs` when you want both.
 
 ## Content conventions
 
@@ -111,8 +115,10 @@ Opinionated presets + kinds; flexible markdown. `siteUrl` must be production (no
 ## Marketing guardrails (user-facing copy)
 
 - One-liner only: *A publishing framework for Git-native authorship.*
-- Do **not** lead with "documentation platform", competitor names, or stacked slogan lists.
+- Lead with the thesis and what the tool does — git, collections, build, ship.
+- Avoid negation tours (“not a X, not a Y”) and competitor names; state the positive model instead.
 - Keep user-facing copy on the **core CLI** (git → build → static site). Do not pitch unreleased products.
+- Use parentheses and tree comments when they compress useful detail — not as a substitute for clear sentences.
 
 ## Docs
 

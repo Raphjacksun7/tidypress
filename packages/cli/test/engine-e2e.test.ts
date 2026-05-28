@@ -11,7 +11,7 @@ import { EngineManager } from '../src/services/EngineManager.js'
 
 async function createEngineFixtureProject() {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-engine-e2e-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
   await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
   await fs.mkdir(path.join(docsDir, 'src/content/docs/fr'), { recursive: true })
   await fs.mkdir(path.join(docsDir, 'src/content/docs/v1.0'), { recursive: true })
@@ -297,7 +297,7 @@ test('BuildService renders MDX and emits pagefind artifacts', { timeout: 900_000
 
 test('blog preset build produces writing-only routes and homepage', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-engine-blog-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
 
   await scaffoldDocs({ docsDir, projectName: 'blog-e2e', starterPreset: 'blog' })
 
@@ -326,7 +326,7 @@ test('blog preset build produces writing-only routes and homepage', async () => 
 
 test('lab preset build produces writing, projects, and collection search filters', { timeout: 900_000 }, async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-engine-lab-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
 
   await scaffoldDocs({ docsDir, projectName: 'lab-e2e', starterPreset: 'lab' })
 
@@ -370,7 +370,7 @@ On-site project page.
 
 test('persona preset build renders hero and about page', { timeout: 900_000 }, async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-engine-persona-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
 
   await scaffoldDocs({ docsDir, projectName: 'persona-e2e', starterPreset: 'persona' })
 

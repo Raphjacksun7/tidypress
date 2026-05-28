@@ -18,7 +18,8 @@ export const defaultConfig: Partial<TidyPressConfig> = {
   },
   capabilities: {},
   writing: {
-    description: 'Engineering notes, architectural decisions, and observations.',
+    description:
+      'Notes on git-native publishing — the tree as source of truth, agents as co-authors, build/ as receipt.',
   },
   typography: {
     scale: 'medium',

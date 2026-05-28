@@ -69,7 +69,7 @@ export class DomainSetupService {
       throw new TidyPressError(
         'Missing domain value for setup.',
         'INVALID_DOMAIN_VALUE',
-        'Pass a domain argument or set siteUrl in docs/tidypress.config.ts',
+        'Pass a domain argument or set siteUrl in site/tidypress.config.ts',
         { exitCode: 2 },
       )
     }

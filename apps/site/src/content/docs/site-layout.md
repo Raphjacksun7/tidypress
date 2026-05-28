@@ -6,6 +6,8 @@ order: 6
 
 Start without layout config. Add only the overrides your site needs.
 
+Most of this page applies to the **`docs` collection** — sidebar-ordered pages at `/docs/…`. Home-page layout for writing and projects is driven by `home`, `hero`, and collection kinds—not by `docs.sidebar`.
+
 ## Hero bar
 
 The home hero is off by default. Enable it in config when you want role, pronunciation, lead, and links above homepage previews:
@@ -51,11 +53,11 @@ docs: {
 }
 ```
 
-`items` are docs slugs relative to `docs/src/content/docs/`:
+`items` are slugs relative to the **docs collection** (`site/src/content/docs/` under the publish root):
 
 ```txt
-docs/src/content/docs/getting-started.md -> getting-started
-docs/src/content/docs/manual/install.md -> manual/install
+site/src/content/docs/getting-started.md -> getting-started
+site/src/content/docs/manual/install.md -> manual/install
 ```
 
 With explicit groups, a page exists but does not appear in the sidebar unless its slug is listed.

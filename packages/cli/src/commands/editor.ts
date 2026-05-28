@@ -24,7 +24,7 @@ export class EditorCommand {
       feature: 'editor',
       cliEnabled: enableExperimentalEditor,
       cliHint: 'Use tidypress editor --enable-experimental-editor',
-      configHint: 'Set experimental.editor = true in docs/tidypress.config.ts',
+      configHint: 'Set experimental.editor = true in site/tidypress.config.ts',
     })
 
     throw new TidyPressError(

@@ -4,20 +4,25 @@ description: Content folders, frontmatter fields, links, assets, drafts, and sch
 order: 4
 ---
 
-Content lives under `docs/src/content/`. Markdown is the default. MDX adds components.
+All markdown sits under the publish root: `site/` with `tidypress.config.ts`, `src/content/`, and `build/`.
+
+Collections are typed directories under `src/content/`. **Writing** and **projects** or **works** often lead the home page. The **`docs` collection** serves sidebar-ordered pages at `/docs/…`.
 
 ## Collections
 
 ```txt
-docs/src/content/
-├── docs/       # documentation pages
-├── writing/    # dated posts
-├── projects/   # default folder when the collection key is `projects`
-├── works/      # same `kind: 'projects'` behavior when the key is `works`
-└── pages/      # root-level pages
+site/
+└── src/content/
+    ├── writing/    # dated posts (RSS, tags, archive)
+    ├── projects/   # cards + optional pages (lab preset)
+    ├── works/      # body-of-work preset
+    ├── reference/  # facts shelf (body-of-work)
+    ├── process/    # decisions shelf (body-of-work)
+    ├── pages/      # root routes (e.g. /about)
+    └── docs/       # docs collection — sidebar-ordered guides at /docs/…
 ```
 
-`docs` uses sidebar order. `writing` uses dates. A collection with `kind: 'projects'` powers the home page showcase. The folder name matches the collection **key** in config (`projects`, `works`, or any other key). `pages` maps to root routes.
+`writing` uses dates and feeds. `docs` uses sidebar order. `kind: 'projects'` drives the home showcase. Directory names follow collection **keys** in config. `pages` maps to root routes.
 
 ## Docs frontmatter
 
@@ -79,7 +84,7 @@ Fields:
 
 Writing posts show estimated reading time on the entry page. Year archive pages are available at `/writing/archive/<year>` when posts exist for that year.
 
-RSS is generated at `/writing/rss.xml` during build (relative to the writing collection `basePath`).
+RSS is generated at `<writing basePath>/rss.xml` during build. With the default writing path, that is `/writing/rss.xml`.
 
 ## Projects frontmatter
 
@@ -100,13 +105,13 @@ Fields:
 |-------|---------|
 | `title` | Card title |
 | `description` | Card summary and metadata |
-| `status` | Optional label on cards (for example `active`) |
+| `status` | Optional label on cards, such as `active` |
 | `featured` | Pin toward the top of indexes and homepage previews |
 | `url` | External link; use with `linkOnly: true` for cards that skip an on-site page |
 | `repo` | Repository URL used as the card link when `url` is omitted |
 | `linkOnly` | When `true` with `url` or `repo`, the card links out without a full project page |
 | `icon` | Optional card icon path |
-| `tags` | Optional tags; tag index routes at `<basePath>/tags/<tag>` (same pattern as writing) |
+| `tags` | Optional tags; tag index routes at `<basePath>/tags/<tag>`, same pattern as writing |
 | `search` | Set `false` to exclude from search |
 | `published` | Set `false` to hide from routes and previews |
 
@@ -136,7 +141,7 @@ collections: {
 },
 ```
 
-Files live in `docs/src/content/works/`. Add `works` to `nav`, `home.order`, and match `href` to `basePath`.
+Files live in `site/src/content/works/`. Add `works` to `nav`, `home.order`, and match `href` to `basePath`.
 
 ## Headings
 
@@ -160,7 +165,7 @@ External links open in a new tab with safe `rel` attributes.
 Public assets:
 
 ```txt
-docs/public/images/architecture.png
+site/public/images/architecture.png
 ```
 
 ```md
@@ -244,14 +249,14 @@ search: {
 Docs pages:
 
 ```txt
-docs/src/content/docs/getting-started.md  -> /docs/getting-started
-docs/src/content/docs/setup/install.md    -> /docs/setup/install
+site/src/content/docs/getting-started.md  -> /docs/getting-started
+site/src/content/docs/setup/install.md    -> /docs/setup/install
 ```
 
 Writing posts:
 
 ```txt
-docs/src/content/writing/hello.md         -> /writing/hello
+site/src/content/writing/hello.md         -> /writing/hello
 ```
 
 Custom collections use the `basePath` configured for that collection.

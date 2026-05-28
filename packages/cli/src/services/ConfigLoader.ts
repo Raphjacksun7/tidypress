@@ -1,5 +1,5 @@
 import { TidyPressError } from '../errors/TidyPressError.js'
-import { findConfigFile, loadUserConfig, resolveDocsDir } from '../infrastructure/project/config.js'
+import { findConfigFile, loadUserConfig, resolvePublishRoot } from '../infrastructure/project/config.js'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import {
@@ -20,7 +20,7 @@ export class ConfigLoader {
    * @returns {Promise<string>}
    */
   async resolveDocsDirectory({ projectRoot }) {
-    return resolveDocsDir(projectRoot)
+    return resolvePublishRoot(projectRoot)
   }
 
   /**

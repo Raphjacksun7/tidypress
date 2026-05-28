@@ -14,6 +14,7 @@ import re
 from typing import Any
 
 from tidypress.errors import TidyPressError
+from tidypress.publish_root import resolve_publish_root
 
 
 @dataclass(frozen=True)
@@ -28,11 +29,6 @@ class ExtractOptions:
     source_path: Path
     language: str
     output_path: Path
-
-
-def _docs_root(cwd: Path) -> Path:
-    docs = cwd / "docs"
-    return docs if docs.is_dir() else cwd
 
 
 def parse_convert_args(args: list[str], cwd: Path | None = None) -> ConvertOptions:
@@ -65,7 +61,7 @@ def parse_convert_args(args: list[str], cwd: Path | None = None) -> ConvertOptio
         )
 
     working_dir = (cwd or Path.cwd()).resolve()
-    default_output = _docs_root(working_dir) / "src" / "content" / "docs" / f"{source.stem}.mdx"
+    default_output = resolve_publish_root(working_dir) / "src" / "content" / "docs" / f"{source.stem}.mdx"
     output = Path(namespace.output_path).expanduser().resolve() if namespace.output_path else default_output
     return ConvertOptions(input_path=source, output_path=output, watch=namespace.watch)
 
@@ -96,7 +92,7 @@ def parse_extract_args(args: list[str], cwd: Path | None = None) -> ExtractOptio
     if language not in {"py", "ts", "go"}:
         raise TidyPressError("Unsupported language for extract-docs.", code="EXTRACT_ARGS", hint="Use --lang py, ts, or go.")
     working_dir = (cwd or Path.cwd()).resolve()
-    default_output = _docs_root(working_dir) / "src" / "content" / "docs" / "api" / f"{language}.md"
+    default_output = resolve_publish_root(working_dir) / "src" / "content" / "docs" / "api" / f"{language}.md"
     output = Path(namespace.output).expanduser().resolve() if namespace.output else default_output
     return ExtractOptions(source_path=source, language=language, output_path=output)
 

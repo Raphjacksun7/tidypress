@@ -27,7 +27,7 @@ export class DomainCommand {
     if (result.domainSource === 'config') {
       this.io.info(`Using domain detected from siteUrl: ${result.resolvedDomain}`)
     }
-    this.io.info('1) Set `siteUrl` in docs/tidypress.config.ts:')
+    this.io.info('1) Set `siteUrl` in your publish root config — `site/tidypress.config.ts` by default:')
     this.io.info(`   siteUrl: '${result.suggestedSiteUrl}'`)
     if (result.configSiteUrl && result.configSiteUrl !== result.suggestedSiteUrl) {
       this.io.info(`   Current siteUrl is ${result.configSiteUrl}; update it to match the domain.`)

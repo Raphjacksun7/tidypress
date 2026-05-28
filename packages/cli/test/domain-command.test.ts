@@ -10,7 +10,7 @@ test('DomainCommand prints actionable setup guidance', async () => {
     domainSetupService: /** @type {import('../src/services/DomainSetupService.js').DomainSetupService} */ (/** @type {any} */ ({
       async setup() {
         return {
-          docsDir: '/workspace/docs',
+          docsDir: '/workspace/site',
           resolvedDomain: 'docs.example.com',
           domainSource: 'argument',
           suggestedSiteUrl: 'https://docs.example.com',
@@ -46,7 +46,7 @@ test('DomainCommand reports when domain is detected from config', async () => {
     domainSetupService: /** @type {import('../src/services/DomainSetupService.js').DomainSetupService} */ (/** @type {any} */ ({
       async setup() {
         return {
-          docsDir: '/workspace/docs',
+          docsDir: '/workspace/site',
           resolvedDomain: 'myblog.example.com',
           domainSource: 'config',
           suggestedSiteUrl: 'https://myblog.example.com',

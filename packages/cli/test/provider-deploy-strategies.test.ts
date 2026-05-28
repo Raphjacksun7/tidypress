@@ -11,27 +11,27 @@ const CLOUD_PROVIDER_CASES = [
   {
     provider: 'vercel',
     expectedCommand: 'vercel',
-    expectedArgs: ['deploy', '--prod', '/workspace/docs/build'],
+    expectedArgs: ['deploy', '--prod', '/workspace/site/build'],
   },
   {
     provider: 'netlify',
     expectedCommand: 'netlify',
-    expectedArgs: ['deploy', '--dir', '/workspace/docs/build', '--prod'],
+    expectedArgs: ['deploy', '--dir', '/workspace/site/build', '--prod'],
   },
   {
     provider: 'surge',
     expectedCommand: 'surge',
-    expectedArgs: ['/workspace/docs/build'],
+    expectedArgs: ['/workspace/site/build'],
   },
   {
     provider: 'github-pages',
     expectedCommand: 'npx',
-    expectedArgs: ['gh-pages', '-d', '/workspace/docs/build'],
+    expectedArgs: ['gh-pages', '-d', '/workspace/site/build'],
   },
   {
     provider: 'cloudflare',
     expectedCommand: 'wrangler',
-    expectedArgs: ['pages', 'deploy', '/workspace/docs/build'],
+    expectedArgs: ['pages', 'deploy', '/workspace/site/build'],
   },
 ]
 
@@ -52,7 +52,7 @@ for (const scenario of CLOUD_PROVIDER_CASES) {
 
     const request = {
       projectRoot: '/workspace',
-      distDir: '/workspace/docs/build',
+      distDir: '/workspace/site/build',
       target: scenario.provider,
     }
 
@@ -114,7 +114,7 @@ test('static provider logs readiness without shell commands', async () => {
 
   await strategy.execute({
     projectRoot: '/workspace',
-    distDir: '/workspace/docs/build',
+    distDir: '/workspace/site/build',
     target: 'static',
   })
 
@@ -129,7 +129,7 @@ test('s3 provider requires a target when none is supplied', async () => {
     async () => {
       await strategy.execute({
         projectRoot: '/workspace',
-        distDir: '/workspace/docs/build',
+        distDir: '/workspace/site/build',
         target: 's3',
       })
     },
@@ -153,7 +153,7 @@ test('s3 provider executes aws sync command for URI targets', async () => {
 
   await strategy.execute({
     projectRoot: '/workspace',
-    distDir: '/workspace/docs/build',
+    distDir: '/workspace/site/build',
     target: 's3://bucket/docs',
   })
 
@@ -177,7 +177,7 @@ test('ssh provider executes rsync command for scp targets', async () => {
 
   await strategy.execute({
     projectRoot: '/workspace',
-    distDir: '/workspace/docs/build',
+    distDir: '/workspace/site/build',
     target: 'deploy@example.com:/var/www/site',
   })
 

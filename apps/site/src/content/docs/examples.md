@@ -6,7 +6,7 @@ order: 4
 
 The repository keeps focused examples under `examples/`.
 
-Use the examples when you want to see one site shape without the full product documentation site.
+Use them when you want one publish-root shape—writing-first lab, blog-only, body-of-work—without copying the full TidyPress marketing site.
 
 ## Minimal
 
@@ -17,7 +17,7 @@ pnpm --filter @tidypress/example-minimal build
 `examples/minimal` is the smallest runnable project. It mirrors the default `tidypress init` shape:
 
 ```txt
-examples/minimal/docs/
+examples/minimal/site/
 ├── tidypress.config.ts
 └── src/content/
     ├── docs/getting-started.md
@@ -90,8 +90,8 @@ collections: {
 }
 ```
 
-Use this when docs and writing are not enough for the shape of your site.
+Use this when writing, projects, and the `docs` collection are not enough for the shape of your site.
 
 ## Product docs site
 
-`apps/site` is the full TidyPress site. It is useful as a larger dogfood fixture, but the focused examples are better starting points for copying.
+`apps/site` is the full TidyPress documentation site in this repository. The focused examples are better starting points when you want a small fixture to copy.

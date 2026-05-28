@@ -6,7 +6,7 @@ order: 3
 published: false
 ---
 
-Open `docs/tidypress.config.ts`:
+Open `site/tidypress.config.ts`:
 
 ```ts
 import { defineConfig } from 'tidypress/config'

@@ -12,7 +12,7 @@ It is written for someone who has never used TidyPress before. Each section is a
 
 ## What you will have at the end
 
-- A `docs/` folder in your project with a working config
+- A `site/` folder in your project with a working config
 - A dev server running locally
 - A static build output
 

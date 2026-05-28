@@ -4,10 +4,21 @@ import os from 'node:os'
 import path from 'node:path'
 import { promisify } from 'node:util'
 
+import { resolvePublishRoot } from '../../src/infrastructure/project/config.js'
+
 const execFileAsync = promisify(execFile)
 
 /** Repo root (tidypress-workspace). */
 export const repoRoot = path.resolve(import.meta.dirname, '../../../..')
+
+/**
+ * After `tidypress init` under `siteRoot`, return the resolved publish root.
+ *
+ * @param {string} siteRoot
+ */
+export async function resolvePublishRootUnder(siteRoot) {
+  return resolvePublishRoot(siteRoot)
+}
 
 /**
  * @param {string} command
@@ -90,9 +101,8 @@ export async function scaffoldInstalledPresetSite(tarball, preset) {
   const siteRoot = path.join(installRoot, 'site')
   await fs.mkdir(siteRoot, { recursive: true })
   await runInstalledCli(cliPath, ['init', '--preset', preset], siteRoot)
-  const docsDir = path.join(siteRoot, 'docs')
-  const configPath = path.join(docsDir, 'tidypress.config.ts')
-  await fs.access(configPath)
+  const docsDir = await resolvePublishRootUnder(siteRoot)
+  await fs.access(path.join(docsDir, 'tidypress.config.ts'))
   await runInstalledCli(cliPath, ['build'], siteRoot)
   const buildDir = path.join(docsDir, 'build')
   await fs.access(path.join(buildDir, 'index.html'))

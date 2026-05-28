@@ -4,7 +4,9 @@ description: Optional settings for i18n, versions, analytics, capabilities, and 
 order: 11
 ---
 
-Most sites do not need this page on day one. Add these settings when the default docs and writing flow stops being enough.
+Most sites do not need this page on day one. Add these settings when the default writing-and-work layout stops being enough.
+
+Path trees below use the publish root `site/` from `init`. `src/content/docs/` is the **`docs` collection**, not the whole publish root.
 
 ## i18n
 
@@ -34,13 +36,14 @@ Routes:
 Default-locale content stays at the root path. Non-default locales use a locale prefix.
 
 ```txt
-docs/src/content/
-├── docs/
-│   ├── getting-started.md
-│   └── fr/getting-started.md
-└── writing/
-    ├── hello.md
-    └── fr/hello.md
+site/
+└── src/content/
+    ├── writing/    # dated posts (RSS, tags, archive)
+    │   ├── hello.md
+    │   └── fr/hello.md
+    └── docs/       # docs collection — sidebar-ordered guides at /docs/…
+        ├── getting-started.md
+        └── fr/getting-started.md
 ```
 
 If a non-default locale is missing a page, TidyPress falls back to the default-locale content for that route.
@@ -77,10 +80,10 @@ export default defineConfig({
 })
 ```
 
-Content:
+Content for the **`docs` collection** only — not the whole publish root:
 
 ```txt
-docs/src/content/docs/
+site/src/content/docs/
 ├── getting-started.md
 ├── configuration.md
 └── v1/
@@ -188,11 +191,11 @@ These surfaces are guarded on purpose. They are not part of the default docs and
 
 ## LLM export (`llms.txt`)
 
-By default, every `tidypress build` writes `build/llms.txt` at the site root of the static output. It lists published pages with public URLs and includes the **full markdown body** of each entry (not just titles and excerpts).
+By default, every `tidypress build` writes `build/llms.txt` at the site root of the static output. It lists published pages with public URLs and includes the **full markdown body** of each entry, not just titles and excerpts.
 
 The export skips disabled collections, drafts (`published: false`), future-scheduled entries, and missing content folders. Enabled custom collections are included.
 
-Agents and tools can fetch `https://yoursite.example/llms.txt` after deploy, or read `docs/build/llms.txt` locally after build.
+Agents and tools can fetch `https://yoursite.example/llms.txt` after deploy, or read `site/build/llms.txt` locally after build.
 
 **Turn it off** when you do not want that file in `build/`:
 

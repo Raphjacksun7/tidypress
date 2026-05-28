@@ -2,6 +2,7 @@
 title: The folder is the product
 date: "2026-04-24"
 description: A quiet preference for owning the tree you publish from.
+published: false
 tags:
   - writing
   - markdown
@@ -12,16 +13,18 @@ I like publishing when it stays close to the file system: markdown on disk, a sm
 
 ## A line worth keeping
 
-[Simon Willison](https://simonwillison.net/) has been spelling it out in public while the models arrived: keep what you can diff in git, publish pages with real URLs, and let the LLM propose edits — not custody of the canonical draft. That is the same discipline older builders named in plainer words — [Knuth](https://www-cs-faculty.stanford.edu/~knuth/) on source, [Berners-Lee](https://www.w3.org/People/Berners-Lee/) on documents and links — before “agent” was everyday vocabulary.
+The useful consensus is older than the current model hype, and narrower than “AI will write your blog.”
 
-I share that bias. A personal site should feel like that stack in miniature: files you keep, output you can ship.
+[Simon Willison](https://simonwillison.net/) states the operational version for today: keep what you can diff in git, publish at real URLs, let the model propose edits — not hold the canonical draft. [Knuth](https://www-cs-faculty.stanford.edu/~knuth/) treated the program as the truth and the document as its explanation. [Berners-Lee](https://www.w3.org/People/Berners-Lee/) treated a page as a document with a link, not a row in someone else’s feed. [Lamport](https://lamport.azurewebsites.net/) is blunt in a different register: if you are vague about the artifact, you will be vague about the system. A static `build/` folder is vague-hostile — it is either there or it is not.
+
+I share that bias. A personal site should be inspectable: files you keep, output you can ship, nothing in between that only a vendor can see.
 
 <Image src="/images/writing/manuscript-typewriter.gif" alt="Typewriter striking paper, line by line" caption="Source before presentation — the line on the page outlives the machine that set it." />
 
-TidyPress is built lightly in that spirit. You keep markdown, `tidypress.config.ts`, and a `build/` folder you upload. The home page foregrounds writing and projects; a manual in the sidebar is there when you need it, not the whole personality of the site.
+TidyPress is built lightly in that spirit. You keep markdown, `tidypress.config.ts`, and a `build/` folder you upload. The home page foregrounds writing and projects; the **`docs` collection** gives you sidebar-ordered guides at `/docs/…`—the same stack, not a different product category.
 
 <FileTree>
-- docs/
+- site/
   - **tidypress.config.ts**
   - src/
     - content/
@@ -31,7 +34,7 @@ TidyPress is built lightly in that spirit. You keep markdown, `tidypress.config.
   - build/
 </FileTree>
 
-`writing/`, `projects/`, optional `docs/`, assets beside them — a plain layout so future-you, and any agent with read access to the repo, can find things without a map drawn in a separate product.
+`writing/`, `projects/`, `docs/`, assets beside them — a plain layout so future-you, and any agent with read access to the repo, can find things without a map drawn in a separate product.
 
 ## Build as receipt
 
@@ -45,9 +48,9 @@ flowchart LR
 `} />
 
 ```bash
-git diff main...HEAD -- docs/src/content/
+git diff main...HEAD -- site/src/content/
 tidypress build
-# ship docs/build/ — same artifact CI built
+# ship site/build/ — same artifact CI built
 ```
 
 <Image src="/images/writing/print-output.gif" alt="Sheets feeding through a printer" caption="A build is a print run: fixed pages you can ship, not a live feed to babysit." />
@@ -67,7 +70,7 @@ Static output is just HTML on disk — which means you can **iframe your own shi
 </div>
 
 <Callout type="tip">
-MDX accepts raw `<iframe>`. The trick is to point at something you control — a file under `docs/public/` — so the frame always loads.
+MDX accepts raw `<iframe>`. The trick is to point at something you control — a file under `site/public/` — so the frame always loads.
 </Callout>
 
 ## Docs without becoming a different company

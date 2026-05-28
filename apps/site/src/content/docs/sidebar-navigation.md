@@ -5,6 +5,8 @@ order: 6
 published: false
 ---
 
+Sidebar config applies to the **`docs` collection**. Path examples use `site/` as the publish root from `init`.
+
 Sidebar config is optional.
 
 Without `docs.sidebar`, TidyPress builds the docs sidebar from published docs entries and their `order` frontmatter.
@@ -46,8 +48,8 @@ docs: {
 `items` are docs slugs relative to the docs collection root. For example:
 
 ```txt
-docs/src/content/docs/getting-started.md -> getting-started
-docs/src/content/docs/manual/install.md -> manual/install
+site/src/content/docs/getting-started.md -> getting-started
+site/src/content/docs/manual/install.md -> manual/install
 ```
 
 ## Optional Group Labels

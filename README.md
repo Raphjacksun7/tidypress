@@ -24,7 +24,7 @@
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-black.svg" alt="MIT license"></a>
 </p>
 
-Markdown in git. `tidypress init`, `dev`, `build` — static output you own. Optional docs when you need a manual.
+Markdown in git. `tidypress init`, `dev`, `build` — static output you own. Writing, projects, and a `docs` collection in one publish root.
 
 TidyPress is the public interface for your repos and work. It gives you a way to talk about their projects, showcase ideas, publish writing, and host the docs, references, and knowledge behind the things they build.
 
@@ -71,19 +71,20 @@ npx tidypress preview
 Output:
 
 ```txt
-docs/build/
+site/build/
 ```
 
 ## File shape
 
 ```txt
-docs/
+site/
 ├── tidypress.config.ts
 ├── public/
 └── src/content/
-    ├── docs/
-    ├── writing/
-    └── pages/
+    ├── docs/       # docs collection — sidebar-ordered guides at /docs/…
+    ├── writing/    # dated posts (RSS, tags, archive)
+    ├── pages/      # root routes (e.g. /about)
+    └── projects/   # cards + optional pages (lab preset)
 ```
 
 Docs are stable instructions. Writing is dated context. Pages map to root routes.
@@ -91,7 +92,7 @@ Docs are stable instructions. Writing is dated context. Pages map to root routes
 ## Why
 
 - writing and projects on the home page
-- optional docs when you need a manual
+- `docs` collection for sidebar-ordered guides at `/docs/…` (enable per preset or config)
 - markdown and MDX in git, one CLI, static output
 - Pagefind search, RSS for writing, archive and tags
 - deploy anywhere you host static files

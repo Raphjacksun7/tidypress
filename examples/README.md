@@ -19,10 +19,10 @@ siteUrl: 'https://yoursite.example',
 | Example | Shows | Command |
 |---------|-------|---------|
 | `minimal` | smallest runnable project and init-parity smoke fixture | `pnpm --filter @tidypress/example-minimal build` |
-| `lab` | engineer presence: writing + projects, docs off (`tidypress init` default) | `pnpm --filter @tidypress/example-lab build` |
+| `lab` (default) | engineer presence: writing + projects, docs off | `pnpm --filter @tidypress/example-lab build` |
 | `blog` | writing-only blog (`tidypress init --preset blog`) | `pnpm --filter @tidypress/example-blog build` |
 | `persona` | hero, projects, writing, about page | `pnpm --filter @tidypress/example-persona build` |
 | `custom-collections` | a `playbooks` collection beside docs and writing | `pnpm --filter @tidypress/example-custom-collections build` |
 | `i18n-versioned` | default-locale root docs, French routes, and archived version docs | `pnpm --filter @tidypress/example-i18n-versioned build` |
 
-`apps/site` is the full dogfood documentation site. Use these examples when you want a narrow fixture.
+`apps/site` is the full TidyPress documentation site in this repository. Use the focused examples when you want a narrow fixture.

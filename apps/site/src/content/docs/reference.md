@@ -29,18 +29,19 @@ tidypress preview [--port <n>]
 tidypress clean
 tidypress deploy [target]
 tidypress deploy [target] --with-ci
-# build/llms.txt is written on every build (full published markdown for agents)
 ```
 
-Starter presets (`default` is an alias for `lab`):
+Every `tidypress build` writes `build/llms.txt` with full published markdown for agents.
+
+Starter presets. `default` is an alias for `lab`:
 
 | Preset | Seeds |
 |--------|-------|
-| `lab` | writing + projects (default `init`) |
+| `lab` (default) | writing + projects |
 | `persona` | hero, projects, writing, about page |
 | `blog` | writing only |
 | `docs-writing` | docs + writing |
-| `body-of-work` | works, projects, writing, reference, process (docs off) |
+| `body-of-work` | works, projects, writing, reference, process; docs off |
 | `body-of-work-docs` | body-of-work + enabled `docs` |
 | `custom` | docs, writing, and a `playbooks` content collection |
 
@@ -287,7 +288,7 @@ See [Components](./components).
 ## Build output
 
 ```txt
-docs/build/
+site/build/
 ├── index.html
 ├── llms.txt
 ├── docs/

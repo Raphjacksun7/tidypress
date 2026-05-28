@@ -8,7 +8,7 @@ test('handleCliError returns custom TidyPressError exit code', () => {
   /** @type {string[]} */
   const errors = []
   const code = handleCliError(
-    new TidyPressError('Invalid config', 'CONFIG_INVALID', 'Fix docs/tidypress.config.ts', { exitCode: 2 }),
+    new TidyPressError('Invalid config', 'CONFIG_INVALID', 'Fix site/tidypress.config.ts', { exitCode: 2 }),
     {
       io: {
         error(message) {
@@ -22,7 +22,7 @@ test('handleCliError returns custom TidyPressError exit code', () => {
   assert.equal(code, 2)
   assert.equal(errors.length, 1)
   assert.match(errors[0], /Invalid config/)
-  assert.match(errors[0], /Hint: Fix docs\/tidypress.config.ts/)
+  assert.match(errors[0], /Hint: Fix site\/tidypress.config.ts/)
 })
 
 test('handleCliError prints TidyPressError stack in verbose mode', () => {

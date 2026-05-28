@@ -36,7 +36,7 @@ def test_convert_command_runs_without_node_or_npx(tmp_path: Path) -> None:
         ),
         encoding="utf-8",
     )
-    output = tmp_path / "docs" / "src" / "content" / "docs" / "analysis.mdx"
+    output = tmp_path / "site" / "src" / "content" / "docs" / "analysis.mdx"
 
     proc = _run_python_cli(["convert", str(notebook), "--output", str(output)], cwd=tmp_path, path_value="")
 
@@ -59,7 +59,7 @@ def greeting(name: str) -> str:
 """.strip(),
         encoding="utf-8",
     )
-    output = tmp_path / "docs" / "src" / "content" / "docs" / "api" / "py.md"
+    output = tmp_path / "site" / "src" / "content" / "docs" / "api" / "py.md"
 
     proc = _run_python_cli(
         ["extract-docs", str(source_dir), "--lang", "py", "--output", str(output)],

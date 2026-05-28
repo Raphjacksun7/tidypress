@@ -10,13 +10,13 @@ TidyPress builds static files. Deployment is whatever you do with those files.
 tidypress build
 ```
 
-Output:
+Output lands in `site/build/` after `tidypress init`.
 
 ```txt
-docs/build/
+site/build/
 ```
 
-That directory contains HTML, Astro assets, sitemap files, public assets, and the Pagefind search index.
+That directory contains HTML, Astro assets, sitemap files, public assets, Pagefind search, and `llms.txt` when enabled.
 
 ## Preview the production build
 
@@ -47,7 +47,7 @@ Local path targets copy the built `build/` directory.
 tidypress deploy
 ```
 
-With no target, TidyPress builds the site and prints the artifact path. Upload that directory with your own CI, host, or script. This is an artifact flow, not a hosted deploy.
+With no target, TidyPress builds the site and prints the artifact path. Upload that directory with your own CI, host, or script.
 
 ## Provider CLI targets
 
@@ -69,12 +69,12 @@ The command hands your `build/` directory to the selected CLI.
 tidypress deploy docker
 ```
 
-This writes `Dockerfile` and `docker-compose.yml` into `docs/build/`.
+This writes `Dockerfile` and `docker-compose.yml` into `site/build/`.
 
 Then run:
 
 ```bash
-cd docs/build
+cd site/build
 docker compose up -d --build
 ```
 
@@ -97,7 +97,7 @@ TIDYPRESS_S3_TARGET=s3://my-bucket/docs tidypress deploy s3
 TidyPress runs:
 
 ```bash
-aws s3 sync docs/build/ s3://my-bucket/docs --delete
+aws s3 sync site/build/ s3://my-bucket/docs --delete
 ```
 
 You need the AWS CLI installed and authenticated.
@@ -119,7 +119,7 @@ TIDYPRESS_SSH_TARGET=deploy@example.com:/var/www/docs tidypress deploy ssh
 TidyPress runs:
 
 ```bash
-rsync -az --delete docs/build/ deploy@example.com:/var/www/docs
+rsync -az --delete site/build/ deploy@example.com:/var/www/docs
 ```
 
 You need `rsync` and SSH access.
@@ -166,7 +166,7 @@ server {
 Deploy the contents of:
 
 ```txt
-docs/build/
+site/build/
 ```
 
 Do not upload `~/.cache/tidypress/`. Upload only the `build/` contents.

@@ -59,7 +59,7 @@ def format_init_help() -> str:
         [
             "tidypress init [--preset <name>]",
             "",
-            "Scaffold docs/ in the current directory.",
+            "Scaffold site/ publish root in the current directory.",
             "",
             *preset_lines,
             "",

@@ -4,7 +4,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { promisify } from 'node:util'
 
-import { repoRoot, runCommand } from './install-e2e-helpers.js'
+import { repoRoot, resolvePublishRootUnder, runCommand } from './install-e2e-helpers.js'
 
 const execFileAsync = promisify(execFile)
 
@@ -104,10 +104,10 @@ export async function runNpmRegistryLabFixture(version: string) {
     ['init', '--preset', 'lab', '--site-url', SITE_URL],
     siteRoot,
   )
-  await fs.access(path.join(siteRoot, 'docs', 'tidypress.config.ts'))
+  const publishRoot = await resolvePublishRootUnder(siteRoot)
 
   await runRegistryCli(cliPath, ['build'], siteRoot)
-  const buildDir = path.join(siteRoot, 'docs', 'build')
+  const buildDir = path.join(publishRoot, 'build')
   await assertLabBuildArtifacts(buildDir)
 
   return { workspace, siteRoot, buildDir, cliPath }
@@ -137,8 +137,10 @@ export async function runPnpmRegistryLabFixture(version: string) {
     ['init', '--preset', 'lab', '--site-url', SITE_URL],
     siteRoot,
   )
+  const publishRoot = await resolvePublishRootUnder(siteRoot)
+
   await runRegistryCli(cliPath, ['build'], siteRoot)
-  const buildDir = path.join(siteRoot, 'docs', 'build')
+  const buildDir = path.join(publishRoot, 'build')
   await assertLabBuildArtifacts(buildDir)
 
   return { workspace, siteRoot, buildDir, cliPath }
@@ -194,7 +196,8 @@ export async function runPipRegistryLabFixture(version: string) {
     maxBuffer: 20 * 1024 * 1024,
   })
 
-  const buildDir = path.join(siteRoot, 'docs', 'build')
+  const publishRoot = await resolvePublishRootUnder(siteRoot)
+  const buildDir = path.join(publishRoot, 'build')
   await assertLabBuildArtifacts(buildDir)
 
   return { workspace, siteRoot, buildDir }

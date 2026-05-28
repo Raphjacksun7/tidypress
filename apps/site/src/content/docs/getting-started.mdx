@@ -1,10 +1,12 @@
 ---
 title: Getting started
-description: Create a TidyPress project, run it locally, and build static output.
+description: Scaffold a git-native public site, run it locally, and ship static output.
 order: 2
 ---
 
-Create a `docs/` folder, run the local server, write one page, then build static output.
+TidyPress treats a public site as **files in git**: a config file, typed collections of markdown, a build step, static output you host yourself. Starter collections include **writing**, **projects**, and **`docs`** — sidebar-ordered guides at `/docs/…`. The default **lab** preset foregrounds writing and work on the home page and leaves the **`docs` collection** disabled until you enable it.
+
+`init` scaffolds `site/` at the project root — the publish root for config, content, and `build/`. The **`docs` collection** lives at `src/content/docs/` and routes at `/docs/…` with sidebar layout and ordering.
 
 ## Install
 
@@ -47,23 +49,24 @@ npx tidypress dev
 
 Open `http://localhost:4321`.
 
-`init` creates a `docs/` folder:
+`init` creates a `site/` folder. The **lab** preset seeds writing and projects; the `docs/` subtree is present but disabled in config until you turn the collection on.
 
 ```txt
-docs/
+site/
 ├── tidypress.config.ts
 ├── public/
 │   └── images/
 └── src/
     └── content/
-        ├── docs/
-        │   └── getting-started.md
-        ├── writing/
+        ├── writing/    # dated posts (RSS, tags, archive)
         │   └── hello.md
-        └── pages/
+        ├── projects/   # cards + optional pages (lab preset)
+        ├── docs/       # docs collection — sidebar-ordered guides at /docs/…
+        │   └── getting-started.md
+        └── pages/      # root routes (e.g. /about)
 ```
 
-`init` defaults to the **lab** preset: writing and projects on the home page, docs disabled. Replace the seeded markdown with your own content.
+The **lab** preset is the default: writing and projects on the home page, **`docs` collection** disabled in config. Replace the seeded files with your own material.
 
 Other presets:
 
@@ -71,9 +74,9 @@ Other presets:
 |--------|--------|
 | `lab` (default) | writing + projects |
 | `persona` | hero bar, projects, writing, about page |
-| `blog` | writing only (docs and pages off) |
+| `blog` | writing only |
 | `docs-writing` | docs + writing |
-| `body-of-work` | works, projects, writing, reference, process (docs off) |
+| `body-of-work` | works, projects, writing, reference, process |
 | `body-of-work-docs` | body-of-work + enabled `docs` |
 | `custom` | docs + writing + a `playbooks` content collection |
 
@@ -87,9 +90,27 @@ npx tidypress init --preset docs-writing --site-url https://yoursite.example
 npx tidypress init --preset custom --site-url https://yoursite.example
 ```
 
-## Write one docs page
+## Writing
 
-Put documentation pages in `docs/src/content/docs/`:
+Dated posts live in the **writing** collection:
+
+```md
+---
+title: Release notes
+date: "2026-05-22"
+description: Notes from the latest release.
+---
+
+What changed and why.
+```
+
+Path: `site/src/content/writing/` under the publish root.
+
+Project cards: `site/src/content/projects/` on presets that include projects — `lab`, `persona`, `body-of-work`, and others.
+
+## Docs collection
+
+The **`docs` collection** is sidebar-ordered markdown at `/docs/…`—tutorials, how-tos, reference. Enable it with preset `docs-writing` or `body-of-work-docs`, or set `collections.docs.enabled: true` in config.
 
 ```md
 ---
@@ -103,17 +124,7 @@ order: 1
 Write the page in markdown.
 ```
 
-Put dated posts in `docs/src/content/writing/`:
-
-```md
----
-title: Release notes
-date: "2026-05-22"
-description: Notes from the latest release.
----
-
-What changed and why.
-```
+Path: `site/src/content/docs/` — routes under `/docs/…`, sidebar order via `order` in frontmatter.
 
 ## Build and preview
 
@@ -125,29 +136,29 @@ npx tidypress preview
 Build output is written to:
 
 ```txt
-docs/build/
+site/build/
 ```
 
 Search is generated during `tidypress build`, so the search modal is available in `preview`, not in the dev server.
 
 Deploy the `build/` folder with your static host, CI job, or `tidypress deploy`.
 
-## Generated files (do not edit)
+## Generated files — do not edit
 
 TidyPress keeps your markdown in place. It writes two kinds of generated output:
 
 ```txt
 your project
-└── docs/
-    ├── tidypress.config.ts      # your config
-    ├── src/content/            # your markdown
-    └── build/                  # static site — deploy this (gitignored)
+└── site/
+    ├── tidypress.config.ts
+    ├── src/content/
+    └── build/
 
-~/.cache/tidypress/<key>/        # local compiler cache — not deployed
+~/.cache/tidypress/<key>/
 ```
 
-- **`build/`** — HTML, assets, Pagefind search, `llms.txt` (full published markdown for agents), and sitemap when `siteUrl` is production-ready. Upload only this folder to production. Skip `llms.txt` with `tidypress build --no-llms-txt` or `capabilities.disable: ['llmsTxt']`.
-- **Cache** — plugin codegen and Astro cache. Safe to delete; recreated on the next `dev` or `build`.
+- **`build/`** — HTML, assets, Pagefind search, `llms.txt`, and sitemap when `siteUrl` is production-ready. Upload only this folder. Skip `llms.txt` with `tidypress build --no-llms-txt` or `capabilities.disable: ['llmsTxt']`.
+- **Cache** — plugin codegen and Astro cache under `~/.cache/tidypress/`. Safe to delete; recreated on the next `dev` or `build`.
 
 If a local build behaves strangely after an engine upgrade, run:
 
@@ -158,17 +169,17 @@ npx tidypress build
 
 ## Static assets
 
-Put files that should be served as-is in `docs/public/`:
+Put files that should be served as-is in `site/public/`:
 
 ```txt
-docs/public/
-├── images/diagram.png          # /images/diagram.png
-├── downloads/spec.pdf          # /downloads/spec.pdf
-├── robots.txt                  # /robots.txt
-└── favicon.svg                 # /favicon.svg
+site/public/
+├── images/diagram.png
+├── downloads/spec.pdf
+├── robots.txt
+└── favicon.svg
 ```
 
-Use absolute paths in markdown:
+Files under `public/` are served from the site root. `site/public/images/diagram.png` becomes `/images/diagram.png`.
 
 ```md
 ![Architecture diagram](/images/diagram.png)

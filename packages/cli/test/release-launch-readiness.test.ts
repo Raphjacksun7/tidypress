@@ -23,9 +23,9 @@ test('minimal example quickstart docs mention 90-second path', async () => {
 
 test('minimal example keeps required docs scaffold files', async () => {
   const requiredFiles = [
-    'docs/tidypress.config.ts',
-    'docs/src/content/docs/getting-started.md',
-    'docs/src/content/writing/hello.md',
+    'site/tidypress.config.ts',
+    'site/src/content/docs/getting-started.md',
+    'site/src/content/writing/hello.md',
   ]
 
   await Promise.all(

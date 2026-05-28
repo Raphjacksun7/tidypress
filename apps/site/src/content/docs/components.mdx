@@ -11,18 +11,18 @@ Components are available in `.mdx` files without imports.
 Notes, warnings, tips, and pull quotes.
 
 ```mdx
-<Callout>The config file lives at `docs/tidypress.config.ts`.</Callout>
+<Callout>The config file lives at `site/tidypress.config.ts`.</Callout>
 
-<Callout type="warning">Do not commit `docs/build/` — it is generated. Deploy it, do not treat it as source.</Callout>
+<Callout type="warning">Do not commit `site/build/` — it is generated. Deploy it, do not treat it as source.</Callout>
 
 <Callout type="tip">Run `tidypress clean` if a build looks stale after upgrading TidyPress.</Callout>
 
 <Callout type="quote">The canonical copy lives in git, not in an export workflow.</Callout>
 ```
 
-<Callout>The config file lives at `docs/tidypress.config.ts`.</Callout>
+<Callout>The config file lives at `site/tidypress.config.ts`.</Callout>
 
-<Callout type="warning">Do not commit `docs/build/` — it is generated. Deploy it, do not treat it as source.</Callout>
+<Callout type="warning">Do not commit `site/build/` — it is generated. Deploy it, do not treat it as source.</Callout>
 
 <Callout type="tip">Run `tidypress clean` if a build looks stale after upgrading TidyPress.</Callout>
 
@@ -72,34 +72,36 @@ pnpm add -g tidypress
 
 ## FileTree
 
-Project structure. Folders collapse on click. Wrap important files in `**` to highlight them.
+Project structure. Folders collapse on click. Wrap important files in `**` to highlight them. In plain `txt` trees elsewhere in the docs, inline `#` comments label collections — for example `# docs collection — sidebar-ordered guides at /docs/…`.
 
 ```mdx
 <FileTree>
-- docs/
+- site/
   - **tidypress.config.ts**
   - public/
     - images/
   - src/
     - content/
-      - docs/
-        - getting-started.md
       - writing/
         - hello.md
+      - projects/
+      - docs/
+        - getting-started.md
 </FileTree>
 ```
 
 <FileTree>
-- docs/
+- site/
   - **tidypress.config.ts**
   - public/
     - images/
   - src/
     - content/
-      - docs/
-        - getting-started.md
       - writing/
         - hello.md
+      - projects/
+      - docs/
+        - getting-started.md
 </FileTree>
 
 Two spaces per indent level. No props.
@@ -135,7 +137,7 @@ Diagrams adapt when the theme changes. Use `align="center"` for tall vertical fl
 
 ## Image
 
-Put images in `docs/public/` (for example `docs/public/images/flower.jpg`). Use the component for captions; use markdown for simple embeds.
+Put images in `site/public/images/` — for instance `site/public/images/flower.jpg`. Use the component for captions; use markdown for simple embeds.
 
 ```mdx
 <Image src="/images/flower.jpg" alt="Colorful tulips in bloom" caption="Vivid spring flowers" />
@@ -162,10 +164,10 @@ Same file with markdown:
 Short inline definitions.
 
 ```mdx
-The <Tooltip tip="Static HTML and search land in docs/build/ after tidypress build.">build folder</Tooltip> is regenerated on each build.
+The <Tooltip tip="Static HTML and search land in site/build/ after tidypress build.">build folder</Tooltip> is regenerated on each build.
 ```
 
-The <Tooltip tip="Static HTML and search land in docs/build/ after tidypress build.">build folder</Tooltip> is regenerated on each build.
+The <Tooltip tip="Static HTML and search land in site/build/ after tidypress build.">build folder</Tooltip> is regenerated on each build.
 
 | Prop | Type | Required |
 |------|------|----------|
@@ -178,7 +180,7 @@ Numbered procedural blocks in MDX. Manual pages use the same components with man
 ```mdx
 <Steps>
   <Step title="Create content">
-    Add markdown under `docs/src/content/docs/`.
+    Add a post under `site/src/content/writing/`, work under `projects/`, or a guide under `site/src/content/docs/`.
   </Step>
   <Step title="Preview locally">
     Run `tidypress dev`.
@@ -188,7 +190,7 @@ Numbered procedural blocks in MDX. Manual pages use the same components with man
 
 <Steps>
   <Step title="Create content">
-    Add markdown under `docs/src/content/docs/`.
+    Add a post under `site/src/content/writing/`, work under `projects/`, or a guide under `site/src/content/docs/`.
   </Step>
   <Step title="Preview locally">
     Run `tidypress dev`.
@@ -210,7 +212,7 @@ Native HTML also works:
 <summary>Generated files</summary>
 
 ```txt
-docs/build/
+site/build/
 ```
 
 </details>
@@ -220,7 +222,7 @@ docs/build/
 <summary>Generated files</summary>
 
 ```txt
-docs/build/
+site/build/
 ```
 
 </details>

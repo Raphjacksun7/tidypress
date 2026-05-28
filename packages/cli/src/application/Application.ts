@@ -5,12 +5,12 @@ import { TidyPressError } from '../errors/TidyPressError.js'
 const HELP_TEXT = `tidypress <command> [options]
 
 Commands:
-  init       Scaffold docs/ in current directory (--preset <name> [--site-url <url>])
+  init       Scaffold site/ publish root (--preset <name> [--site-url <url>])
   migrate-sections  Generate sections->collections migration output
   dev        Start dev server
   build      Build production site (--output <dir>, --no-llms-txt)
   preview    Preview production build
-  clean      Remove docs/build/ and local tidypress cache
+  clean      Remove publish-root build/ and local tidypress cache
   deploy     Deploy using registered strategy plugins
   domain     Print custom domain setup plan
   skills     Install TidyPress agent skills (skills install)

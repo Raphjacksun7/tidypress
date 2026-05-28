@@ -1,6 +1,6 @@
 # tidypress
 
-**A publishing framework for Git-native authorship** — init, dev, build, and deploy from markdown in `docs/`.
+**A publishing framework for Git-native authorship** — init, dev, build, and deploy from markdown in `site/`.
 
 <p>
   <a href="https://github.com/Raphjacksun7/tidypress/actions/workflows/ci.yml"><img src="https://github.com/Raphjacksun7/tidypress/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
@@ -20,26 +20,28 @@ npx tidypress dev
 ```
 
 ```sh
-npx tidypress build    # → docs/build/ (+ llms.txt, Pagefind, sitemap when siteUrl is set)
+npx tidypress build
 npx tidypress preview
 ```
 
+Build output lands in `site/build/` with `llms.txt`, Pagefind, and sitemap when `siteUrl` is set.
+
 ## Presets
 
-`lab` (default), `blog`, `persona`, `body-of-work`, `body-of-work-docs`, `docs-writing`, `custom`.
+`lab` is the default. Also: `blog`, `persona`, `body-of-work`, `body-of-work-docs`, `docs-writing`, `custom`.
 
 ## Commands
 
 | Command | Purpose |
 |---------|---------|
-| `init` | Scaffold `docs/` |
+| `init` | Scaffold `site/` (`--preset …` `--site-url <url>`) |
 | `dev` / `preview` | Dev server / preview build |
 | `build [--no-llms-txt]` | Production static output |
 | `deploy` | Publish `build/` |
 | `doctor` | Setup check |
 | `skills install` | Cursor / Claude / Codex skills |
 
-Every build writes **`build/llms.txt`** (full published markdown). Skip with `--no-llms-txt` or `capabilities.disable: ['llmsTxt']`.
+Every build writes **`build/llms.txt`** with full published markdown. Skip with `--no-llms-txt` or `capabilities.disable: ['llmsTxt']`.
 
 ## Links
 

@@ -15,7 +15,7 @@ pnpm --filter @tidypress/example-minimal build
 Output:
 
 ```txt
-examples/minimal/docs/build/
+examples/minimal/site/build/
 ```
 
 ## Dev

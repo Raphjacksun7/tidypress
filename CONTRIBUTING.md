@@ -104,7 +104,7 @@ You may use **any** AI assistant (Cursor, Claude Code, Codex, ChatGPT, etc.). Th
 
 1. **Read context** — This file, the package README, and nearby tests.
 2. **Optional skills** — `npx tidypress skills install` installs `tidypress` and `tidypress-contributor` for Cursor, Claude Code, or Codex.
-3. **LLM export** — run `tidypress build` and spot-check `docs/build/llms.txt` when touching published-content export.
+3. **LLM export** — run `tidypress build` and spot-check `site/build/llms.txt` when touching published-content export.
 4. **Implement** — Smallest change that solves the issue.
 5. **Verify** — `pnpm test` and `pnpm build`; review the full `git diff`.
 6. **Disclose** — Note in the PR if AI generated most of the patch.
@@ -143,6 +143,7 @@ If checks fail to match, open a recent PR on GitHub → Checks and use the exact
 
 - Core pitch: *A publishing framework for Git-native authorship.*
 - Do not add docs-SaaS marketing stacks or competitor site names in user-facing docs.
+- Write clear standalone sentences. Parentheses and tree comments are fine when they compress useful detail — not as a dodge for unclear prose.
 
 ## License
 

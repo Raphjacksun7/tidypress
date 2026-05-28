@@ -24,7 +24,7 @@ It does not use `npx` by default. `TIDYPRESS_USE_NPX=1` is available as an expli
 
 ## Site commands
 
-These commands are delegated to the Node CLI (same surface as `npx tidypress`):
+These commands are delegated to the Node CLI — the same surface as `npx tidypress`:
 
 ```bash
 tidypress init [--preset lab|blog|persona|docs-writing|custom]
@@ -50,16 +50,22 @@ tidypress add-version <label>
 tidypress convert analysis.ipynb
 ```
 
-By default, output goes to:
+By default, output goes to the **docs collection**:
 
 ```txt
-docs/src/content/docs/analysis.mdx
+site/src/content/docs/analysis.mdx
 ```
 
-You can choose the output file:
+Point at **writing** when the notebook is a public essay, not a manual page:
 
 ```bash
-tidypress convert analysis.ipynb --output docs/src/content/docs/reports/analysis.mdx
+tidypress convert analysis.ipynb --output site/src/content/writing/analysis.mdx
+```
+
+Or choose any path under the publish root:
+
+```bash
+tidypress convert analysis.ipynb --output site/src/content/docs/reports/analysis.mdx
 ```
 
 The converter preserves markdown cells, code cells, text outputs, and PNG image outputs.
@@ -77,14 +83,14 @@ tidypress extract-docs src/ --lang go
 Default output:
 
 ```txt
-docs/src/content/docs/api/<lang>.md
+site/src/content/docs/api/<lang>.md
 ```
 
 This is a convenience helper for small projects. For large API references, keep using the dedicated tooling for that ecosystem.
 
 ## Agents and markdown
 
-Agents that edit files in git use the same commands as you do: add markdown under `src/content/`, run `tidypress build`, deploy `build/`. Point the model at `build/llms.txt` (or the live `/llms.txt` URL) for full published content. Details: [Agents and markdown](/writing/agents-and-markdown).
+Agents that edit files in git use the same commands as you do: add markdown under `src/content/`, run `tidypress build`, deploy `build/`. Point the model at `build/llms.txt` or the live `/llms.txt` URL for full published content. Details: [Agents and markdown](/writing/agents-and-markdown).
 
 ## Help and init presets
 
@@ -109,7 +115,7 @@ The wrapper can read `tidypress.yaml` or `tidypress.yml`:
 python:
   convert:
     input_path: analysis.ipynb
-    output_path: docs/src/content/docs/analysis.mdx
+    output_path: site/src/content/docs/analysis.mdx
 ```
 
 Run with an explicit config:

@@ -1,13 +1,13 @@
 ---
 title: Configuration
-description: The practical shape of docs/tidypress.config.ts.
+description: The shape of tidypress.config.ts — collections, nav, and site metadata.
 order: 5
 ---
 
-TidyPress reads one config file:
+TidyPress reads one config file at the publish root: `site/tidypress.config.ts`. That file defines how writing, work, and the **`docs` collection** are routed—not the prose itself.
 
 ```txt
-docs/tidypress.config.ts
+site/tidypress.config.ts
 ```
 
 Only `name` is required. Keep the file small until the site needs more shape.
@@ -87,7 +87,7 @@ The main band is the future extension point for richer blocks (menus, grids, new
 
 `footer` accepts either:
 
-1. **Link array** — shorthand for sub-footer links only (same as before).
+1. **Link array** — shorthand for sub-footer links only.
 2. **Object** — full control over main band, links, copyright, and product credit.
 
 ```ts
@@ -112,7 +112,7 @@ footer: {
 
 `aside` is accepted as an alias for `main.end`.
 
-### Defaults (no config required)
+### Defaults
 
 Unless you override them:
 
@@ -153,7 +153,7 @@ main: {
 
 **`showCredit`** — `boolean`. Default `true`. Set `false` to omit the product credit segment (copyright still shows).
 
-**`credit`** — partial override of the product credit segment (only used when `showCredit` is true).
+**`credit`** — partial override of the product credit segment. Used only when `showCredit` is true.
 
 | Key | Type | Default |
 |-----|------|---------|
@@ -186,15 +186,14 @@ Text links (no `icon`) render as plain text in the sub-footer.
 repository: {
   url: 'https://github.com/you/project',
   branch: 'main',
-  editPath: 'docs/src/content',
-},
+  editPath: 'site/src/content',
 ```
 
-See [Repository links](#repository-links) for edit links on docs pages.
+`editPath` is relative to the repo root and should cover all collections you want “edit on GitHub” links for. See [Repository links](#repository-links).
 
 ### Writing and RSS
 
-When the writing collection is enabled, TidyPress generates a feed at `<writing basePath>/rss.xml` (for example `/writing/rss.xml`). Add a footer link when you want the RSS icon in the sub-footer:
+When the writing collection is enabled, TidyPress generates a feed at `<writing basePath>/rss.xml`. With the default path, that is `/writing/rss.xml`. Add a footer link when you want the RSS icon in the sub-footer:
 
 ```ts
 { label: 'RSS', href: '/writing/rss.xml', icon: 'rss', external: false },
@@ -241,20 +240,20 @@ footer: {
 
 ## Collections
 
-Collections map content folders to route families.
+Collections map folders under `src/content/` to route families. The collection key `docs` is the **docs collection** at `/docs/…`; it is not the publish root folder `site/` from `init`.
 
 ```ts
 collections: {
-  docs: {
-    enabled: true,
-    basePath: '/docs',
-    label: 'docs',
-  },
   writing: {
     enabled: true,
     basePath: '/writing',
     kind: 'writing',
     label: 'writing',
+  },
+  docs: {
+    enabled: false,
+    basePath: '/docs',
+    label: 'docs',
   },
   guides: {
     enabled: true,
@@ -269,8 +268,8 @@ Kinds:
 
 | Kind | Use for |
 |------|---------|
-| omitted on `docs` | the main docs collection |
-| `content` | docs-like sections |
+| omitted on `docs` | the `docs` collection, sidebar-ordered routes |
+| `content` | reference shelves, playbooks, ADRs |
 | `writing` | dated posts |
 | `projects` | project cards and optional project pages |
 | `page` | standalone pages |
@@ -292,7 +291,7 @@ Three settings control different surfaces. They are not renamed automatically fo
 
 | Setting | Controls |
 |---------|----------|
-| Collection **key** (for example `works`) | Content folder `docs/src/content/works/` and `home.order` entries |
+| Collection key `works` | Content folder `site/src/content/works/` and `home.order` entries |
 | **`basePath`** | Public URLs (`/works`, `/works/sample`) |
 | **`label`** | UI copy on indexes and the homepage section title |
 | **`kind`** | Engine behavior (schema, layout, routing). Must be one of the kinds in the table above |
@@ -324,7 +323,7 @@ capabilities: {
 },
 ```
 
-Place markdown in `docs/src/content/works/`. Match `nav` `href` values to each collection `basePath`.
+Place markdown in `site/src/content/works/`. Match `nav` `href` values to each collection `basePath`.
 
 ### Init presets
 
@@ -335,7 +334,7 @@ Place markdown in `docs/src/content/works/`. Match `nav` `href` values to each c
 | `lab` | writing + projects, docs off |
 | `blog` | writing only, docs and pages off |
 | `persona` | hero, projects, writing, about page |
-| `body-of-work` | works, projects, writing, reference, process, pages (docs off) |
+| `body-of-work` | works, projects, writing, reference, process, pages; docs disabled |
 | `body-of-work-docs` | body-of-work + enabled `docs` |
 | `docs-writing` | docs + writing |
 | `custom` | docs + writing + a `playbooks` content collection |
@@ -382,7 +381,7 @@ Omit `hero` or leave `enabled` unset/false to hide the bar. The `persona` init p
 
 ### Persona / CV sites
 
-The `persona` preset gives you a hero, projects, optional writing, and an `/about` page. **Experience, education, and skills belong in markdown** on that page (or in writing posts) — not in structured config blocks.
+The `persona` preset gives you a hero, projects, optional writing, and an `/about` page. **Experience, education, and skills belong in markdown** on that page or in writing posts — not in structured config blocks.
 
 TidyPress does not ship résumé schema (no job blocks, degree blocks, or employment location fields). That keeps the product markdown-first and avoids vague HR metadata (`hybrid`, `remote`, `present`, and similar).
 
@@ -409,7 +408,7 @@ Two related mechanisms — do not confuse them:
 | Mechanism | Purpose |
 |-----------|---------|
 | `pages: [...]` in config | Register root routes and optional nav labels |
-| `collections.pages` with `kind: 'page'` | Astro collection under `src/content/pages/` (includes a `/pages/` index when enabled) |
+| `collections.pages` with `kind: 'page'` | Astro collection under `src/content/pages/`; includes a `/pages/` index when enabled |
 
 For a single **About** or **CV** page at `/about`, use a file in `src/content/pages/` and list it in config:
 
@@ -421,7 +420,7 @@ collections: {
 ```
 
 ```txt
-docs/src/content/pages/about.md -> /about
+site/src/content/pages/about.md -> /about
 ```
 
 **Lab** and **blog** presets disable the pages collection so an empty `/pages/` route is not generated. Enable `pages` only when you add root pages (persona enables it for `/about`).
@@ -441,7 +440,7 @@ branding: {
 }
 ```
 
-Place files in `docs/public/`.
+Place files in `site/public/`.
 
 ## Search
 

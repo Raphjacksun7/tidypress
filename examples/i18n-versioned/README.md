@@ -15,7 +15,7 @@ pnpm --filter @tidypress/example-i18n-versioned build
 Output:
 
 ```txt
-examples/i18n-versioned/docs/build/
+examples/i18n-versioned/site/build/
 ```
 
 Inspect:

@@ -5,7 +5,9 @@ order: 7
 published: false
 ---
 
-Folder-based docs versions.
+Folder-based versions for the **`docs` collection**. Writing and other collections use their own routes; this feature does not version the whole publish root.
+
+Path examples use `site/` as the publish root from `init`.
 
 ## Configure versions
 
@@ -24,7 +26,7 @@ The first version can live at `/docs`, so the latest docs keep clean URLs. With 
 ## Content
 
 ```txt
-docs/src/content/docs/
+site/src/content/docs/
 ├── getting-started.md
 ├── configuration.md
 └── v1/
@@ -46,7 +48,7 @@ tidypress add-version 2.0
 ```
 
 ```txt
-docs/src/content/docs/v2.0/getting-started.md
+site/src/content/docs/v2.0/getting-started.md
 ```
 
 Set `latest` at the same time:
@@ -56,10 +58,10 @@ tidypress add-version 2.0 --set-latest
 ```
 
 ```txt
-docs/src/content/docs/latest -> v2.0
+site/src/content/docs/latest -> v2.0
 ```
 
-That helper is useful when you want a `latest` content folder. For a root-anchored latest version, keep the current docs directly under `docs/src/content/docs/` and put archived versions in folders like `v1/`.
+That helper is useful when you want a `latest` content folder. For a root-anchored latest version, keep the current docs directly under `site/src/content/docs/` and put archived versions in folders like `v1/`.
 
 ## Version selector
 

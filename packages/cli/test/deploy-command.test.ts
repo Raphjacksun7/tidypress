@@ -48,7 +48,7 @@ test('DeployCommand builds and deploys when --with-ci is disabled', async () => 
     buildService: /** @type {import('../src/services/BuildService.js').BuildService} */ (/** @type {any} */ ({
       async build(request) {
         assert.deepEqual(request, { projectRoot: '/workspace' })
-        return { buildDir: '/workspace/docs/build', docsDir: '/workspace/docs', cacheDir: '/tmp/cache' }
+        return { buildDir: '/workspace/site/build', docsDir: '/workspace/site', cacheDir: '/tmp/cache' }
       },
     })),
     deployService: /** @type {import('../src/services/DeployService.js').DeployService} */ (/** @type {any} */ ({
@@ -67,7 +67,7 @@ test('DeployCommand builds and deploys when --with-ci is disabled', async () => 
 
   assert.equal(deployRequests.length, 1)
   assert.equal(deployRequests[0].projectRoot, '/workspace')
-  assert.equal(deployRequests[0].distDir, '/workspace/docs/build')
+  assert.equal(deployRequests[0].distDir, '/workspace/site/build')
   assert.equal(deployRequests[0].target, 'netlify')
   assert.deepEqual(messages, ['Deploy flow completed for target: netlify'])
 })

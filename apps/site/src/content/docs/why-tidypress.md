@@ -14,15 +14,16 @@ The bet is DX: fast Markdown-to-site publishing with conventions built in, so yo
 ## What stays simple
 
 - markdown and MDX as source
-- docs and dated writing in one tree
+- writing and work in one publish root in git
+- `docs` collection for sidebar-ordered guides and reference at `/docs/…` (enable per preset or config)
 - projects and ideas presented with default conventions
 - a clean default interface
-- Pagefind search and `llms.txt` at build time (machine-readable export of published pages)
-- static site in `build/` (for example `docs/build/`)
+- Pagefind search and `llms.txt` at build time
+- static site in `site/build/`
 - deploy targets that hand off to normal static hosting tools
 
-## What TidyPress is not
+## The thesis
 
-TidyPress is not an API docs SaaS, community feed, newsletter platform, or team wiki. It does not own your audience, content, or hosting.
+Git holds the source. The build proves what shipped. The site is yours to host, fork, and leave — because the tree and `build/` are the product, not an account on someone else’s platform.
 
-Write the pages. Build the site. Keep the shape simple enough to leave.
+Write the pages. Build the site. Ship the folder.

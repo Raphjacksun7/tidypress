@@ -1,3 +1,4 @@
+import { pathToFileURL } from 'node:url'
 import type { CollectionShellLayout, RouteViewDescriptor } from '@/routing/view-registry'
 import * as staticPluginManifest from '@/generated/tidypress-plugins.mjs'
 
@@ -25,7 +26,13 @@ async function loadGeneratedManifest(): Promise<GeneratedPluginManifest> {
   if (cachedManifest && cachedEpoch === epoch) {
     return cachedManifest
   }
-  const href = new URL('../../generated/tidypress-plugins.mjs', import.meta.url).href
+  const envManifest =
+    typeof import.meta.env.TIDYPRESS_MANIFEST_PATH === 'string'
+      ? import.meta.env.TIDYPRESS_MANIFEST_PATH.trim()
+      : ''
+  const href = envManifest
+    ? pathToFileURL(envManifest).href
+    : new URL('../generated/tidypress-plugins.mjs', import.meta.url).href
   cachedManifest = (await import(/* @vite-ignore */ `${href}?t=${epoch}`)) as GeneratedPluginManifest
   cachedEpoch = epoch
   return cachedManifest

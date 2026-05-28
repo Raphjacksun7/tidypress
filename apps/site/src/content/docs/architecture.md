@@ -18,28 +18,31 @@ wrappers/
 
 ## Build flow
 
-When you run `tidypress dev` or `tidypress build`, the CLI resolves your docs directory and runs the pinned `@tidypress/engine` package. Your markdown stays in place; only a static artifact and a local cache are created.
+When you run `tidypress dev` or `tidypress build`, the CLI resolves your **publish root** and runs the pinned `@tidypress/engine` package. Your markdown stays in place; only a static artifact and a local cache are created.
+
+`init` scaffolds `site/` by default — the conventional publish root for config, content, and `build/`. In a monorepo, config may sit at the project root instead, as in `apps/site/`. The CLI resolves whichever folder contains `tidypress.config.ts`.
 
 ```txt
-docs/                          # or project root when config lives there
+site/
 ├── tidypress.config.ts
 ├── src/content/
+│   ├── writing/    # dated posts (RSS, tags, archive)
+│   ├── projects/   # cards + optional pages (lab preset)
+│   └── docs/       # docs collection — sidebar-ordered guides at /docs/…
 ├── public/
-└── build/                     # gitignored — upload this folder
-
-~/.cache/tidypress/<key>/       # compiler cache (not deployed)
+└── build/
 ```
 
 Steps:
 
-1. The CLI resolves the docs directory and validates config.
+1. The CLI resolves the publish root and validates config.
 2. Plugin manifest codegen writes to the cache directory.
 3. Astro runs from `node_modules/@tidypress/engine` with `TIDYPRESS_PROJECT_ROOT` pointing at your project.
 4. Static HTML is written to `build/`.
 5. Pagefind indexes `build/`.
-6. Unless disabled (`capabilities.disable: ['llmsTxt']` or `tidypress build --no-llms-txt`), the CLI writes `build/llms.txt` — full published markdown for agents and tools.
+6. The CLI writes `build/llms.txt` with full published markdown for agents. Disable with `capabilities.disable: ['llmsTxt']` or `tidypress build --no-llms-txt`.
 
-Power users can add `@tidypress/astro` and an `astro.config.mjs` in the docs directory (`tidypress init --with-astro`).
+Power users can add `@tidypress/astro` and `astro.config.mjs` via `tidypress init --with-astro`.
 
 ## CLI package
 
@@ -88,28 +91,32 @@ pages     -> root-level custom pages
 - Pagefind search UI
 - sitemap and metadata output
 
-Bundled client assets are emitted under `assets/` in `build/` (not `_astro/`).
+Bundled client assets land under `assets/` in `build/`.
 
 ## Content model
 
-Docs pages live in:
+Under the publish root, `src/content/` holds **collections**—typed folders configured in `tidypress.config.ts`.
+
+**Writing** — dated posts with RSS, the default public voice:
 
 ```txt
-docs/src/content/docs/
+site/src/content/writing/
 ```
 
-They support `form`:
-
-- `doc` for normal documentation
-- `manual` for procedural pages
-
-Writing posts live in:
+**Projects / works** — home-page work, `kind: 'projects'`:
 
 ```txt
-docs/src/content/writing/
+site/src/content/projects/
+site/src/content/works/
 ```
 
-Custom collections live beside those folders and are configured in `tidypress.config.ts`.
+**Docs collection** — sidebar-ordered pages at `/docs/…`:
+
+```txt
+site/src/content/docs/
+```
+
+Forms: `doc` for reference pages, `manual` for procedural guides. Other collection keys use the kinds in config and [Conventions](./conventions).
 
 ## Search
 

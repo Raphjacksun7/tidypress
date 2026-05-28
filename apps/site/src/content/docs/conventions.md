@@ -1,10 +1,25 @@
 ---
 title: Conventions
-description: Opinionated site shape, flexible markdown — what TidyPress enforces and what it leaves alone.
+description: What TidyPress fixes in the site graph, what it leaves to markdown, and how the folder names map to intent.
 order: 4
 ---
 
-TidyPress is **opinionated about site shape** and **lightweight about content**. You pick a preset and collection kinds; you write markdown inside those boundaries.
+TidyPress fixes **site shape**—navigation, home page, collection kinds, build output—and stays out of **prose**. You choose a preset; you write markdown inside the boundaries that preset defines. The constraints exist so you do not rebuild the same presentation layer for every repository that deserves a public face.
+
+## Vocabulary
+
+Two different things share the word *docs*, and conflating them is the usual source of confusion.
+
+The **publish root** is the folder that holds `tidypress.config.ts`, `src/content/`, `public/`, and eventually `build/` — the site’s home in git. `tidypress init` defaults to `site/`; you can use any folder name. Set `TIDYPRESS_PUBLISH_ROOT` when the CLI cannot infer it from your working directory.
+
+The **`docs` collection** is a first-class routed subtree under `src/content/docs/`, served at `/docs/…`, with sidebar ordering—the same class of feature as `writing` and `projects`. It carries tutorials, guides, and stable reference. The default **lab** preset disables it so the home page foregrounds writing and work; turn it on with `docs-writing`, `body-of-work-docs`, or `collections.docs.enabled`.
+
+| Name | Role |
+|------|------|
+| Publish root `site/` | Config, content collections, static output |
+| `writing` | Dated posts, RSS, tags—the usual public voice |
+| `projects` / `works` | Work on the home page; folder name follows the collection key |
+| `docs` (collection) | Sidebar-ordered guides and reference at `/docs/…` |
 
 ## What we enforce
 
@@ -27,18 +42,18 @@ TidyPress is **opinionated about site shape** and **lightweight about content**.
 |------|---------|
 | `writing` | Dated posts, RSS, tags |
 | `projects` | Cards, featured work, optional project pages |
-| `content` | Reference shelves, ADRs, playbooks (docs-style shell) |
+| `content` | Reference shelves, ADRs, playbooks in the docs-style shell |
 | `page` | `/about`, `/now`, standalone pages |
 
-## Product docs vs body of work
+## Docs collection vs body of work
 
 | Collection | Purpose |
 |------------|---------|
-| `docs` | Product documentation (tutorials, guides) |
+| `docs` | Sidebar-ordered product documentation |
 | `reference` | Facts: API, CLI, config |
 | `process` | Decisions: ADRs, roadmaps |
 
-Preset **`body-of-work`** keeps `docs` off and links **reference** / **process** from the footer. Use **`body-of-work-docs`** or **`docs-writing`** when you need product docs on day one.
+Preset **`body-of-work`** disables the `docs` collection and surfaces **reference** and **process** from the footer. Use **`body-of-work-docs`** or **`docs-writing`** when you want `docs` enabled from init.
 
 ## siteUrl and sitemap
 
@@ -48,7 +63,7 @@ Set **`siteUrl`** to your production origin before deploy:
 npx tidypress init --site-url https://yoursite.example
 ```
 
-Until `siteUrl` is real (not `https://example.com`), TidyPress **does not** emit absolute canonical/OG URLs or an Astro sitemap with a fake host. After you set `siteUrl`, `tidypress build` writes `sitemap-index.xml` tied to that URL.
+Until `siteUrl` is set to a real production origin — not the `https://example.com` placeholder — TidyPress does not emit absolute canonical or Open Graph URLs, and it does not write a sitemap that points at a placeholder host. After `siteUrl` is set, `tidypress build` produces `sitemap-index.xml` for that origin.
 
 ## Escape hatches
 

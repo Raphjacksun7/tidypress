@@ -29,7 +29,7 @@ export class ExportCommand {
       feature: 'export',
       cliEnabled: enableExperimentalExport,
       cliHint: 'Use tidypress export <pdf|epub|archive> [source] --enable-experimental-export',
-      configHint: 'Set experimental.export = true in docs/tidypress.config.ts',
+      configHint: 'Set experimental.export = true in site/tidypress.config.ts',
     })
 
     throw new TidyPressError(

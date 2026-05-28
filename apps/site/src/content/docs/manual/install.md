@@ -1,6 +1,6 @@
 ---
 title: Installation
-description: Install TidyPress and scaffold a new docs folder.
+description: Install TidyPress and scaffold a publish root at site/.
 form: manual
 order: 2
 published: false
@@ -26,23 +26,23 @@ Run inside your project root:
 tidypress init
 ```
 
-This creates a `docs/` folder:
+This creates a publish root at `site/`:
 
 ```
-docs/
+site/
   tidypress.config.ts
   src/
     content/
-      docs/
-        getting-started.md
-      writing/
+      writing/    # dated posts (RSS, tags, archive)
         hello.md
+      docs/       # docs collection — sidebar-ordered guides at /docs/…
+        getting-started.md
 ```
 
 ## Verify
 
 ```bash
-cd docs
+cd site
 tidypress dev
 ```
 

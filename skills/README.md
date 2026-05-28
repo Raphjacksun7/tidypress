@@ -6,7 +6,7 @@ Agent Skills for [TidyPress](https://tidypress.pages.dev/) — a publishing fram
 
 | Skill | Use when |
 |-------|----------|
-| **tidypress** | Building or editing a TidyPress site (`docs/`, config, collections, deploy, `llms.txt`) |
+| **tidypress** | Building or editing a TidyPress site (`site/`, config, collections, deploy, `llms.txt`) |
 | **tidypress-contributor** | Contributing to the TidyPress monorepo (PRs, packages, docs, optional AI workflow) |
 
 ## Install

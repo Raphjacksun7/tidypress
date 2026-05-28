@@ -29,7 +29,7 @@ export class AiCommand {
       feature: 'ai',
       cliEnabled: enableExperimentalAi,
       cliHint: 'Use tidypress ai <suggest|translate|changelog> [args] --enable-experimental-ai',
-      configHint: 'Set experimental.ai = true in docs/tidypress.config.ts',
+      configHint: 'Set experimental.ai = true in site/tidypress.config.ts',
     })
 
     throw new TidyPressError(

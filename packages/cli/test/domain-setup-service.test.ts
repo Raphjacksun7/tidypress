@@ -11,7 +11,7 @@ function createConfigLoader(siteUrl) {
   const resolvedSiteUrl = arguments.length === 0 ? 'https://old.example.com' : siteUrl
   return /** @type {import('../src/services/ConfigLoader.js').ConfigLoader} */ (/** @type {any} */ ({
     async resolveDocsDirectory() {
-      return '/workspace/docs'
+      return '/workspace/site'
     },
     async loadConfig() {
       return { name: 'test', siteUrl: resolvedSiteUrl }
@@ -27,7 +27,7 @@ test('DomainSetupService returns platform instructions and suggested siteUrl', a
     platform: 'vercel',
   })
 
-  assert.equal(result.docsDir, '/workspace/docs')
+  assert.equal(result.docsDir, '/workspace/site')
   assert.equal(result.configSiteUrl, 'https://old.example.com')
   assert.equal(result.resolvedDomain, 'docs.example.com')
   assert.equal(result.domainSource, 'argument')

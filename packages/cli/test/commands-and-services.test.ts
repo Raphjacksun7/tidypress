@@ -19,7 +19,7 @@ test('DeployService throws TidyPressError when no strategy matches', async () =>
     async () => {
       await service.deploy({
         projectRoot: '/workspace',
-        distDir: '/workspace/docs/build',
+        distDir: '/workspace/site/build',
         target: 'unknown-provider',
       })
     },
@@ -35,7 +35,7 @@ test('DeployService throws TidyPressError when no strategy matches', async () =>
 
 async function createVersionFixtureProject() {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-version-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
   await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
   await fs.writeFile(
     path.join(docsDir, 'tidypress.config.ts'),
@@ -119,7 +119,7 @@ test('ImportService validates scheduled datetime value', async () => {
 
 test('SectionsMigrationService writes deterministic sections migration artifact', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-sections-migration-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
   await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
   await fs.writeFile(
     path.join(docsDir, 'tidypress.config.ts'),
@@ -200,7 +200,7 @@ test('ExperimentalFeatureService requires config opt-in', async () => {
 
 test('ExperimentalFeatureService allows feature when both opt-ins are enabled', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-experimental-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
   await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
   await fs.writeFile(
     path.join(docsDir, 'tidypress.config.ts'),
@@ -224,7 +224,7 @@ test('ExperimentalFeatureService allows feature when both opt-ins are enabled', 
 
 test('ExperimentalFeatureService accepts capability override from config resolver', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-experimental-capability-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
   await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
   await fs.writeFile(
     path.join(docsDir, 'tidypress.config.ts'),

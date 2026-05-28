@@ -41,7 +41,7 @@ home: {
 }
 ```
 
-`home.order` controls section order. Entries are **collection keys** (for example `works`, not the display label). Omit `home.order` to use enabled collections in default order, or set `home.preset` to `lab`, `blog`, `docs-writing`, or `persona` for init-style ordering. See [Site layout](./site-layout#home-presets).
+`home.order` controls section order. Entries are **collection keys** such as `works`, not the display label. Omit `home.order` to use enabled collections in default order, or set `home.preset` to `lab`, `blog`, `docs-writing`, or `persona` for init-style ordering. See [Site layout](./site-layout#home-presets).
 
 `home.previewLimit` controls how many entries each homepage section shows. Omit it to use `5`.
 

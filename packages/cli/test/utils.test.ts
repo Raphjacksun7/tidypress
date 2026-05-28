@@ -13,14 +13,14 @@ import { writeLlmsTxt } from '../src/application/content/llms-txt.js'
 import { copyDistToDestination, resolveDeployTarget } from '../src/application/deployment/deploy-target.js'
 import { getBuildDir } from '../src/infrastructure/engine/build-session.js'
 
-test('getBuildDir resolves build/ under docs directory', () => {
-  const docsDir = '/tmp/project/docs'
-  assert.equal(getBuildDir(docsDir), '/tmp/project/docs/build')
+test('getBuildDir resolves build/ under publish root', () => {
+  const docsDir = '/tmp/project/site'
+  assert.equal(getBuildDir(docsDir), '/tmp/project/site/build')
 })
 
 test('scaffoldDocs creates docs and writing content structure', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-scaffold-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
 
   await scaffoldDocs({ docsDir, projectName: 'example-project', starterPreset: 'docs-writing' })
 
@@ -43,7 +43,7 @@ test('scaffoldDocs creates docs and writing content structure', async () => {
 
 test('scaffoldDocs blog preset creates writing only and disables docs', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-scaffold-blog-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
 
   await scaffoldDocs({ docsDir, projectName: 'blog-site', starterPreset: 'blog' })
 
@@ -57,7 +57,7 @@ test('scaffoldDocs blog preset creates writing only and disables docs', async ()
 
 test('scaffoldDocs lab preset creates writing and projects', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-scaffold-lab-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
 
   await scaffoldDocs({ docsDir, projectName: 'lab-site', starterPreset: 'lab' })
 
@@ -69,7 +69,7 @@ test('scaffoldDocs lab preset creates writing and projects', async () => {
 
 test('scaffoldDocs body-of-work preset seeds works, reference, and process', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-scaffold-body-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
 
   await scaffoldDocs({ docsDir, projectName: 'work-site', starterPreset: 'body-of-work' })
 
@@ -95,7 +95,7 @@ test('scaffoldDocs body-of-work preset seeds works, reference, and process', asy
 
 test('scaffoldDocs body-of-work-docs preset enables docs collection', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-scaffold-body-docs-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
 
   await scaffoldDocs({ docsDir, projectName: 'work-site', starterPreset: 'body-of-work-docs' })
 
@@ -107,7 +107,7 @@ test('scaffoldDocs body-of-work-docs preset enables docs collection', async () =
 
 test('scaffoldDocs init siteUrl is written when provided', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-scaffold-siteurl-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
 
   await scaffoldDocs({
     docsDir,
@@ -123,7 +123,7 @@ test('scaffoldDocs init siteUrl is written when provided', async () => {
 
 test('scaffoldDocs custom preset creates a custom content collection example', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-scaffold-custom-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
 
   await scaffoldDocs({ docsDir, projectName: 'example-project', starterPreset: 'custom' })
 
@@ -137,7 +137,7 @@ test('scaffoldDocs custom preset creates a custom content collection example', a
 
 test('scaffoldDocs rejects unknown starter presets', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-scaffold-preset-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
 
   await assert.rejects(async () => {
     await scaffoldDocs({ docsDir, projectName: 'example-project', starterPreset: 'unknown' })
@@ -146,7 +146,7 @@ test('scaffoldDocs rejects unknown starter presets', async () => {
 
 test('createContentSnapshot returns docs, writing, and pages collection entries', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-context-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
   await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
   await fs.mkdir(path.join(docsDir, 'src/content/writing'), { recursive: true })
   await fs.mkdir(path.join(docsDir, 'src/content/pages'), { recursive: true })
@@ -206,7 +206,7 @@ test('llmsTxt capability defaults on and can be disabled in config', () => {
 
 test('writeLlmsTxt writes grouped public links', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-llms-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
   await fs.mkdir(path.join(docsDir, 'src/content/writing'), { recursive: true })
   await fs.writeFile(
     path.join(docsDir, 'src/content/writing/hello.md'),
@@ -245,7 +245,7 @@ Body.
 
 test('writeLlmsTxt uses relative links when siteUrl is placeholder', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-llms-placeholder-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
   await fs.mkdir(path.join(docsDir, 'src/content/writing'), { recursive: true })
   await fs.writeFile(
     path.join(docsDir, 'src/content/writing/hello.md'),
@@ -277,7 +277,7 @@ date: 2026-05-01
 
 test('createContentSnapshot excludes draft entries (published: false)', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-context-drafts-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
   await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
 
   await fs.writeFile(
@@ -307,7 +307,7 @@ Hidden content.
 
 test('createContentSnapshot excludes entries scheduled in the future', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-context-scheduled-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
   await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
 
   await fs.writeFile(
@@ -338,7 +338,7 @@ Not visible yet.
 
 test('createContentSnapshot honors configured collection registry', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-context-collections-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
   await fs.mkdir(path.join(docsDir, 'src/content/playbooks'), { recursive: true })
   await fs.writeFile(
     path.join(docsDir, 'src/content/playbooks/oncall.md'),
@@ -364,7 +364,7 @@ Guide content.
 
 test('createContentSnapshot honors capabilities enable/disable for starter collections', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-context-capabilities-'))
-  const docsDir = path.join(root, 'docs')
+  const docsDir = path.join(root, 'site')
   await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
   await fs.mkdir(path.join(docsDir, 'src/content/writing'), { recursive: true })
 

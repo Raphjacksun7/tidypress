@@ -8,13 +8,13 @@ published: false
 
 ## Build
 
-From your `docs/` folder:
+From your `site/` folder:
 
 ```bash
 tidypress build
 ```
 
-Output lands in `build/` under your docs directory (for example `docs/build/` or `apps/site/build/`). Every file is static — HTML, CSS, JS under `assets/`, and the Pagefind search index.
+Output lands in `build/` under your publish root. In a monorepo, the publish root may be the project folder itself — for example `apps/site/` with config at the project root.
 
 ## Clean first
 

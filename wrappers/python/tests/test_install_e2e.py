@@ -11,6 +11,8 @@ from pathlib import Path
 
 import pytest
 
+from tidypress.publish_root import resolve_publish_root
+
 REPO_ROOT = Path(__file__).resolve().parents[3]
 CLI_PACKAGE = REPO_ROOT / "packages" / "cli"
 
@@ -66,11 +68,11 @@ def test_python_entrypoint_init_and_build_lab(tidypress_tarball: Path) -> None:
         site = install_root / "site"
         site.mkdir()
         _run([str(tidypress_bin), "init", "--preset", "lab"], cwd=site, env=cli_env)
-        docs = site / "docs"
-        assert (docs / "tidypress.config.ts").is_file()
+        publish = resolve_publish_root(site)
+        assert (publish / "tidypress.config.ts").is_file()
 
         _run([str(tidypress_bin), "build", "--sync"], cwd=site, env=cli_env)
-        build = docs / "build"
+        build = publish / "build"
         assert (build / "index.html").is_file()
         assert (build / "writing" / "rss.xml").is_file()
         assert (build / "projects" / "index.html").is_file()

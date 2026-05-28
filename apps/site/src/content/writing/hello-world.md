@@ -2,11 +2,12 @@
 title: Hello, world
 date: "2026-03-18"
 description: Starting a small site I actually own.
+published: false
 tags:
   - writing
 ---
 
-I wanted a public place that does not run on someone else's feed. Not a newsletter platform, not a docs portal that slowly becomes the whole company — just a site: something to read when I have a thought, something to point to when I ship.
+I wanted a public place that does not run on someone else's feed — not a newsletter platform, not a docs portal that slowly becomes the whole company. Just a surface: writing when I have a thought, projects when I ship, reference pages when the work actually needs a manual.
 
 The other requirement was harder to name but more important to me: **the reading experience has to stay tight.** On point. No carnival of widgets, no sidebar that screams, no typography that wears you out by the third paragraph. I want to be able to open this site in the morning, follow a link from a friend, read three posts, skim a project, check one reference page, and still feel calm at the end of the day. Fatigue is a design failure. I treat it that way.
 

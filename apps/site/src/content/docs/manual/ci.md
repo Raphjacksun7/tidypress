@@ -8,10 +8,10 @@ TidyPress builds are deterministic static sites. In CI, cache compiler inputs an
 
 ## What to upload
 
-Upload the contents of your docs directory `build/` folder:
+Upload the contents of your publish root’s `build/` folder:
 
 ```txt
-docs/build/          # or apps/site/build/ when config lives at project root
+site/build/
 ├── index.html
 ├── assets/
 ├── pagefind/
@@ -52,7 +52,7 @@ Add `wrangler` as a devDependency in the repo that runs CI, then use `pnpm exec 
     CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 ```
 
-Adjust `apps/site/build` to your docs output path (for example `docs/build`).
+Adjust `apps/site/build` to your publish root’s `build/` path when your config lives at the project root.
 
 Set `CI=true` so TidyPress emits structured JSON build logs.
 
@@ -63,3 +63,4 @@ Set `CI=true` so TidyPress emits structured JSON build logs.
 | `CI=true` | JSON structured logs from Astro |
 | `TIDYPRESS_JSON_LOGS=1` | Force JSON logs locally |
 | `TIDYPRESS_PROJECT_ROOT` | Set automatically by the CLI; required only when running Astro directly with `@tidypress/astro` |
+| `TIDYPRESS_PUBLISH_ROOT` | Explicit publish root when auto-discovery is ambiguous |

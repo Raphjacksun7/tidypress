@@ -2,11 +2,11 @@ import path from 'node:path'
 
 import { scaffoldDocs } from '../application/scaffolding/scaffold-docs.js'
 import { STARTER_PRESETS } from '../templates/starters.js'
-import { getDocsDir } from '../infrastructure/project/config.js'
+import { getSiteDir } from '../infrastructure/project/config.js'
 import { TidyPressError } from '../errors/TidyPressError.js'
 
 /**
- * Creates initial docs/writing scaffolding for a project.
+ * Creates initial site/ publish-root scaffolding for a project.
  */
 export class ScaffoldService {
   /**
@@ -14,7 +14,7 @@ export class ScaffoldService {
    * @returns {Promise<{ docsDir: string, starterPreset: string }>}
    */
   async scaffold({ projectRoot, starterPreset, withAstro, siteUrl }) {
-    const docsDir = getDocsDir(projectRoot)
+    const docsDir = getSiteDir(projectRoot)
     const projectName = path.basename(projectRoot)
     try {
       await scaffoldDocs({ docsDir, projectName, starterPreset, withAstro, siteUrl })

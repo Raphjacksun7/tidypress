@@ -34,6 +34,11 @@ export default defineConfig({
   },
   pages: [],
 
+  writing: {
+    description:
+      'Release notes, design notes, and essays on git-native publishing.',
+  },
+
   docs: {
     sidebar: [
       {
