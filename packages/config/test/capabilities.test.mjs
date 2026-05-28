@@ -15,6 +15,7 @@ test('resolveCapabilityFlags returns deterministic defaults', () => {
     ai: false,
     theming: true,
     themingCustom: false,
+    llmsTxt: true,
   })
 })
 

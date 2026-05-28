@@ -31,7 +31,7 @@ tidypress build
 tidypress preview
 tidypress clean
 tidypress deploy
-tidypress context [output.md]
+# llms.txt is written on every build (build/llms.txt)
 tidypress import devto <url-or-slug>   # real fetch; other providers write scaffolds
 tidypress doctor
 tidypress migrate-sections

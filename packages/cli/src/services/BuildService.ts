@@ -1,8 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import { withDefaults } from '@tidypress/config'
-import { collectSiteUrlWarnings } from '@tidypress/config'
+import { collectSiteUrlWarnings, isCapabilityEnabled, withDefaults } from '@tidypress/config'
 import { writeLlmsTxt } from '../application/content/llms-txt.js'
 import { getCacheDir } from '../infrastructure/engine/build-session.js'
 
@@ -25,10 +24,10 @@ export class BuildService {
   }
 
   /**
-   * @param {{ projectRoot: string, outputPath?: string }} request
+   * @param {{ projectRoot: string, outputPath?: string, skipLlmsTxt?: boolean }} request
    * @returns {Promise<{ docsDir: string, buildDir: string, cacheDir: string }>}
    */
-  async build({ projectRoot, outputPath }) {
+  async build({ projectRoot, outputPath, skipLlmsTxt = false }) {
     const docsDir = await this.configLoader.resolveDocsDirectory({ projectRoot })
     await this.configLoader.ensureConfigFile({ docsDir })
     await this.configLoader.validateNavigation({ docsDir })
@@ -41,11 +40,15 @@ export class BuildService {
     await this.engineManager.runBuild({ session })
 
     const buildDir = this.engineManager.getBuildDirectory({ docsDir })
-    await writeLlmsTxt({
-      docsDir,
-      outputPath: path.join(buildDir, 'llms.txt'),
-      config,
-    })
+    const writeLlmsTxtFile =
+      !skipLlmsTxt && isCapabilityEnabled(config, 'llmsTxt')
+    if (writeLlmsTxtFile) {
+      await writeLlmsTxt({
+        docsDir,
+        outputPath: path.join(buildDir, 'llms.txt'),
+        config,
+      })
+    }
     await this.#exportConfigSidecar({ docsDir, cacheDir: session.cacheDir, config })
 
     if (outputPath) {

@@ -59,4 +59,4 @@ Use `tidypress deploy --help` for flags (`--with-ci`, output dir).
 
 ## Context snapshot
 
-`tidypress context` writes markdown listing collections, capabilities, and published entries (respects `published` / `scheduled` frontmatter). Default path: `./tidypress-context.md` in project root.
+Every `tidypress build` writes `build/llms.txt`: public URLs plus full markdown bodies for published entries (respects `published` / `scheduled` frontmatter).

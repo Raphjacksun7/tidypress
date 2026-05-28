@@ -27,6 +27,7 @@ export const capabilityRegistry = [
   { key: 'ai', scope: 'feature', lifecycle: 'experimental', defaultEnabled: false },
   { key: 'theming', scope: 'feature', lifecycle: 'stable', defaultEnabled: true },
   { key: 'themingCustom', scope: 'feature', lifecycle: 'stable', defaultEnabled: false },
+  { key: 'llmsTxt', scope: 'feature', lifecycle: 'stable', defaultEnabled: true },
 ] as const satisfies readonly TidyPressCapabilityDescriptor[]
 
 export type TidyPressCapabilityKey = (typeof capabilityRegistry)[number]['key']

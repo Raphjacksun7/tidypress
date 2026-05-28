@@ -6,7 +6,7 @@ order: 12
 
 The Python package provides a `tidypress` entrypoint for Python environments.
 
-Rendering still uses the Node.js CLI and Astro engine. Node.js 22.12 or newer is required for `init`, `dev`, `build`, `preview`, `deploy`, and `context`.
+Rendering still uses the Node.js CLI and Astro engine. Node.js 22.12 or newer is required for `init`, `dev`, `build`, `preview`, and `deploy`.
 
 ## Install
 
@@ -33,7 +33,7 @@ tidypress build
 tidypress preview
 tidypress clean
 tidypress deploy
-tidypress context [output.md]
+# build/llms.txt on every build
 tidypress import devto <url-or-slug>
 tidypress doctor
 tidypress migrate-sections
@@ -84,7 +84,7 @@ This is a convenience helper for small projects. For large API references, keep 
 
 ## Agents and markdown
 
-Agents that edit files in git use the same commands as you do: add markdown under `src/content/`, run `tidypress build`, deploy `build/`. Export `tidypress context` when the model needs a map of existing pages. Details: [Agents and markdown](/writing/agents-and-markdown).
+Agents that edit files in git use the same commands as you do: add markdown under `src/content/`, run `tidypress build`, deploy `build/`. Point the model at `build/llms.txt` (or the live `/llms.txt` URL) for full published content. Details: [Agents and markdown](/writing/agents-and-markdown).
 
 ## Help and init presets
 

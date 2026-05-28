@@ -18,7 +18,8 @@ I like that boundary. Platforms that own your drafts eventually own your audienc
 <FileTree>
 - docs/
   - **tidypress.config.ts**
-  - tidypress-context.md
+  - build/
+    - llms.txt
   - src/
     - content/
       - writing/
@@ -33,7 +34,7 @@ I like that boundary. Platforms that own your drafts eventually own your audienc
     - pagefind/
 </FileTree>
 
-Presets exist so the tree already looks like a public site — writing on the feed, work on the home page — instead of a generic `content/` dump. Before a big refactor, exporting a snapshot of titles (`tidypress context`) gives the model memory **without** giving it custody.
+Presets exist so the tree already looks like a public site — writing on the feed, work on the home page — instead of a generic `content/` dump. After `tidypress build`, `build/llms.txt` gives the model the full published corpus **without** giving it custody of a separate snapshot file in the repo.
 
 ## Same pipeline, different keyboard
 

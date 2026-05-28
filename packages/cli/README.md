@@ -44,8 +44,9 @@ Output is written to `docs/build/` (or `<docsDir>/build/` when config is at the 
 | `tidypress preview [--port <n>]` | preview the production build |
 | `tidypress deploy [target]` | copy or hand output to a static host/tool |
 | `tidypress clean` | remove `build/` and local tidypress cache |
-| `tidypress context [output]` | write a markdown snapshot of published content |
 | `tidypress skills install` | install TidyPress skills into Cursor, Claude Code, or Codex |
+
+Every `tidypress build` writes `build/llms.txt` (full published markdown for agents). Skip with `--no-llms-txt` or `capabilities.disable: ['llmsTxt']`.
 
 `--starter <name>` is accepted as an alias for `--preset <name>`.
 

@@ -322,6 +322,7 @@ export type TidyPressCapabilityName =
   | 'ai'
   | 'theming'
   | 'themingCustom'
+  | 'llmsTxt'
 
 export interface TidyPressCapabilities {
   enable?: TidyPressCapabilityName[]

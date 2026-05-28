@@ -1,6 +1,6 @@
 {
   "name": "tidypress",
-  "version": "1.0.11",
+  "version": "1.1.0",
   "description": "A publishing framework for Git-native authorship.",
   "license": "MIT",
   "type": "module",
@@ -52,7 +52,7 @@
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.build.json --noEmit",
     "dev": "tsx ./src/runCli.ts",
-    "test": "pnpm run build && tsx --test --test-timeout=420000 test/application.test.ts test/application-routing.test.ts test/collection-foundation.test.ts test/context-snapshot.test.ts test/domain-command.test.ts test/domain-setup-service.test.ts test/engine-e2e.test.ts test/import-service.test.ts test/starter-config.test.ts test/utils.test.ts",
+    "test": "pnpm run build && tsx --test --test-timeout=420000 test/application.test.ts test/application-routing.test.ts test/collection-foundation.test.ts test/domain-command.test.ts test/domain-setup-service.test.ts test/engine-e2e.test.ts test/import-service.test.ts test/starter-config.test.ts test/utils.test.ts",
     "test:install-e2e": "pnpm run build && tsx --test --test-timeout=2400000 test/install-e2e.test.ts",
     "test:registry-e2e": "pnpm run build && tsx --test --test-timeout=3600000 test/registry-e2e.test.ts"
   },

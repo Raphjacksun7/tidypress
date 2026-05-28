@@ -44,17 +44,11 @@ test('installed lab: init + build + writing/projects/rss/pagefind', { timeout: 9
   await fs.access(path.join(buildDir, 'writing/rss.xml'))
   await fs.access(path.join(buildDir, 'projects/index.html'))
   await fs.access(path.join(buildDir, 'pagefind/pagefind.js'))
-  await fs.access(path.join(buildDir, 'llms.txt'))
+  const llmsTxt = await fs.readFile(path.join(buildDir, 'llms.txt'), 'utf8')
+  assert.match(llmsTxt, /### \[Hello\]/)
+  assert.match(llmsTxt, /Use the writing collection/)
 
   await assert.rejects(() => fs.access(path.join(buildDir, 'docs/index.html')))
-
-  const { stdout: contextOut } = await runInstalledCli(
-    cliPath,
-    ['context', path.join(siteRoot, 'site-context.md')],
-    siteRoot,
-  )
-  assert.match(contextOut, /Wrote \d+ entries/)
-  await fs.access(path.join(siteRoot, 'site-context.md'))
 })
 
 test('installed blog: writing-only site', { timeout: 900_000 }, async () => {

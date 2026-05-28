@@ -74,12 +74,6 @@ jobs:
           pnpm --filter @tidypress/example-blog build
           pnpm --filter @tidypress/example-persona build
 
-      - name: Generate marketing site context snapshot
-        run: pnpm --filter @tidypress/site context
-
-      - name: Verify site context snapshot is committed
-        run: git diff --exit-code apps/site/tidypress-context.md
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:

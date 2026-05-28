@@ -15,10 +15,10 @@ export class BuildCommand {
   }
 
   /**
-   * @param {{ projectRoot: string, outputPath?: string }} request
+   * @param {{ projectRoot: string, outputPath?: string, skipLlmsTxt?: boolean }} request
    * @returns {Promise<void>}
    */
-  async execute({ projectRoot, outputPath }) {
-    await this.buildService.build({ projectRoot, outputPath })
+  async execute({ projectRoot, outputPath, skipLlmsTxt }) {
+    await this.buildService.build({ projectRoot, outputPath, skipLlmsTxt })
   }
 }

@@ -6,7 +6,9 @@ import fs from 'node:fs/promises'
 
 import { publicationSurfaceKeys } from '@tidypress/config'
 import { scaffoldDocs } from '../src/application/scaffolding/scaffold-docs.js'
-import { createContentSnapshot, writeContentSnapshot } from '../src/application/content/context-snapshot.js'
+import { isCapabilityEnabled, withDefaults } from '@tidypress/config'
+
+import { createContentSnapshot } from '../src/application/content/published-content.js'
 import { writeLlmsTxt } from '../src/application/content/llms-txt.js'
 import { copyDistToDestination, resolveDeployTarget } from '../src/application/deployment/deploy-target.js'
 import { getBuildDir } from '../src/infrastructure/engine/build-session.js'
@@ -191,6 +193,17 @@ About custom page content.
   )
 })
 
+test('llmsTxt capability defaults on and can be disabled in config', () => {
+  const enabled = withDefaults({ name: 'site' })
+  assert.equal(isCapabilityEnabled(enabled, 'llmsTxt'), true)
+
+  const disabled = withDefaults({
+    name: 'site',
+    capabilities: { disable: ['llmsTxt'] },
+  })
+  assert.equal(isCapabilityEnabled(disabled, 'llmsTxt'), false)
+})
+
 test('writeLlmsTxt writes grouped public links', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-llms-'))
   const docsDir = path.join(root, 'docs')
@@ -225,7 +238,9 @@ Body.
   const text = await fs.readFile(outputPath, 'utf8')
   assert.match(text, /^# Demo/m)
   assert.match(text, /> A demo site\./)
-  assert.match(text, /\[Hello\]\(https:\/\/publish\.example\/writing\/hello\): First post/)
+  assert.match(text, /### \[Hello\]\(https:\/\/publish\.example\/writing\/hello\)/)
+  assert.match(text, /First post/)
+  assert.match(text, /^Body\.$/m)
 })
 
 test('writeLlmsTxt uses relative links when siteUrl is placeholder', async () => {
@@ -257,7 +272,7 @@ date: 2026-05-01
 
   const text = await fs.readFile(outputPath, 'utf8')
   assert.doesNotMatch(text, /https:\/\/example\.com/)
-  assert.match(text, /\[Hello\]\(\/writing\/hello\)/)
+  assert.match(text, /### \[Hello\]\(\/writing\/hello\)/)
 })
 
 test('createContentSnapshot excludes draft entries (published: false)', async () => {
@@ -385,55 +400,6 @@ writing content
 
   assert.equal(snapshot.length, 1)
   assert.equal(snapshot[0].collection, 'writing')
-})
-
-test('writeContentSnapshot matches golden output', async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'tidypress-context-golden-'))
-  const docsDir = path.join(root, 'docs')
-  const outputPath = path.join(root, 'tidypress-context.md')
-
-  await fs.mkdir(path.join(docsDir, 'src/content/docs'), { recursive: true })
-  await fs.mkdir(path.join(docsDir, 'src/content/writing'), { recursive: true })
-  await fs.mkdir(path.join(docsDir, 'src/content/pages'), { recursive: true })
-
-  await fs.writeFile(
-    path.join(docsDir, 'src/content/docs/getting-started.md'),
-    `---
-title: Getting started
-description: Docs intro
----
-
-Welcome to docs fixture.
-`,
-    'utf8',
-  )
-  await fs.writeFile(
-    path.join(docsDir, 'src/content/writing/hello.md'),
-    `---
-title: Hello writing
-description: Writing intro
-date: 2026-01-01
----
-
-Hello from writing fixture.
-`,
-    'utf8',
-  )
-  await fs.writeFile(
-    path.join(docsDir, 'src/content/pages/about.md'),
-    `---
-title: About
----
-
-About fixture page.
-`,
-    'utf8',
-  )
-
-  await writeContentSnapshot({ docsDir, outputPath })
-  const actual = await fs.readFile(outputPath, 'utf8')
-  const expected = await fs.readFile(new URL('./fixtures/context-snapshot.golden.md', import.meta.url), 'utf8')
-  assert.equal(actual, expected)
 })
 
 test('resolveDeployTarget supports artifact-only mode', () => {

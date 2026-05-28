@@ -142,7 +142,7 @@ Tracked for planning and release notes. **Not** treated as ship blockers unless 
 | **P3: newsletter embed** | Backlog | Config link/iframe block — not a hosted newsletter product |
 | **P3: `talks` collection kind** | Backlog | Only if event schema is repeatedly requested |
 | **Import: medium / ghost / substack** | Scaffold | `tidypress import devto` is live; other providers write review scaffolds (documented) |
-| **Repo hygiene** | Open | Add/commit `examples/*`, `apps/site/tidypress-context.md`, and remaining moat changes when ready for PR |
+| **Repo hygiene** | Open | Add/commit `examples/*` and remaining moat changes when ready for PR |
 | **Git-backed editor (task 19)** | Post-launch | Separate **editor app** — Medium-style UI → markdown files; not part of core tool story |
 | **Hosted platform** | Post-launch | Separate **free hosting** layer — uses `tidypress build`; not core CLI pitch |
 

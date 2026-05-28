@@ -19,6 +19,7 @@ type TidyPressCapabilityName =
   | 'ai'
   | 'theming'
   | 'themingCustom'
+  | 'llmsTxt'
 ```
 
 ## Defaults
@@ -28,6 +29,7 @@ docs
 writing
 pages
 theming
+llmsTxt
 ```
 
 Off by default:

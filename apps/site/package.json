@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "tidypress dev",
     "build": "tidypress build",
-    "preview": "tidypress preview",
-    "context": "tidypress context tidypress-context.md"
+    "preview": "tidypress preview"
   },
   "dependencies": {
     "tidypress": "workspace:*"

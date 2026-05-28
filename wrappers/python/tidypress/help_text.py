@@ -80,7 +80,7 @@ def format_root_help() -> str:
             "tidypress <command> [options]  (Python wrapper)",
             "",
             "Node-backed commands:",
-            "  init, dev, build, preview, clean, deploy, context, import,",
+            "  init, dev, build, preview, clean, deploy, import,",
             "  doctor, migrate-sections, add-version, domain, release-check",
             "",
             "Python-native commands:",

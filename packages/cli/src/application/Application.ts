@@ -8,12 +8,11 @@ Commands:
   init       Scaffold docs/ in current directory (--preset <name> [--site-url <url>])
   migrate-sections  Generate sections->collections migration output
   dev        Start dev server
-  build      Build production site (--output <dir>)
+  build      Build production site (--output <dir>, --no-llms-txt)
   preview    Preview production build
   clean      Remove docs/build/ and local tidypress cache
   deploy     Deploy using registered strategy plugins
   domain     Print custom domain setup plan
-  context    Emit an LLM-friendly docs snapshot
   skills     Install TidyPress agent skills (skills install)
   import     Create content scaffolds from supported source providers
   doctor     Verify baseline docs setup
@@ -107,6 +106,7 @@ export class Application {
       return {
         projectRoot: this.projectRoot,
         outputPath: this.#parseOutput(args),
+        skipLlmsTxt: args.includes('--no-llms-txt'),
       }
     }
 
@@ -116,13 +116,6 @@ export class Application {
 
     if (command === 'domain') {
       return this.#parseDomainRequest(args)
-    }
-
-    if (command === 'context') {
-      return {
-        projectRoot: this.projectRoot,
-        outputPath: args[0] ? path.resolve(this.projectRoot, args[0]) : undefined,
-      }
     }
 
     if (command === 'skills') {

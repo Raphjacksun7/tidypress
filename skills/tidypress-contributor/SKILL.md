@@ -55,7 +55,7 @@ pnpm changeset     # when publishable packages change
 Marketing docs snapshot (when CI expects it):
 
 ```bash
-pnpm --filter @tidypress/site context
+pnpm --filter @tidypress/site build
 ```
 
 ## Pull requests
@@ -75,7 +75,7 @@ Any AI assistant is fine. Follow [`CONTRIBUTING.md`](../../CONTRIBUTING.md#using
 1. **Install skills (optional)** — `npx tidypress skills install` adds `tidypress` and `tidypress-contributor` to Cursor, Claude Code, or Codex.
 2. **Load repo context** — `CONTRIBUTING.md`, package README, tests for files you touch.
 3. **Docs** — Edit `apps/site/src/content/docs/`; keep `configuration.md` accurate.
-4. **Site context (optional)** — `tidypress context` in an example or `apps/site` for collection/nav shape.
+4. **LLM export** — `tidypress build` and inspect `docs/build/llms.txt` when changing published-content export.
 5. **Verify** — `pnpm test` and `pnpm build`; scan the full diff for secrets and unrelated files.
 6. **Disclose** — Say in the PR if AI wrote most of the change.
 
@@ -114,7 +114,7 @@ Commit the generated `.changeset/*.md` file with the PR.
 
 - Do not add docs-SaaS or competitor-site positioning in user copy
 - Do not add fake deploy implementations beyond instructions-only strategies
-- Do not break `tidypress context` golden tests without updating fixtures
+- Do not break `writeLlmsTxt` / `createContentSnapshot` tests without updating expectations
 - Keep the core pitch: *Git-native authorship*, not “docs platform” marketing stacks
 
 ## Examples

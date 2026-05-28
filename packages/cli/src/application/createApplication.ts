@@ -2,7 +2,6 @@ import { Application } from './Application.js'
 import { AddVersionCommand } from '../commands/add-version.js'
 import { BuildCommand } from '../commands/build.js'
 import { CleanCommand } from '../commands/clean.js'
-import { ContextCommand } from '../commands/context.js'
 import { DeployCommand } from '../commands/deploy.js'
 import { DevCommand } from '../commands/dev.js'
 import { DoctorCommand } from '../commands/doctor.js'
@@ -27,7 +26,6 @@ import { AddVersionService } from '../services/AddVersionService.js'
 import { BuildService } from '../services/BuildService.js'
 import { CleanService } from '../services/CleanService.js'
 import { ConfigLoader } from '../services/ConfigLoader.js'
-import { ContextService } from '../services/ContextService.js'
 import { DoctorService } from '../services/DoctorService.js'
 import { DeployService } from '../services/DeployService.js'
 import { DomainSetupService } from '../services/DomainSetupService.js'
@@ -56,7 +54,6 @@ export function createApplication({
   const scaffoldService = new ScaffoldService()
   const addVersionService = new AddVersionService({ configLoader })
   const buildService = new BuildService({ configLoader, engineManager, io })
-  const contextService = new ContextService({ configLoader })
   const cleanService = new CleanService({ configLoader, engineManager })
   const doctorService = new DoctorService({ configLoader })
   const experimentalFeatureService = new ExperimentalFeatureService({ configLoader })
@@ -88,7 +85,6 @@ export function createApplication({
       build: new BuildCommand({ buildService, io }),
       preview: new PreviewCommand({ configLoader, engineManager }),
       clean: new CleanCommand({ cleanService, io }),
-      context: new ContextCommand({ contextService, io }),
       skills: new SkillsCommand({ io }),
       deploy: new DeployCommand({ buildService, deployService, io }),
       domain: new DomainCommand({ domainSetupService, io }),

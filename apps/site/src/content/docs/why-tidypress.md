@@ -19,7 +19,7 @@ The bet is DX: fast Markdown-to-site publishing with conventions built in, so yo
 - docs and dated writing in one tree
 - projects and ideas presented with default conventions
 - a clean default interface
-- Pagefind search at build time
+- Pagefind search and `llms.txt` at build time (machine-readable export of published pages)
 - static site in `build/` (for example `docs/build/`)
 - deploy targets that hand off to normal static hosting tools
 

@@ -186,19 +186,24 @@ tidypress ai suggest docs/draft.md --enable-experimental-ai
 
 These surfaces are guarded on purpose. They are not part of the default docs and writing workflow.
 
-## Content snapshot
+## LLM export (`llms.txt`)
 
-`tidypress context` writes a compact markdown snapshot of published content:
+By default, every `tidypress build` writes `build/llms.txt` at the site root of the static output. It lists published pages with public URLs and includes the **full markdown body** of each entry (not just titles and excerpts).
+
+The export skips disabled collections, drafts (`published: false`), future-scheduled entries, and missing content folders. Enabled custom collections are included.
+
+Agents and tools can fetch `https://yoursite.example/llms.txt` after deploy, or read `docs/build/llms.txt` locally after build.
+
+**Turn it off** when you do not want that file in `build/`:
+
+```ts
+capabilities: {
+  disable: ['llmsTxt'],
+},
+```
+
+One-off skip for a single build:
 
 ```bash
-tidypress context
-tidypress context ./docs-context.md
+tidypress build --no-llms-txt
 ```
-
-Default output:
-
-```txt
-tidypress-context.md
-```
-
-The snapshot skips disabled collections, drafts, future-scheduled entries, and missing content folders. Enabled custom collections appear in the snapshot.

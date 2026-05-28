@@ -102,7 +102,7 @@ See [`examples/`](./examples/).
 
 | Package | Role |
 |---------|------|
-| `tidypress` | CLI: init, dev, build, preview, deploy, context |
+| `tidypress` | CLI: init, dev, build, preview, deploy (`build/` includes `llms.txt`) |
 | `@tidypress/engine` | Astro rendering runtime |
 | `@tidypress/config` | config schema, defaults, normalization |
 | `wrappers/python` | Python entrypoint and Python-native helpers |

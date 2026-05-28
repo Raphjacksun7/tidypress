@@ -27,6 +27,7 @@ async function parseMarkdownMeta(filePath) {
     title: titleMatch ? titleMatch[1].trim() : path.basename(filePath, path.extname(filePath)),
     description: descriptionMatch ? descriptionMatch[1].trim() : '',
     excerpt: body.slice(0, 180).replace(/\s+/g, ' '),
+    body,
     published,
     scheduled: hasValidSchedule ? scheduled : undefined,
   }
@@ -55,6 +56,8 @@ async function walkMarkdownFiles(rootDir) {
 }
 
 /**
+ * Published markdown entries for static `llms.txt` export.
+ *
  * @param {string} docsDir
  * @param {SnapshotConfig} [config]
  */
@@ -80,7 +83,7 @@ export async function createContentSnapshot(docsDir, config = undefined) {
     })
     .map(([key]) => [key, path.resolve(docsDir, `src/content/${key}`)])
 
-  /** @type {{collection: string, filePath: string, title: string, description: string, excerpt: string}[]} */
+  /** @type {{collection: string, filePath: string, title: string, description: string, excerpt: string, body: string}[]} */
   const items = []
   for (const [collection, root] of configuredCollections) {
     const files = await walkMarkdownFiles(root)
@@ -100,28 +103,4 @@ export async function createContentSnapshot(docsDir, config = undefined) {
     }
   }
   return items
-}
-
-/**
- * @param {{ docsDir: string, outputPath: string, config?: SnapshotConfig }} options
- */
-export async function writeContentSnapshot({ docsDir, outputPath, config }) {
-  const snapshot = await createContentSnapshot(docsDir, config)
-  /** @param {string} target */
-  const rel = target => path.relative(docsDir, target).replaceAll(path.sep, '/')
-
-  const lines = ['# TidyPress Context Snapshot', '']
-  for (const item of snapshot) {
-    lines.push(`- [${item.collection}] ${item.title}`)
-    lines.push(`  - path: \`${rel(item.filePath)}\``)
-    if (item.description) {
-      lines.push(`  - description: ${item.description}`)
-    }
-    if (item.excerpt) {
-      lines.push(`  - excerpt: ${item.excerpt}`)
-    }
-  }
-
-  await fs.writeFile(outputPath, `${lines.join('\n')}\n`, 'utf8')
-  return snapshot.length
 }

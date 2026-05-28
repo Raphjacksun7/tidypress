@@ -37,6 +37,7 @@ Steps:
 3. Astro runs from `node_modules/@tidypress/engine` with `TIDYPRESS_PROJECT_ROOT` pointing at your project.
 4. Static HTML is written to `build/`.
 5. Pagefind indexes `build/`.
+6. Unless disabled (`capabilities.disable: ['llmsTxt']` or `tidypress build --no-llms-txt`), the CLI writes `build/llms.txt` — full published markdown for agents and tools.
 
 Power users can add `@tidypress/astro` and an `astro.config.mjs` in the docs directory (`tidypress init --with-astro`).
 
@@ -50,7 +51,6 @@ Power users can add `@tidypress/astro` and an `astro.config.mjs` in the docs dir
 - `preview`
 - `clean`
 - `deploy`
-- `context`
 - `migrate-sections`
 - `add-version`
 - `domain`

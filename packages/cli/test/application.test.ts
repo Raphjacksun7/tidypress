@@ -19,6 +19,24 @@ class FakeCommand {
   }
 }
 
+test('Application dispatches build with --no-llms-txt', async () => {
+  const build = new FakeCommand()
+  const app = new Application({
+    version: '0.1.0',
+    projectRoot: '/workspace',
+    commands: { build },
+    io: { info() {}, error() {} },
+  })
+
+  await app.run(['build', '--no-llms-txt'])
+  assert.equal(build.calls.length, 1)
+  assert.deepEqual(build.calls[0], {
+    projectRoot: '/workspace',
+    outputPath: undefined,
+    skipLlmsTxt: true,
+  })
+})
+
 test('Application dispatches dev command with parsed port', async () => {
   const dev = new FakeCommand()
   const app = new Application({
@@ -45,23 +63,6 @@ test('Application dispatches skills install with force flag', async () => {
   await app.run(['skills', 'install', '--force'])
   assert.equal(skills.calls.length, 1)
   assert.deepEqual(skills.calls[0], { subcommand: 'install', force: true })
-})
-
-test('Application dispatches context command with resolved output path', async () => {
-  const context = new FakeCommand()
-  const app = new Application({
-    version: '0.1.0',
-    projectRoot: '/workspace',
-    commands: { context },
-    io: { info() {}, error() {} },
-  })
-
-  await app.run(['context', 'tmp/context.md'])
-  assert.equal(context.calls.length, 1)
-  assert.deepEqual(context.calls[0], {
-    projectRoot: '/workspace',
-    outputPath: path.resolve('/workspace', 'tmp/context.md'),
-  })
 })
 
 test('Application dispatches init command with preset option', async () => {

@@ -219,6 +219,7 @@ test('Application forwards resolved build --output directory to build command', 
   assert.deepEqual(build.calls[0], {
     projectRoot: '/workspace',
     outputPath: '/workspace/artifacts/site',
+    skipLlmsTxt: false,
   })
 })
 

@@ -335,12 +335,13 @@ Place markdown in `docs/src/content/works/`. Match `nav` `href` values to each c
 | `lab` | writing + projects, docs off |
 | `blog` | writing only, docs and pages off |
 | `persona` | hero, projects, writing, about page |
-| `body-of-work` | works, projects, writing, reference, process, pages (docs off; use `docs-writing` for docs) |
+| `body-of-work` | works, projects, writing, reference, process, pages (docs off) |
+| `body-of-work-docs` | body-of-work + enabled `docs` |
 | `docs-writing` | docs + writing |
 | `custom` | docs + writing + a `playbooks` content collection |
 
 ```bash
-npx tidypress init --preset blog
+npx tidypress init --preset blog --site-url https://yoursite.example
 ```
 
 See [Examples](./examples) for runnable copies under `examples/`.
@@ -478,4 +479,4 @@ Keep presentation separate from the base config:
 
 - [Site layout](./site-layout) covers sidebar groups, chapter navigation, homepage previews, indexes, tags, and icons.
 - [Theme](./theme-typography) covers typography, theme mode, code highlighting, and custom tokens.
-- [Advanced configuration](./advanced-configuration) covers i18n, versions, analytics, capabilities, and `tidypress context`.
+- [Advanced configuration](./advanced-configuration) covers i18n, versions, analytics, capabilities, and `build/llms.txt`.

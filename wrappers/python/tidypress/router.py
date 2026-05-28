@@ -20,7 +20,6 @@ NODE_COMMANDS = {
     "preview",
     "clean",
     "deploy",
-    "context",
     "doctor",
     "release-check",
     "migrate-sections",

@@ -2,7 +2,7 @@ import { resolveProductionSiteUrl } from '@tidypress/config'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import { createContentSnapshot } from './context-snapshot.js'
+import { createContentSnapshot } from './published-content.js'
 
 /** @typedef {import('@tidypress/config').TidyPressConfig} TidyPressConfig */
 
@@ -32,7 +32,7 @@ function publicEntryUrl(siteUrl, basePath, slug) {
 }
 
 /**
- * Writes `/llms.txt` for static hosts (llmstxt.org-style index of public pages).
+ * Writes `/llms.txt` at build: site index plus full markdown bodies for published pages.
  *
  * @param {{ docsDir: string, outputPath: string, config: TidyPressConfig }} options
  */
@@ -76,10 +76,17 @@ export async function writeLlmsTxt({ docsDir, outputPath, config }) {
     for (const item of items) {
       const slug = entrySlugFromPath(docsDir, collectionKey, item.filePath)
       const href = publicEntryUrl(siteUrl, basePath, slug)
-      const detail = item.description || item.excerpt
-      lines.push(detail ? `- [${item.title}](${href}): ${detail}` : `- [${item.title}](${href})`)
+      lines.push(`### [${item.title}](${href})`)
+      if (item.description) {
+        lines.push(item.description)
+      }
+      lines.push('')
+      if (item.body) {
+        lines.push(item.body)
+        lines.push('')
+      }
+      lines.push('---', '')
     }
-    lines.push('')
   }
 
   await fs.mkdir(path.dirname(outputPath), { recursive: true })

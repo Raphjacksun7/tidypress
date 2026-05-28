@@ -59,4 +59,4 @@ Set `featured: true` in frontmatter for writing and projects-kind collections (i
 
 - [Configuration](./configuration) — presets
 - [Examples](./examples)
-- [Context export](./context-export)
+- [Advanced configuration](./advanced-configuration) — `build/llms.txt` for agents

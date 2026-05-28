@@ -43,7 +43,7 @@ Fields:
 | `icon` | Optional card icon path |
 | `tags` | Optional SEO tags; render only when `showTags` is enabled |
 | `search` | Set `false` to exclude from search |
-| `published` | Set `false` to hide from routes, search, and context output |
+| `published` | Set `false` to hide from routes, search, and `llms.txt` |
 | `scheduled` | Future ISO datetime; hidden until that time |
 
 `form` defaults to `doc`. Use `manual` for procedural guides that should use manual chrome and step-oriented navigation.
@@ -219,7 +219,7 @@ scheduled: 2026-06-01T09:00:00Z
 ---
 ```
 
-Unpublished and future-scheduled content is skipped by routes, search, and `tidypress context`.
+Unpublished and future-scheduled content is skipped by routes, search, and `build/llms.txt`.
 
 ## Search exclusion
 

@@ -16,7 +16,6 @@ export type CliCommandName =
   | 'clean'
   | 'deploy'
   | 'domain'
-  | 'context'
   | 'skills'
   | 'import'
   | 'doctor'

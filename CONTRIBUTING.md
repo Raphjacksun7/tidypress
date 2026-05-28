@@ -90,14 +90,6 @@ Commit the generated `.changeset/*.md` file with your PR.
 
 When you change user-facing behavior, update **`apps/site/src/content/docs/`**.
 
-If CI updates the marketing context snapshot:
-
-```bash
-pnpm --filter @tidypress/site context
-```
-
-Commit `apps/site/tidypress-context.md` when the diff is intentional.
-
 ### Review and merge (what maintainers do)
 
 1. Triage issues (labels, repro steps).
@@ -106,13 +98,13 @@ Commit `apps/site/tidypress-context.md` when the diff is intentional.
 4. Approve and **squash-merge** when ready.
 5. Release via Changesets when needed ([`RELEASING.md`](./RELEASING.md)).
 
-## Using AI tools (optional)
+## Using AI tools
 
 You may use **any** AI assistant (Cursor, Claude Code, Codex, ChatGPT, etc.). There is no required vendor workflow.
 
 1. **Read context** — This file, the package README, and nearby tests.
 2. **Optional skills** — `npx tidypress skills install` installs `tidypress` and `tidypress-contributor` for Cursor, Claude Code, or Codex.
-3. **Site context (optional)** — `tidypress context` on an example or `apps/site`.
+3. **LLM export** — run `tidypress build` and spot-check `docs/build/llms.txt` when touching published-content export.
 4. **Implement** — Smallest change that solves the issue.
 5. **Verify** — `pnpm test` and `pnpm build`; review the full `git diff`.
 6. **Disclose** — Note in the PR if AI generated most of the patch.

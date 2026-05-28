@@ -2,7 +2,7 @@
 name: tidypress
 description: >-
   TidyPress publishing framework for Git-native sites — init, dev, build, deploy,
-  collections, presets, Pagefind search, and tidypress context snapshots. Use when
+  collections, presets, Pagefind search, and build/llms.txt. Use when
   editing docs/tidypress.config.ts, markdown in docs/src/content, static site output,
   or when the user mentions tidypress, TidyPress, lab/blog/persona presets, or
   engineer-owned publishing in git.
@@ -41,7 +41,6 @@ Build output: `docs/build/` (override with `tidypress build --output`).
 | `tidypress preview` | Preview production build |
 | `tidypress clean` | Remove build + cache |
 | `tidypress deploy [target]` | Provider strategies (Cloudflare, Vercel, Netlify, GitHub Pages, …) |
-| `tidypress context [file]` | LLM-friendly markdown snapshot of published content |
 | `tidypress doctor` | Baseline setup check |
 | `tidypress import devto` | Live import; medium/ghost/substack are scaffolds |
 | `tidypress skills install` | Install these skills into Cursor / Claude Code / Codex |
@@ -107,7 +106,7 @@ Opinionated presets + kinds; flexible markdown. `siteUrl` must be production (no
 
 - Static output works on any static host; `tidypress deploy` wraps common CLIs (e.g. Cloudflare Pages, GitHub Pages).
 - **Pagefind** runs after build; do not remove the generated search bundle from `build/`.
-- Run `tidypress context` before large LLM edits so the agent sees current published inventory.
+- After `tidypress build`, use `build/llms.txt` (full published markdown) for agent context.
 
 ## Marketing guardrails (user-facing copy)
 
