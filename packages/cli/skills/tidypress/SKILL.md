@@ -112,7 +112,7 @@ Opinionated presets + kinds; flexible markdown. `siteUrl` must be production (no
 
 - One-liner only: *A publishing framework for Git-native authorship.*
 - Do **not** lead with "documentation platform", competitor names, or stacked slogan lists.
-- Hosted platform (task 22) and editor app (task 19) are **separate layers** — not the core CLI pitch.
+- Keep user-facing copy on the **core CLI** (git → build → static site). Do not pitch unreleased products.
 
 ## Docs
 

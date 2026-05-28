@@ -4,7 +4,7 @@ Release publishing is handled by GitHub Actions with Trusted Publishing for npm 
 
 ## Policy
 
-- **Pre–task 30:** ship **1.0.x** patch releases only (`pnpm changeset` → patch). Reserve **1.1.0+** for task 30.
+- **1.0.x line:** ship patch releases via `pnpm changeset` → patch until the next planned minor (1.1.0+).
 - Do not add personal accounts or maintainer names to this file.
 - Publish access is controlled in GitHub, npm, and PyPI settings.
 - Use Trusted Publishing (OIDC) for npm and PyPI — no long-lived registry tokens in GitHub Secrets.
@@ -144,8 +144,6 @@ Tracked for planning and release notes. **Not** treated as ship blockers unless 
 | **P3: `talks` collection kind** | Backlog | Only if event schema is repeatedly requested |
 | **Import: medium / ghost / substack** | Scaffold | `tidypress import devto` is live; other providers write review scaffolds (documented) |
 | **Repo hygiene** | Open | Add/commit `examples/*` and remaining moat changes when ready for PR |
-| **Git-backed editor (task 19)** | Post-launch | Separate **editor app** — Medium-style UI → markdown files; not part of core tool story |
-| **Hosted platform** | Post-launch | Separate **free hosting** layer — uses `tidypress build`; not core CLI pitch |
 
 ## Release roadmap
 
@@ -171,17 +169,6 @@ This section tracks engineering work that affects release sequencing and risk.
 - `collections` always takes precedence when both `sections` and `collections` define docs/writing.
 - Migration guidance must remain in `README.md` and site docs until a formal deprecation release is announced.
 - Any future removal requires a major-version announcement and explicit migration notes.
-
-### Post-launch product sequence (after task 20)
-
-**Core package stays free and simple.** Platform and editor are separate layers on top.
-
-1. **Core launch (task 20)** — `tidypress` tool only in npm/README pitch.
-2. **Hosted platform MVP** — free tier: repo → build → URL; uses core package.
-3. **Editor app Phase 1** — separate Medium-style app → `writing/*.md`; for non-dev writers.
-4. **Editor app Phase 2** — projects form → `projects/*.md`.
-
-Longer-term product layers and stretch items are tracked outside this file (maintainer notes, not part of the public contribution path).
 
 ### Next release targets
 
