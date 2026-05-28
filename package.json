@@ -8,6 +8,7 @@
     "node": ">=22.12.0"
   },
   "scripts": {
+    "prepare": "sh scripts/setup-git-hooks.sh",
     "build": "pnpm -r --workspace-concurrency=1 build",
     "dev": "pnpm --filter @tidypress/engine dev",
     "test": "pnpm -r test",

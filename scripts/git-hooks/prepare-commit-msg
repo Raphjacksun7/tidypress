@@ -1,0 +1,27 @@
+#!/bin/sh
+# Strip Cursor attribution trailers before the commit is finalized.
+MSG_FILE="${1:?}"
+[ -f "$MSG_FILE" ] || exit 0
+
+if command -v perl >/dev/null 2>&1; then
+  perl -i -ne '
+    print unless
+      /cursoragent@cursor\.com/i or
+      /^Co-authored-by:\s*Cursor\b/i or
+      /^Made-with:\s*Cursor\b/i
+  ' "$MSG_FILE"
+else
+  # macOS BSD sed
+  sed -i '' \
+    -e '/cursoragent@cursor\.com/Id' \
+    -e '/^Co-authored-by: Cursor/Id' \
+    -e '/^Made-with: Cursor/Id' \
+    "$MSG_FILE" 2>/dev/null || \
+  sed -i \
+    -e '/cursoragent@cursor\.com/Id' \
+    -e '/^Co-authored-by: Cursor/Id' \
+    -e '/^Made-with: Cursor/Id' \
+    "$MSG_FILE"
+fi
+
+exit 0

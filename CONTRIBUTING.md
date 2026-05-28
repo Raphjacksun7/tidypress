@@ -50,7 +50,7 @@ Requirements: **Node.js 22.12+**, **pnpm**.
 ```bash
 git clone https://github.com/Raphjacksun7/tidypress.git
 cd tidypress
-pnpm install
+pnpm install       # installs a prepare-commit-msg hook that strips Cursor co-author trailers
 pnpm test          # or: pnpm -r test
 pnpm build         # or: pnpm -r build
 ```
