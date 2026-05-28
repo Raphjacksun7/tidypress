@@ -26,7 +26,7 @@
 
 Markdown in git. `tidypress init`, `dev`, `build` — static output you own. Optional docs when you need a manual.
 
-TidyPress is the public interface for an engineer's repos and work: writing, ideas, projects, references, and product knowledge in one owned site.
+TidyPress is the public interface for your repos and work. It gives you a way to talk about their projects, showcase ideas, publish writing, and host the docs, references, and knowledge behind the things they build.
 
 ## Install
 

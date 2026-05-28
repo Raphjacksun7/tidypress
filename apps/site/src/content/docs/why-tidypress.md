@@ -5,9 +5,7 @@ order: 1
 paging: false
 ---
 
-> A publishing framework for Git-native authorship.
-
-TidyPress is the public interface for your repos and work. It gives engineers a way to talk about their projects, showcase ideas, publish writing, and host the docs, references, and knowledge behind the things they build.
+> TidyPress is the public interface for your repos and work. It gives engineers a way to talk about their projects, showcase ideas, publish writing, and host the docs, references, and knowledge behind the things they build.
 
 Write markdown — by hand or with an agent that edits files in git. Preview locally. Run `tidypress build`. Deploy the `build/` folder with whatever host you already use.
 
