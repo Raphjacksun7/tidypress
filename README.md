@@ -1,138 +1,192 @@
 <h1 align="center">
-  <img src="./packages/engine/public/favicon-white.svg" alt="" width="40" height="40">
+  <img src="./packages/engine/public/favicon-white.svg" alt="" width="48" height="48">
+  <br>
   tidypress
 </h1>
 
-A publishing framework for Git-native authorship.
+<p align="center">
+  <strong>A publishing framework for Git-native authorship.</strong><br>
+  Markdown in git → one CLI → a static site you own (writing, projects, body of work, optional docs).
+</p>
 
-[Website](https://tidypress.pages.dev/) · [Documentation](https://tidypress.pages.dev/docs) · [npm](https://www.npmjs.com/package/tidypress) · [PyPI](https://pypi.org/project/tidypress/) · [Issues](https://github.com/Raphjacksun7/tidypress/issues)
+<p align="center">
+  <a href="https://tidypress.pages.dev/">Website</a> ·
+  <a href="https://tidypress.pages.dev/docs">Docs</a> ·
+  <a href="https://www.npmjs.com/package/tidypress">npm</a> ·
+  <a href="https://pypi.org/project/tidypress/">PyPI</a> ·
+  <a href="https://github.com/Raphjacksun7/tidypress/issues">Issues</a>
+</p>
 
-[![CI](https://github.com/Raphjacksun7/tidypress/actions/workflows/ci.yml/badge.svg)](https://github.com/Raphjacksun7/tidypress/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/tidypress.svg)](https://www.npmjs.com/package/tidypress)
-[![License: MIT](https://img.shields.io/badge/license-MIT-black.svg)](./LICENSE)
+<p align="center">
+  <a href="https://github.com/Raphjacksun7/tidypress/actions/workflows/ci.yml"><img src="https://github.com/Raphjacksun7/tidypress/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://www.npmjs.com/package/tidypress"><img src="https://img.shields.io/npm/v/tidypress.svg" alt="npm version"></a>
+  <a href="https://pypi.org/project/tidypress/"><img src="https://img.shields.io/pypi/v/tidypress.svg" alt="PyPI version"></a>
+  <img src="https://img.shields.io/node/v/tidypress.svg?label=node" alt="Node 22.12+">
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-black.svg" alt="MIT license"></a>
+</p>
 
-Markdown in git. `tidypress init`, `dev`, `build` — static output you own. Optional docs when you need a manual.
+<p align="center">
+  <a href="https://tidypress.pages.dev/"><strong>Live demo → tidypress.pages.dev</strong></a>
+</p>
 
-TidyPress is the public interface for an engineer's repos and work: writing, ideas, projects, references, and product knowledge in one owned site.
+---
 
-## Install
+## Highlights
 
-Node.js 22.12 or newer is required for rendering.
+- **One command to a real site** — `init`, `dev`, `build`; static output in `docs/build/`
+- **Presets, not blank folders** — `lab`, `blog`, `persona`, `body-of-work`, `docs-writing`, `custom`
+- **Body of work in git** — works, projects, writing, reference, process; product `docs` when you want them
+- **Search + RSS + SEO** — Pagefind at build time; writing feeds; sitemap when `siteUrl` is set
+- **`llms.txt` for agents** — full published markdown on every build (opt out if you want)
+- **Deploy anywhere** — Cloudflare Pages, GitHub Pages, Netlify, Vercel, or any static host
 
-```sh
-npm install tidypress
-# or
-pnpm add tidypress
-```
-
-Python users can also install the wrapper:
-
-```sh
-pip install tidypress
-```
-
-The Python package includes Python-native helpers. Site commands still use the Node.js CLI and Astro engine.
-
-### Install size
-
-`tidypress` ships Astro, Vite, Pagefind, and related tooling in one package so `init` and `build` work without assembling a stack. The install is larger than a markdown linter; that is the tradeoff for a single-command publishing path.
-
-A thinner install (peer dependencies, split CLI vs engine packages) is possible later and would trade first-run simplicity for a smaller download. The current core optimizes DX over tarball size.
+---
 
 ## Quickstart
 
+**Requires Node.js 22.12+.** The Python package wraps helpers; site commands use the Node CLI.
+
 ```sh
+# 1. Install
+npm install tidypress
+
+# 2. Scaffold + run locally
 npx tidypress init --site-url https://yoursite.example
 npx tidypress dev
 ```
 
-Open `http://localhost:4321`.
-
-Production build:
+Open **http://localhost:4321** — default **lab** preset (writing + projects on the home page).
 
 ```sh
+# 3. Ship static files
 npx tidypress build
 npx tidypress preview
 ```
 
-Output:
+Upload **`docs/build/`** (HTML, Pagefind search, `llms.txt`, sitemap when `siteUrl` is production-ready).
 
-```txt
-docs/build/
+```sh
+pip install tidypress   # optional Python wrapper; rendering still uses Node
 ```
 
-## File shape
+---
+
+## Presets
+
+| Preset | What you get |
+|--------|----------------|
+| `lab` (default) | Writing + projects; docs off |
+| `blog` | Writing only |
+| `persona` | Hero, projects, writing, about page |
+| `body-of-work` | Works, projects, writing, reference, process |
+| `body-of-work-docs` | Body of work + enabled `docs` |
+| `docs-writing` | Docs + writing |
+| `custom` | Docs + writing + sample custom collection |
+
+`default` is an alias for `lab`. See [Getting started](https://tidypress.pages.dev/docs/getting-started) and [Body of work](https://tidypress.pages.dev/docs/body-of-work).
+
+---
+
+## Why TidyPress
+
+Most static setups assume **one** shape: a docs site or a blog. TidyPress is for engineers who want a **public interface** for repos, writing, projects, and product knowledge—without giving up git or handing content to a hosted CMS.
+
+- Markdown and MDX stay in **`docs/src/content/`**
+- **Opinionated nav and home** from presets; escape hatches in config
+- **No account required** to build locally; you own the `build/` folder
+- **Agent-friendly** — `build/llms.txt` plus optional [Cursor / Claude / Codex skills](./skills/README.md)
+
+---
+
+## Compared to a docs-only site
+
+| | Docs-only theme | TidyPress |
+|---|-----------------|-----------|
+| Primary use | Manual / API reference | Whole public presence |
+| Home page | Often docs index | Writing + projects (or body-of-work) |
+| Collections | Usually `docs` | Writing, projects, pages, works, reference, process |
+| Install | Bring your own stack | Single `npm install` (see install size below) |
+| Output | Static HTML | Static HTML + search + RSS + optional `llms.txt` |
+
+---
+
+## Commands
+
+| Command | Purpose |
+|---------|---------|
+| `tidypress init [--preset <name>] [--site-url <url>]` | Scaffold `docs/` |
+| `tidypress dev` / `preview` | Local dev / preview production build |
+| `tidypress build [--no-llms-txt]` | Static site → `docs/build/` |
+| `tidypress deploy [target]` | Hand off `build/` to a host or CLI |
+| `tidypress doctor` | Baseline setup check |
+| `tidypress skills install` | Agent skills for Cursor, Claude Code, Codex |
+
+Full reference: [CLI docs](https://tidypress.pages.dev/docs/reference) · `tidypress --help`
+
+---
+
+## Project layout
 
 ```txt
 docs/
 ├── tidypress.config.ts
 ├── public/
 └── src/content/
-    ├── docs/
-    ├── writing/
-    └── pages/
+    ├── writing/      # posts, RSS, tags
+    ├── projects/     # cards + optional pages
+    ├── docs/         # optional product docs
+    └── pages/        # /about, /now, …
 ```
 
-Docs are stable instructions. Writing is dated context. Pages map to root routes.
+---
 
-## Why
+## Install size
 
-- writing and projects on the home page
-- optional docs when you need a manual
-- markdown and MDX in git, one CLI, static output
-- Pagefind search, RSS for writing, archive and tags
-- deploy anywhere you host static files
+`tidypress` bundles Astro, Vite, and Pagefind so **`init` and `build` work without assembling a stack**. The tarball is larger than a linter-only tool; you trade download size for a single-command path. A slimmer install (peer deps) may come later.
+
+---
 
 ## Examples
 
-Run examples from the repo root after `pnpm install`:
+From the repo root after `pnpm install`:
 
 ```sh
 pnpm --filter @tidypress/example-lab build
 pnpm --filter @tidypress/example-blog build
 pnpm --filter @tidypress/example-persona build
-pnpm --filter @tidypress/example-minimal build
-pnpm --filter @tidypress/example-custom-collections build
-pnpm --filter @tidypress/example-i18n-versioned build
 ```
 
-See [`examples/`](./examples/).
+More: [`examples/`](./examples/) · [Examples guide](https://tidypress.pages.dev/docs/examples)
+
+---
 
 ## Packages
 
 | Package | Role |
 |---------|------|
-| `tidypress` | CLI: init, dev, build, preview, deploy (`build/` includes `llms.txt`) |
-| `@tidypress/engine` | Astro rendering runtime |
-| `@tidypress/config` | config schema, defaults, normalization |
-| `wrappers/python` | Python entrypoint and Python-native helpers |
+| `tidypress` | CLI (what you install from npm) |
+| `@tidypress/engine` | Astro rendering |
+| `@tidypress/config` | Config schema and defaults |
+| `wrappers/python` | Python entrypoint |
 
-End users install `tidypress`.
+---
 
-## Agent skills (Cursor, Claude Code, Codex)
+## Contributing
 
-TidyPress ships [Agent Skills](https://cursor.com/docs/context/skills) so coding agents know the CLI, config, and monorepo conventions.
-
-```sh
-npx tidypress skills install
-```
-
-After `pnpm add tidypress` (or the first CLI command) in an interactive terminal, you may be prompted to install skills into Cursor, Claude Code, or Codex — same pattern as Cloudflare Wrangler. Force install: `npx tidypress --install-skills`.
-
-See [`skills/README.md`](./skills/README.md).
-
-## Contributors
-
-See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for setup, pull requests, and optional AI-assisted workflow. [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md) · [`SECURITY.md`](./SECURITY.md)
+[CONTRIBUTING.md](./CONTRIBUTING.md) · [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) · [SECURITY.md](./SECURITY.md) · [RELEASING.md](./RELEASING.md)
 
 ```sh
-pnpm install
-pnpm test
-pnpm build
+pnpm install && pnpm test && pnpm build
 ```
 
-Release notes live in [`RELEASING.md`](./RELEASING.md).
+---
 
-## Backlog (contributors)
+## Star history
 
-Explicit backlog items (P3 stretch, import scaffolds) are listed in [`RELEASING.md`](./RELEASING.md#explicit-backlog-not-regressions). They are not regressions.
+<a href="https://star-history.com/#Raphjacksun7/tidypress&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Raphjacksun7/tidypress&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Raphjacksun7/tidypress&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Raphjacksun7/tidypress&type=Date" />
+  </picture>
+</a>

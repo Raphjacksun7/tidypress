@@ -1,86 +1,55 @@
 # tidypress
 
-A publishing framework for Git-native authorship.
+**A publishing framework for Git-native authorship** — init, dev, build, and deploy from markdown in `docs/`.
 
-`tidypress` is the CLI: init, dev, build, preview, deploy. Markdown in `docs/` becomes static HTML.
-
-## Install
-
-Node.js 22.12 or newer is required.
-
-```sh
-npm install tidypress
-# or
-pnpm add tidypress
-```
+<p>
+  <a href="https://github.com/Raphjacksun7/tidypress/actions/workflows/ci.yml"><img src="https://github.com/Raphjacksun7/tidypress/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://www.npmjs.com/package/tidypress"><img src="https://img.shields.io/npm/v/tidypress.svg" alt="npm"></a>
+  <a href="https://pypi.org/project/tidypress/"><img src="https://img.shields.io/pypi/v/tidypress.svg" alt="PyPI"></a>
+  <a href="https://github.com/Raphjacksun7/tidypress"><img src="https://img.shields.io/github/stars/Raphjacksun7/tidypress?style=social" alt="GitHub stars"></a>
+</p>
 
 ## Quickstart
 
+Node.js **22.12+** required.
+
 ```sh
-npx tidypress init              # lab preset: writing + projects
-npx tidypress init --preset blog   # writing only
-npx tidypress init --preset persona
+npm install tidypress
+npx tidypress init --site-url https://yoursite.example
 npx tidypress dev
 ```
 
-Open `http://localhost:4321`.
-
-Presets: `lab` (default), `persona`, `blog`, `docs-writing`, `custom`. `default` aliases `lab`.
-
 ```sh
-npx tidypress build
+npx tidypress build    # → docs/build/ (+ llms.txt, Pagefind, sitemap when siteUrl is set)
 npx tidypress preview
 ```
 
-Output is written to `docs/build/` (or `<docsDir>/build/` when config is at the project root).
+## Presets
+
+`lab` (default), `blog`, `persona`, `body-of-work`, `body-of-work-docs`, `docs-writing`, `custom`.
 
 ## Commands
 
 | Command | Purpose |
 |---------|---------|
-| `tidypress init [--preset <name>]` | scaffold a `docs/` folder |
-| `tidypress dev [--port <n>]` | run the local dev server |
-| `tidypress build [--output <dir>]` | build static output |
-| `tidypress preview [--port <n>]` | preview the production build |
-| `tidypress deploy [target]` | copy or hand output to a static host/tool |
-| `tidypress clean` | remove `build/` and local tidypress cache |
-| `tidypress skills install` | install TidyPress skills into Cursor, Claude Code, or Codex |
+| `init` | Scaffold `docs/` |
+| `dev` / `preview` | Dev server / preview build |
+| `build [--no-llms-txt]` | Production static output |
+| `deploy` | Publish `build/` |
+| `doctor` | Setup check |
+| `skills install` | Cursor / Claude / Codex skills |
 
-Every `tidypress build` writes `build/llms.txt` (full published markdown for agents). Skip with `--no-llms-txt` or `capabilities.disable: ['llmsTxt']`.
-
-`--starter <name>` is accepted as an alias for `--preset <name>`.
-
-## Minimal config
-
-```ts
-// docs/tidypress.config.ts
-import { defineConfig } from 'tidypress/config'
-
-export default defineConfig({
-  name: 'my-project',
-  description: 'A publishing framework for Git-native authorship.',
-  nav: [
-    { label: 'docs', href: '/docs' },
-    { label: 'writing', href: '/writing' },
-  ],
-  footer: [],
-  siteUrl: 'https://example.com',
-})
-```
-
-## Development
-
-From the monorepo root:
-
-```sh
-pnpm --filter tidypress build      # tsc → dist/ (published entrypoints)
-pnpm --filter tidypress typecheck  # same as build, no emit
-pnpm --filter tidypress dev        # tsx ./src/runCli.ts (no build step)
-pnpm --filter tidypress test       # build + tsx --test
-```
+Every build writes **`build/llms.txt`** (full published markdown). Skip with `--no-llms-txt` or `capabilities.disable: ['llmsTxt']`.
 
 ## Links
 
-- Documentation: <https://tidypress.pages.dev/docs>
-- Repository: <https://github.com/Raphjacksun7/tidypress>
-- Issues: <https://github.com/Raphjacksun7/tidypress/issues>
+- **Docs:** https://tidypress.pages.dev/docs  
+- **Repo README:** https://github.com/Raphjacksun7/tidypress#readme  
+- **Issues:** https://github.com/Raphjacksun7/tidypress/issues  
+
+## Monorepo development
+
+```sh
+pnpm --filter tidypress build
+pnpm --filter tidypress test
+```

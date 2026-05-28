@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tidypress"
-version = "1.1.0"
+version = "1.0.12"
 description = "Python interface for the TidyPress Node.js CLI."
 readme = "README.md"
 requires-python = ">=3.11"

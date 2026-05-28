@@ -4,6 +4,7 @@ Release publishing is handled by GitHub Actions with Trusted Publishing for npm 
 
 ## Policy
 
+- **Pre–task 30:** ship **1.0.x** patch releases only (`pnpm changeset` → patch). Reserve **1.1.0+** for task 30.
 - Do not add personal accounts or maintainer names to this file.
 - Publish access is controlled in GitHub, npm, and PyPI settings.
 - Use Trusted Publishing (OIDC) for npm and PyPI — no long-lived registry tokens in GitHub Secrets.

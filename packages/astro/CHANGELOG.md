@@ -5,4 +5,4 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @tidypress/engine@1.1.0
+  - @tidypress/engine@1.0.12

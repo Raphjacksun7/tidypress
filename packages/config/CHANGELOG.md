@@ -1,7 +1,7 @@
 # @tidypress/config
 
-## 1.1.0
+## 1.0.12
 
-### Minor Changes
+### Patch Changes
 
 - Remove `tidypress context` command. Every `tidypress build` writes full published markdown to `build/llms.txt` (opt out with `capabilities.disable: ['llmsTxt']` or `--no-llms-txt`). Update site and CLI docs accordingly.
