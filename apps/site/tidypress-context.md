@@ -8,6 +8,10 @@
   - path: `src/content/docs/architecture.md`
   - description: How the CLI, config package, Astro engine, build output, and cache fit together.
   - excerpt: TidyPress is split into three packages and one optional Python wrapper. ```txt packages/ ├── cli/ # commands, project setup, builds, deploy helpers ├── config/ # typed 
+- [docs] Body of work
+  - path: `src/content/docs/body-of-work.md`
+  - description: Works, projects, writing, reference, process, and pages — product docs use the docs collection separately.
+  - excerpt: TidyPress models a public body of work with collection **keys** and built-in **kinds**. The `body-of-work` preset is generated from `publicationSurfaceDefinitions` in `@tidypress/c
 - [docs] Components
   - path: `src/content/docs/components.mdx`
   - description: Built-in MDX components for notes, tabs, file trees, diagrams, images, tooltips, and steps.
@@ -16,6 +20,10 @@
   - path: `src/content/docs/configuration.md`
   - description: The practical shape of docs/tidypress.config.ts.
   - excerpt: TidyPress reads one config file: ```txt docs/tidypress.config.ts ``` Only `name` is required. Keep the file small until the site needs more shape. ```ts import { defineConfig } 
+- [docs] Conventions
+  - path: `src/content/docs/conventions.md`
+  - description: Opinionated site shape, flexible markdown — what TidyPress enforces and what it leaves alone.
+  - excerpt: TidyPress is **opinionated about site shape** and **lightweight about content**. You pick a preset and collection kinds; you write markdown inside those boundaries. ## What we enf
 - [docs] Deploy
   - path: `src/content/docs/deploying.md`
   - description: Build static output, copy it, or hand it to the host you already use.
