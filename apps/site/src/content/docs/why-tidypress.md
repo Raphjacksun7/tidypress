@@ -5,11 +5,11 @@ order: 1
 paging: false
 ---
 
-> TidyPress is the public interface for your repos and work. It gives engineers a way to talk about their projects, showcase ideas, publish writing, and host the docs, references, and knowledge behind the things they build.
+> Your repo already contains the work. TidyPress gives it a public shape: writing, projects, docs when useful, references, and the static build artifact that actually shipped.
 
 Write markdown — by hand or with an agent that edits files in git. Preview locally. Run `tidypress build`. Deploy the `build/` folder with whatever host you already use.
 
-The bet is DX: fast Markdown-to-site publishing with conventions built in, so you do not have to invent the presentation layer from scratch every time a new project deserves a real public surface.
+The bet is not that the world needs another blank static-site starter. The bet is that engineers keep solving the same presentation problem: what should a repo expose publicly, and how much structure should the tool give you before it gets in your way?
 
 ## What stays simple
 

@@ -7,13 +7,15 @@ tags:
 featured: true
 ---
 
-Most publishing tools optimize the moment you hit Publish. TidyPress optimizes the whole loop: the folder layout in git, review on a pull request, and a static `build/` folder you can point at in production.
+Most publishing tools optimize the moment you hit Publish. The problem I kept running into was earlier than that: the repo already had the real material, but the public version of the work was a separate surface I had to rebuild.
 
-[Simon Willison](https://simonwillison.net/) has been spelling out the operational version for years — canonical drafts in files you control, real URLs, models that propose edits while you keep the repo. That discipline predates the current model wave. TidyPress implements it as a small CLI and a fixed site graph.
+TidyPress optimizes the whole loop: the folder layout in git, review on a pull request, and a static `build/` folder you can point at in production.
+
+[Simon Willison](https://simonwillison.net/) has been spelling out the operational version for years — canonical drafts in files you control, real URLs, models that propose edits while you keep the repo. That discipline predates the current model wave. TidyPress implements it as a small CLI and a repeatable public shape.
 
 ## The public interface is the repo
 
-An engineer’s public face is scattered by default: README fragments, release notes, half-finished wikis, posts on feeds you do not own. TidyPress assembles **one publish root**:
+An engineer’s public face is scattered by default: README fragments, release notes, half-finished wikis, posts on feeds you do not own. The source is already in git; the missing layer is the public interface. TidyPress assembles **one publish root**:
 
 ```txt
 site/

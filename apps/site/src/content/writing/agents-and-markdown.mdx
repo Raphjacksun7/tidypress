@@ -1,15 +1,15 @@
 ---
 title: Agents and markdown
 date: "2026-05-22"
-description: If the site lives in git, an agent is just another author.
+description: If the site lives in git, an agent is another contributor to review.
 tags:
   - writing
   - agents
 ---
 
-Coding agents changed the cost of authorship. The friction between “I should write this down” and a file diff collapsed. You still need a point of view, a URL, and a build step you trust — TidyPress assumes all three and stays out of the way.
+Coding agents changed the cost of authorship. The friction between “I should write this down” and a file diff collapsed. What did not change is the editorial contract: you still need a point of view, a reviewable tree, a URL, and a build step you trust.
 
-The site is whatever is in the tree after you merge. Agents propose edits; git keeps history; `tidypress build` turns the merged tree into HTML. Same contract as editing by hand — different speed on the keyboard.
+The site is whatever is in the tree after you merge. Agents propose edits; git keeps history; `tidypress build` turns the merged tree into HTML. Same contract as editing by hand, with a different author upstream of the commit.
 
 ## The tree both of you edit
 
@@ -29,11 +29,11 @@ Markdown on disk, a config file, static output. Presets give the tree a public s
     - pagefind/
 </FileTree>
 
-After `tidypress build`, `build/llms.txt` lists the full published corpus — URLs and markdown bodies — so models can read what shipped without a second snapshot format in the repo.
+After `tidypress build`, `build/llms.txt` lists the full published corpus - URLs and markdown bodies - so models can read what shipped without a second snapshot format in the repo.
 
 ## Same pipeline, different keyboard
 
-When an agent writes half the posts, the operational steps barely change. A new essay is a dated file under `writing/`. A project card is frontmatter and a link. Guides live under `src/content/docs/` when the site needs them. `tidypress dev`, then `tidypress build`, then ship `build/`.
+When an agent drafts half the site, the operational steps should barely change. A new essay is a dated file under `writing/`. A project card is frontmatter and a link. Guides live under `src/content/docs/` when the site needs them. `tidypress dev`, then `tidypress build`, then ship `build/`.
 
 <Mermaid align="center" code={`
 flowchart TB
@@ -51,12 +51,8 @@ flowchart TB
 
 Teach models the folder layout and collection kinds. The pull request remains the editorial layer.
 
-<Image src="/images/writing/agent-pr-review.jpg" alt="Meme: one button labeled merge agent PR at 2am" caption="The essay arrived fully formed at 2 a.m. You still click merge — and maybe fix one heading." />
-
 ## Human speed, agent speed, same history
 
-“Human writer” and “agent writer” are different speeds on the same git history. Both end as HTML on any static host. The web does not care who held the keyboard.
-
-<Image src="/images/writing/honest-work.jpg" alt="It's not much but it's honest work meme" caption="Files in, `build/` out." />
+“Human writer” and “agent writer” are different speeds on the same git history. Both end as HTML on any static host. The web does not care who held the keyboard; the reviewer should.
 
 If your agent can respect a folder layout, TidyPress builds its output the same way it builds yours. Intelligence stays upstream of the commit; the artifact downstream is always the same folder.

@@ -24,9 +24,9 @@
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-black.svg" alt="MIT license"></a>
 </p>
 
-Markdown in git. `tidypress init`, `dev`, `build` — static output you own. Writing, projects, and a `docs` collection in one publish root.
+Markdown in git. `tidypress init`, `dev`, `build` - static output you own. Writing, projects, and a `docs` collection in one publish root.
 
-TidyPress is the public interface for your repos and work. It gives you a way to talk about their projects, showcase ideas, publish writing, and host the docs, references, and knowledge behind the things they build.
+TidyPress gives an engineer's repo a public shape: writing, projects, docs when useful, references, and the static build artifact that actually shipped.
 
 ## Install
 
@@ -48,7 +48,7 @@ The Python package includes Python-native helpers. Site commands still use the N
 
 ### Install size
 
-`tidypress` ships Astro, Vite, Pagefind, and related tooling in one package so `init` and `build` work without assembling a stack. The install is larger than a markdown linter; that is the tradeoff for a single-command publishing path.
+`tidypress` ships Astro, Vite, Pagefind, and related tooling in one package so `init` and `build` work without assembling a stack. The install is larger than a markdown linter; that is the tradeoff for a reliable first site.
 
 A thinner install (peer dependencies, split CLI vs engine packages) is possible later and would trade first-run simplicity for a smaller download. The current core optimizes DX over tarball size.
 
@@ -90,6 +90,8 @@ site/
 Docs are stable instructions. Writing is dated context. Pages map to root routes.
 
 ## Why
+
+Your repo already contains the material. TidyPress supplies the repeatable site shape:
 
 - writing and projects on the home page
 - `docs` collection for sidebar-ordered guides at `/docs/…` (enable per preset or config)
