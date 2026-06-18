@@ -119,7 +119,7 @@ test('static provider logs readiness without shell commands', async () => {
   })
 
   assert.equal(commands.length, 0)
-  assert.deepEqual(messages, ['Static output ready at /workspace/docs/build'])
+  assert.deepEqual(messages, ['Static output ready at /workspace/site/build'])
 })
 
 test('s3 provider requires a target when none is supplied', async () => {
@@ -160,7 +160,7 @@ test('s3 provider executes aws sync command for URI targets', async () => {
   assert.deepEqual(commands, [
     {
       command: 'aws',
-      args: ['s3', 'sync', '/workspace/docs/build/', 's3://bucket/docs', '--delete'],
+      args: ['s3', 'sync', '/workspace/site/build/', 's3://bucket/docs', '--delete'],
     },
   ])
 })
@@ -184,7 +184,7 @@ test('ssh provider executes rsync command for scp targets', async () => {
   assert.deepEqual(commands, [
     {
       command: 'rsync',
-      args: ['-az', '--delete', '/workspace/docs/build/', 'deploy@example.com:/var/www/site'],
+      args: ['-az', '--delete', '/workspace/site/build/', 'deploy@example.com:/var/www/site'],
     },
   ])
 })

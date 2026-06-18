@@ -1,45 +1,66 @@
 ---
 title: Git-native authorship
 date: "2026-05-26"
-description: Why the publish tree and the build receipt matter more than another writing surface.
+description: Why a repo still needs a public shape before the work becomes legible.
 tags:
   - writing
 featured: true
 ---
 
-Most publishing tools optimize the moment you hit Publish. The problem I kept running into was earlier than that: the repo already had the real material, but the public version of the work was a separate surface I had to rebuild.
+Most publishing tools optimize the moment you hit Publish. The problem I kept running into was earlier than that.
 
-TidyPress optimizes the whole loop: the folder layout in git, review on a pull request, and a static `build/` folder you can point at in production.
+The work was already somewhere: project READMEs, notes, screenshots, release history, reference pages, half-written essays, decisions that only made sense if you were there when they happened. The public version was the part I kept rebuilding, each time from scratch, each time without solving why the previous one felt wrong.
 
-[Simon Willison](https://simonwillison.net/) has been spelling out the operational version for years — canonical drafts in files you control, real URLs, models that propose edits while you keep the repo. That discipline predates the current model wave. TidyPress implements it as a small CLI and a repeatable public shape.
+It took longer than I want to admit to name the actual problem. **A repo is not a public interface. It is a production artifact with a different audience.**
 
-## The public interface is the repo
+## The site is an interface, not a mirror
 
-An engineer’s public face is scattered by default: README fragments, release notes, half-finished wikis, posts on feeds you do not own. The source is already in git; the missing layer is the public interface. TidyPress assembles **one publish root**:
+A repo can be useful to the person maintaining it and still be a poor public interface. It exposes files, commits, folders, and implementation detail. A `git log` tells you what changed and when. It does not tell you what the work is, what is stable, what is exploratory, what to read first, or how the pieces relate.
+
+Those are editorial decisions. They do not fall out of the files automatically. Someone has to make them, and the site is where that judgment either happens or visibly fails to happen.
+
+[Simon Willison](https://simonwillison.net/) has been spelling out the operational discipline for years: keep drafts in files you control, publish at real URLs, let models propose edits while you keep review and ownership. That matters more now, not less.
+
+## The missing piece: a public shape
+
+The structure I kept returning to after enough failed attempts looks like this:
 
 ```txt
 site/
 ├── tidypress.config.ts
 └── src/content/
-    ├── writing/    # dated posts (RSS, tags, archive)
-    ├── projects/   # cards + optional pages (lab preset)
-    └── docs/       # docs collection — sidebar-ordered guides at /docs/…
+    ├── writing/    # dated thinking and essays
+    ├── projects/   # work with outcomes and context
+    └── docs/       # guides when the work needs a manual
 ```
 
-`writing/` holds dated posts with RSS. `projects/` drives the home page. The **`docs` collection** at `docs/` is sidebar-ordered manuals at `/docs/…` (enable per preset or config). Enable collections in config; shape the site to the work.
+This is not clever folder naming. Each section makes a specific *promise* to a reader.
 
-## Build output is the contract
+`writing` says: time is meaningful here. These pieces have a date and they accumulate into a record of thinking over time. `projects` says: something was built, it has an outcome, and you can evaluate it. `docs` says: this explanation is stable enough to maintain. It will not rot next month.
 
-`tidypress build` produces HTML you can host anywhere and **`build/llms.txt`**: titles, URLs, full markdown bodies of everything that shipped. Agents read that file the way humans read the site — one artifact, generated from the same source tree.
+When everything collapses into one feed, those distinctions disappear. A release note looks like an essay looks like a reference page. The reader cannot tell what they are looking at or how seriously to take it.
 
-Pagefind runs at build time, so search indexes exactly what you built.
+## Convention before output
 
-## Site shape, your prose
+Here is the mechanism that took me a while to see clearly.
 
-TidyPress fixes navigation, home sections, collection kinds, and the path from markdown to `build/`. You write the pages. The conventions exist so every new repository does not reinvent the presentation layer from scratch.
+When you start a project without a public content model, the first thing you publish sets an implicit structure. Everything after it inherits that structure. Three months later you have a `posts/` folder with fifteen files that are trying to be six different kinds of thing, and rearchitecting means breaking URLs, rewriting frontmatter, and redoing the navigation. So you do not rearchitect. You keep the structure that was never a decision.
+
+This is why the structural choice compounds. It is not that a `writing/projects/docs` split is inherently superior to a flat `posts/` folder. It is that making the decision explicitly, before the content accretes, means you can hold to it. Every piece of content you add from that point reinforces the model rather than straining against it.
+
+Good engineering conventions do the same thing: routes get a place to live before you build the handler, tests get a shape before you write the first assertion. The convention is not the interesting part. The interesting part is that the convention removes a class of decisions from every subsequent piece of work.
+
+## Artifact as contract
+
+`tidypress build` writes the public site to `site/build/`. That folder is the contract. If it is in the build, it shipped. If it is not, it did not.
+
+Working material lives in git. Review happens in diffs. The public interface is generated from the same tree the agent and the human both edit.
 
 ```bash
 npx tidypress init --preset lab --site-url https://yoursite.example
+npx tidypress dev
 ```
 
-[Why TidyPress](/docs/why-tidypress) states the thesis in one page. [Agents and markdown](/writing/agents-and-markdown) walks the same pipeline when the co-author is a model.
+The setup is not the point. The point is that the public shape of the work is an explicit decision, made once, before the content exists to resist it.
+
+[Why TidyPress](/docs/why-tidypress) goes further on the product thesis. [Agents and markdown](/writing/agents-and-markdown) walks through what this convention looks like when an agent is part of the authorship.

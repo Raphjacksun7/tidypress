@@ -47,7 +47,7 @@ Experimental Node commands (`editor`, `export`, `ai`) are also forwarded when en
 `convert` turns a notebook into MDX:
 
 ```sh
-tidypress convert analysis.ipynb --output docs/src/content/docs/analysis.mdx
+tidypress convert analysis.ipynb --output site/src/content/docs/analysis.mdx
 ```
 
 It preserves frontmatter, markdown cells, code cells, text output, and PNG image outputs.
@@ -83,7 +83,7 @@ The wrapper supports reading `tidypress.yaml` / `tidypress.yml` and bridging com
 python:
   convert:
     input_path: analysis.ipynb
-    output_path: docs/src/content/docs/analysis.mdx
+    output_path: site/src/content/docs/analysis.mdx
     watch: true
 ```
 

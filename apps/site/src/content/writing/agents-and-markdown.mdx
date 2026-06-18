@@ -1,41 +1,40 @@
 ---
 title: Agents and markdown
 date: "2026-05-22"
-description: If the site lives in git, an agent is another contributor to review.
+description: An agent that can write markdown is not the same as an agent that knows where the markdown belongs.
 tags:
   - writing
   - agents
 ---
 
-Coding agents changed the cost of authorship. The friction between “I should write this down” and a file diff collapsed. What did not change is the editorial contract: you still need a point of view, a reviewable tree, a URL, and a build step you trust.
+There is a specific failure mode I kept seeing when people started running agents against their personal sites: the output piled up without accumulating meaning. More files, same confusion.
 
-The site is whatever is in the tree after you merge. Agents propose edits; git keeps history; `tidypress build` turns the merged tree into HTML. Same contract as editing by hand, with a different author upstream of the commit.
+The agent can write markdown. That was never the hard part.
+
+## The question nobody asks first
+
+The useful question is not whether an agent can write your content. It can. The question is what _model of your work_ the agent is writing into.
+
+An agent working into a flat `posts/` folder produces a growing list. An agent working into a content model that distinguishes `writing` from `projects` from `docs` produces something a reader can navigate. The editorial contract does not disappear because the keyboard got faster. **Convention is not the enemy of agent-assisted authorship. It is what makes agent-assisted authorship non-destructive.**
 
 ## The tree both of you edit
 
-Markdown on disk, a config file, static output. Presets give the tree a public shape from day one: writing on the feed, work on the home page, guides in the `docs` collection when you enable it (per preset or config).
+`writing`, `projects`, and `docs` are separate because they carry different meaning for a reader: a dated essay is not the same artifact as a project outcome, which is not the same as a stable reference.
 
 <FileTree>
-- site/
-  - **tidypress.config.ts**
-  - src/
-    - content/
-      - writing/
-      - projects/
-      - docs/
-  - build/
-    - index.html
-    - llms.txt
-    - pagefind/
+  - site/ - **tidypress.config.ts** - src/ - content/ - writing/ - projects/ -
+  docs/ - build/ - index.html - pagefind/
 </FileTree>
 
-After `tidypress build`, `build/llms.txt` lists the full published corpus - URLs and markdown bodies - so models can read what shipped without a second snapshot format in the repo.
+When an agent learns that distinction, it stops being a producer of content and starts being a contributor to a body of work. You can see this in the diff: an agent that knows the schema proposes a file under `writing/2026-05-22-agents-and-markdown.md` with a `date`, a `description`, and prose. An agent that does not know it proposes a file named `new-post.md` at the root, with no frontmatter, no date, and no relationship to anything else in the repo. Both agents wrote markdown. Only one of them wrote _into_ something.
 
 ## Same pipeline, different keyboard
 
-When an agent drafts half the site, the operational steps should barely change. A new essay is a dated file under `writing/`. A project card is frontmatter and a link. Guides live under `src/content/docs/` when the site needs them. `tidypress dev`, then `tidypress build`, then ship `build/`.
+When an agent drafts half the site, the operational steps should barely change. A new essay is a dated file under `writing/`. A project page carries outcome and context. Guides live under `src/content/docs/` when the work needs stable explanation. `tidypress dev`, then `tidypress build`, then ship `build/`.
 
-<Mermaid align="center" code={`
+<Mermaid
+  align="center"
+  code={`
 flowchart TB
   subgraph authors [Authors]
     Human[You]
@@ -47,12 +46,17 @@ flowchart TB
   Merge --> Build[tidypress build]
   Build --> Artifacts[build/ HTML + Pagefind]
   Artifacts --> Host[Static host]
-`} />
+`}
+/>
 
-Teach models the folder layout and collection kinds. The pull request remains the editorial layer.
+The pull request is the editorial layer. That does not change based on who produced the draft. Teach models the folder layout and collection kinds. Review the diff the same way you would review any other change to the work.
 
-## Human speed, agent speed, same history
+## Faster authorship still needs slower judgment
 
-“Human writer” and “agent writer” are different speeds on the same git history. Both end as HTML on any static host. The web does not care who held the keyboard; the reviewer should.
+Speed is not the bottleneck in most personal publishing. Judgment is. And the specific judgment that gets skipped when authorship accelerates is not "is this prose good enough?" It is: _does this piece have a boundary?_ Does it know what it is, when it ends, what it links to, whether it belongs in `writing` or `projects`, whether it is ready or still exploratory?
 
-If your agent can respect a folder layout, TidyPress builds its output the same way it builds yours. Intelligence stays upstream of the commit; the artifact downstream is always the same folder.
+Those questions take the same amount of time regardless of who wrote the draft. A project page with no stated outcome is incomplete whether a human or an agent produced it. An essay without a date is unanchored in either case.
+
+"Human writer" and "agent writer" are different speeds on the same git history. The reviewer is still you. The public shape of the work is still yours to defend.
+
+If your agent can respect a folder layout, TidyPress builds its output the same way it builds yours. Intelligence stays upstream of the commit. What lives in `build/` is the site.

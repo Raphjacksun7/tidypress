@@ -67,6 +67,6 @@ Examples: `tidypress deploy cloudflare` · `github-pages` · `vercel` · `netlif
 
 Use `tidypress deploy --help` for flags such as `--with-ci` and output dir.
 
-## Context snapshot
+## Build artifact for agents
 
 Every `tidypress build` writes `build/llms.txt`: public URLs plus full markdown bodies for published entries. Respects `published` and `scheduled` frontmatter.

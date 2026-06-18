@@ -468,7 +468,7 @@ Docs pages can show an “Edit this page” link:
 repository: {
   url: 'https://github.com/you/project',
   branch: 'main',
-  editPath: 'docs/src/content',
+  editPath: 'site/src/content',
 }
 ```
 

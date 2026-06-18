@@ -1,0 +1,96 @@
+---
+title: The folder is the contract
+date: "2026-04-24"
+description: A quiet preference for public work that can be inspected, reviewed, built, and shipped.
+published: false
+tags:
+  - writing
+  - markdown
+  - static
+---
+
+I like publishing when it stays close to the file system: markdown on disk, a small config, a build step, something you can host without drama.
+
+This is a preference, not a principle. But preferences accumulate into systems. After enough time, I started to notice a pattern in which publishing setups I actually maintained and which ones I abandoned: the ones I kept were the ones I could inspect at any layer without needing to trust an interface I did not control.
+
+## A line worth keeping
+
+There is a claim that runs through a few people I read carefully, and it is older than the current wave of model tooling.
+
+[Simon Willison](https://simonwillison.net/) puts it operationally: keep what you can diff in git, publish at real URLs, let the model propose edits while you hold review and canonical ownership. [Knuth](https://www-cs-faculty.stanford.edu/~knuth/)'s *literate programming* was a different version of the same idea: the program and the explanation are one artifact, not two documents that drift apart. [Berners-Lee](https://www.w3.org/People/Berners-Lee/) treated a page as a document with a stable address, not a row in a feed someone else controls the ordering of. [Lamport](https://lamport.azurewebsites.net/) is bluntest: if you cannot state precisely what an artifact is, you cannot reason about whether you built it correctly.
+
+The thread across all four: *the artifact should be something you can point at and say "that is the thing."* Not a live state in a database, not a rendered view of content you cannot export, not a version only the platform can canonically read. Something you hold.
+
+A static `build/` folder is that kind of artifact. It is either there or it is not. You can open it in a text editor, diff it, email it, or put it on a USB drive. That binary is the point.
+
+<Image src="/images/writing/manuscript-typewriter.gif" alt="Typewriter striking paper, line by line" caption="Source before presentation. The line on the page outlives the machine that set it." />
+
+TidyPress is built in that spirit. You keep markdown, `tidypress.config.ts`, and a `build/` folder you upload. Three things, all inspectable, nothing in between that only a vendor can read.
+
+The site gives the work a public shape: `writing` for dated thinking, `projects` for outcomes, `docs` when something needs stable explanation.
+
+<FileTree>
+- site/
+  - **tidypress.config.ts**
+  - src/
+    - content/
+      - writing/
+      - projects/
+      - docs/
+  - build/
+</FileTree>
+
+That layout is not clever. It is deliberate. Future-you, and any agent with read access to the repo, should be able to understand where a piece of work belongs without reading a manual.
+
+## Build as receipt
+
+The build step matters the way a compiler output matters: intent becomes an artifact you can point at.
+
+`tidypress build` produces HTML and a search index. You put those on any static host. The pull request is where I read prose. Production is the bytes in `build/`.
+
+<Mermaid align="center" code={`
+flowchart LR
+  Files[Markdown in git] --> Build[tidypress build]
+  Build --> Out[build/]
+  Out --> Host[Static host]
+`} />
+
+```bash
+git diff main...HEAD -- site/src/content/
+tidypress build
+# ship site/build/ — same artifact CI built
+```
+
+<Image src="/images/writing/print-output.gif" alt="Sheets feeding through a printer" caption="A build is a print run. Fixed pages you can ship, not a live feed to babysit." />
+
+That rhythm (pre-render once, serve files) is old and still good for text-heavy sites. [Jamstack](https://jamstack.org/) names the pattern. The [Web Almanac](https://almanac.httparchive.org/en/2022/jamstack) describes it as fast pages from pre-rendering and caching. The predictability is the point: what search indexes is what you built, not a parallel copy maintained elsewhere. [Pagefind](https://pagefind.app/docs/) runs at build time for exactly that reason.
+
+### A small gimmick that is also true
+
+Static output is just HTML on disk, which means you can iframe your own build artifact inside a post, a readme, or a demo page. No app server required. Same host, same bytes users get in production. Third-party sites often block embedding. Your own `build/` folder does not.
+
+<div class="not-prose tidy-embed-frame">
+  <iframe
+    title="Example build/ listing"
+    src="/embeds/build-receipt.html"
+    loading="lazy"
+  />
+</div>
+
+<Callout type="tip">
+MDX accepts raw `<iframe>`. Point it at a file under `site/public/` and the frame always loads.
+</Callout>
+
+## Docs without identity capture
+
+The failure mode I have seen most often: someone adds a `docs/` section, and within six months the docs are the whole site. The writing disappears. The projects page gets stale. What was a personal work surface becomes an unofficial product portal.
+
+This happens because docs have gravity. They attract updates, versioning, search, navigation structures, sidebars. Each of those is a reasonable addition in isolation. Together they reorganize the site around the tool rather than the person who built it.
+
+A `docs/` collection in TidyPress is deliberately lightweight. It holds explanations that need to stay stable. It does not get its own layout, its own search silo, or its own identity separate from the rest of the site. Writing is still writing. Projects are still projects. Docs are just the part of the work that earns a manual.
+
+<Callout type="quote">
+Keep the working material inspectable. Let the build prove what shipped. Keep the reading experience quiet enough to finish a post.
+</Callout>
+
+[Git's snapshot model](https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F#_snapshots_not_differences) and [review on pull requests](https://docs.github.com/en/get-started/using-github/github-flow) already treat text like code when teams care enough to apply them. That discipline transfers. A personal site is a repo with a public interface. The folder is the contract. Editors, agents, and CI stay upstream. What remains after save is the site.
