@@ -1,5 +1,5 @@
 ---
-title: Git-native authorship
+title: Information architecture first
 date: "2026-05-26"
 description: Why a repo still needs a public shape before the work becomes legible.
 tags:

@@ -1,6 +1,11 @@
 # local quickstart demo output
 .cache/
 
+# local-only maintainer/demo wrappers (use pnpm/CI commands instead)
+scripts/setup-github-repo.sh
+scripts/quickstart-demo.sh
+scripts/registry-e2e.sh
+
 # build output
 dist/
 dist-test/

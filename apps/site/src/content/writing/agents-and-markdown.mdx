@@ -22,8 +22,16 @@ An agent working into a flat `posts/` folder produces a growing list. An agent w
 `writing`, `projects`, and `docs` are separate because they carry different meaning for a reader: a dated essay is not the same artifact as a project outcome, which is not the same as a stable reference.
 
 <FileTree>
-  - site/ - **tidypress.config.ts** - src/ - content/ - writing/ - projects/ -
-  docs/ - build/ - index.html - pagefind/
+- site/
+  - **tidypress.config.ts**
+  - src/
+    - content/
+      - writing/
+      - projects/
+      - docs/
+  - build/
+    - index.html
+    - pagefind/
 </FileTree>
 
 When an agent learns that distinction, it stops being a producer of content and starts being a contributor to a body of work. You can see this in the diff: an agent that knows the schema proposes a file under `writing/2026-05-22-agents-and-markdown.md` with a `date`, a `description`, and prose. An agent that does not know it proposes a file named `new-post.md` at the root, with no frontmatter, no date, and no relationship to anything else in the repo. Both agents wrote markdown. Only one of them wrote _into_ something.
