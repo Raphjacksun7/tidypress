@@ -1,5 +1,14 @@
 # @tidypress/engine
 
+## 1.0.15
+
+### Patch Changes
+
+- Release alignment with `tidypress@1.0.15`.
+
+- Updated dependencies
+  - @tidypress/config@1.0.15
+
 ## 1.0.12
 
 ### Patch Changes

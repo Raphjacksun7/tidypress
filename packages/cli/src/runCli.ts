@@ -77,8 +77,15 @@ export async function runCli(argv, { projectRoot = process.cwd(), io = console }
   const parsed = parseCliFlags(argv)
   const app = createApplication({ projectRoot, version, io })
   try {
+    if (parsed.installSkills && parsed.argv.length === 0) {
+      await maybeInstallTidyPressSkillsGlobally({ force: true, io })
+      return 0
+    }
+
     await app.run(parsed.argv)
-    await maybeInstallTidyPressSkillsGlobally({ force: parsed.installSkills, io })
+    if (parsed.installSkills) {
+      await maybeInstallTidyPressSkillsGlobally({ force: true, io })
+    }
     return 0
   } catch (error) {
     return handleCliError(error, { io, verboseErrors: parsed.verboseErrors })

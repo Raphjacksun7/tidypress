@@ -42,7 +42,8 @@ async function pathExists(directory) {
 }
 
 /**
- * Detects installed AI coding agents by their config directories.
+ * Detects installed AI coding agents by their config directories under `$HOME`.
+ * Presence of `~/.cursor`, `~/.claude`, or `~/.codex` is enough — no binary check.
  *
  * @returns {Promise<DetectedAgent[]>}
  */

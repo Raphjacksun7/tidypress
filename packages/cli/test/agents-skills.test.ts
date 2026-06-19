@@ -27,6 +27,29 @@ test('detectAgents returns an array', async () => {
   assert.ok(Array.isArray(agents))
 })
 
+test('detectAgents treats agent config directory presence as installed', async () => {
+  const tempHome = await mkdtemp(path.join(os.tmpdir(), 'tidypress-detect-agents-'))
+  const originalHome = process.env.HOME
+  process.env.HOME = tempHome
+
+  try {
+    assert.deepEqual(await detectAgents(), [])
+
+    await mkdir(path.join(tempHome, '.claude'), { recursive: true })
+    const agents = await detectAgents()
+    assert.equal(agents.length, 1)
+    assert.equal(agents[0]?.id, 'claude')
+    assert.match(agents[0]?.globalSkillsPath ?? '', /\.claude\/skills$/)
+  } finally {
+    if (originalHome === undefined) {
+      delete process.env.HOME
+    } else {
+      process.env.HOME = originalHome
+    }
+    await rm(tempHome, { recursive: true, force: true })
+  }
+})
+
 test('metadata round-trip in temp home', async () => {
   const tempHome = await mkdtemp(path.join(os.tmpdir(), 'tidypress-skills-meta-'))
   const originalHome = process.env.HOME

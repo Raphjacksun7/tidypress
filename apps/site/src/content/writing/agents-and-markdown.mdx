@@ -1,70 +1,84 @@
 ---
-title: Agents and markdown
+title: What changes when an agent has the TidyPress skill installed
 date: "2026-05-22"
-description: An agent that can write markdown is not the same as an agent that knows where the markdown belongs.
+description: Installing the package also offers to install an Agent Skill for Cursor, Claude Code, or Codex. Here's what that skill actually does differently.
 tags:
   - writing
   - agents
 ---
 
-There is a specific failure mode I kept seeing when people started running agents against their personal sites: the output piled up without accumulating meaning. More files, same confusion.
+Running `pnpm add tidypress` does one extra thing most installs don't. It checks whether Cursor, Claude Code, or Codex are set up on the machine, and if so, asks whether to install a skill for them. Say yes, and from that point on, an agent working in that project already knows the CLI, the config shape, and where content is supposed to go.
 
-The agent can write markdown. That was never the hard part.
+This is the same pattern Cloudflare uses for Wrangler: detect the agent directory on first run, offer the skill right there instead of sending someone to a docs page about it.
 
-## The question nobody asks first
+Most Agent Skills that exist today stop at teaching commands. The skill bundle Cloudflare ships for Wrangler is a good one: it gets an agent to reach for `wrangler deploy` instead of guessing at an API that doesn't exist, to put bindings in `wrangler.jsonc` instead of inventing config syntax, to use R2 correctly instead of hallucinating an interface. That's a real, common failure mode, agents confidently using APIs that aren't real, and the skill fixes it. It's also about as far as most CLI skills go: command names, flag syntax, config shape.
 
-The useful question is not whether an agent can write your content. It can. The question is what _model of your work_ the agent is writing into.
+The TidyPress skill does that part too. It also does something most CLI skills skip, because most CLIs don't have an opinion to teach here: it tells an agent what kind of content it's about to write before it writes it.
 
-An agent working into a flat `posts/` folder produces a growing list. An agent working into a content model that distinguishes `writing` from `projects` from `docs` produces something a reader can navigate. The editorial contract does not disappear because the keyboard got faster. **Convention is not the enemy of agent-assisted authorship. It is what makes agent-assisted authorship non-destructive.**
+## What actually happens, not a hypothetical
 
-## The tree both of you edit
+I ran this for real instead of describing it. Fresh install, fresh `tidypress init`, then forced the skill install:
 
-`writing`, `projects`, and `docs` are separate because they carry different meaning for a reader: a dated essay is not the same artifact as a project outcome, which is not the same as a stable reference.
+```bash
+$ npx tidypress skills install --force
+Successfully installed TidyPress skills for: Claude Code.
+```
 
-<FileTree>
-- site/
-  - **tidypress.config.ts**
-  - src/
-    - content/
-      - writing/
-      - projects/
-      - docs/
-  - build/
-    - index.html
-    - pagefind/
-</FileTree>
+That installs the real `SKILL.md` into `~/.claude/skills/tidypress/`. It's not a summary or a marketing description, it's the literal file an agent reads, frontmatter and all:
 
-When an agent learns that distinction, it stops being a producer of content and starts being a contributor to a body of work. You can see this in the diff: an agent that knows the schema proposes a file under `writing/2026-05-22-agents-and-markdown.md` with a `date`, a `description`, and prose. An agent that does not know it proposes a file named `new-post.md` at the root, with no frontmatter, no date, and no relationship to anything else in the repo. Both agents wrote markdown. Only one of them wrote _into_ something.
+```yaml
+---
+name: tidypress
+description: >-
+  TidyPress publishing framework for Git-native sites — init, dev, build, deploy,
+  collections, presets, Pagefind search, and build/llms.txt. Use when
+  editing site/tidypress.config.ts, markdown in site/src/content...
+---
+```
 
-## Same pipeline, different keyboard
+With that file loaded, I asked for a project page the way someone actually would: "add a project page for the checkers UI redesign, mark it active, link the repo." The result, written to the right place on the first try:
 
-When an agent drafts half the site, the operational steps should barely change. A new essay is a dated file under `writing/`. A project page carries outcome and context. Guides live under `src/content/docs/` when the work needs stable explanation. `tidypress dev`, then `tidypress build`, then ship `build/`.
+```yaml
+# src/content/projects/checkers-ui-redesign.md
+---
+title: Checkers UI redesign
+description: Warm amber desktop palette merged with mobile-specific components.
+status: active
+featured: true
+repo: https://github.com/example/checkers-ui
+---
+```
 
-<Mermaid
-  align="center"
-  code={`
-flowchart TB
-  subgraph authors [Authors]
-    Human[You]
-    Agent[Agent]
-  end
-  Human -->|edit markdown| Git[(Git repo)]
-  Agent -->|propose diff| Git
-  Git -->|PR review| Merge[Merge]
-  Merge --> Build[tidypress build]
-  Build --> Artifacts[build/ HTML + Pagefind]
-  Artifacts --> Host[Static host]
-`}
-/>
+Then `tidypress build`, also real:
 
-The pull request is the editorial layer. That does not change based on who produced the draft. Teach models the folder layout and collection kinds. Review the diff the same way you would review any other change to the work.
+```bash
+$ npx tidypress build
+Indexed 7 pages, 98 words
+```
 
-## Faster authorship still needs slower judgment
+The new page is in the output at `build/projects/checkers-ui-redesign/`, and it shows up correctly inside `build/llms.txt`, the full published markdown the build writes automatically:
 
-Speed is not the bottleneck in most personal publishing. Judgment is. And the specific judgment that gets skipped when authorship accelerates is not "is this prose good enough?" It is: _does this piece have a boundary?_ Does it know what it is, when it ends, what it links to, whether it belongs in `writing` or `projects`, whether it is ready or still exploratory?
+```
+### [Checkers UI redesign](https://example-demo.com/projects/checkers-ui-redesign)
+Warm amber desktop palette merged with mobile-specific components.
+```
 
-Those questions take the same amount of time regardless of who wrote the draft. A project page with no stated outcome is incomplete whether a human or an agent produced it. An essay without a date is unanchored in either case.
+I didn't run a second test with the skill absent. The failure mode I'm describing there, a file like `new-post.md` landing at the repo root with no frontmatter, is the well-documented, common pattern when an agent doesn't have project conventions to work from. I'm not claiming I reproduced that one specifically, only that what's above is real, and that the contrast it implies is the actual reason the skill exists.
 
-"Human writer" and "agent writer" are different speeds on the same git history. The reviewer is still you. The public shape of the work is still yours to defend.
+None of this changes what happens after a draft lands. A pull request still gets reviewed the same way no matter who or what wrote the first version. What changes is whether that first version already has the right shape, instead of needing a round of corrections before review can even start.
 
-If your agent can respect a folder layout, TidyPress builds its output the same way it builds yours. Intelligence stays upstream of the commit. What lives in `build/` is the site.
+## The honest part
+
+Auto-prompting on install isn't free, and it's worth saying plainly. Wrangler users have pushed back when the same prompt fires on commands that have nothing to do with it, or when a team already runs its own skills and doesn't want a vendor's opinion injected automatically. The TidyPress prompt fires once, only in an interactive terminal, and turns off completely with one environment variable:
+
+```bash
+TIDYPRESS_SKIP_SKILLS_INSTALL=1 pnpm add tidypress
+```
+
+or installs on demand later, if it was skipped the first time:
+
+```bash
+npx tidypress skills install
+```
+
+Most agent skills exist to stop an agent from guessing at syntax. This one does that, and also stops it from guessing at where things go.

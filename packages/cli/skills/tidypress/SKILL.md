@@ -38,16 +38,25 @@ Build output: `site/build/` (override with `tidypress build --output`).
 | Command | Purpose |
 |---------|---------|
 | `tidypress init` | Scaffold `site/` (`--preset …` `--site-url <url>`) |
+| `tidypress migrate-sections` | Generate sections→collections migration output |
 | `tidypress dev` | Dev server (default port 4321) |
-| `tidypress build` | Production static build + Pagefind index |
+| `tidypress build` | Production static build + Pagefind index (`--no-llms-txt`) |
 | `tidypress preview` | Preview production build |
 | `tidypress clean` | Remove build + cache |
 | `tidypress deploy [target]` | Provider strategies (Cloudflare, Vercel, Netlify, GitHub Pages, …) |
+| `tidypress domain` | Print custom domain setup plan |
 | `tidypress doctor` | Baseline setup check |
 | `tidypress import devto` | Live import; medium/ghost/substack are scaffolds |
 | `tidypress skills install` | Install these skills into Cursor / Claude Code / Codex |
+| `tidypress add-version` | Scaffold docs version folder (`--set-latest`) |
+| `tidypress release-check` | Verify package release metadata |
+| `tidypress editor` | Experimental web editor (requires config flag) |
+| `tidypress export` | Experimental multiformat export (requires config flag) |
+| `tidypress ai` | Experimental AI workflow (requires config flag) |
 
 Node **22.12+** required. Default command if omitted: `dev`.
+
+Install skills: `tidypress skills install --force` or `tidypress --install-skills` (global flag; does not start dev). Detection checks for `~/.cursor`, `~/.claude`, or `~/.codex` directories — not installed binaries.
 
 ## Presets (`tidypress init --preset`)
 
@@ -101,10 +110,16 @@ Opinionated presets + kinds; flexible markdown. `siteUrl` must be production (no
 
 ## Content conventions
 
-- **Writing:** frontmatter `title`, `description`, `date`; optional `tags`, `featured`, `draft` / `published` / `scheduled`.
-- **Docs:** stable titles; versioned docs via `tidypress add-version`.
-- **Projects:** `url` + `linkOnly: true` for external cards; body for on-site pages.
+Use `published: false` for drafts; `scheduled` for future posts. There is no separate `draft` frontmatter field.
+
+- **Writing:** `title`, `description`, `date`; optional `author`, `tags`, `featured`, `ogImage`, `search`, `published`, `scheduled`.
+- **Docs:** `title`, `description`, `order`, `form` (`doc` or `manual`); optional `part`, `paging`, `icon`, `tags`, `search`, `published`, `scheduled`.
+- **Projects:** `title`, `description`; optional `status`, `featured`, `url`, `repo`, `linkOnly`, `icon`, `tags`, `search`, `published`. Use `url` + `linkOnly: true` for external cards; body for on-site pages; `repo` when the card should link to a repository.
 - **Pages:** slug maps to `/slug` (e.g. `about.md` → `/about`).
+
+## MDX components (`.mdx` files only)
+
+Available without imports: `<Callout type="note|warning|tip|quote">`, `<FileTree>`, `<Mermaid code={\`…\`}>`, `<Tabs labels={[]}>` + `<Tab>`, `<Image src alt …>`, `<Steps>` + `<Step>`, `<Tooltip tip="…">`. See site docs `/docs/components`.
 
 ## Deploy and search
 

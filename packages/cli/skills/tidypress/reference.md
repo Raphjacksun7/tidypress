@@ -8,6 +8,25 @@ Agent-oriented compact reference.
 - **`docs` collection:** `src/content/docs/` → routes under `/docs/…` (first-class; disabled in `lab` / `body-of-work` presets by default).
 - **Discovery:** cwd → `site/` → sibling folders. Set `TIDYPRESS_PUBLISH_ROOT` when ambiguous.
 
+## CLI commands
+
+| Command | Notes |
+|---------|-------|
+| `init` | `--preset`, `--site-url` |
+| `migrate-sections` | sections→collections migration scaffold |
+| `dev` / `preview` | `--port` |
+| `build` | `--output`, `--no-llms-txt` |
+| `deploy` | provider target; `deploy --help` for flags |
+| `domain` | custom domain setup plan |
+| `doctor` | baseline setup check |
+| `import devto` | live import; other providers scaffold only |
+| `skills install` | `--force`; or global `tidypress --install-skills` |
+| `add-version` | docs version folder; `--set-latest` |
+| `release-check` | release metadata alignment |
+| `editor` / `export` / `ai` | experimental; require config flags |
+
+**Skills detection:** presence of `~/.cursor`, `~/.claude`, or `~/.codex` under `$HOME` — not binary checks.
+
 ## Collections
 
 ```ts
@@ -21,6 +40,51 @@ collections: {
 ```
 
 Custom collection keys need `enabled: true` and usually a `basePath`.
+
+## Frontmatter
+
+### Docs
+
+| Field | Purpose |
+|-------|---------|
+| `title`, `description` | Required metadata |
+| `order` | Sidebar order (lower first) |
+| `form` | `doc` (default) or `manual` |
+| `part` | Optional chapter group |
+| `paging` | `false`, `'none'`, `'top'`, `'bottom'` |
+| `icon`, `tags` | Optional |
+| `search` | `false` to exclude from Pagefind |
+| `published` | `false` hides from routes, search, `llms.txt` |
+| `scheduled` | ISO datetime; hidden until then |
+
+### Writing
+
+| Field | Purpose |
+|-------|---------|
+| `title`, `description`, `date` | Required |
+| `author`, `icon`, `featured`, `ogImage`, `tags` | Optional |
+| `search` | `false` to exclude from Pagefind |
+| `published` | `false` for drafts |
+| `scheduled` | ISO datetime; hidden until then |
+
+### Projects
+
+| Field | Purpose |
+|-------|---------|
+| `title`, `description` | Required |
+| `status` | Card label, e.g. `active` |
+| `featured`, `icon`, `tags` | Optional |
+| `url` | External link |
+| `repo` | Repository URL when `url` omitted |
+| `linkOnly` | `true` with `url` or `repo` for card-only external links |
+| `search`, `published` | Same semantics as writing |
+
+### Pages
+
+| Field | Purpose |
+|-------|---------|
+| `title`, `description` | Required |
+| `search`, `published` | Optional visibility |
 
 ## Capabilities
 
@@ -55,6 +119,20 @@ hero: {
   links: [{ label: 'GitHub', href: 'https://github.com/you', external: true }],
 }
 ```
+
+## MDX components
+
+Use in `.mdx` without imports:
+
+| Component | Purpose |
+|-----------|---------|
+| `<Callout type?>` | `note`, `warning`, `tip`, `quote` |
+| `<FileTree>` | collapsible tree; two spaces per indent; `- site/` root |
+| `<Mermaid code={\`…\`}>` | diagram |
+| `<Tabs labels={['a','b']}>` + `<Tab>` | tabbed examples |
+| `<Image src alt caption?>` | image with optional caption |
+| `<Steps>` + `<Step title?>` | numbered procedure |
+| `<Tooltip tip="…">` | inline hover text |
 
 ## i18n / versions
 
