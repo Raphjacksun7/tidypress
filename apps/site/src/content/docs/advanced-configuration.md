@@ -13,7 +13,7 @@ Path trees below use the publish root `site/` from `init`. `src/content/docs/` i
 Configure locale-prefixed routes and UI labels:
 
 ```ts
-import { defineConfig } from 'tidypress/config'
+import { defineConfig } from 'tidypress'
 
 export default defineConfig({
   name: 'my-project',

@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import { createRequire } from 'node:module'
 import jitiFactory from 'jiti'
 
 import { TidyPressError } from '../../errors/TidyPressError.js'
@@ -161,7 +162,22 @@ export async function resolveDocsDir(projectRoot) {
  */
 export async function loadUserConfig(publishRoot) {
   const configPath = await findConfigFile(publishRoot)
-  const jiti = jitiFactory(import.meta.url, { interopDefault: true })
+  const require = createRequire(import.meta.url)
+  const alias: Record<string, string> = {}
+  try {
+    alias.tidypress = require.resolve('tidypress')
+  } catch {
+    // Keep default resolution.
+  }
+  try {
+    alias['tidypress/config'] = require.resolve('tidypress/config')
+  } catch {
+    // Keep default resolution.
+  }
+  const jiti = jitiFactory(import.meta.url, {
+    interopDefault: true,
+    alias: Object.keys(alias).length > 0 ? alias : undefined,
+  })
   const loaded = await jiti.import(configPath)
   const config = /** @type {{ default?: unknown } | unknown} */ (loaded)
   if (config && typeof config === 'object' && 'default' in config) {

@@ -24,7 +24,13 @@ test('formatConfigModule emits parseable export default', () => {
   const source = formatConfigModule(config)
 
   assert.match(source, /Set siteUrl in tidypress\.config\.ts/)
-  const jsonBody = source.replace(/^\/\/[^\n]*\n/, '').replace(/^export default\s*/, '').trim()
+  assert.match(source, /import \{ defineConfig \} from 'tidypress'/)
+  const jsonBody = source
+    .replace(/^\/\/[^\n]*\n/, '')
+    .replace(/^import[^\n]*\n\n/, '')
+    .replace(/^export default defineConfig\(/, '')
+    .replace(/\)\s*$/, '')
+    .trim()
   const value = JSON.parse(jsonBody)
   assert.equal(value.name, 'lab-site')
   assert.deepEqual(value.capabilities.disable, ['docs', 'pages'])

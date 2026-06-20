@@ -13,7 +13,7 @@ site/tidypress.config.ts
 Only `name` is required. Keep the file small until the site needs more shape.
 
 ```ts
-import { defineConfig } from 'tidypress/config'
+import { defineConfig } from 'tidypress'
 
 export default defineConfig({
   name: 'my-project',

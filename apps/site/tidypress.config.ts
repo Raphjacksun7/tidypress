@@ -1,4 +1,4 @@
-import { defineConfig } from 'tidypress/config'
+import { defineConfig } from 'tidypress'
 
 /** https://github.com/Raphjacksun7/tidypress */
 const GITHUB_REPO = 'https://github.com/Raphjacksun7/tidypress'

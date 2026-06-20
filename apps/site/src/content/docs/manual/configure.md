@@ -9,7 +9,7 @@ published: false
 Open `site/tidypress.config.ts`:
 
 ```ts
-import { defineConfig } from 'tidypress/config'
+import { defineConfig } from 'tidypress'
 
 export default defineConfig({
   name: 'My Project',

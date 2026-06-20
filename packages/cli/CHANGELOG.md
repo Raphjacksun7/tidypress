@@ -1,5 +1,14 @@
 # tidypress
 
+## 1.0.16
+
+### Patch Changes
+
+- Fix runtime config imports in `npx`/CI builds by shimming `tidypress` resolution for project config files.
+- Standardize generated and documented config imports on `import { defineConfig } from 'tidypress'`.
+- Run skills bootstrap before command execution so first-run prompts are not blocked by long-lived commands.
+- Keep `tidypress/config` compatibility for existing configs while making root import the documented default.
+
 ## 1.0.15
 
 ### Patch Changes

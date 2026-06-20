@@ -1,2 +1,1 @@
-export { runCli, runCliMain } from './runCli.js'
-export { TidyPressError } from './errors/TidyPressError.js'
+export { defineConfig, withDefaults } from './config.js'

@@ -82,5 +82,5 @@ export function formatConfigModule(config) {
   )
     ? `// ${siteUrlSetupHint()}\n`
     : ''
-  return `${header}export default ${JSON.stringify(config, null, 2)}\n`
+  return `${header}import { defineConfig } from 'tidypress'\n\nexport default defineConfig(${JSON.stringify(config, null, 2)})\n`
 }

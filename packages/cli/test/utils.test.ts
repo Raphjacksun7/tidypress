@@ -34,7 +34,7 @@ test('scaffoldDocs creates docs and writing content structure', async () => {
     'utf8',
   )
 
-  assert.match(config, /export default \{/)
+  assert.match(config, /export default defineConfig\(\{/)
   assert.match(config, /siteUrl/)
   assert.match(config, /"collections":/)
   assert.match(docsPage, /title: Getting started/)

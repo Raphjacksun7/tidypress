@@ -85,3 +85,33 @@ test('ConfigLoader.validateNavigation keeps nav parity with custom starter base 
   const loader = new ConfigLoader()
   await loader.validateNavigation({ docsDir })
 })
+
+test('ConfigLoader.loadConfig resolves defineConfig from tidypress root import', async () => {
+  const { docsDir } = await createDocsProjectFixture({
+    configSource: `import { defineConfig } from 'tidypress'
+
+export default defineConfig({
+  name: 'site',
+  nav: [{ label: 'docs', href: '/docs' }],
+})`,
+  })
+
+  const loader = new ConfigLoader()
+  const config = await loader.loadConfig({ docsDir })
+  assert.equal(config.name, 'site')
+})
+
+test('ConfigLoader.loadConfig resolves legacy tidypress/config import', async () => {
+  const { docsDir } = await createDocsProjectFixture({
+    configSource: `import { defineConfig } from 'tidypress/config'
+
+export default defineConfig({
+  name: 'site',
+  nav: [{ label: 'docs', href: '/docs' }],
+})`,
+  })
+
+  const loader = new ConfigLoader()
+  const config = await loader.loadConfig({ docsDir })
+  assert.equal(config.name, 'site')
+})

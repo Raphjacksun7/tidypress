@@ -77,15 +77,17 @@ export async function runCli(argv, { projectRoot = process.cwd(), io = console }
   const parsed = parseCliFlags(argv)
   const app = createApplication({ projectRoot, version, io })
   try {
-    if (parsed.installSkills && parsed.argv.length === 0) {
+    if (parsed.installSkills) {
       await maybeInstallTidyPressSkillsGlobally({ force: true, io })
-      return 0
+      if (parsed.argv.length === 0) {
+        return 0
+      }
+    } else {
+      // Run skills bootstrap before command execution so `tidypress dev` can still prompt.
+      await maybeInstallTidyPressSkillsGlobally({ force: false, io })
     }
 
     await app.run(parsed.argv)
-    if (parsed.installSkills) {
-      await maybeInstallTidyPressSkillsGlobally({ force: true, io })
-    }
     return 0
   } catch (error) {
     return handleCliError(error, { io, verboseErrors: parsed.verboseErrors })

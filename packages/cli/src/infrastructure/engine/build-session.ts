@@ -35,6 +35,68 @@ function resolveBundledPackageRoot(packageName) {
 }
 
 /**
+ * Ensure user config imports like `from 'tidypress'` or `from 'tidypress/config'`
+ * resolve even when running via `npx tidypress` (package lives in npm cache, not
+ * project node_modules).
+ *
+ * Instead of symlinking the full CLI package (which can confuse bundlers), create
+ * a tiny local shim package that re-exports runtime files from the active CLI.
+ *
+ * @param {string} docsDir
+ */
+async function ensureRuntimeTidypressShim(docsDir) {
+  const cliPackageRoot = resolveBundledPackageRoot('tidypress')
+  if (!cliPackageRoot) {
+    return
+  }
+
+  const nodeModulesDir = path.join(docsDir, 'node_modules')
+  const tidypressDir = path.join(nodeModulesDir, 'tidypress')
+  const packageJsonPath = path.join(tidypressDir, 'package.json')
+  if (await exists(packageJsonPath)) {
+    return
+  }
+
+  const cliDistDir = path.join(cliPackageRoot, 'dist')
+  const configModuleUrl = pathToFileURL(path.join(cliDistDir, 'config.js')).href
+
+  await fs.mkdir(path.join(tidypressDir, 'dist'), { recursive: true })
+  await fs.writeFile(
+    packageJsonPath,
+    JSON.stringify(
+      {
+        name: 'tidypress',
+        private: true,
+        type: 'module',
+        exports: {
+          '.': {
+            import: './dist/index.js',
+            default: './dist/index.js',
+          },
+          './config': {
+            import: './dist/config.js',
+            default: './dist/config.js',
+          },
+        },
+      },
+      null,
+      2,
+    ) + '\n',
+    'utf8',
+  )
+  await fs.writeFile(
+    path.join(tidypressDir, 'dist/index.js'),
+    `export * from ${JSON.stringify(configModuleUrl)}\n`,
+    'utf8',
+  )
+  await fs.writeFile(
+    path.join(tidypressDir, 'dist/config.js'),
+    `export * from ${JSON.stringify(configModuleUrl)}\n`,
+    'utf8',
+  )
+}
+
+/**
  * @returns {string}
  */
 export function getEnginePath() {
@@ -148,6 +210,8 @@ export async function prepareBuildSession({ docsDir, mode }) {
 
   await fs.mkdir(codegenDir, { recursive: true })
   await fs.mkdir(path.join(cacheDir, 'astro'), { recursive: true })
+
+  await ensureRuntimeTidypressShim(docsDir)
 
   const rawConfig = await loadUserConfig(docsDir)
   const { pathsToMount } = await writePluginManifest({

@@ -77,7 +77,7 @@ Install skills: `tidypress skills install --force` or `tidypress --install-skill
 File: `site/tidypress.config.ts` by default — any publish root works.
 
 ```ts
-import { defineConfig } from 'tidypress/config'
+import { defineConfig } from 'tidypress'
 
 export default defineConfig({
   name: 'my-site',
