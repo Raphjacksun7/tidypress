@@ -255,7 +255,7 @@ export async function resolveAstroInlineConfig({
   const productionSite = resolveProductionSiteUrl(withDefaults(rawConfig as TidyPressConfig))
 
   const configUrl = pathToFileURL(path.join(engineRoot, 'astro.config.mjs')).href
-  const { default: baseConfig } = await import(configUrl)
+  const { default: baseConfig } = await import(/* @vite-ignore */ configUrl)
 
   const useJsonLogs =
     process.env.CI === 'true' || process.env.TIDYPRESS_JSON_LOGS === '1'

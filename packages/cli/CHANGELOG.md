@@ -1,5 +1,13 @@
 # tidypress
 
+## 1.0.17
+
+### Patch Changes
+
+- Reject unsupported command options early (for example `tidypress build --sync`) with explicit usage errors.
+- Improve auto skills-install skip diagnostics so every skip path prints a reason and next action.
+- Reduce non-fatal dynamic-import warning noise during engine-driven builds.
+
 ## 1.0.16
 
 ### Patch Changes

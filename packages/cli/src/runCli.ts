@@ -47,6 +47,42 @@ function normalizeThrown(thrown) {
 }
 
 /**
+ * @param {{ status?: string, reason?: string }} result
+ * @param {{ io: { info: (message: string) => void }, force: boolean }} options
+ */
+function reportSkillsOutcome(result, { io, force }) {
+  if (!result || result.status !== 'skipped') {
+    return
+  }
+  const next = '`tidypress skills install --force`'
+  if (result.reason === 'ci') {
+    io.info(`Skipped TidyPress skills install: running in CI. Run ${next} locally.`)
+    return
+  }
+  if (result.reason === 'already_prompted') {
+    io.info(`Skipped TidyPress skills install: this machine was already prompted. Re-run ${next} to reinstall.`)
+    return
+  }
+  if (result.reason === 'no_agents') {
+    io.info(
+      'Skipped TidyPress skills install: no supported agents detected (~/.cursor, ~/.claude, ~/.codex). Create one of those directories or run on a machine with the agent installed.',
+    )
+    return
+  }
+  if (result.reason === 'non_interactive') {
+    io.info(`Skipped TidyPress skills install: non-interactive terminal. Run ${next} in an interactive shell.`)
+    return
+  }
+  if (result.reason === 'declined') {
+    io.info(`Skipped TidyPress skills install: user declined prompt. Re-run ${next} when ready.`)
+    return
+  }
+  if (force) {
+    io.info(`Skipped TidyPress skills install (${result.reason ?? 'unknown reason'}).`)
+  }
+}
+
+/**
  * @param {unknown} error
  * @param {{ io: { error: (message: string) => void }, verboseErrors: boolean }} options
  * @returns {number}
@@ -78,13 +114,15 @@ export async function runCli(argv, { projectRoot = process.cwd(), io = console }
   const app = createApplication({ projectRoot, version, io })
   try {
     if (parsed.installSkills) {
-      await maybeInstallTidyPressSkillsGlobally({ force: true, io })
+      const result = await maybeInstallTidyPressSkillsGlobally({ force: true, io })
+      reportSkillsOutcome(result, { io, force: true })
       if (parsed.argv.length === 0) {
         return 0
       }
     } else {
       // Run skills bootstrap before command execution so `tidypress dev` can still prompt.
-      await maybeInstallTidyPressSkillsGlobally({ force: false, io })
+      const result = await maybeInstallTidyPressSkillsGlobally({ force: false, io })
+      reportSkillsOutcome(result, { io, force: false })
     }
 
     await app.run(parsed.argv)

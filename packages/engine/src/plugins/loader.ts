@@ -40,7 +40,7 @@ async function importPresentationModule(
 ): Promise<TidyPressPluginPresentationFactory> {
   const projectRelative = modulePath.replace(/^\.\//, '')
   const loaded = import.meta.env.DEV
-    ? await import(`@project/${projectRelative}`)
+    ? await import(/* @vite-ignore */ `@project/${projectRelative}`)
     : await import(/* @vite-ignore */ pathToFileURL(path.resolve(projectRoot, projectRelative)).href)
   const factory =
     (loaded.createPresentation as TidyPressPluginPresentationFactory | undefined) ??

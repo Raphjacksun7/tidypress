@@ -51,6 +51,69 @@ test('Application dispatches dev command with parsed port', async () => {
   assert.deepEqual(dev.calls[0], { projectRoot: '/workspace', port: 4567 })
 })
 
+test('Application rejects unknown build options like --sync', async () => {
+  const app = new Application({
+    version: '0.1.0',
+    projectRoot: '/workspace',
+    commands: { build: new FakeCommand() },
+    io: { info() {}, error() {} },
+  })
+
+  await assert.rejects(
+    async () => {
+      await app.run(['build', '--sync'])
+    },
+    error => {
+      assert.ok(error instanceof TidyPressError)
+      assert.equal(error.code, 'INVALID_BUILD_OPTION')
+      assert.equal(error.exitCode, 2)
+      return true
+    },
+  )
+})
+
+test('Application rejects unknown dev options', async () => {
+  const app = new Application({
+    version: '0.1.0',
+    projectRoot: '/workspace',
+    commands: { dev: new FakeCommand() },
+    io: { info() {}, error() {} },
+  })
+
+  await assert.rejects(
+    async () => {
+      await app.run(['dev', '--sync'])
+    },
+    error => {
+      assert.ok(error instanceof TidyPressError)
+      assert.equal(error.code, 'INVALID_DEV_OPTION')
+      assert.equal(error.exitCode, 2)
+      return true
+    },
+  )
+})
+
+test('Application rejects unexpected clean arguments', async () => {
+  const app = new Application({
+    version: '0.1.0',
+    projectRoot: '/workspace',
+    commands: { clean: new FakeCommand() },
+    io: { info() {}, error() {} },
+  })
+
+  await assert.rejects(
+    async () => {
+      await app.run(['clean', '--sync'])
+    },
+    error => {
+      assert.ok(error instanceof TidyPressError)
+      assert.equal(error.code, 'INVALID_CLEAN_OPTION')
+      assert.equal(error.exitCode, 2)
+      return true
+    },
+  )
+})
+
 test('Application dispatches skills install with force flag', async () => {
   const skills = new FakeCommand()
   const app = new Application({

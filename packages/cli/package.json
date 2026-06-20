@@ -1,6 +1,6 @@
 {
   "name": "tidypress",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "A publishing framework for Git-native authorship.",
   "license": "MIT",
   "type": "module",

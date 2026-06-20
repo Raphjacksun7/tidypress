@@ -96,18 +96,11 @@ export class Application {
     }
 
     if (command === 'dev' || command === 'preview') {
-      return {
-        projectRoot: this.projectRoot,
-        port: this.#parsePort(args),
-      }
+      return this.#parseServeRequest(command, args)
     }
 
     if (command === 'build') {
-      return {
-        projectRoot: this.projectRoot,
-        outputPath: this.#parseOutput(args),
-        skipLlmsTxt: args.includes('--no-llms-txt'),
-      }
+      return this.#parseBuildRequest(args)
     }
 
     if (command === 'deploy') {
@@ -141,10 +134,7 @@ export class Application {
     if (command === 'ai') {
       return this.#parseAiRequest(args)
     }
-
-    return {
-      projectRoot: this.projectRoot,
-    }
+    return this.#parseProjectRootOnlyRequest(command, args)
   }
 
   /**
@@ -289,38 +279,106 @@ export class Application {
    * @param {string[]} args
    * @returns {number}
    */
-  #parsePort(args) {
-    const portIndex = args.findIndex(arg => arg === '--port' || arg === '-p')
-    if (portIndex === -1) {
-      return 4321
+  #parseServeRequest(command, args) {
+    let port = 4321
+    for (let index = 0; index < args.length; index += 1) {
+      const arg = args[index]
+      if (arg === '--port' || arg === '-p') {
+        const raw = args[index + 1]
+        const value = Number(raw)
+        if (!raw || !Number.isFinite(value) || value <= 0) {
+          throw new TidyPressError(
+            'Invalid --port value.',
+            'INVALID_PORT',
+            `Use tidypress ${command} --port 4321`,
+            { exitCode: 2 },
+          )
+        }
+        port = value
+        index += 1
+        continue
+      }
+      if (arg.startsWith('-')) {
+        throw new TidyPressError(
+          `Unknown ${command} option: ${arg}`,
+          `INVALID_${command.toUpperCase()}_OPTION`,
+          `Use tidypress ${command} [--port <number>]`,
+          { exitCode: 2 },
+        )
+      }
+      throw new TidyPressError(
+        `Unexpected ${command} argument: ${arg}`,
+        `INVALID_${command.toUpperCase()}_OPTION`,
+        `Use tidypress ${command} [--port <number>]`,
+        { exitCode: 2 },
+      )
     }
-
-    const raw = args[portIndex + 1]
-    const value = Number(raw)
-    if (!Number.isFinite(value) || value <= 0) {
-      throw new TidyPressError('Invalid --port value.', 'INVALID_PORT', 'Use a positive number, e.g. --port 4321', {
-        exitCode: 2,
-      })
-    }
-    return value
+    return { projectRoot: this.projectRoot, port }
   }
 
   /**
    * @param {string[]} args
    * @returns {string | undefined}
    */
-  #parseOutput(args) {
-    const index = args.findIndex(arg => arg === '--output' || arg === '-o')
-    if (index === -1) {
-      return undefined
+  #parseBuildRequest(args) {
+    /** @type {string | undefined} */
+    let outputPath
+    let skipLlmsTxt = false
+    for (let index = 0; index < args.length; index += 1) {
+      const arg = args[index]
+      if (arg === '--no-llms-txt') {
+        skipLlmsTxt = true
+        continue
+      }
+      if (arg === '--output' || arg === '-o') {
+        const value = args[index + 1]
+        if (!value || value.startsWith('-')) {
+          throw new TidyPressError(
+            'Missing value for --output.',
+            'INVALID_OUTPUT',
+            'Pass a directory, e.g. --output ./dist',
+            { exitCode: 2 },
+          )
+        }
+        outputPath = path.resolve(this.projectRoot, value)
+        index += 1
+        continue
+      }
+      if (arg.startsWith('-')) {
+        throw new TidyPressError(
+          `Unknown build option: ${arg}`,
+          'INVALID_BUILD_OPTION',
+          'Use tidypress build [--output <dir>] [--no-llms-txt]',
+          { exitCode: 2 },
+        )
+      }
+      throw new TidyPressError(
+        `Unexpected build argument: ${arg}`,
+        'INVALID_BUILD_OPTION',
+        'Use tidypress build [--output <dir>] [--no-llms-txt]',
+        { exitCode: 2 },
+      )
     }
-    const value = args[index + 1]
-    if (!value) {
-      throw new TidyPressError('Missing value for --output.', 'INVALID_OUTPUT', 'Pass a directory, e.g. --output ./dist', {
-        exitCode: 2,
-      })
+    return {
+      projectRoot: this.projectRoot,
+      outputPath,
+      skipLlmsTxt,
     }
-    return path.resolve(this.projectRoot, value)
+  }
+
+  #parseProjectRootOnlyRequest(command, args) {
+    if (args.length > 0) {
+      const first = args[0]
+      throw new TidyPressError(
+        first?.startsWith('-')
+          ? `Unknown ${command} option: ${first}`
+          : `Unexpected ${command} argument: ${first}`,
+        `INVALID_${command.toUpperCase().replace('-', '_')}_OPTION`,
+        `Use tidypress ${command}`,
+        { exitCode: 2 },
+      )
+    }
+    return { projectRoot: this.projectRoot }
   }
 
   /**

@@ -1,5 +1,14 @@
 # @tidypress/engine
 
+## 1.0.17
+
+### Patch Changes
+
+- Reduce non-fatal dynamic-import warning noise in plugin module loading.
+
+- Updated dependencies
+  - @tidypress/config@1.0.17
+
 ## 1.0.16
 
 ### Patch Changes

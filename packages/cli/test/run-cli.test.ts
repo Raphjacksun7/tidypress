@@ -142,3 +142,46 @@ test('runCli --install-skills alone installs skills without default dev command'
     await rm(tempHome, { recursive: true, force: true })
   }
 })
+
+test('runCli reports explicit skip reason when no agents are detected', async () => {
+  const tempHome = await mkdtemp(path.join(os.tmpdir(), 'tidypress-runcli-no-agents-'))
+  const originalHome = process.env.HOME
+  const ciEnv = ['CI', 'CONTINUOUS_INTEGRATION', 'GITHUB_ACTIONS', 'GITLAB_CI'] as const
+  const savedCi: Record<string, string | undefined> = {}
+  for (const key of ciEnv) {
+    savedCi[key] = process.env[key]
+    delete process.env[key]
+  }
+  process.env.HOME = tempHome
+  /** @type {string[]} */
+  const info = []
+  const io = {
+    info(message) {
+      info.push(message)
+    },
+    error() {},
+  }
+
+  try {
+    const code = await runCli(['--install-skills'], { io })
+    assert.equal(code, 0)
+    assert.match(
+      info.join('\n'),
+      /no supported agents detected/i,
+    )
+  } finally {
+    if (originalHome === undefined) {
+      delete process.env.HOME
+    } else {
+      process.env.HOME = originalHome
+    }
+    for (const key of ciEnv) {
+      if (savedCi[key] === undefined) {
+        delete process.env[key]
+      } else {
+        process.env[key] = savedCi[key]
+      }
+    }
+    await rm(tempHome, { recursive: true, force: true })
+  }
+})

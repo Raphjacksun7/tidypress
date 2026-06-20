@@ -1,5 +1,11 @@
 # @tidypress/config
 
+## 1.0.17
+
+### Patch Changes
+
+- Release alignment with `tidypress@1.0.17`.
+
 ## 1.0.16
 
 ### Patch Changes
